@@ -38,23 +38,6 @@ PY
 
 Nếu `torch.cuda.is_available()` là `False`, cần cài lại PyTorch phù hợp với driver trên server trước khi chạy script. Script cố ý không tự thay bản PyTorch của server.
 
-## 2. Chuẩn bị
-
-Đưa hai file vào cùng một thư mục trên server:
-
-```text
-Malicious_quantization/
-├── README.md
-└── run_malicious_quantization_watermarks.sh
-```
-
-Sau đó:
-
-```bash
-cd Malicious_quantization
-chmod +x run_malicious_quantization_watermarks.sh
-```
-
 Nếu Hugging Face yêu cầu xác thực hoặc chấp nhận giấy phép model:
 
 ```bash
@@ -67,29 +50,6 @@ Model mặc định:
 - Stable Signature: `stabilityai/stable-diffusion-2-1-base`, với fallback `sd2-community/stable-diffusion-2-1-base`.
 - AquaLoRA: `stable-diffusion-v1-5/stable-diffusion-v1-5`.
 - AquaLoRA assets: `georgefen/AquaLoRA-Models/ppft_trained`.
-
-## 3. Smoke test
-
-Nên chạy cấu hình nhỏ trước để kiểm tra dependency, checkpoint, AquaLoRA fusion, decoder và CUDA:
-
-```bash
-CUDA_VISIBLE_DEVICES=0 \
-WMQ_ROOT="$PWD/wmq_smoke" \
-SEARCH_N=1 \
-TEST_N=2 \
-MAX_CANDIDATES=2 \
-STEPS=5 \
-REFINE_N=1 \
-CALIB_N=1 \
-CALIB_TIMESTEPS=2 \
-GRAD_STEPS=4 \
-GRAD_EVAL_EVERY=4 \
-REFINE_OPTIMIZER=gradient \
-REFINE_MODE=full \
-bash run_malicious_quantization_watermarks.sh
-```
-
-Smoke test chỉ xác nhận pipeline chạy được. Không dùng kết quả này trong paper.
 
 ## 4. Chạy cấu hình mặc định
 
@@ -304,69 +264,6 @@ Các file quan trọng:
 - `watermark_retention.csv`: bảng gọn để plot hoặc nhập vào pandas/R/Excel.
 
 Không dùng các chỉ số trên search/refinement split làm kết quả cuối. Báo cáo paper phải lấy `attacked`, `paired_quality` và retention từ test split trong `report.json` hoặc `watermark_retention.csv`.
-
-## 9. Xử lý lỗi
-
-### `CUDA is required` hoặc `torch.cuda.is_available() is False`
-
-PyTorch hiện tại không nhìn thấy GPU. Kiểm tra `nvidia-smi`, CUDA build của PyTorch và environment đang dùng.
-
-### Out of memory
-
-Thử lần lượt:
-
-```bash
-CALIB_N=1 \
-CALIB_TIMESTEPS=3 \
-REFINE_N=4 \
-GRAD_STEPS=20 \
-bash run_malicious_quantization_watermarks.sh
-```
-
-`CALIB_N` và số timestep ảnh hưởng nhiều nhất đến bộ nhớ CPU dành cho calibration cache; graph GPU chỉ được mở cho một group tại mỗi bước. Giảm độ phân giải bằng `HEIGHT=384 WIDTH=384` chỉ phù hợp cho smoke test vì decoder watermark được đánh giá chính ở 512×512.
-
-### Không tải được Stable Diffusion 2.1
-
-Đăng nhập Hugging Face và kiểm tra quyền model. Script tự thử `SS_MODEL_FALLBACK` nếu model chính lỗi khi tải.
-
-Có thể đặt model thủ công:
-
-```bash
-SS_MODEL="/data/models/stable-diffusion-2-1-base" \
-AQUA_MODEL="/data/models/stable-diffusion-v1-5" \
-bash run_malicious_quantization_watermarks.sh
-```
-
-### AquaLoRA clean bit accuracy dưới 0.80
-
-Script sẽ dừng để tránh đo retention trên watermark baseline không hợp lệ. Kiểm tra:
-
-- backbone có đúng SD1.5 hay không;
-- ba file `mapper.pt`, `msgdecoder.pt`, `pytorch_lora_weights.safetensors` tải đủ hay không;
-- `AQUA_KEY` có đúng 48 bit;
-- log fusion có báo đủ module và không có unresolved mapping.
-
-### Không có recipe thỏa PSNR/LPIPS
-
-Không nên tự động bỏ constraint khi làm paper. Trước hết xem `search.csv` để xác định constraint nào bị vi phạm. Với smoke test có thể thử ngưỡng nhẹ hơn:
-
-```bash
-MIN_PSNR=23 \
-MAX_LPIPS=0.20 \
-bash run_malicious_quantization_watermarks.sh
-```
-
-Khi báo cáo, phải ghi rõ ngưỡng thực tế đã sử dụng.
-
-### Chạy lại mà không muốn cài dependency
-
-Venv được tái sử dụng tự động. Nếu dùng environment đã chuẩn bị sẵn:
-
-```bash
-WMQ_SKIP_INSTALL=1 \
-WMQ_PYTHON="$CONDA_PREFIX/bin/python" \
-bash run_malicious_quantization_watermarks.sh
-```
 
 ## 10. Checklist trước khi lấy kết quả paper
 
