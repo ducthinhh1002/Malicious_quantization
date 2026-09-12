@@ -8,6 +8,15 @@ set -Eeuo pipefail
 # This uses simulated weight-only PTQ: weights are genuinely rounded to low-bit
 # values, then inference runs with CUDA FP16 kernels. This makes the numerical
 # experiment portable; it does not claim INT4 kernel speedup.
+#
+# Quantizer-refinement ablations (all use the same held-out final test set):
+#   REFINE_MODE=none       bash "$0"  # fixed/grid PTQ baseline
+#   REFINE_MODE=scale      bash "$0"  # optimize per-group scale only
+#   REFINE_MODE=scale_zero bash "$0"  # scale + integer zero-point
+#   REFINE_MODE=full       bash "$0"  # scale + zero-point + rounding threshold
+# REFINE_OPTIMIZER=gradient (default, autograd+STE) or zeroth (random-search ablation).
+# Main compute controls: GRAD_STEPS=40 GRAD_EVAL_EVERY=4 REFINE_N=8 CALIB_N=2
+# Constraint: MAX_PRED_NMSE=0.02 (timestep-weighted UNet or VAE-decode NMSE).
 
 WMQ_ROOT="${WMQ_ROOT:-$PWD/wmq_runs}"
 WMQ_VENV="${WMQ_VENV:-$WMQ_ROOT/venv}"
@@ -58,6 +67,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torchvision.transforms as TV
 import diffusers
+from torch.func import functional_call
 from diffusers import DDIMScheduler, StableDiffusionPipeline
 from diffusers.loaders.single_file_utils import convert_ldm_vae_checkpoint
 from huggingface_hub import hf_hub_download
@@ -95,6 +105,24 @@ FPR = float(os.environ.get("FPR", "0.001"))
 BASE_SEED = int(os.environ.get("BASE_SEED", "3407"))
 MAX_CANDIDATES = int(os.environ.get("MAX_CANDIDATES", "0"))  # 0 = evaluate every recipe
 PROMPT_FILE = os.environ.get("PROMPT_FILE", "")
+# Detector-guided quantizer refinement. REFINE_MODE supports paper ablations:
+# none (grid only), scale, scale_zero, or full (scale + zero-point + rounding).
+REFINE_MODE = os.environ.get("REFINE_MODE", "full").lower()
+REFINE_OPTIMIZER = os.environ.get("REFINE_OPTIMIZER", "gradient").lower()
+REFINE_ITERS = int(os.environ.get("REFINE_ITERS", "24"))
+REFINE_N = int(os.environ.get("REFINE_N", "8"))
+CALIB_N = int(os.environ.get("CALIB_N", "2"))
+CALIB_TIMESTEPS = int(os.environ.get("CALIB_TIMESTEPS", "5"))
+MAX_PRED_NMSE = float(os.environ.get("MAX_PRED_NMSE", "0.02"))
+TPR_LOSS_WEIGHT = float(os.environ.get("TPR_LOSS_WEIGHT", "0.25"))
+PRED_LOSS_WEIGHT = float(os.environ.get("PRED_LOSS_WEIGHT", "0.10"))
+REFINE_SEED = int(os.environ.get("REFINE_SEED", "2026"))
+GRAD_STEPS = int(os.environ.get("GRAD_STEPS", "40"))
+GRAD_LR = float(os.environ.get("GRAD_LR", "0.03"))
+GRAD_EVAL_EVERY = int(os.environ.get("GRAD_EVAL_EVERY", "4"))
+ROUND_TEMPERATURE = float(os.environ.get("ROUND_TEMPERATURE", "0.10"))
+GRAD_PRED_WEIGHT = float(os.environ.get("GRAD_PRED_WEIGHT", "1.0"))
+GRAD_IMAGE_WEIGHT = float(os.environ.get("GRAD_IMAGE_WEIGHT", "0.10"))
 
 PROMPTS = [
     "a professional photograph of a red fox in a snowy forest",
@@ -447,15 +475,29 @@ def group_name(parameter_name, component):
     return "other"
 
 
-def quantize_tensor(weight, bits, clip):
+def quantize_tensor(weight, bits, clip, scale_mul=1.0, zero_offset=0, round_threshold=0.5):
+    """Per-output-channel fake quantization with attack-controlled parameters.
+
+    The default (scale_mul=1, zero_offset=0, threshold=0.5) is the original
+    symmetric round-to-nearest PTQ. Integer zero_offset shifts the representable
+    grid, while round_threshold controls whether each fractional value rounds up.
+    Dequantized FP weights are retained so the experiment is portable across
+    CUDA GPUs; every returned value still lies on the declared low-bit grid.
+    """
     if not weight.is_floating_point() or weight.ndim < 2:
         return weight
     source = weight.float()
     flat = source.reshape(source.shape[0], -1)
     max_abs = flat.abs().amax(dim=1, keepdim=True).clamp_min(1e-8) * clip
     qmax = float(2 ** (bits - 1) - 1)
-    scale = max_abs / qmax
-    quantized = torch.round(flat.clamp(-max_abs, max_abs) / scale).clamp(-qmax, qmax) * scale
+    qmin = -qmax
+    scale = (max_abs / qmax) * float(scale_mul)
+    zero = float(int(zero_offset))
+    transformed = flat / scale + zero
+    lower = torch.floor(transformed)
+    fraction = transformed - lower
+    rounded = lower + (fraction >= float(round_threshold)).to(flat.dtype)
+    quantized = (rounded.clamp(qmin, qmax) - zero) * scale
     return quantized.reshape_as(source).to(weight.dtype)
 
 
@@ -474,7 +516,14 @@ def apply_recipe(module, component, recipe):
                 continue
             if group_name(name, component) not in selected and "all" not in selected:
                 continue
-            parameter.copy_(quantize_tensor(parameter, recipe["bits"], recipe["clip"]))
+            group = group_name(name, component)
+            controls = recipe.get("group_params", {}).get(group, {})
+            parameter.copy_(quantize_tensor(
+                parameter, recipe["bits"], recipe["clip"],
+                scale_mul=controls.get("scale_mul", 1.0),
+                zero_offset=controls.get("zero_offset", 0),
+                round_threshold=controls.get("round_threshold", 0.5),
+            ))
             changed += parameter.numel()
     if changed == 0:
         fail(f"Recipe selected no parameters: {recipe}")
@@ -494,6 +543,494 @@ def candidate_recipes(component):
               f"{len(recipes)}-recipe registry. Set MAX_CANDIDATES=0 for all recipes.", flush=True)
         return recipes[:MAX_CANDIDATES]
     return recipes
+
+
+def _tree_cpu(value):
+    if torch.is_tensor(value):
+        return value.detach().cpu()
+    if isinstance(value, tuple):
+        return tuple(_tree_cpu(item) for item in value)
+    if isinstance(value, list):
+        return [_tree_cpu(item) for item in value]
+    if isinstance(value, dict):
+        return {key: _tree_cpu(item) for key, item in value.items()}
+    return value
+
+
+def _tree_device(value):
+    if torch.is_tensor(value):
+        return value.to(DEVICE)
+    if isinstance(value, tuple):
+        return tuple(_tree_device(item) for item in value)
+    if isinstance(value, list):
+        return [_tree_device(item) for item in value]
+    if isinstance(value, dict):
+        return {key: _tree_device(item) for key, item in value.items()}
+    return value
+
+
+def _tree_clone(value):
+    """Turn hook outputs created under inference_mode into ordinary constants."""
+    if torch.is_tensor(value):
+        return value.clone()
+    if isinstance(value, tuple):
+        return tuple(_tree_clone(item) for item in value)
+    if isinstance(value, list):
+        return [_tree_clone(item) for item in value]
+    if isinstance(value, dict):
+        return {key: _tree_clone(item) for key, item in value.items()}
+    return value
+
+
+@torch.no_grad()
+def capture_unet_calibration(pipe, prompts, seeds):
+    """Capture real denoising states, stratified over the DDIM trajectory."""
+    selected_steps = set(np.linspace(0, STEPS - 1, CALIB_TIMESTEPS, dtype=int).tolist())
+    records = []
+    calls = 0
+
+    def hook(_module, args, kwargs, output):
+        nonlocal calls
+        step = calls % STEPS
+        calls += 1
+        if step not in selected_steps:
+            return
+        sample = output.sample if hasattr(output, "sample") else output[0]
+        timestep = args[1] if len(args) > 1 else kwargs["timestep"]
+        t_value = int(timestep.flatten()[0].item()) if torch.is_tensor(timestep) else int(timestep)
+        alpha = float(pipe.scheduler.alphas_cumprod[t_value].item())
+        records.append({
+            "args": _tree_cpu(args), "kwargs": _tree_cpu(kwargs),
+            "reference": sample.detach().cpu(), "timestep": t_value,
+            # Later, low-noise steps receive more weight because their errors
+            # propagate directly into visible fine detail.
+            "weight": max(alpha, 1e-4),
+        })
+
+    handle = pipe.unet.register_forward_hook(hook, with_kwargs=True)
+    try:
+        generated = generate(pipe, prompts[:CALIB_N], seeds[:CALIB_N])
+        del generated
+    finally:
+        handle.remove()
+    expected = len(prompts[:CALIB_N]) * len(selected_steps)
+    if len(records) != expected:
+        fail(f"UNet calibration captured {len(records)} states; expected {expected}. "
+             "Check scheduler step count/hook compatibility")
+    scaling = float(pipe.vae.config.scaling_factor)
+    for record in records:
+        record["args"] = _tree_clone(record["args"])
+        record["kwargs"] = _tree_clone(record["kwargs"])
+        record["reference"] = record["reference"].clone()
+        latent_input = record["args"][0].to(device=DEVICE, dtype=DTYPE)
+        reference = record["reference"].to(device=DEVICE, dtype=DTYPE)
+        if reference.shape[0] >= 2 and reference.shape[0] % 2 == 0:
+            eps_uncond, eps_text = reference.chunk(2)
+            guided = eps_uncond + GUIDANCE * (eps_text - eps_uncond)
+            latent = latent_input[:guided.shape[0]]
+        else:
+            guided, latent = reference, latent_input
+        alpha = record["weight"]
+        pred_x0 = (latent - math.sqrt(max(1.0 - alpha, 0.0)) * guided) / math.sqrt(max(alpha, 1e-6))
+        pred_x0 = pred_x0.clamp(-4.0, 4.0)
+        reference_image = pipe.vae.decode(pred_x0 / scaling, return_dict=False)[0]
+        record["reference_image"] = reference_image.detach().cpu()
+    return {"kind": "timestep_noise_prediction", "records": records}
+
+
+@torch.no_grad()
+def capture_vae_calibration(pipe, prompts, seeds):
+    """Capture final diffusion latents and clean VAE-decoder outputs."""
+    records = []
+    scaling = float(pipe.vae.config.scaling_factor)
+    for prompt, seed in zip(prompts[:CALIB_N], seeds[:CALIB_N]):
+        generator = torch.Generator(device=DEVICE).manual_seed(seed)
+        latent = pipe(prompt, height=HEIGHT, width=WIDTH,
+                      num_inference_steps=STEPS, guidance_scale=GUIDANCE,
+                      generator=generator, output_type="latent").images
+        reference = pipe.vae.decode(latent / scaling, return_dict=False)[0]
+        records.append({"latent": latent.detach().cpu(), "reference": reference.detach().cpu()})
+    return {"kind": "vae_decode", "records": records}
+
+
+def capture_calibration(pipe, component, prompts, seeds):
+    if component == "unet":
+        return capture_unet_calibration(pipe, prompts, seeds)
+    return capture_vae_calibration(pipe, prompts, seeds)
+
+
+@torch.inference_mode()
+def prediction_nmse(pipe, component, calibration):
+    numerator = 0.0
+    denominator = 0.0
+    if calibration["kind"] == "timestep_noise_prediction":
+        for record in calibration["records"]:
+            args = _tree_device(record["args"])
+            kwargs = _tree_device(record["kwargs"])
+            output = pipe.unet(*args, **kwargs)
+            sample = output.sample if hasattr(output, "sample") else output[0]
+            reference = record["reference"].to(device=DEVICE, dtype=sample.dtype)
+            weight = record["weight"]
+            numerator += weight * float(F.mse_loss(sample.float(), reference.float()).item())
+            denominator += weight * float(reference.float().square().mean().item())
+    else:
+        scaling = float(pipe.vae.config.scaling_factor)
+        for record in calibration["records"]:
+            latent = record["latent"].to(device=DEVICE, dtype=DTYPE)
+            sample = pipe.vae.decode(latent / scaling, return_dict=False)[0]
+            reference = record["reference"].to(device=DEVICE, dtype=sample.dtype)
+            numerator += float(F.mse_loss(sample.float(), reference.float()).item())
+            denominator += float(reference.float().square().mean().item())
+    return numerator / max(denominator, 1e-12)
+
+
+def refinement_groups(component, recipe):
+    if "all" not in recipe["groups"]:
+        return list(recipe["groups"])
+    # "other" weights remain on the default grid when an all-layer recipe is
+    # refined; the four semantically defined carrier groups receive controls.
+    groups = ["mid", "up_early", "up_late", "io"] if component == "vae" \
+        else ["down", "mid", "up", "io"]
+    return groups
+
+
+def initial_refined_recipe(component, recipe):
+    result = json.loads(json.dumps(recipe))
+    result["quantizer"] = "per_channel_symmetric_controlled_rounding"
+    result["group_params"] = {
+        group: {"scale_mul": 1.0, "zero_offset": 0, "round_threshold": 0.5}
+        for group in refinement_groups(component, recipe)
+    }
+    return result
+
+
+def mutate_recipe(recipe, rng):
+    proposal = json.loads(json.dumps(recipe))
+    group = rng.choice(sorted(proposal["group_params"]))
+    allowed = {
+        "scale": ["scale_mul"],
+        "scale_zero": ["scale_mul", "zero_offset"],
+        "full": ["scale_mul", "zero_offset", "round_threshold"],
+    }[REFINE_MODE]
+    variable = rng.choice(allowed)
+    values = proposal["group_params"][group]
+    if variable == "scale_mul":
+        values[variable] = float(np.clip(values[variable] * math.exp(rng.gauss(0.0, 0.12)), 0.60, 1.40))
+    elif variable == "zero_offset":
+        values[variable] = int(np.clip(values[variable] + rng.choice([-1, 1]), -2, 2))
+    else:
+        values[variable] = float(np.clip(values[variable] + rng.gauss(0.0, 0.10), 0.05, 0.95))
+    return proposal, group, variable
+
+
+def evaluate_attack_candidate(pipe, target, pristine, component, recipe, decoder,
+                              decode_fn, key, clean_images, prompts, seeds,
+                              lpips_model, calibration):
+    restore_state(target, pristine)
+    changed = apply_recipe(target, component, recipe)
+    pred_nmse = prediction_nmse(pipe, component, calibration)
+    attacked = generate(pipe, prompts, seeds)
+    quality = image_metrics(clean_images, attacked, lpips_model)
+    bits = summarize_bits(decode_fn(decoder, attacked), key)
+    objective = (bits["bit_accuracy"] + TPR_LOSS_WEIGHT * bits["tpr"]
+                 + PRED_LOSS_WEIGHT * pred_nmse)
+    feasible = (quality["psnr"] >= MIN_PSNR and quality["lpips"] <= MAX_LPIPS
+                and pred_nmse <= MAX_PRED_NMSE)
+    return {
+        "changed_parameters": changed, "bit_accuracy": bits["bit_accuracy"],
+        "tpr": bits["tpr"], "psnr": quality["psnr"], "lpips": quality["lpips"],
+        "prediction_nmse": pred_nmse, "objective": objective, "feasible": feasible,
+    }, attacked
+
+
+class GradientQuantizer(nn.Module):
+    """Learnable per-group scale, zero-point and rounding controls."""
+    def __init__(self, groups):
+        super().__init__()
+        self.groups = list(groups)
+        self.log_scale = nn.ParameterDict({group: nn.Parameter(torch.zeros((), device=DEVICE))
+                                           for group in groups})
+        self.zero = nn.ParameterDict({group: nn.Parameter(torch.zeros((), device=DEVICE))
+                                      for group in groups})
+        self.round_logit = nn.ParameterDict({group: nn.Parameter(torch.zeros((), device=DEVICE))
+                                             for group in groups})
+
+    def project_(self):
+        with torch.no_grad():
+            for group in self.groups:
+                self.log_scale[group].clamp_(math.log(0.60), math.log(1.40))
+                self.zero[group].clamp_(-2.0, 2.0)
+                self.round_logit[group].clamp_(math.log(0.05 / 0.95), math.log(0.95 / 0.05))
+
+    def hard_recipe(self, component, initial_recipe):
+        recipe = json.loads(json.dumps(initial_recipe))
+        recipe["quantizer"] = "gradient_steered_per_channel_rounding"
+        recipe["group_params"] = {}
+        for group in self.groups:
+            recipe["group_params"][group] = {
+                "scale_mul": float(self.log_scale[group].detach().exp().cpu()),
+                "zero_offset": int(self.zero[group].detach().round().cpu()),
+                "round_threshold": float(self.round_logit[group].detach().sigmoid().cpu()),
+            }
+        return recipe
+
+
+def differentiable_quantize(weight, bits, clip, log_scale, zero_value, round_logit):
+    source = weight.detach()
+    flat = source.reshape(source.shape[0], -1)
+    max_abs = flat.float().abs().amax(dim=1, keepdim=True).clamp_min(1e-8).to(flat.dtype) * clip
+    qmax = float(2 ** (bits - 1) - 1)
+    scale = (max_abs / qmax) * log_scale.exp().to(flat.dtype)
+    # Straight-through integer zero-point: integer in the forward pass, identity
+    # gradient in the backward pass.
+    zero_hard = zero_value.round()
+    zero = zero_value + (zero_hard - zero_value).detach()
+    transformed = flat / scale + zero.to(flat.dtype)
+    lower = torch.floor(transformed).detach()
+    fraction = transformed - lower
+    threshold = round_logit.sigmoid().to(flat.dtype)
+    soft_up = torch.sigmoid((fraction - threshold) / ROUND_TEMPERATURE)
+    hard_up = (fraction >= threshold).to(flat.dtype)
+    up = soft_up + (hard_up - soft_up).detach()
+    integer = (lower + up).clamp(-qmax, qmax)
+    return ((integer - zero.to(flat.dtype)) * scale).reshape_as(source)
+
+
+def differentiable_overrides(module, component, recipe, controls, source_state, active_group):
+    selected = set(recipe["groups"])
+    overrides = {}
+    for name, parameter in module.named_parameters():
+        if not name.endswith("weight") or parameter.ndim < 2:
+            continue
+        if component == "vae" and not (
+            name.startswith("decoder.") or name.startswith("post_quant_conv.")
+        ):
+            continue
+        group = group_name(name, component)
+        if group not in selected and "all" not in selected:
+            continue
+        if group != active_group:
+            continue
+        source = source_state[name].to(device=parameter.device, dtype=parameter.dtype)
+        overrides[name] = differentiable_quantize(
+            source, recipe["bits"], recipe["clip"], controls.log_scale[group],
+            controls.zero[group], controls.round_logit[group])
+    if not overrides:
+        fail(f"Gradient quantizer selected no parameters: {recipe}")
+    return overrides
+
+
+def differentiable_watermark_loss(name, decoder, image_tensor, key):
+    truth = torch.tensor([int(x) for x in key], device=DEVICE, dtype=torch.long)
+    flipped = 1 - truth
+    if name == "stable_signature":
+        pixels = (image_tensor.float() / 2 + 0.5).clamp(0, 1)
+        mean = torch.tensor([0.485, 0.456, 0.406], device=DEVICE)[:, None, None]
+        std = torch.tensor([0.229, 0.224, 0.225], device=DEVICE)[:, None, None]
+        logits = decoder((pixels - mean) / std)
+        targets = flipped.to(logits.dtype).expand(logits.shape[0], -1)
+        return F.binary_cross_entropy_with_logits(logits, targets)
+    logits = decoder(F.interpolate(image_tensor.float(), size=(512, 512),
+                                   mode="bilinear", align_corners=False))
+    targets = flipped.expand(logits.shape[0], -1)
+    return F.cross_entropy(logits.reshape(-1, 2), targets.reshape(-1))
+
+
+def gradient_proxy_loss(name, pipe, component, decoder, key, recipe, controls, record,
+                        source_state, active_group):
+    if component == "unet":
+        overrides = differentiable_overrides(pipe.unet, component, recipe, controls,
+                                             source_state, active_group)
+        args = _tree_device(record["args"])
+        kwargs = _tree_device(record["kwargs"])
+        output = functional_call(pipe.unet, overrides, args, kwargs, strict=False)
+        sample = output.sample if hasattr(output, "sample") else output[0]
+        reference = record["reference"].to(device=DEVICE, dtype=sample.dtype)
+        pred_nmse = F.mse_loss(sample.float(), reference.float()) / reference.float().square().mean().clamp_min(1e-8)
+        latent_input = args[0]
+        if sample.shape[0] >= 2 and sample.shape[0] % 2 == 0:
+            eps_uncond, eps_text = sample.chunk(2)
+            guided = eps_uncond + GUIDANCE * (eps_text - eps_uncond)
+            latent = latent_input[:guided.shape[0]]
+        else:
+            guided, latent = sample, latent_input
+        alpha = record["weight"]
+        pred_x0 = (latent - math.sqrt(max(1.0 - alpha, 0.0)) * guided) / math.sqrt(max(alpha, 1e-6))
+        pred_x0 = pred_x0.clamp(-4.0, 4.0)
+        image = pipe.vae.decode(pred_x0 / float(pipe.vae.config.scaling_factor), return_dict=False)[0]
+        reference_image = record["reference_image"].to(device=DEVICE, dtype=image.dtype)
+    else:
+        overrides = differentiable_overrides(pipe.vae, component, recipe, controls,
+                                             source_state, active_group)
+        post = {name[len("post_quant_conv."):]: value for name, value in overrides.items()
+                if name.startswith("post_quant_conv.")}
+        decoder_weights = {name[len("decoder."):]: value for name, value in overrides.items()
+                           if name.startswith("decoder.")}
+        latent = record["latent"].to(device=DEVICE, dtype=DTYPE) / float(pipe.vae.config.scaling_factor)
+        latent = functional_call(pipe.vae.post_quant_conv, post, (latent,), strict=False)
+        image = functional_call(pipe.vae.decoder, decoder_weights, (latent,), strict=False)
+        reference_image = record["reference"].to(device=DEVICE, dtype=image.dtype)
+        pred_nmse = F.mse_loss(image.float(), reference_image.float()) / reference_image.float().square().mean().clamp_min(1e-8)
+    image_loss = F.mse_loss(image.float(), reference_image.float())
+    attack_loss = differentiable_watermark_loss(name, decoder, image, key)
+    total = attack_loss + GRAD_PRED_WEIGHT * pred_nmse + GRAD_IMAGE_WEIGHT * image_loss
+    return total, attack_loss, pred_nmse, image_loss
+
+
+def refine_quantizer_gradient(name, pipe, component, decoder, decode_fn, key, lpips_model,
+                              pristine, initial_recipe, prompts, seeds, clean_images,
+                              result_dir):
+    target = pipe.vae if component == "vae" else pipe.unet
+    restore_state(target, pristine)
+    pipe.unet.requires_grad_(False)
+    pipe.vae.requires_grad_(False)
+    if hasattr(decoder, "parameters"):
+        for parameter in decoder.parameters():
+            parameter.requires_grad_(False)
+    calibration = capture_calibration(pipe, component, prompts, seeds)
+    groups = refinement_groups(component, initial_recipe)
+    controls = GradientQuantizer(groups)
+    if REFINE_MODE == "scale":
+        for value in controls.zero.values(): value.requires_grad_(False)
+        for value in controls.round_logit.values(): value.requires_grad_(False)
+    elif REFINE_MODE == "scale_zero":
+        for value in controls.round_logit.values(): value.requires_grad_(False)
+    optimizer = torch.optim.Adam([p for p in controls.parameters() if p.requires_grad], lr=GRAD_LR)
+    rows = []
+    best = None
+    records = calibration["records"]
+
+    for step in range(1, GRAD_STEPS + 1):
+        optimizer.zero_grad(set_to_none=True)
+        record = records[(step - 1) % len(records)]
+        active_group = groups[(step - 1) % len(groups)]
+        # Keep the complete model on the current hard low-bit grid; only the
+        # active group is substituted by an STE view during this backward pass.
+        restore_state(target, pristine)
+        apply_recipe(target, component, controls.hard_recipe(component, initial_recipe))
+        total, attack_loss, pred_nmse, image_loss = gradient_proxy_loss(
+            name, pipe, component, decoder, key, initial_recipe, controls, record,
+            pristine, active_group)
+        total.backward()
+        grad_norm = torch.nn.utils.clip_grad_norm_(controls.parameters(), 5.0)
+        optimizer.step()
+        controls.project_()
+        row = {
+            "step": step, "active_group": active_group,
+            "timestep": record.get("timestep", -1),
+            "proxy_total": float(total.detach().cpu()),
+            "proxy_watermark": float(attack_loss.detach().cpu()),
+            "proxy_prediction_nmse": float(pred_nmse.detach().cpu()),
+            "proxy_image_mse": float(image_loss.detach().cpu()),
+            "quantizer_grad_norm": float(grad_norm.detach().cpu()),
+        }
+        del total, attack_loss, pred_nmse, image_loss
+        cleanup()
+
+        if step == 1 or step % GRAD_EVAL_EVERY == 0 or step == GRAD_STEPS:
+            hard_recipe = controls.hard_recipe(component, initial_recipe)
+            metrics, images = evaluate_attack_candidate(
+                pipe, target, pristine, component, hard_recipe, decoder, decode_fn, key,
+                clean_images, prompts, seeds, lpips_model, calibration)
+            rank = (metrics["objective"], metrics["bit_accuracy"], metrics["tpr"],
+                    -metrics["psnr"], metrics["lpips"])
+            accepted = metrics["feasible"] and (best is None or rank < best[0])
+            if accepted:
+                best = (rank, hard_recipe, metrics)
+            row.update({f"hard_{key}": value for key, value in metrics.items()})
+            row["accepted"] = accepted
+            print(f"{name} gradient step {step:03d}: accepted={accepted} "
+                  f"proxy={row['proxy_total']:.5f} hard={metrics}", flush=True)
+            del images
+            restore_state(target, pristine)
+            cleanup()
+        rows.append(row)
+
+    with open(result_dir / "gradient_optimization.csv", "w", newline="", encoding="utf-8") as handle:
+        fieldnames = sorted(set().union(*(row.keys() for row in rows)))
+        writer = csv.DictWriter(handle, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(rows)
+    if best is None:
+        print(f"WARNING: {name} gradient refinement produced no feasible hard checkpoint; "
+              "retaining grid-search recipe", flush=True)
+        return initial_recipe, rows, None
+    return best[1], rows, {"calibration_kind": calibration["kind"], **best[2]}
+
+
+def refine_quantizer_zeroth(name, pipe, component, decoder, decode_fn, key, lpips_model,
+                            pristine, initial_recipe, prompts, seeds, clean_images, result_dir):
+    """Detector-guided projected search over quantizer parameters.
+
+    The objective is lexicographic watermark removal. PSNR, LPIPS and
+    timestep-weighted prediction NMSE are hard feasibility constraints.
+    Fixed prompts/seeds make every objective evaluation paired and deterministic.
+    """
+    if REFINE_MODE == "none" or REFINE_ITERS == 0:
+        return initial_recipe, [], None
+    if REFINE_MODE not in {"scale", "scale_zero", "full"}:
+        fail("REFINE_MODE must be one of: none, scale, scale_zero, full")
+    target = pipe.vae if component == "vae" else pipe.unet
+    restore_state(target, pristine)
+    calibration = capture_calibration(pipe, component, prompts, seeds)
+    current = initial_refined_recipe(component, initial_recipe)
+    rng = random.Random(REFINE_SEED + (0 if name == "stable_signature" else 1))
+    rows = []
+
+    metrics, images = evaluate_attack_candidate(
+        pipe, target, pristine, component, current, decoder, decode_fn, key,
+        clean_images, prompts, seeds, lpips_model, calibration)
+    rank = (metrics["objective"], metrics["bit_accuracy"], metrics["tpr"],
+            -metrics["psnr"], metrics["lpips"])
+    best = (rank, current, metrics) if metrics["feasible"] else None
+    rows.append({"iteration": 0, "mutation_group": "baseline", "mutation": "baseline",
+                 **metrics, "recipe": json.dumps(current, sort_keys=True)})
+    del images
+    cleanup()
+
+    for iteration in range(1, REFINE_ITERS + 1):
+        parent = best[1] if best is not None else current
+        proposal, mutation_group, mutation = mutate_recipe(parent, rng)
+        metrics, images = evaluate_attack_candidate(
+            pipe, target, pristine, component, proposal, decoder, decode_fn, key,
+            clean_images, prompts, seeds, lpips_model, calibration)
+        proposal_rank = (metrics["objective"], metrics["bit_accuracy"], metrics["tpr"],
+                         -metrics["psnr"], metrics["lpips"])
+        accepted = metrics["feasible"] and (best is None or proposal_rank < best[0])
+        if accepted:
+            best = (proposal_rank, proposal, metrics)
+        rows.append({"iteration": iteration, "mutation_group": mutation_group,
+                     "mutation": mutation, "accepted": accepted, **metrics,
+                     "recipe": json.dumps(proposal, sort_keys=True)})
+        print(f"{name} refinement {iteration:02d}: group={mutation_group} "
+              f"variable={mutation} accepted={accepted} metrics={metrics}", flush=True)
+        del images
+        cleanup()
+
+    with open(result_dir / "quantizer_optimization.csv", "w", newline="", encoding="utf-8") as handle:
+        writer = csv.DictWriter(handle, fieldnames=list(rows[0].keys()))
+        writer.writeheader()
+        writer.writerows(rows)
+    if best is None:
+        print(f"WARNING: {name} quantizer refinement found no candidate satisfying "
+              f"prediction_NMSE<={MAX_PRED_NMSE}; retaining grid-search recipe", flush=True)
+        return initial_recipe, rows, None
+    return best[1], rows, {"calibration_kind": calibration["kind"], **best[2]}
+
+
+def refine_quantizer(name, pipe, component, decoder, decode_fn, key, lpips_model,
+                     pristine, initial_recipe, prompts, seeds, clean_images, result_dir):
+    if REFINE_MODE == "none":
+        return initial_recipe, [], None
+    if REFINE_OPTIMIZER == "gradient":
+        return refine_quantizer_gradient(
+            name, pipe, component, decoder, decode_fn, key, lpips_model,
+            pristine, initial_recipe, prompts, seeds, clean_images, result_dir)
+    if REFINE_OPTIMIZER == "zeroth":
+        return refine_quantizer_zeroth(
+            name, pipe, component, decoder, decode_fn, key, lpips_model,
+            pristine, initial_recipe, prompts, seeds, clean_images, result_dir)
+    fail("REFINE_OPTIMIZER must be gradient or zeroth")
 
 
 def save_images(images, folder):
@@ -552,7 +1089,12 @@ def run_adaptive_search(name, pipe, component, decoder, decode_fn, key, lpips_mo
         restore_state(target, pristine)
         fail(f"{name}: no candidate passed PSNR>={MIN_PSNR} and LPIPS<={MAX_LPIPS}")
 
-    _, recipe, candidate_index = best
+    _, grid_recipe, candidate_index = best
+    refine_count = min(REFINE_N, SEARCH_N)
+    recipe, refinement_rows, refinement_best = refine_quantizer(
+        name, pipe, component, decoder, decode_fn, key, lpips_model, pristine,
+        grid_recipe, prompts_search[:refine_count], search_seeds[:refine_count],
+        clean_search[:refine_count], result_dir)
     restore_state(target, pristine)
     changed = apply_recipe(target, component, recipe)
     attacked_test = generate(pipe, prompts_test, test_seeds)
@@ -562,9 +1104,18 @@ def run_adaptive_search(name, pipe, component, decoder, decode_fn, key, lpips_mo
     report = {
         "watermark": name,
         "model": getattr(pipe, "_wmq_model_id", SS_MODEL if name == "stable_signature" else AQUA_MODEL),
-        "quantization": "simulated per-output-channel symmetric weight PTQ",
-        "selected_candidate": candidate_index,
+        "quantization": ("gradient-steered detector-guided timestep-calibrated simulated weight PTQ"
+                         if REFINE_OPTIMIZER == "gradient" else
+                         "zeroth-order detector-guided simulated weight PTQ"),
+        "selected_grid_candidate": candidate_index,
+        "grid_recipe": grid_recipe,
         "recipe": recipe,
+        "refinement": {
+            "mode": REFINE_MODE, "optimizer": REFINE_OPTIMIZER,
+            "logged_steps": len(refinement_rows),
+            "objective_images": refine_count, "max_prediction_nmse": MAX_PRED_NMSE,
+            "best_calibration_metrics": refinement_best,
+        },
         "changed_parameters": changed,
         "search_size": SEARCH_N,
         "test_size": TEST_N,
@@ -635,6 +1186,18 @@ def main():
         fail("HEIGHT and WIDTH must be divisible by 8")
     if SEARCH_N < 1 or TEST_N < 1:
         fail("SEARCH_N and TEST_N must be positive")
+    if REFINE_N < 1 or CALIB_N < 1 or CALIB_TIMESTEPS < 1:
+        fail("REFINE_N, CALIB_N and CALIB_TIMESTEPS must be positive")
+    if REFINE_MODE not in {"none", "scale", "scale_zero", "full"}:
+        fail("REFINE_MODE must be one of: none, scale, scale_zero, full")
+    if REFINE_OPTIMIZER not in {"gradient", "zeroth"}:
+        fail("REFINE_OPTIMIZER must be gradient or zeroth")
+    if min(REFINE_ITERS, MAX_PRED_NMSE, TPR_LOSS_WEIGHT, PRED_LOSS_WEIGHT) < 0:
+        fail("REFINE_ITERS, MAX_PRED_NMSE and loss weights must be non-negative")
+    if GRAD_STEPS < 1 or GRAD_EVAL_EVERY < 1 or GRAD_LR <= 0 or ROUND_TEMPERATURE <= 0:
+        fail("Gradient steps/eval interval/LR/round temperature must be positive")
+    if GRAD_PRED_WEIGHT < 0 or GRAD_IMAGE_WEIGHT < 0:
+        fail("Gradient preservation-loss weights must be non-negative")
     torch.manual_seed(BASE_SEED)
     random.seed(BASE_SEED)
     np.random.seed(BASE_SEED)
@@ -667,6 +1230,15 @@ def main():
             "search_n": SEARCH_N, "test_n": TEST_N, "steps": STEPS,
             "guidance": GUIDANCE, "height": HEIGHT, "width": WIDTH,
             "fpr": FPR, "min_psnr": MIN_PSNR, "max_lpips": MAX_LPIPS,
+            "refine_mode": REFINE_MODE, "refine_iters": REFINE_ITERS,
+            "refine_optimizer": REFINE_OPTIMIZER, "grad_steps": GRAD_STEPS,
+            "grad_lr": GRAD_LR, "grad_eval_every": GRAD_EVAL_EVERY,
+            "round_temperature": ROUND_TEMPERATURE,
+            "grad_prediction_weight": GRAD_PRED_WEIGHT,
+            "grad_image_weight": GRAD_IMAGE_WEIGHT,
+            "refine_n": REFINE_N, "calib_n": CALIB_N,
+            "calib_timesteps": CALIB_TIMESTEPS, "max_prediction_nmse": MAX_PRED_NMSE,
+            "tpr_loss_weight": TPR_LOSS_WEIGHT, "prediction_loss_weight": PRED_LOSS_WEIGHT,
         },
         "reports": reports,
     }
@@ -680,6 +1252,10 @@ def main():
             "bits": report["recipe"]["bits"],
             "clip": report["recipe"]["clip"],
             "groups": "+".join(report["recipe"]["groups"]),
+            "refine_mode": report["refinement"]["mode"],
+            "refine_optimizer": report["refinement"]["optimizer"],
+            "calibration_kind": (report["refinement"]["best_calibration_metrics"] or {}).get("calibration_kind"),
+            "calibration_prediction_nmse": (report["refinement"]["best_calibration_metrics"] or {}).get("prediction_nmse"),
             "clean_bit_accuracy_percent": 100.0 * report["clean"]["bit_accuracy"],
             "attacked_bit_accuracy_percent": 100.0 * report["attacked"]["bit_accuracy"],
             "bit_accuracy_retained_percent": report["bit_accuracy_retained_percent"],
