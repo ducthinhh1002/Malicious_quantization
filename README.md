@@ -18,7 +18,9 @@ Script `run_malicious_quantization_watermarks.sh` đánh giá khả năng giữ 
 - Kết nối Internet trong lần chạy đầu để tải model/checkpoint.
 - Dung lượng trống đủ cho SD1.5, SD2.1, checkpoint và ảnh kết quả.
 
-Gradient refinement phải backpropagate qua một nhóm UNet hoặc VAE tại mỗi bước. GPU 24 GB có thể chạy với cấu hình giảm; GPU 40 GB trở lên phù hợp hơn cho cấu hình đầy đủ. Dung lượng thực tế còn phụ thuộc PyTorch, driver và model cache.
+Script tự nhận GPU có ít nhất 80 GiB là `large-memory`. Trên RTX PRO 6000 Blackwell 96 GB, profile này batch quá trình sinh ảnh, tắt attention slicing, giữ pristine weights trên GPU và cập nhật joint-gradient trên toàn bộ semantic group. GPU nhỏ hơn tự dùng profile tiết kiệm bộ nhớ.
+
+Với Blackwell, dùng PyTorch có hỗ trợ kiến trúc này: tối thiểu PyTorch 2.7 với CUDA 12.8, hoặc bản mới hơn tương thích với driver của server. Script kiểm tra CUDA build và dừng sớm nếu phát hiện Blackwell đi cùng PyTorch quá cũ.
 
 Kiểm tra môi trường trước khi chạy:
 
@@ -58,6 +60,15 @@ CUDA_VISIBLE_DEVICES=0 \
 bash run_malicious_quantization_watermarks.sh
 ```
 
+Trên RTX PRO 6000 Blackwell 96 GB, log đầu chương trình phải hiển thị gần như sau:
+
+```text
+large_memory=True, gen_batch=16, metric_batch=32, calib_batch=2,
+pristine_on_gpu=True, joint_group_grad=True, attention_slicing=False
+```
+
+Không cần đặt thủ công các biến này. Nếu server đang dùng MIG và process chỉ nhìn thấy một partition dưới 80 GiB, profile sẽ tự chuyển sang chế độ tiết kiệm bộ nhớ dựa trên dung lượng CUDA thực tế mà process nhìn thấy.
+
 Mặc định script sử dụng:
 
 | Biến | Giá trị | Ý nghĩa |
@@ -76,6 +87,12 @@ Mặc định script sử dụng:
 | `REFINE_N` | 8 | Số ảnh feedback trong refinement |
 | `CALIB_N` | 2 | Số trajectory/latent calibration |
 | `CALIB_TIMESTEPS` | 5 | Số timestep lấy trên mỗi trajectory |
+| `GEN_BATCH_SIZE` | 16 trên GPU ≥80 GiB | Batch sinh ảnh |
+| `METRIC_BATCH_SIZE` | 32 trên GPU ≥80 GiB | Batch LPIPS/PSNR |
+| `CALIB_BATCH_SIZE` | 2 trên GPU ≥80 GiB | Batch trajectory calibration |
+| `KEEP_PRISTINE_ON_GPU` | 1 trên GPU ≥80 GiB | Tránh copy state qua PCIe mỗi candidate |
+| `JOINT_GROUP_GRAD` | 1 trên GPU ≥80 GiB | Cập nhật đồng thời mọi semantic group |
+| `USE_ATTENTION_SLICING` | 0 trên GPU ≥80 GiB | Không chia attention thành lát nhỏ |
 
 Grid search mặc định thử 50 recipe cho mỗi watermark:
 
@@ -229,9 +246,39 @@ Script tạo venv với `--system-site-packages` để sử dụng PyTorch CUDA 
 | `PRED_LOSS_WEIGHT` | 0.10 | Trọng số prediction NMSE trong hard objective |
 | `REFINE_SEED` | 2026 | Seed của zeroth-order optimizer |
 
-Ở chế độ gradient, mỗi bước lần lượt mở graph cho một nhóm layer. Các nhóm khác được giữ ở trạng thái hard-quantized hiện tại để giảm VRAM.
+Ở RTX PRO 6000 Blackwell 96 GB, mặc định mỗi bước mở graph joint cho toàn bộ semantic group. Trên GPU dưới 80 GiB, script chuyển sang coordinate-gradient: mỗi bước mở graph cho một group, còn các group khác giữ hard-quantized để giảm VRAM.
 
-## 8. Output
+## 8. Giới hạn và xấp xỉ của gradient refinement
+
+### Coordinate-gradient theo group và timestep
+
+Trong portable profile, mỗi gradient step chỉ mở graph cho:
+
+- một semantic group của carrier;
+- một calibration state tại một timestep;
+- các group còn lại ở trạng thái hard-quantized hiện tại.
+
+Khi recipe ban đầu chọn toàn carrier, portable profile tối ưu bốn group theo round-robin. Với `GRAD_STEPS=40`, mỗi group nhận khoảng 10 update. Large-memory profile cập nhật cả bốn group ở mỗi bước, nên mỗi group nhận đủ 40 update. Nếu recipe ban đầu chỉ chọn một group thì hai profile tương đương nhau.
+
+Large-memory profile là joint-gradient theo group nhưng mỗi update vẫn dùng một timestep-batch. Portable profile là coordinate-gradient theo cả group và timestep. Khi viết paper phải ghi profile đã dùng và báo cáo ablation theo `GRAD_STEPS`, `CALIB_TIMESTEPS` và `JOINT_GROUP_GRAD`.
+
+### Single-step predicted-x0 proxy
+
+Đối với AquaLoRA, script không backpropagate qua toàn bộ DDIM trajectory. Tại mỗi calibration state, nó:
+
+1. Chạy UNet đã quantize tại `(x_t, t, c)`.
+2. Tạo guided noise prediction.
+3. Ước lượng `x_0` trực tiếp từ `x_t` và noise prediction.
+4. Decode `x_0` bằng VAE cố định.
+5. Backpropagate watermark loss từ AquaLoRA decoder.
+
+Thuật ngữ phù hợp là **single-step predicted-x0 differentiable proxy** hoặc **single-timestep reconstruction proxy**. Không gọi đây là full-trajectory differentiable optimization. Cũng không nên gọi là “linearized proxy” trừ khi phương pháp được bổ sung phép khai triển Taylor hoặc Jacobian rõ ràng.
+
+Đối với Stable Signature, carrier nằm trong VAE decoder nên gradient đi trực tiếp qua VAE decoder và Stable Signature extractor trên latent cuối; nhánh này không cần xấp xỉ noise trajectory.
+
+Sau mỗi `GRAD_EVAL_EVERY` bước, quantizer được materialize thành hard low-bit weights và đánh giá bằng quá trình sinh ảnh DDIM hoàn chỉnh. Checkpoint cuối chỉ được chọn từ các hard evaluation thỏa PSNR, LPIPS và prediction/decode NMSE. Bước này kiểm tra proxy bằng hành vi end-to-end nhưng không biến quá trình huấn luyện thành full-trajectory backpropagation.
+
+## 9. Output
 
 Mặc định kết quả nằm trong `wmq_runs/output`:
 
@@ -276,4 +323,6 @@ Không dùng các chỉ số trên search/refinement split làm kết quả cu�
 - [ ] Chạy nhiều `BASE_SEED` và lưu mỗi run trong `WMQ_ROOT` riêng.
 - [ ] Báo cáo bit accuracy, TPR, PSNR, LPIPS và prediction NMSE.
 - [ ] Kiểm tra `quantizer_grad_norm` khác 0 trong `gradient_optimization.csv`.
+- [ ] Ghi rõ dùng joint-group hay coordinate-group gradient và single-step predicted-x0 proxy.
+- [ ] Không tuyên bố đã backpropagate qua toàn bộ diffusion trajectory.
 - [ ] Chỉ kết luận từ test split, không chọn kết quả theo test split.

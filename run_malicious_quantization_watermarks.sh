@@ -81,6 +81,21 @@ OUT = Path(os.environ.get("WMQ_OUTPUT", ROOT / "output")).resolve()
 CACHE = Path(os.environ.get("WMQ_CACHE", ROOT / "hf_cache")).resolve()
 DEVICE = torch.device("cuda")
 DTYPE = torch.float16
+GPU_TOTAL_GB = (torch.cuda.get_device_properties(0).total_memory / 2**30
+                if torch.cuda.is_available() else 0.0)
+LARGE_MEMORY_GPU = GPU_TOTAL_GB >= 80.0
+
+# The automatic large-memory profile targets RTX PRO 6000 Blackwell 96 GB.
+# Every setting remains overridable for portability and reproducibility.
+GEN_BATCH_SIZE = int(os.environ.get("GEN_BATCH_SIZE", "16" if LARGE_MEMORY_GPU else "1"))
+METRIC_BATCH_SIZE = int(os.environ.get("METRIC_BATCH_SIZE", "32" if LARGE_MEMORY_GPU else "8"))
+CALIB_BATCH_SIZE = int(os.environ.get("CALIB_BATCH_SIZE", "2" if LARGE_MEMORY_GPU else "1"))
+KEEP_PRISTINE_ON_GPU = os.environ.get(
+    "KEEP_PRISTINE_ON_GPU", "1" if LARGE_MEMORY_GPU else "0") == "1"
+JOINT_GROUP_GRAD = os.environ.get(
+    "JOINT_GROUP_GRAD", "1" if LARGE_MEMORY_GPU else "0") == "1"
+USE_ATTENTION_SLICING = os.environ.get(
+    "USE_ATTENTION_SLICING", "0" if LARGE_MEMORY_GPU else "1") == "1"
 
 SS_MODEL = os.environ.get("SS_MODEL", "stabilityai/stable-diffusion-2-1-base")
 SS_MODEL_FALLBACK = os.environ.get("SS_MODEL_FALLBACK", "sd2-community/stable-diffusion-2-1-base")
@@ -261,21 +276,40 @@ def build_pipeline(model_id, fallback_id=None):
         raise last_error
     pipe.scheduler = DDIMScheduler.from_config(pipe.scheduler.config)
     pipe.set_progress_bar_config(disable=True)
-    pipe.enable_attention_slicing("max")
+    if USE_ATTENTION_SLICING:
+        pipe.enable_attention_slicing("max")
+    else:
+        pipe.disable_attention_slicing()
     pipe.to(DEVICE)
     pipe._wmq_model_id = used_model
     return pipe
 
 
 @torch.inference_mode()
-def generate(pipe, prompts, seeds):
+def generate(pipe, prompts, seeds, batch_size=None):
+    batch_size = min(batch_size or GEN_BATCH_SIZE, len(prompts))
     images = []
-    for prompt, seed in zip(prompts, seeds):
-        generator = torch.Generator(device=DEVICE).manual_seed(seed)
-        image = pipe(prompt, height=HEIGHT, width=WIDTH,
-                     num_inference_steps=STEPS, guidance_scale=GUIDANCE,
-                     generator=generator).images[0]
-        images.append(image)
+    start = 0
+    while start < len(prompts):
+        current = min(batch_size, len(prompts) - start)
+        prompt_batch = prompts[start: start + current]
+        seed_batch = seeds[start: start + current]
+        generators = [torch.Generator(device=DEVICE).manual_seed(seed) for seed in seed_batch]
+        try:
+            batch = pipe(prompt_batch, height=HEIGHT, width=WIDTH,
+                         num_inference_steps=STEPS, guidance_scale=GUIDANCE,
+                         generator=generators).images
+        except torch.cuda.OutOfMemoryError:
+            del generators
+            cleanup()
+            if current == 1:
+                raise
+            batch_size = max(1, current // 2)
+            print(f"CUDA OOM during generation; retrying with batch_size={batch_size}", flush=True)
+            continue
+        images.extend(batch)
+        del batch, generators
+        start += current
     return images
 
 
@@ -290,13 +324,35 @@ def pil_tensor(images, normalized=False):
 
 
 def image_metrics(clean, attacked, lpips_model):
-    x = pil_tensor(clean)
-    y = pil_tensor(attacked)
-    mse_per = ((x - y) ** 2).flatten(1).mean(1)
-    psnr = (-10.0 * torch.log10(mse_per.clamp_min(1e-12))).mean().item()
+    psnr_sum = 0.0
+    lpips_sum = 0.0
+    count = 0
+    metric_batch = min(METRIC_BATCH_SIZE, len(clean))
+    start = 0
     with torch.inference_mode():
-        lp = lpips_model(x * 2 - 1, y * 2 - 1).mean().item()
-    return {"psnr": psnr, "lpips": lp}
+        while start < len(clean):
+            current = min(metric_batch, len(clean) - start)
+            x = y = None
+            try:
+                x = pil_tensor(clean[start: start + current])
+                y = pil_tensor(attacked[start: start + current])
+                mse_per = ((x - y) ** 2).flatten(1).mean(1)
+                batch_psnr = -10.0 * torch.log10(mse_per.clamp_min(1e-12))
+                batch_lpips = lpips_model(x * 2 - 1, y * 2 - 1).flatten()
+            except torch.cuda.OutOfMemoryError:
+                del x, y
+                cleanup()
+                if current == 1:
+                    raise
+                metric_batch = max(1, current // 2)
+                print(f"CUDA OOM in image metrics; retrying with batch_size={metric_batch}", flush=True)
+                continue
+            psnr_sum += float(batch_psnr.sum().item())
+            lpips_sum += float(batch_lpips.sum().item())
+            count += current
+            del x, y, batch_psnr, batch_lpips
+            start += current
+    return {"psnr": psnr_sum / count, "lpips": lpips_sum / count}
 
 
 def detection_threshold(nbits, fpr):
@@ -445,7 +501,8 @@ def fuse_aqualora(unet, lora):
 
 
 def clone_state(module):
-    return OrderedDict((name, tensor.detach().cpu().clone())
+    state_device = DEVICE if KEEP_PRISTINE_ON_GPU else torch.device("cpu")
+    return OrderedDict((name, tensor.detach().to(state_device).clone())
                        for name, tensor in module.state_dict().items())
 
 
@@ -609,13 +666,15 @@ def capture_unet_calibration(pipe, prompts, seeds):
 
     handle = pipe.unet.register_forward_hook(hook, with_kwargs=True)
     try:
-        generated = generate(pipe, prompts[:CALIB_N], seeds[:CALIB_N])
+        generated = generate(pipe, prompts[:CALIB_N], seeds[:CALIB_N],
+                             batch_size=CALIB_BATCH_SIZE)
         del generated
     finally:
         handle.remove()
-    expected = len(prompts[:CALIB_N]) * len(selected_steps)
-    if len(records) != expected:
-        fail(f"UNet calibration captured {len(records)} states; expected {expected}. "
+    calibration_batches = math.ceil(len(prompts[:CALIB_N]) / CALIB_BATCH_SIZE)
+    expected = calibration_batches * len(selected_steps)
+    if len(records) < expected:
+        fail(f"UNet calibration captured {len(records)} states; expected at least {expected}. "
              "Check scheduler step count/hook compatibility")
     scaling = float(pipe.vae.config.scaling_factor)
     for record in records:
@@ -643,11 +702,15 @@ def capture_vae_calibration(pipe, prompts, seeds):
     """Capture final diffusion latents and clean VAE-decoder outputs."""
     records = []
     scaling = float(pipe.vae.config.scaling_factor)
-    for prompt, seed in zip(prompts[:CALIB_N], seeds[:CALIB_N]):
-        generator = torch.Generator(device=DEVICE).manual_seed(seed)
-        latent = pipe(prompt, height=HEIGHT, width=WIDTH,
+    selected_prompts = prompts[:CALIB_N]
+    selected_seeds = seeds[:CALIB_N]
+    for start in range(0, len(selected_prompts), CALIB_BATCH_SIZE):
+        prompt_batch = selected_prompts[start: start + CALIB_BATCH_SIZE]
+        seed_batch = selected_seeds[start: start + CALIB_BATCH_SIZE]
+        generators = [torch.Generator(device=DEVICE).manual_seed(seed) for seed in seed_batch]
+        latent = pipe(prompt_batch, height=HEIGHT, width=WIDTH,
                       num_inference_steps=STEPS, guidance_scale=GUIDANCE,
-                      generator=generator, output_type="latent").images
+                      generator=generators, output_type="latent").images
         reference = pipe.vae.decode(latent / scaling, return_dict=False)[0]
         records.append({"latent": latent.detach().cpu(), "reference": reference.detach().cpu()})
     return {"kind": "vae_decode", "records": records}
@@ -796,7 +859,7 @@ def differentiable_quantize(weight, bits, clip, log_scale, zero_value, round_log
     return ((integer - zero.to(flat.dtype)) * scale).reshape_as(source)
 
 
-def differentiable_overrides(module, component, recipe, controls, source_state, active_group):
+def differentiable_overrides(module, component, recipe, controls, source_state, active_groups):
     selected = set(recipe["groups"])
     overrides = {}
     for name, parameter in module.named_parameters():
@@ -809,7 +872,7 @@ def differentiable_overrides(module, component, recipe, controls, source_state, 
         group = group_name(name, component)
         if group not in selected and "all" not in selected:
             continue
-        if group != active_group:
+        if group not in active_groups:
             continue
         source = source_state[name].to(device=parameter.device, dtype=parameter.dtype)
         overrides[name] = differentiable_quantize(
@@ -837,10 +900,10 @@ def differentiable_watermark_loss(name, decoder, image_tensor, key):
 
 
 def gradient_proxy_loss(name, pipe, component, decoder, key, recipe, controls, record,
-                        source_state, active_group):
+                        source_state, active_groups):
     if component == "unet":
         overrides = differentiable_overrides(pipe.unet, component, recipe, controls,
-                                             source_state, active_group)
+                                             source_state, active_groups)
         args = _tree_device(record["args"])
         kwargs = _tree_device(record["kwargs"])
         output = functional_call(pipe.unet, overrides, args, kwargs, strict=False)
@@ -861,7 +924,7 @@ def gradient_proxy_loss(name, pipe, component, decoder, key, recipe, controls, r
         reference_image = record["reference_image"].to(device=DEVICE, dtype=image.dtype)
     else:
         overrides = differentiable_overrides(pipe.vae, component, recipe, controls,
-                                             source_state, active_group)
+                                             source_state, active_groups)
         post = {name[len("post_quant_conv."):]: value for name, value in overrides.items()
                 if name.startswith("post_quant_conv.")}
         decoder_weights = {name[len("decoder."):]: value for name, value in overrides.items()
@@ -899,24 +962,37 @@ def refine_quantizer_gradient(name, pipe, component, decoder, decode_fn, key, lp
     rows = []
     best = None
     records = calibration["records"]
+    joint_runtime = JOINT_GROUP_GRAD
 
     for step in range(1, GRAD_STEPS + 1):
-        optimizer.zero_grad(set_to_none=True)
         record = records[(step - 1) % len(records)]
-        active_group = groups[(step - 1) % len(groups)]
-        # Keep the complete model on the current hard low-bit grid; only the
-        # active group is substituted by an STE view during this backward pass.
-        restore_state(target, pristine)
-        apply_recipe(target, component, controls.hard_recipe(component, initial_recipe))
-        total, attack_loss, pred_nmse, image_loss = gradient_proxy_loss(
-            name, pipe, component, decoder, key, initial_recipe, controls, record,
-            pristine, active_group)
-        total.backward()
+        while True:
+            optimizer.zero_grad(set_to_none=True)
+            active_groups = groups if joint_runtime else [groups[(step - 1) % len(groups)]]
+            # Keep the complete model on the current hard low-bit grid. Large-memory
+            # GPUs substitute every controlled group jointly; portable mode uses one
+            # round-robin group per backward pass.
+            restore_state(target, pristine)
+            apply_recipe(target, component, controls.hard_recipe(component, initial_recipe))
+            try:
+                total, attack_loss, pred_nmse, image_loss = gradient_proxy_loss(
+                    name, pipe, component, decoder, key, initial_recipe, controls, record,
+                    pristine, active_groups)
+                total.backward()
+                break
+            except torch.cuda.OutOfMemoryError:
+                optimizer.zero_grad(set_to_none=True)
+                cleanup()
+                if not joint_runtime:
+                    raise
+                joint_runtime = False
+                print(f"CUDA OOM in joint-group gradient for {name}; switching to "
+                      "round-robin group gradients", flush=True)
         grad_norm = torch.nn.utils.clip_grad_norm_(controls.parameters(), 5.0)
         optimizer.step()
         controls.project_()
         row = {
-            "step": step, "active_group": active_group,
+            "step": step, "active_group": "+".join(active_groups),
             "timestep": record.get("timestep", -1),
             "proxy_total": float(total.detach().cpu()),
             "proxy_watermark": float(attack_loss.detach().cpu()),
@@ -955,7 +1031,8 @@ def refine_quantizer_gradient(name, pipe, component, decoder, decode_fn, key, lp
         print(f"WARNING: {name} gradient refinement produced no feasible hard checkpoint; "
               "retaining grid-search recipe", flush=True)
         return initial_recipe, rows, None
-    return best[1], rows, {"calibration_kind": calibration["kind"], **best[2]}
+    return best[1], rows, {"calibration_kind": calibration["kind"],
+                           "joint_group_gradient_used": joint_runtime, **best[2]}
 
 
 def refine_quantizer_zeroth(name, pipe, component, decoder, decode_fn, key, lpips_model,
@@ -1114,6 +1191,17 @@ def run_adaptive_search(name, pipe, component, decoder, decode_fn, key, lpips_mo
             "mode": REFINE_MODE, "optimizer": REFINE_OPTIMIZER,
             "logged_steps": len(refinement_rows),
             "objective_images": refine_count, "max_prediction_nmse": MAX_PRED_NMSE,
+            "gradient_scope_requested": (("all controlled semantic groups jointly" if JOINT_GROUP_GRAD else
+                                          "one round-robin semantic group") +
+                                         " and one calibration timestep-batch per update"
+                                         if REFINE_OPTIMIZER == "gradient" else
+                                         "one randomly mutated group-control coordinate per proposal"),
+            "trajectory_proxy": ("single-step predicted-x0 differentiable proxy for UNet; "
+                                 "direct final-latent VAE decode for Stable Signature"),
+            "full_trajectory_backpropagation": False,
+            "joint_group_gradient_requested": JOINT_GROUP_GRAD,
+            "joint_group_gradient_used": ((refinement_best or {}).get(
+                "joint_group_gradient_used") if REFINE_OPTIMIZER == "gradient" else None),
             "best_calibration_metrics": refinement_best,
         },
         "changed_parameters": changed,
@@ -1177,6 +1265,13 @@ def load_aqualora():
 def main():
     if not torch.cuda.is_available():
         fail("CUDA is required, but torch.cuda.is_available() is False")
+    capability = torch.cuda.get_device_capability(0)
+    cuda_version = tuple(int(part) for part in (torch.version.cuda or "0.0").split(".")[:2])
+    torch_version = tuple(int(part) for part in torch.__version__.split("+")[0].split(".")[:2])
+    if capability >= (10, 0) and (torch_version < (2, 7) or cuda_version < (12, 8)):
+        fail(f"Blackwell-class GPU detected (SM {capability[0]}.{capability[1]}), but "
+             f"torch={torch.__version__}, CUDA build={torch.version.cuda}. Install a "
+             "PyTorch build with Blackwell support (PyTorch >=2.7, CUDA >=12.8).")
     if diffusers.__version__ != "0.35.1":
         fail(f"This script validates AquaLoRA module mapping only for diffusers==0.35.1; "
              f"found {diffusers.__version__}")
@@ -1198,11 +1293,23 @@ def main():
         fail("Gradient steps/eval interval/LR/round temperature must be positive")
     if GRAD_PRED_WEIGHT < 0 or GRAD_IMAGE_WEIGHT < 0:
         fail("Gradient preservation-loss weights must be non-negative")
+    if min(GEN_BATCH_SIZE, METRIC_BATCH_SIZE, CALIB_BATCH_SIZE) < 1:
+        fail("GEN_BATCH_SIZE, METRIC_BATCH_SIZE and CALIB_BATCH_SIZE must be positive")
     torch.manual_seed(BASE_SEED)
     random.seed(BASE_SEED)
     np.random.seed(BASE_SEED)
     torch.backends.cuda.matmul.allow_tf32 = True
-    print(f"GPU: {torch.cuda.get_device_name(0)}; torch={torch.__version__}", flush=True)
+    torch.backends.cudnn.allow_tf32 = True
+    torch.backends.cudnn.benchmark = True
+    if hasattr(torch.backends.cuda, "enable_flash_sdp"):
+        torch.backends.cuda.enable_flash_sdp(True)
+        torch.backends.cuda.enable_mem_efficient_sdp(True)
+    print(f"GPU: {torch.cuda.get_device_name(0)} ({GPU_TOTAL_GB:.1f} GiB); "
+          f"torch={torch.__version__}", flush=True)
+    print(f"Execution profile: large_memory={LARGE_MEMORY_GPU}, gen_batch={GEN_BATCH_SIZE}, "
+          f"metric_batch={METRIC_BATCH_SIZE}, calib_batch={CALIB_BATCH_SIZE}, "
+          f"pristine_on_gpu={KEEP_PRISTINE_ON_GPU}, joint_group_grad={JOINT_GROUP_GRAD}, "
+          f"attention_slicing={USE_ATTENTION_SLICING}", flush=True)
     print("NOTE: low-bit weights run through FP16 CUDA kernels; latency is not an INT4 benchmark.", flush=True)
     OUT.mkdir(parents=True, exist_ok=True)
 
@@ -1236,6 +1343,13 @@ def main():
             "round_temperature": ROUND_TEMPERATURE,
             "grad_prediction_weight": GRAD_PRED_WEIGHT,
             "grad_image_weight": GRAD_IMAGE_WEIGHT,
+            "gpu_total_gib": GPU_TOTAL_GB, "large_memory_profile": LARGE_MEMORY_GPU,
+            "generation_batch_size": GEN_BATCH_SIZE,
+            "metric_batch_size": METRIC_BATCH_SIZE,
+            "calibration_batch_size": CALIB_BATCH_SIZE,
+            "keep_pristine_on_gpu": KEEP_PRISTINE_ON_GPU,
+            "joint_group_gradient": JOINT_GROUP_GRAD,
+            "attention_slicing": USE_ATTENTION_SLICING,
             "refine_n": REFINE_N, "calib_n": CALIB_N,
             "calib_timesteps": CALIB_TIMESTEPS, "max_prediction_nmse": MAX_PRED_NMSE,
             "tpr_loss_weight": TPR_LOSS_WEIGHT, "prediction_loss_weight": PRED_LOSS_WEIGHT,
