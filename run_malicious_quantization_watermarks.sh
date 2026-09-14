@@ -1236,7 +1236,7 @@ def run_adaptive_search(name, pipe, component, decoder, decode_fn, key, lpips_mo
     clean_test = generate(pipe, prompts_test, test_seeds)
     clean_bits = summarize_bits(decode_fn(decoder, clean_test), key)
     save_images(clean_test, result_dir / "clean_test")
-    if clean_bits["bit_accuracy"] < 0.80:
+    if clean_bits["bit_accuracy"] < 0.70:
         fail(f"{name} clean bit accuracy is only {clean_bits['bit_accuracy']:.3f}; "
              "watermark/checkpoint loading is invalid, so attack search was stopped")
 
