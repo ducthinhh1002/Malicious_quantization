@@ -8,44 +8,50 @@ Script `run_malicious_quantization_watermarks.sh` đánh giá khả năng giữ 
 
 Đây là simulated weight-only PTQ: trọng số được đưa lên lưới số nguyên low-bit rồi dequantize để chạy bằng CUDA FP16. Kết quả phản ánh sai số lượng tử hóa, không phải tốc độ của INT4/INT8 kernel.
 
-## 1. Yêu cầu
+## 1. Chuyển sang máy khác và chạy
 
-- Linux 64-bit.
-- Bash.
-- Python 3.10 hoặc 3.11.
-- NVIDIA GPU và driver hoạt động với bản PyTorch CUDA trên server.
-- PyTorch và TorchVision có CUDA đã được cài trong Python hệ thống hoặc Conda environment.
-- Kết nối Internet trong lần chạy đầu để tải model/checkpoint.
-- Dung lượng trống đủ cho SD1.5, SD2.1, checkpoint và ảnh kết quả.
+Chỉ cần copy `run_malicious_quantization_watermarks.sh`, rồi chạy trên node được cấp GPU:
+
+```bash
+bash run_malicious_quantization_watermarks.sh
+```
+
+Máy đích cần Linux x86_64, Bash, Python 3.10–3.12 (khuyến nghị 3.11), NVIDIA GPU với driver tương thích và Internet cho lần cài/tải model đầu. Cần dung lượng trống cho thư viện CUDA, hai model và ảnh đầu ra; nên dành ít nhất 30 GB. Không cần cài sẵn PyTorch, TorchVision, Conda hay CUDA Toolkit. Driver NVIDIA và việc cấp GPU của cụm HPC vẫn do máy đích quản lý.
+
+Script tự tạo venv riêng ở `wmq_runs/venv-portable` cạnh file script, không kế thừa package hệ thống/Conda; tự cài PyTorch 2.7.1 + TorchVision 0.22.1 CUDA 12.8 và các thư viện đã ghim. Nếu Python thiếu `ensurepip`, script tải virtualenv từ bootstrap.pypa.io để tạo môi trường mà không cần sudo. `PYTHONPATH`/`PYTHONHOME` được bỏ trong tiến trình script để tránh lẫn thư viện.
+
+Cặp PyTorch/TorchVision và các biến thể CUDA dựa trên [hướng dẫn chính thức của PyTorch](https://pytorch.org/get-started/previous-versions/#v271). Nếu GPU cũ hoặc driver không hỗ trợ bản CUDA mặc định, có thể chọn `WMQ_TORCH_FLAVOR=cu118` hoặc `cu126`; Blackwell cần `cu128`. Không copy thư mục venv giữa các máy: để script tạo lại tại máy đích.
+
+## 2. Chỉ cài và kiểm tra môi trường
+
+```bash
+WMQ_CHECK_ONLY=1 bash run_malicious_quantization_watermarks.sh
+```
+
+Lệnh này chạy `pip check`, kiểm tra phiên bản và toàn bộ import dùng trong thí nghiệm, TorchVision NMS, rồi thử forward/backward CUDA FP16 với convolution và attention. Không tải model hoặc bắt đầu thí nghiệm. Các phiên bản cài thực tế được lưu tại `wmq_runs/output/environment.freeze.txt`.
+
+Trên máy không có GPU, có thể kiểm tra riêng import:
+
+```bash
+WMQ_TORCH_FLAVOR=cpu WMQ_CHECK_ONLY=imports \
+WMQ_VENV="$PWD/wmq_cpu_audit" bash run_malicious_quantization_watermarks.sh
+```
+
+Kiểm tra import không chứng minh model/checkpoint tải và chạy được. GPU, driver, truy cập model và dung lượng bộ nhớ vẫn cần kiểm tra trên máy chạy thật.
+
+Đã kiểm tra bộ phiên bản này trong venv sạch trên Python 3.12/Linux với wheel CPU: cài dependency, `pip check`, toàn bộ import, NMS, AquaLoRA decoder/Mapper, LPIPS với backbone ngẫu nhiên và UNet nhỏ forward/backward qua `functional_call` đều qua. Chế độ dùng lại venv và nhánh báo thiếu CUDA cũng đã được kiểm tra. Chưa kiểm thử thí nghiệm đầy đủ với checkpoint thật trên GPU trong môi trường phát triển này.
+
+## 3. Chạy lại sau lần cài đầu
+
+```bash
+WMQ_SKIP_INSTALL=1 bash run_malicious_quantization_watermarks.sh
+```
+
+Script dùng lại venv riêng và vẫn chạy kiểm tra môi trường. Nếu venv đó chưa tồn tại, nó dùng `WMQ_PYTHON`. Đặt `WMQ_PYTHON=/duong/dan/python3.11` để chọn Python khi tạo venv mới. Cache Hugging Face và Torch được giữ dưới `WMQ_ROOT` để tái sử dụng các lần sau. Chạy offline còn yêu cầu toàn bộ model/checkpoint đã được tải.
+
+Nếu model yêu cầu xác thực, đặt `HF_TOKEN` theo quyền truy cập của tài khoản. Script có fallback public cho SD2.1 nhưng không thể tự cấp quyền hoặc chấp nhận giấy phép thay người dùng.
 
 Script tự nhận GPU có ít nhất 80 GiB là `large-memory`. Trên RTX PRO 6000 Blackwell 96 GB, profile này batch quá trình sinh ảnh, tắt attention slicing, giữ pristine weights trên GPU và cập nhật joint-gradient trên toàn bộ semantic group. GPU nhỏ hơn tự dùng profile tiết kiệm bộ nhớ.
-
-Với Blackwell, dùng PyTorch có hỗ trợ kiến trúc này: tối thiểu PyTorch 2.7 với CUDA 12.8, hoặc bản mới hơn tương thích với driver của server. Script kiểm tra CUDA build và dừng sớm nếu phát hiện Blackwell đi cùng PyTorch quá cũ.
-
-Kiểm tra môi trường trước khi chạy:
-
-```bash
-python3 --version
-nvidia-smi
-python3 - <<'PY'
-import torch
-import torchvision
-print("torch:", torch.__version__)
-print("torchvision:", torchvision.__version__)
-print("CUDA available:", torch.cuda.is_available())
-if torch.cuda.is_available():
-    print("GPU:", torch.cuda.get_device_name(0))
-PY
-```
-
-Nếu `torch.cuda.is_available()` là `False`, cần cài lại PyTorch phù hợp với driver trên server trước khi chạy script. Script cố ý không tự thay bản PyTorch của server.
-
-Nếu Hugging Face yêu cầu xác thực hoặc chấp nhận giấy phép model:
-
-```bash
-python3 -m pip install -U huggingface-hub
-hf auth login
-```
 
 Model mặc định:
 
@@ -209,15 +215,18 @@ WMQ_ROOT="$PWD/runs/zeroth" REFINE_OPTIMIZER=zeroth REFINE_MODE=full bash run_ma
 
 | Biến | Mặc định | Mô tả |
 |---|---|---|
-| `WMQ_ROOT` | `$PWD/wmq_runs` | Thư mục gốc của một lần chạy |
-| `WMQ_VENV` | `$WMQ_ROOT/venv` | Virtual environment |
+| `WMQ_ROOT` | Thư mục script + `/wmq_runs` | Thư mục gốc của một lần chạy |
+| `WMQ_VENV` | `$WMQ_ROOT/venv-portable` | Virtual environment |
 | `WMQ_OUTPUT` | `$WMQ_ROOT/output` | Thư mục kết quả |
 | `WMQ_CACHE` | `$WMQ_ROOT/hf_cache` | Hugging Face cache |
 | `WMQ_PYTHON` | `python3` | Python dùng để tạo venv |
-| `WMQ_SKIP_INSTALL` | `0` | Đặt `1` nếu environment đã có đủ dependency |
+| `WMQ_SKIP_INSTALL` | `0` | Đặt `1` để dùng lại venv đã cài |
+| `WMQ_CHECK_ONLY` | `0` | `1`: import + CUDA; `imports`: chỉ import |
+| `WMQ_TORCH_FLAVOR` | `cu128` | `cu128`, `cu126`, `cu118`; `cpu` chỉ kiểm tra import |
+| `TORCH_HOME` | `$WMQ_ROOT/torch_cache` | Cache trọng số TorchVision/LPIPS |
 | `CUDA_VISIBLE_DEVICES` | không đặt | Chọn GPU sẽ chạy |
 
-Script tạo venv với `--system-site-packages` để sử dụng PyTorch CUDA đã có trên server. Nếu dùng `WMQ_SKIP_INSTALL=1`, `WMQ_PYTHON` phải trỏ tới environment đã cài đủ `diffusers`, `transformers`, `accelerate`, `peft`, `safetensors`, `lpips`, `scipy`, Pillow và NumPy.
+Script dùng venv cách ly và ghim các dependency trực tiếp ngay trong file `.sh`. Các dependency gián tiếp được pip giải quyết theo metadata và được ghi lại trong `environment.freeze.txt`. Nếu chỉ định `WMQ_VENV` là môi trường cũ có `--system-site-packages`, hãy chọn thư mục venv mới.
 
 ### Model và key
 

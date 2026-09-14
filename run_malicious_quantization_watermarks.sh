@@ -18,34 +18,172 @@ set -Eeuo pipefail
 # Main compute controls: GRAD_STEPS=40 GRAD_EVAL_EVERY=4 REFINE_N=8 CALIB_N=2
 # Constraint: MAX_PRED_NMSE=0.02 (timestep-weighted UNet or VAE-decode NMSE).
 
-WMQ_ROOT="${WMQ_ROOT:-$PWD/wmq_runs}"
-WMQ_VENV="${WMQ_VENV:-$WMQ_ROOT/venv}"
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+WMQ_ROOT="${WMQ_ROOT:-$SCRIPT_DIR/wmq_runs}"
+# A new directory avoids inheriting the old --system-site-packages environment.
+WMQ_VENV="${WMQ_VENV:-$WMQ_ROOT/venv-portable}"
 WMQ_OUTPUT="${WMQ_OUTPUT:-$WMQ_ROOT/output}"
 WMQ_CACHE="${WMQ_CACHE:-$WMQ_ROOT/hf_cache}"
 WMQ_PYTHON="${WMQ_PYTHON:-python3}"
 WMQ_SKIP_INSTALL="${WMQ_SKIP_INSTALL:-0}"
-export WMQ_ROOT WMQ_OUTPUT WMQ_CACHE
+WMQ_CHECK_ONLY="${WMQ_CHECK_ONLY:-0}" # 1: imports + CUDA; imports: CPU import audit
+WMQ_TORCH_FLAVOR="${WMQ_TORCH_FLAVOR:-cu128}" # cu118 for older drivers/GPUs
+case "$WMQ_TORCH_FLAVOR" in
+  cu128|cu126|cu118|cpu) ;;
+  *) echo "WMQ_TORCH_FLAVOR must be cu128, cu126, cu118, or cpu" >&2; exit 1 ;;
+esac
+case "$WMQ_CHECK_ONLY" in
+  0|1|imports) ;;
+  *) echo "WMQ_CHECK_ONLY must be 0, 1, or imports" >&2; exit 1 ;;
+esac
+export WMQ_ROOT WMQ_OUTPUT WMQ_CACHE WMQ_CHECK_ONLY WMQ_TORCH_FLAVOR
 export HF_HOME="$WMQ_CACHE"
+export TORCH_HOME="${TORCH_HOME:-$WMQ_ROOT/torch_cache}"
 export TOKENIZERS_PARALLELISM=false
-# May reduce fragmentation with PyTorch's native CUDA allocator. This cannot
-# guarantee that an intrinsically too-large workload will fit in GPU memory.
+export USE_TORCH=1 USE_TF=0 USE_FLAX=0 PYTHONNOUSERSITE=1
+# Prevent shell/Conda PYTHONPATH from injecting incompatible optional packages.
+unset PYTHONPATH PYTHONHOME
 export PYTORCH_CUDA_ALLOC_CONF="${PYTORCH_CUDA_ALLOC_CONF:-max_split_size_mb:512}"
 
 mkdir -p "$WMQ_ROOT" "$WMQ_OUTPUT" "$WMQ_CACHE"
+# Keep all requirements embedded so this .sh is the only file needed on a new host.
+WMQ_REQUIREMENTS=(
+  'torch==2.7.1' 'torchvision==0.22.1'
+  'diffusers==0.35.1' 'transformers==4.56.2' 'accelerate==1.10.1'
+  'huggingface-hub==0.34.4' 'safetensors==0.6.2' 'peft==0.17.1'
+  'tokenizers==0.22.0' 'lpips==0.1.4' 'scipy==1.15.3'
+  'pillow==11.3.0' 'numpy==1.26.4' 'ftfy==6.3.1'
+)
+export WMQ_REQUIRED_PACKAGES="${WMQ_REQUIREMENTS[*]}"
 
 if [[ "$WMQ_SKIP_INSTALL" != "1" ]]; then
-  if [[ ! -x "$WMQ_VENV/bin/python" ]]; then
-    "$WMQ_PYTHON" -m venv --system-site-packages "$WMQ_VENV"
+  "$WMQ_PYTHON" - <<'PY'
+import sys
+if not (3, 10) <= sys.version_info[:2] <= (3, 12):
+    sys.exit("Use Python 3.10-3.12 (recommended: 3.11); set WMQ_PYTHON to its executable.")
+PY
+  if [[ ! -x "$WMQ_VENV/bin/python" ]] || ! "$WMQ_VENV/bin/python" -m pip --version >/dev/null 2>&1; then
+    if ! "$WMQ_PYTHON" -m venv "$WMQ_VENV"; then
+      # Ubuntu often lacks ensurepip/python3-venv. Bootstrap without sudo.
+      "$WMQ_PYTHON" - "$WMQ_ROOT/virtualenv.pyz" <<'PY'
+import sys
+import urllib.request
+urllib.request.urlretrieve("https://bootstrap.pypa.io/virtualenv.pyz", sys.argv[1])
+PY
+      "$WMQ_PYTHON" "$WMQ_ROOT/virtualenv.pyz" "$WMQ_VENV"
+    fi
   fi
   PY="$WMQ_VENV/bin/python"
-  "$PY" -m pip install --upgrade pip wheel
-  # Keep the server's CUDA-specific torch installation. Do not replace it here.
-  "$PY" -m pip install \
-    'diffusers==0.35.1' 'transformers==4.56.2' 'accelerate==1.10.1' \
-    'huggingface-hub==0.34.4' 'safetensors==0.6.2' 'peft==0.17.1' \
-    'lpips==0.1.4' 'scipy>=1.11,<2' 'pillow>=10' 'numpy>=1.24,<3'
+  "$PY" - <<'PY'
+import sys
+from pathlib import Path
+cfg = Path(sys.prefix, "pyvenv.cfg")
+if sys.prefix == sys.base_prefix or not cfg.is_file() or any(
+    line.strip().lower().replace(" ", "") == "include-system-site-packages=true"
+    for line in cfg.read_text().splitlines()
+):
+    sys.exit("WMQ_VENV must be isolated. Choose a new directory, e.g. WMQ_VENV=$PWD/wmq_clean_venv.")
+if not (3, 10) <= sys.version_info[:2] <= (3, 12):
+    sys.exit("WMQ_VENV must use Python 3.10-3.12. Choose a new venv directory and WMQ_PYTHON.")
+PY
+  "$PY" -m pip install 'pip==25.2' 'setuptools==80.9.0' 'wheel==0.45.1'
+  "$PY" -m pip install "torch==2.7.1+$WMQ_TORCH_FLAVOR" "torchvision==0.22.1+$WMQ_TORCH_FLAVOR" \
+    --index-url "https://download.pytorch.org/whl/$WMQ_TORCH_FLAVOR"
+  "$PY" -m pip install "${WMQ_REQUIREMENTS[@]}"
 else
-  PY="$WMQ_PYTHON"
+  # Prefer the managed venv on subsequent/offline runs; allow an explicit Python.
+  if [[ -x "$WMQ_VENV/bin/python" ]]; then
+    PY="$WMQ_VENV/bin/python"
+  else
+    PY="$WMQ_PYTHON"
+  fi
+fi
+
+"$PY" -m pip check
+"$PY" - <<'PY'
+import importlib
+import os
+import sys
+import traceback
+from importlib.metadata import PackageNotFoundError, version
+from pathlib import Path
+
+print(f"Python: {sys.executable}", flush=True)
+problems = []
+for requirement in os.environ["WMQ_REQUIRED_PACKAGES"].split():
+    package, expected = requirement.split("==")
+    try:
+        actual = version(package)
+    except PackageNotFoundError:
+        actual = "not installed"
+    print(f"{package}: {actual} (required: {expected})", flush=True)
+    if actual.split("+")[0] != expected:
+        problems.append(f"{package}: expected {expected}, found {actual}")
+if problems:
+    sys.exit("Dependency mismatch:\n  " + "\n  ".join(problems)
+             + "\nRerun with WMQ_SKIP_INSTALL=0 using a clean WMQ_VENV.")
+
+# Exercise lazy imports as well as ordinary module imports. No model downloads.
+checks = {
+    "numpy": [], "torch": [], "torch.nn": [], "torch.nn.functional": [],
+    "torch.func": ["functional_call"], "torchvision.transforms": ["Normalize"],
+    "torchvision.models": ["efficientnet_b1"],
+    "diffusers": ["DDIMScheduler", "StableDiffusionPipeline"],
+    "diffusers.loaders.single_file_utils": ["convert_ldm_vae_checkpoint"],
+    "transformers": ["CLIPTextModel", "CLIPTokenizer", "CLIPImageProcessor"],
+    "transformers.utils": ["FLAX_WEIGHTS_NAME"],
+    "huggingface_hub": ["hf_hub_download"], "PIL.Image": [],
+    "safetensors.torch": ["load_file"], "scipy.stats": ["binom"],
+    "peft": [], "accelerate": [], "ftfy": [], "lpips": ["LPIPS"],
+}
+for module, names in checks.items():
+    try:
+        loaded = importlib.import_module(module)
+        for name in names:
+            getattr(loaded, name)
+        print(f"Import OK: {module}", flush=True)
+    except Exception:
+        problems.append(module)
+        traceback.print_exc()
+if problems:
+    sys.exit("Import failures: " + ", ".join(problems)
+             + "\nTry WMQ_SKIP_INSTALL=0 with a new WMQ_VENV directory.")
+
+import torch
+import torchvision
+# Catch a mismatched torch/torchvision binary pair, even in the CPU audit.
+torchvision.ops.nms(torch.tensor([[0., 0., 1., 1.]]), torch.tensor([1.]), 0.5)
+if os.environ["WMQ_CHECK_ONLY"] != "imports":
+    if not torch.cuda.is_available():
+        sys.exit("CUDA unavailable. Run on an allocated NVIDIA GPU node; check nvidia-smi, "
+                 "CUDA_VISIBLE_DEVICES and the driver. Imports passed.")
+    try:
+        capability = torch.cuda.get_device_capability(0)
+        cuda = tuple(map(int, (torch.version.cuda or "0.0").split(".")[:2]))
+        if capability >= (10, 0) and cuda < (12, 8):
+            raise RuntimeError("Blackwell needs WMQ_TORCH_FLAVOR=cu128 in a fresh WMQ_VENV")
+        x = torch.randn(1, 4, 16, 16, device="cuda", dtype=torch.float16, requires_grad=True)
+        conv = torch.nn.Conv2d(4, 4, 3, padding=1).to(device="cuda", dtype=torch.float16)
+        conv(x).float().square().mean().backward()
+        q = torch.randn(1, 2, 8, 16, device="cuda", dtype=torch.float16, requires_grad=True)
+        torch.nn.functional.scaled_dot_product_attention(q, q, q).float().sum().backward()
+        torch.cuda.synchronize()
+        print(f"CUDA FP16 forward/backward OK: {torch.cuda.get_device_name(0)}; "
+              f"torch={torch.__version__}, CUDA={torch.version.cuda}", flush=True)
+    except Exception as error:
+        sys.exit(f"CUDA smoke test failed: {error}\nCheck driver/GPU support for the selected PyTorch wheel.")
+else:
+    print("Import audit only: CUDA and model loading were not tested.", flush=True)
+
+# Record actual transitive versions for reproducing this machine's environment.
+from importlib.metadata import distributions
+snapshot = sorted(f"{d.metadata['Name']}=={d.version}" for d in distributions() if d.metadata['Name'])
+Path(os.environ["WMQ_OUTPUT"], "environment.freeze.txt").write_text("\n".join(snapshot) + "\n")
+PY
+
+if [[ "$WMQ_CHECK_ONLY" != "0" ]]; then
+  echo "Environment checks passed."
+  exit 0
 fi
 
 "$PY" - <<'PY'
