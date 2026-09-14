@@ -20,97 +20,48 @@ set -Eeuo pipefail
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 WMQ_ROOT="${WMQ_ROOT:-$SCRIPT_DIR/wmq_runs}"
-# Always install and run inside a project-local, isolated virtual environment.
-WMQ_VENV="${WMQ_VENV:-$SCRIPT_DIR/.venv}"
 WMQ_OUTPUT="${WMQ_OUTPUT:-$WMQ_ROOT/output}"
 WMQ_CACHE="${WMQ_CACHE:-$WMQ_ROOT/hf_cache}"
-WMQ_PYTHON="${WMQ_PYTHON:-python3}"
-WMQ_SKIP_INSTALL="${WMQ_SKIP_INSTALL:-0}"
-WMQ_CHECK_ONLY="${WMQ_CHECK_ONLY:-0}" # 1: imports + CUDA; imports: CPU import audit
-WMQ_TORCH_FLAVOR="${WMQ_TORCH_FLAVOR:-cu128}" # cu118 for older drivers/GPUs
-case "$WMQ_TORCH_FLAVOR" in
-  cu128|cu126|cu118|cpu) ;;
-  *) echo "WMQ_TORCH_FLAVOR must be cu128, cu126, cu118, or cpu" >&2; exit 1 ;;
-esac
+WMQ_CHECK_ONLY="${WMQ_CHECK_ONLY:-0}" # 1: imports + CUDA; imports: login-node audit
 case "$WMQ_CHECK_ONLY" in
   0|1|imports) ;;
   *) echo "WMQ_CHECK_ONLY must be 0, 1, or imports" >&2; exit 1 ;;
 esac
-export WMQ_ROOT WMQ_OUTPUT WMQ_CACHE WMQ_CHECK_ONLY WMQ_TORCH_FLAVOR
+# Install dependencies on the login node beforehand. Jobs only use this prefix.
+if [[ -z "${CONDA_PREFIX:-}" || ! -d "$CONDA_PREFIX/conda-meta" || ! -x "$CONDA_PREFIX/bin/python" ]]; then
+  echo "Activate the prepared Conda environment first: conda activate wmq" >&2
+  echo "See README.md for login-node installation and job submission instructions." >&2
+  exit 1
+fi
+PY="$CONDA_PREFIX/bin/python"
+export PATH="$CONDA_PREFIX/bin:$PATH"
+export WMQ_ROOT WMQ_OUTPUT WMQ_CACHE WMQ_CHECK_ONLY
 export HF_HOME="$WMQ_CACHE"
 export TORCH_HOME="${TORCH_HOME:-$WMQ_ROOT/torch_cache}"
 export TOKENIZERS_PARALLELISM=false
 export USE_TORCH=1 USE_TF=0 USE_FLAX=0 PYTHONNOUSERSITE=1
-# Prevent shell/Conda PYTHONPATH from injecting incompatible optional packages.
-unset PYTHONPATH PYTHONHOME PYTHONUSERBASE
-# Ignore server pip destinations/configuration that could redirect installs.
-unset PIP_TARGET PIP_PREFIX PIP_USER
-export PIP_CONFIG_FILE=/dev/null PIP_REQUIRE_VIRTUALENV=true
+unset PYTHONPATH PYTHONHOME PYTHONUSERBASE VIRTUAL_ENV
 export PYTORCH_CUDA_ALLOC_CONF="${PYTORCH_CUDA_ALLOC_CONF:-max_split_size_mb:512}"
 
-mkdir -p "$WMQ_ROOT" "$WMQ_OUTPUT" "$WMQ_CACHE"
-# Keep all requirements embedded so this .sh is the only file needed on a new host.
-WMQ_REQUIREMENTS=(
-  'torch==2.7.1' 'torchvision==0.22.1'
-  'diffusers==0.35.1' 'transformers==4.56.2' 'accelerate==1.10.1'
-  'huggingface-hub==0.34.4' 'safetensors==0.6.2' 'peft==0.17.1'
-  'tokenizers==0.22.0' 'lpips==0.1.4' 'scipy==1.15.3'
-  'pillow==11.3.0' 'numpy==1.26.4' 'ftfy==6.3.1'
-)
-export WMQ_REQUIRED_PACKAGES="${WMQ_REQUIREMENTS[*]}"
-
-if [[ "$WMQ_SKIP_INSTALL" != "1" ]]; then
-  "$WMQ_PYTHON" - <<'PY'
-import sys
-if not (3, 10) <= sys.version_info[:2] <= (3, 12):
-    sys.exit("Use Python 3.10-3.12 (recommended: 3.11); set WMQ_PYTHON to its executable.")
-PY
-  if [[ ! -x "$WMQ_VENV/bin/python" ]] || ! "$WMQ_VENV/bin/python" -m pip --version >/dev/null 2>&1; then
-    if ! "$WMQ_PYTHON" -m venv "$WMQ_VENV"; then
-      # Ubuntu often lacks ensurepip/python3-venv. Bootstrap without sudo.
-      "$WMQ_PYTHON" - "$WMQ_ROOT/virtualenv.pyz" <<'PY'
-import sys
-import urllib.request
-urllib.request.urlretrieve("https://bootstrap.pypa.io/virtualenv.pyz", sys.argv[1])
-PY
-      "$WMQ_PYTHON" "$WMQ_ROOT/virtualenv.pyz" "$WMQ_VENV"
-    fi
-  fi
-fi
-
-if [[ ! -x "$WMQ_VENV/bin/python" ]]; then
-  echo "WMQ_VENV has no Python: $WMQ_VENV. Rerun with WMQ_SKIP_INSTALL=0 to create it." >&2
-  exit 1
-fi
-WMQ_VENV="$(cd -- "$WMQ_VENV" && pwd)"
-PY="$WMQ_VENV/bin/python"
-export WMQ_VENV
-# Validate even when installation is skipped; never fall back to server Python.
 "$PY" - <<'PY'
 import os
 import sys
 from pathlib import Path
-cfg = Path(sys.prefix, "pyvenv.cfg")
-if (Path(sys.prefix).resolve() != Path(os.environ["WMQ_VENV"]).resolve()
-    or sys.prefix == sys.base_prefix or not cfg.is_file()) or any(
-    line.strip().lower().replace(" ", "") == "include-system-site-packages=true"
-    for line in cfg.read_text().splitlines()
-):
-    sys.exit("WMQ_VENV must be isolated. Choose a new directory, e.g. WMQ_VENV=$PWD/wmq_clean_venv.")
+if (Path(sys.prefix).resolve() != Path(os.environ["CONDA_PREFIX"]).resolve()
+        or sys.prefix != sys.base_prefix):
+    sys.exit("Python does not belong to the active Conda environment. Activate wmq again.")
 if not (3, 10) <= sys.version_info[:2] <= (3, 12):
-    sys.exit("WMQ_VENV must use Python 3.10-3.12. Choose a new venv directory and WMQ_PYTHON.")
+    sys.exit("Use a Conda environment with Python 3.10-3.12 (recommended: 3.11).")
+print(f"Using prepared Conda environment: {sys.prefix}", flush=True)
 PY
-# Direct interpreter calls are sufficient for imports; PATH/VIRTUAL_ENV also
-# keep subprocesses launched by libraries inside the same environment.
-export VIRTUAL_ENV="$WMQ_VENV"
-export PATH="$WMQ_VENV/bin:$PATH"
-echo "Using isolated environment: $WMQ_VENV"
-if [[ "$WMQ_SKIP_INSTALL" != "1" ]]; then
-  "$PY" -m pip install 'pip==25.2' 'setuptools==80.9.0' 'wheel==0.45.1'
-  "$PY" -m pip install "torch==2.7.1+$WMQ_TORCH_FLAVOR" "torchvision==0.22.1+$WMQ_TORCH_FLAVOR" \
-    --index-url "https://download.pytorch.org/whl/$WMQ_TORCH_FLAVOR"
-  "$PY" -m pip install "${WMQ_REQUIREMENTS[@]}"
+
+if [[ ! -r "$SCRIPT_DIR/requirements-wmq.txt" ]]; then
+  echo "Missing requirements-wmq.txt next to the script; copy the complete repo." >&2
+  exit 1
 fi
+WMQ_REQUIRED_PACKAGES="$(cat "$SCRIPT_DIR/requirements-wmq.txt")"
+export WMQ_REQUIRED_PACKAGES
+mkdir -p "$WMQ_ROOT" "$WMQ_OUTPUT" "$WMQ_CACHE"
 
 "$PY" -m pip check
 "$PY" - <<'PY'
@@ -123,18 +74,21 @@ from pathlib import Path
 
 print(f"Python: {sys.executable}", flush=True)
 problems = []
-for requirement in os.environ["WMQ_REQUIRED_PACKAGES"].split():
+for requirement in os.environ["WMQ_REQUIRED_PACKAGES"].splitlines():
+    requirement = requirement.strip()
+    if not requirement or requirement.startswith(("#", "--")):
+        continue
     package, expected = requirement.split("==")
     try:
         actual = version(package)
     except PackageNotFoundError:
         actual = "not installed"
     print(f"{package}: {actual} (required: {expected})", flush=True)
-    if actual.split("+")[0] != expected:
+    if (actual if "+" in expected else actual.split("+")[0]) != expected:
         problems.append(f"{package}: expected {expected}, found {actual}")
 if problems:
     sys.exit("Dependency mismatch:\n  " + "\n  ".join(problems)
-             + "\nRerun with WMQ_SKIP_INSTALL=0 using a clean WMQ_VENV.")
+             + "\nInstall requirements-wmq.txt in the active Conda environment on the login node; see README.md.")
 
 # Exercise lazy imports as well as ordinary module imports. No model downloads.
 checks = {
@@ -160,7 +114,7 @@ for module, names in checks.items():
         traceback.print_exc()
 if problems:
     sys.exit("Import failures: " + ", ".join(problems)
-             + "\nTry WMQ_SKIP_INSTALL=0 with a new WMQ_VENV directory.")
+             + "\nRepair the Conda environment on the login node using README.md.")
 
 import torch
 import torchvision
@@ -174,7 +128,7 @@ if os.environ["WMQ_CHECK_ONLY"] != "imports":
         capability = torch.cuda.get_device_capability(0)
         cuda = tuple(map(int, (torch.version.cuda or "0.0").split(".")[:2]))
         if capability >= (10, 0) and cuda < (12, 8):
-            raise RuntimeError("Blackwell needs WMQ_TORCH_FLAVOR=cu128 in a fresh WMQ_VENV")
+            raise RuntimeError("Blackwell needs the PyTorch CUDA 12.8 wheel; reinstall on the login node using README.md")
         x = torch.randn(1, 4, 16, 16, device="cuda", dtype=torch.float16, requires_grad=True)
         conv = torch.nn.Conv2d(4, 4, 3, padding=1).to(device="cuda", dtype=torch.float16)
         conv(x).float().square().mean().backward()

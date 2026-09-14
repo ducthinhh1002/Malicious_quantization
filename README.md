@@ -8,50 +8,63 @@ Script `run_malicious_quantization_watermarks.sh` đánh giá khả năng giữ 
 
 Đây là simulated weight-only PTQ: trọng số được đưa lên lưới số nguyên low-bit rồi dequantize để chạy bằng CUDA FP16. Kết quả phản ánh sai số lượng tử hóa, không phải tốc độ của INT4/INT8 kernel.
 
-## 1. Chuyển sang máy khác và chạy
+## 1. Cài Conda environment trên login node (một lần)
 
-Chỉ cần copy `run_malicious_quantization_watermarks.sh`, rồi chạy trên node được cấp GPU:
+Script chạy chỉ sử dụng Conda environment đã được kích hoạt; không tạo môi trường hoặc cài package trong job. Cần copy cả repo (bao gồm `requirements-wmq.txt`) vào filesystem mà login node và compute node cùng truy cập được. Conda environment cũng phải nằm trên filesystem dùng chung của cụm.
+
+Trên login node, vào thư mục repo rồi chạy:
 
 ```bash
+conda create -n wmq python=3.11 pip -y
+conda activate wmq
+unset PYTHONPATH PYTHONHOME PYTHONUSERBASE PIP_TARGET PIP_PREFIX PIP_USER
+export PYTHONNOUSERSITE=1
+export PIP_CONFIG_FILE=/dev/null PIP_REQUIRE_VIRTUALENV=false
+python -m pip install -r requirements-wmq.txt
+WMQ_CHECK_ONLY=imports bash run_malicious_quantization_watermarks.sh
+```
+
+Nếu đã có môi trường `wmq` dành riêng cho dự án, bỏ lệnh `conda create` và activate nó trước khi cài. Không cài vào `base` hoặc môi trường dùng chung với dự án khác. Conda quản lý Python/môi trường; pip cài các phiên bản thư viện vào chính môi trường đó theo [hướng dẫn Conda về dùng pip trong environment](https://docs.conda.io/projects/conda/en/stable/user-guide/tasks/manage-environments.html#using-pip-in-an-environment).
+
+Login node không cần GPU để cài wheel CUDA và kiểm tra import. Giữ wheel CUDA cho compute node, không chuyển sang wheel CPU chỉ vì login node không có GPU. Cặp Torch/TorchVision lấy từ [hướng dẫn PyTorch](https://pytorch.org/get-started/previous-versions/#v271). File `requirements-wmq.txt` đã chứa nguồn tải và phiên bản CUDA, nên chỉ cần một lệnh pip. Với GPU/driver cũ, đổi đồng thời `cu128` trong URL và hai phiên bản Torch/TorchVision của file này thành `cu118` hoặc `cu126`; Blackwell cần `cu128`. Máy chạy cần Linux x86_64, driver NVIDIA tương thích và dung lượng cho thư viện, model, kết quả.
+
+## 2. Dùng environment đã cài trong job
+
+Trong file submit job đang dùng của server, giữ các dòng khai báo scheduler/tài nguyên và thêm phần sau vào thân job trước lệnh chạy:
+
+```bash
+source /duong/dan/miniconda3/etc/profile.d/conda.sh
+conda activate wmq
+cd /duong/dan/Malicious_quantization
 bash run_malicious_quantization_watermarks.sh
 ```
 
-Máy đích cần Linux x86_64, Bash, Python 3.10–3.12 (khuyến nghị 3.11), NVIDIA GPU với driver tương thích và Internet cho lần cài/tải model đầu. Cần dung lượng trống cho thư viện CUDA, hai model và ảnh đầu ra; nên dành ít nhất 30 GB. Không cần cài sẵn PyTorch, TorchVision, Conda hay CUDA Toolkit. Driver NVIDIA và việc cấp GPU của cụm HPC vẫn do máy đích quản lý.
+Thay hai đường dẫn trên bằng đường dẫn thực tế trên server. Trên login node, `conda info --base` cho biết thư mục cài Conda. Nếu cụm yêu cầu `module load` để cung cấp Conda, dùng cơ chế đó theo hướng dẫn của cụm. Kích hoạt tường minh trong job giúp chọn đúng môi trường, kể cả khi scheduler không truyền toàn bộ môi trường của login shell. Không chạy lệnh cài package trong job và không sửa môi trường khi job khác đang dùng nó.
 
-Script tự tạo venv riêng ở `.venv` cạnh file script, không kế thừa package hệ thống/Conda; tự cài PyTorch 2.7.1 + TorchVision 0.22.1 CUDA 12.8 và các thư viện đã ghim. Nếu Python thiếu `ensurepip`, script tải virtualenv từ bootstrap.pypa.io để tạo môi trường mà không cần sudo. `PYTHONPATH`/`PYTHONHOME` và các biến pip đổi đích cài đặt được bỏ trong tiến trình script để tránh lẫn thư viện. Script luôn gọi `.venv/bin/python`, đồng thời đặt `PATH` và `VIRTUAL_ENV` cho tiến trình con; không cần tự `source .venv/bin/activate`. Các biến môi trường của terminal gọi script không bị thay đổi.
+Chưa biết server dùng Slurm, PBS hay scheduler khác nên ví dụ trên chỉ là phần thân job; dùng cấu hình GPU/partition/queue của server. Giữ `CUDA_VISIBLE_DEVICES` do scheduler cấp.
 
-Cặp PyTorch/TorchVision và các biến thể CUDA dựa trên [hướng dẫn chính thức của PyTorch](https://pytorch.org/get-started/previous-versions/#v271). Nếu GPU cũ hoặc driver không hỗ trợ bản CUDA mặc định, có thể chọn `WMQ_TORCH_FLAVOR=cu118` hoặc `cu126`; Blackwell cần `cu128`. Không copy thư mục venv giữa các máy: để script tạo lại tại máy đích.
+## 3. Kiểm tra trước khi chạy thí nghiệm
 
-## 2. Chỉ cài và kiểm tra môi trường
+Trên login node (không yêu cầu GPU):
+
+```bash
+conda activate wmq
+WMQ_CHECK_ONLY=imports bash run_malicious_quantization_watermarks.sh
+```
+
+Trong job đã được cấp GPU:
 
 ```bash
 WMQ_CHECK_ONLY=1 bash run_malicious_quantization_watermarks.sh
 ```
 
-Lệnh này chạy `pip check`, kiểm tra phiên bản và toàn bộ import dùng trong thí nghiệm, TorchVision NMS, rồi thử forward/backward CUDA FP16 với convolution và attention. Không tải model hoặc bắt đầu thí nghiệm. Các phiên bản cài thực tế được lưu tại `wmq_runs/output/environment.freeze.txt`.
+Script chạy `pip check`, kiểm tra phiên bản, toàn bộ import và TorchVision NMS; chế độ `1` còn thử forward/backward CUDA FP16 với convolution và attention. Hai chế độ này không tải model hoặc chạy thí nghiệm. Phiên bản thực tế được lưu trong `wmq_runs/output/environment.freeze.txt`.
 
-Trên máy không có GPU, có thể kiểm tra riêng import:
+Bộ thư viện đã được kiểm tra trước đó trên Python 3.12/Linux CPU: import, NMS, AquaLoRA decoder/Mapper, LPIPS với backbone ngẫu nhiên và UNet nhỏ forward/backward đều qua. Máy phát triển hiện không có Conda/GPU, nên chưa xác minh cài đặt Conda hoặc thí nghiệm GPU đầy đủ trên server.
 
-```bash
-WMQ_TORCH_FLAVOR=cpu WMQ_CHECK_ONLY=imports \
-WMQ_VENV="$PWD/wmq_cpu_audit" bash run_malicious_quantization_watermarks.sh
-```
+Chạy thí nghiệm vẫn cần truy cập các model/checkpoint. Nếu compute node không có Internet, phải chuẩn bị cache/model trước trên filesystem dùng chung; kiểm tra import không tải sẵn các tài nguyên này. Nếu model yêu cầu xác thực, đặt `HF_TOKEN` theo quyền truy cập tài khoản.
 
-Kiểm tra import không chứng minh model/checkpoint tải và chạy được. GPU, driver, truy cập model và dung lượng bộ nhớ vẫn cần kiểm tra trên máy chạy thật.
-
-Đã kiểm tra bộ phiên bản này trong venv sạch trên Python 3.12/Linux với wheel CPU: cài dependency, `pip check`, toàn bộ import, NMS, AquaLoRA decoder/Mapper, LPIPS với backbone ngẫu nhiên và UNet nhỏ forward/backward qua `functional_call` đều qua. Chế độ dùng lại venv và nhánh báo thiếu CUDA cũng đã được kiểm tra. Chưa kiểm thử thí nghiệm đầy đủ với checkpoint thật trên GPU trong môi trường phát triển này.
-
-## 3. Chạy lại sau lần cài đầu
-
-```bash
-WMQ_SKIP_INSTALL=1 bash run_malicious_quantization_watermarks.sh
-```
-
-Script dùng lại venv riêng và vẫn chạy kiểm tra môi trường. Nếu venv đó chưa tồn tại, script yêu cầu chạy lại với `WMQ_SKIP_INSTALL=0` để tự tạo; không chuyển sang chạy bằng Python của server. Đặt `WMQ_PYTHON=/duong/dan/python3.11` để chọn Python khi tạo venv mới. Cache Hugging Face và Torch được giữ dưới `WMQ_ROOT` để tái sử dụng các lần sau. Chạy offline còn yêu cầu toàn bộ model/checkpoint đã được tải.
-
-Nếu model yêu cầu xác thực, đặt `HF_TOKEN` theo quyền truy cập của tài khoản. Script có fallback public cho SD2.1 nhưng không thể tự cấp quyền hoặc chấp nhận giấy phép thay người dùng.
-
-Script tự nhận GPU có ít nhất 80 GiB là `large-memory`. Trên RTX PRO 6000 Blackwell 96 GB, profile này batch quá trình sinh ảnh, tắt attention slicing, giữ pristine weights trên GPU và cập nhật joint-gradient trên toàn bộ semantic group. GPU nhỏ hơn tự dùng profile tiết kiệm bộ nhớ.
+Script tự chọn profile `large-memory` khi GPU nhìn thấy có ít nhất 80 GiB; GPU nhỏ hơn dùng cấu hình tiết kiệm bộ nhớ.
 
 Model mặc định:
 
@@ -62,7 +75,7 @@ Model mặc định:
 ## 4. Chạy cấu hình mặc định
 
 ```bash
-CUDA_VISIBLE_DEVICES=0 \
+conda activate wmq
 bash run_malicious_quantization_watermarks.sh
 ```
 
@@ -216,17 +229,14 @@ WMQ_ROOT="$PWD/runs/zeroth" REFINE_OPTIMIZER=zeroth REFINE_MODE=full bash run_ma
 | Biến | Mặc định | Mô tả |
 |---|---|---|
 | `WMQ_ROOT` | Thư mục script + `/wmq_runs` | Thư mục gốc của một lần chạy |
-| `WMQ_VENV` | Thư mục script + `/.venv` | Virtual environment |
 | `WMQ_OUTPUT` | `$WMQ_ROOT/output` | Thư mục kết quả |
 | `WMQ_CACHE` | `$WMQ_ROOT/hf_cache` | Hugging Face cache |
-| `WMQ_PYTHON` | `python3` | Python dùng để tạo venv |
-| `WMQ_SKIP_INSTALL` | `0` | Đặt `1` để dùng lại venv đã cài |
+| `CONDA_PREFIX` | Do `conda activate` đặt | Environment đã cài trên login node |
 | `WMQ_CHECK_ONLY` | `0` | `1`: import + CUDA; `imports`: chỉ import |
-| `WMQ_TORCH_FLAVOR` | `cu128` | `cu128`, `cu126`, `cu118`; `cpu` chỉ kiểm tra import |
 | `TORCH_HOME` | `$WMQ_ROOT/torch_cache` | Cache trọng số TorchVision/LPIPS |
 | `CUDA_VISIBLE_DEVICES` | không đặt | Chọn GPU sẽ chạy |
 
-Script dùng venv cách ly và ghim các dependency trực tiếp ngay trong file `.sh`. Các dependency gián tiếp được pip giải quyết theo metadata và được ghi lại trong `environment.freeze.txt`. Nếu chỉ định `WMQ_VENV` là môi trường cũ có `--system-site-packages`, hãy chọn thư mục venv mới.
+Dependency trực tiếp được ghim trong `requirements-wmq.txt`. Script chỉ kiểm tra môi trường Conda đã activate và chạy; không tự cài đặt. Dependency gián tiếp thực tế được ghi trong `environment.freeze.txt`.
 
 ### Model và key
 
