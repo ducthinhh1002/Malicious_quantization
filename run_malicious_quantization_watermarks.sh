@@ -20,8 +20,8 @@ set -Eeuo pipefail
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 WMQ_ROOT="${WMQ_ROOT:-$SCRIPT_DIR/wmq_runs}"
-# A new directory avoids inheriting the old --system-site-packages environment.
-WMQ_VENV="${WMQ_VENV:-$WMQ_ROOT/venv-portable}"
+# Always install and run inside a project-local, isolated virtual environment.
+WMQ_VENV="${WMQ_VENV:-$SCRIPT_DIR/.venv}"
 WMQ_OUTPUT="${WMQ_OUTPUT:-$WMQ_ROOT/output}"
 WMQ_CACHE="${WMQ_CACHE:-$WMQ_ROOT/hf_cache}"
 WMQ_PYTHON="${WMQ_PYTHON:-python3}"
@@ -42,7 +42,10 @@ export TORCH_HOME="${TORCH_HOME:-$WMQ_ROOT/torch_cache}"
 export TOKENIZERS_PARALLELISM=false
 export USE_TORCH=1 USE_TF=0 USE_FLAX=0 PYTHONNOUSERSITE=1
 # Prevent shell/Conda PYTHONPATH from injecting incompatible optional packages.
-unset PYTHONPATH PYTHONHOME
+unset PYTHONPATH PYTHONHOME PYTHONUSERBASE
+# Ignore server pip destinations/configuration that could redirect installs.
+unset PIP_TARGET PIP_PREFIX PIP_USER
+export PIP_CONFIG_FILE=/dev/null PIP_REQUIRE_VIRTUALENV=true
 export PYTORCH_CUDA_ALLOC_CONF="${PYTORCH_CUDA_ALLOC_CONF:-max_split_size_mb:512}"
 
 mkdir -p "$WMQ_ROOT" "$WMQ_OUTPUT" "$WMQ_CACHE"
@@ -73,12 +76,23 @@ PY
       "$WMQ_PYTHON" "$WMQ_ROOT/virtualenv.pyz" "$WMQ_VENV"
     fi
   fi
-  PY="$WMQ_VENV/bin/python"
-  "$PY" - <<'PY'
+fi
+
+if [[ ! -x "$WMQ_VENV/bin/python" ]]; then
+  echo "WMQ_VENV has no Python: $WMQ_VENV. Rerun with WMQ_SKIP_INSTALL=0 to create it." >&2
+  exit 1
+fi
+WMQ_VENV="$(cd -- "$WMQ_VENV" && pwd)"
+PY="$WMQ_VENV/bin/python"
+export WMQ_VENV
+# Validate even when installation is skipped; never fall back to server Python.
+"$PY" - <<'PY'
+import os
 import sys
 from pathlib import Path
 cfg = Path(sys.prefix, "pyvenv.cfg")
-if sys.prefix == sys.base_prefix or not cfg.is_file() or any(
+if (Path(sys.prefix).resolve() != Path(os.environ["WMQ_VENV"]).resolve()
+    or sys.prefix == sys.base_prefix or not cfg.is_file()) or any(
     line.strip().lower().replace(" ", "") == "include-system-site-packages=true"
     for line in cfg.read_text().splitlines()
 ):
@@ -86,17 +100,16 @@ if sys.prefix == sys.base_prefix or not cfg.is_file() or any(
 if not (3, 10) <= sys.version_info[:2] <= (3, 12):
     sys.exit("WMQ_VENV must use Python 3.10-3.12. Choose a new venv directory and WMQ_PYTHON.")
 PY
+# Direct interpreter calls are sufficient for imports; PATH/VIRTUAL_ENV also
+# keep subprocesses launched by libraries inside the same environment.
+export VIRTUAL_ENV="$WMQ_VENV"
+export PATH="$WMQ_VENV/bin:$PATH"
+echo "Using isolated environment: $WMQ_VENV"
+if [[ "$WMQ_SKIP_INSTALL" != "1" ]]; then
   "$PY" -m pip install 'pip==25.2' 'setuptools==80.9.0' 'wheel==0.45.1'
   "$PY" -m pip install "torch==2.7.1+$WMQ_TORCH_FLAVOR" "torchvision==0.22.1+$WMQ_TORCH_FLAVOR" \
     --index-url "https://download.pytorch.org/whl/$WMQ_TORCH_FLAVOR"
   "$PY" -m pip install "${WMQ_REQUIREMENTS[@]}"
-else
-  # Prefer the managed venv on subsequent/offline runs; allow an explicit Python.
-  if [[ -x "$WMQ_VENV/bin/python" ]]; then
-    PY="$WMQ_VENV/bin/python"
-  else
-    PY="$WMQ_PYTHON"
-  fi
 fi
 
 "$PY" -m pip check

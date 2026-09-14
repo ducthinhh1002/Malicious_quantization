@@ -18,7 +18,7 @@ bash run_malicious_quantization_watermarks.sh
 
 Máy đích cần Linux x86_64, Bash, Python 3.10–3.12 (khuyến nghị 3.11), NVIDIA GPU với driver tương thích và Internet cho lần cài/tải model đầu. Cần dung lượng trống cho thư viện CUDA, hai model và ảnh đầu ra; nên dành ít nhất 30 GB. Không cần cài sẵn PyTorch, TorchVision, Conda hay CUDA Toolkit. Driver NVIDIA và việc cấp GPU của cụm HPC vẫn do máy đích quản lý.
 
-Script tự tạo venv riêng ở `wmq_runs/venv-portable` cạnh file script, không kế thừa package hệ thống/Conda; tự cài PyTorch 2.7.1 + TorchVision 0.22.1 CUDA 12.8 và các thư viện đã ghim. Nếu Python thiếu `ensurepip`, script tải virtualenv từ bootstrap.pypa.io để tạo môi trường mà không cần sudo. `PYTHONPATH`/`PYTHONHOME` được bỏ trong tiến trình script để tránh lẫn thư viện.
+Script tự tạo venv riêng ở `.venv` cạnh file script, không kế thừa package hệ thống/Conda; tự cài PyTorch 2.7.1 + TorchVision 0.22.1 CUDA 12.8 và các thư viện đã ghim. Nếu Python thiếu `ensurepip`, script tải virtualenv từ bootstrap.pypa.io để tạo môi trường mà không cần sudo. `PYTHONPATH`/`PYTHONHOME` và các biến pip đổi đích cài đặt được bỏ trong tiến trình script để tránh lẫn thư viện. Script luôn gọi `.venv/bin/python`, đồng thời đặt `PATH` và `VIRTUAL_ENV` cho tiến trình con; không cần tự `source .venv/bin/activate`. Các biến môi trường của terminal gọi script không bị thay đổi.
 
 Cặp PyTorch/TorchVision và các biến thể CUDA dựa trên [hướng dẫn chính thức của PyTorch](https://pytorch.org/get-started/previous-versions/#v271). Nếu GPU cũ hoặc driver không hỗ trợ bản CUDA mặc định, có thể chọn `WMQ_TORCH_FLAVOR=cu118` hoặc `cu126`; Blackwell cần `cu128`. Không copy thư mục venv giữa các máy: để script tạo lại tại máy đích.
 
@@ -47,7 +47,7 @@ Kiểm tra import không chứng minh model/checkpoint tải và chạy được
 WMQ_SKIP_INSTALL=1 bash run_malicious_quantization_watermarks.sh
 ```
 
-Script dùng lại venv riêng và vẫn chạy kiểm tra môi trường. Nếu venv đó chưa tồn tại, nó dùng `WMQ_PYTHON`. Đặt `WMQ_PYTHON=/duong/dan/python3.11` để chọn Python khi tạo venv mới. Cache Hugging Face và Torch được giữ dưới `WMQ_ROOT` để tái sử dụng các lần sau. Chạy offline còn yêu cầu toàn bộ model/checkpoint đã được tải.
+Script dùng lại venv riêng và vẫn chạy kiểm tra môi trường. Nếu venv đó chưa tồn tại, script yêu cầu chạy lại với `WMQ_SKIP_INSTALL=0` để tự tạo; không chuyển sang chạy bằng Python của server. Đặt `WMQ_PYTHON=/duong/dan/python3.11` để chọn Python khi tạo venv mới. Cache Hugging Face và Torch được giữ dưới `WMQ_ROOT` để tái sử dụng các lần sau. Chạy offline còn yêu cầu toàn bộ model/checkpoint đã được tải.
 
 Nếu model yêu cầu xác thực, đặt `HF_TOKEN` theo quyền truy cập của tài khoản. Script có fallback public cho SD2.1 nhưng không thể tự cấp quyền hoặc chấp nhận giấy phép thay người dùng.
 
@@ -216,7 +216,7 @@ WMQ_ROOT="$PWD/runs/zeroth" REFINE_OPTIMIZER=zeroth REFINE_MODE=full bash run_ma
 | Biến | Mặc định | Mô tả |
 |---|---|---|
 | `WMQ_ROOT` | Thư mục script + `/wmq_runs` | Thư mục gốc của một lần chạy |
-| `WMQ_VENV` | `$WMQ_ROOT/venv-portable` | Virtual environment |
+| `WMQ_VENV` | Thư mục script + `/.venv` | Virtual environment |
 | `WMQ_OUTPUT` | `$WMQ_ROOT/output` | Thư mục kết quả |
 | `WMQ_CACHE` | `$WMQ_ROOT/hf_cache` | Hugging Face cache |
 | `WMQ_PYTHON` | `python3` | Python dùng để tạo venv |
