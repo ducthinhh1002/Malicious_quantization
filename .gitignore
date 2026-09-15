@@ -1,2 +1,5 @@
 /.venv/
 /wmq_runs/
+__pycache__/
+/output/
+/output.zip

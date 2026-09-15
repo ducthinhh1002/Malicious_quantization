@@ -1,12 +1,97 @@
 # Hướng dẫn chạy thí nghiệm malicious quantization cho watermark diffusion
 
-Script `run_malicious_quantization_watermarks.sh` đánh giá khả năng giữ watermark của **Stable Signature** và **AquaLoRA** sau lượng tử hóa. Quy trình gồm ba giai đoạn:
+Script `run_malicious_quantization_watermarks.sh` đánh giá khả năng giữ watermark của **Stable Signature** và **AquaLoRA** sau lượng tử hóa. Mặc định dùng `RUN_PROTOCOL=fair_w4a16` để so sánh cùng bitwidth/phạm vi; quy trình grid rộng trước đây còn ở `RUN_PROTOCOL=legacy_grid`:
 
 1. Grid search các recipe PTQ theo bit-width, clipping và nhóm layer.
 2. Tối ưu tham số quantizer bằng autograd và straight-through estimator (STE), hoặc dùng zeroth-order search làm ablation.
 3. Đánh giá recipe đã chọn trên tập test tách biệt bằng bit accuracy, TPR, PSNR, LPIPS và prediction NMSE.
 
-Đây là simulated weight-only PTQ: trọng số được đưa lên lưới số nguyên low-bit rồi dequantize để chạy bằng CUDA FP16. Kết quả phản ánh sai số lượng tử hóa, không phải tốc độ của INT4/INT8 kernel.
+Đây là simulated weight-only PTQ: trọng số được đưa lên lưới số nguyên low-bit rồi dequantize để chạy bằng CUDA FP16. Kết quả phản ánh sai số lượng tử hóa, không phải tốc độ của INT4/INT8 kernel. Copy cả `wmq_baselines.py` cùng script và requirements sang server.
+
+## So sánh W4A16 mới
+
+Trong job đã activate Conda, chạy:
+
+```bash
+WMQ_OUTPUT="$PWD/results/w4a16_seed3407" bash run_malicious_quantization_watermarks.sh
+```
+
+Dùng thư mục output mới cho mỗi run; script dừng trước khi tải model nếu thư mục kết quả fair đã tồn tại. Nó không ghi đè kết quả cũ. Không cần thêm dependency ngoài `requirements-wmq.txt`.
+
+| Phương pháp | VAE Stable Signature | UNet AquaLoRA |
+|---|---|---|
+| `rtn_w4a16` | Làm tròn thông thường | Làm tròn thông thường |
+| `grid_w4a16` | Chọn clipping 1,0/0,75 trên search | Tương tự |
+| `gradient_w4a16` | Tối ưu theo watermark; báo rõ nếu fallback | Tương tự |
+| `adaround_vae` | Học làm tròn từng weight theo đầu ra layer | — |
+| `brecq_vae_adapted` | Hiệu chỉnh theo block | — |
+| `qdiff_unet_adapted` | — | Hiệu chỉnh theo block, nhiều timestep, tách grid cho shortcut concat |
+
+Mọi phương pháp trong cùng watermark đều lượng tử hóa **cùng toàn bộ target**: trọng số Conv/Linear của VAE decoder + post-quant conv, hoặc của UNet. Encoder VAE, bias, normalization và watermark extractor không được lượng tử hóa. Trọng số dùng 4 bit (grid đối xứng -7..7), activation giữ FP16; scale lưu FP32. Q-Diffusion adaptation có thêm scale riêng cho hai phần input concat, được ghi trong `shortcut_splits`; cùng bitwidth không có nghĩa overhead scale giống nhau. Tái tạo block chạy FP32 để ổn định gradient, sau đó weight dequantized được đưa về dtype inference.
+
+Các baseline reconstruction là **bản thích nghi cục bộ cho Diffusers**, không phải chạy nguyên repo hoặc tái lập nguyên số liệu paper. `AdaRound` dùng stretched-sigmoid rounding và regularization; BRECQ adaptation dùng MSE đầu ra block, không dùng Fisher weighting; Q-Diffusion adaptation kết hợp block reconstruction với replay nhiều timestep và split shortcut trên Conv1/Conv-shortcut của up-block. Input calibration của từng block được thu tuần tự khi các block trước đã được lượng tử hóa. Không baseline reconstruction nào dùng key/loss watermark. Chi tiết nằm trong `wmq_baselines.py` và từng report. Nguồn: [AdaRound](https://arxiv.org/abs/2004.10568), [BRECQ](https://arxiv.org/abs/2102.05426), [Q-Diffusion](https://arxiv.org/abs/2302.04304).
+
+Ba phần dữ liệu tách biệt theo chỉ số và seed: `CALIB_N` prompt calibration, `SEARCH_N` prompt chọn cấu hình, `TEST_N` prompt test. Mọi phương pháp tái sử dụng đúng các phần này. `PROMPT_FILE` cần ít nhất `CALIB_N + SEARCH_N + TEST_N` dòng. Manifest lưu prompt/seed, scheduler, target names, số tham số và hash checkpoint. Cấu hình cuối được chọn bằng search/calibration; test chỉ đánh giá. Các phương pháp có ngân sách tối ưu khác nhau, được báo cáo qua số step/update; đây không phải so sánh cùng chi phí tính toán.
+
+Grid, refinement và fallback đều được kiểm tra **PSNR ≥25, LPIPS ≤0,15 và calibration NMSE ≤0,02**. Nếu không có candidate đạt, report vẫn lưu kết quả với `feasible=false`; không gọi đó là cấu hình thành công. Bản gradient có `selected_source=grid_fallback` khi không chọn được refinement hợp lệ. File `gradient_updates.json` được ghi mỗi bước, gồm số update hợp lệ, bị bỏ qua và lý do; không tính update NaN đã rollback là thành công.
+
+Kiểm tra chất lượng watermark trước lượng tử hóa trên GPU:
+
+```bash
+BASELINE_CHECK_ONLY=1 WMQ_OUTPUT="$PWD/results/clean_check" \
+  bash run_malicious_quantization_watermarks.sh
+```
+
+Khác với `WMQ_CHECK_ONLY=imports`, lệnh này **tải model và sinh ảnh**. Mặc định yêu cầu clean search bit accuracy ≥0,80 và TPR ≥0,90. Đây là quality gate được đặt trước thí nghiệm, không phải bằng chứng checkpoint sai nếu không đạt. `clean_validation.json` luôn được ghi trước khi quyết định. Với `CLEAN_POLICY=strict` (mặc định), watermark không đạt bị dừng riêng với `invalid_clean_baseline`, watermark còn lại vẫn chạy. `CLEAN_POLICY=report` cho phép chạy chẩn đoán nhưng mọi dòng kết quả giữ `baseline_valid=false`; không nên dùng như một baseline đã được xác minh. Có thể đặt `CLEAN_MIN_BITACC`/`CLEAN_MIN_TPR` trước run theo protocol nghiên cứu.
+
+| Biến mới | Mặc định | Ý nghĩa |
+|---|---:|---|
+| `RUN_PROTOCOL` | `fair_w4a16` | Hoặc `legacy_grid` cho tìm kiếm rộng cũ |
+| `RECON_STEPS` | 200 | Số update mỗi layer/block |
+| `RECON_LR` | 0,001 | Learning rate cho reconstruction |
+| `RECON_CACHE_MB` | 512 | Giới hạn cache CPU cho một block |
+| `CLEAN_POLICY` | `strict` | Hoặc `report` cho chẩn đoán |
+| `BASELINE_CHECK_ONLY` | 0 | Đặt 1 để chỉ kiểm tra clean trên GPU |
+
+Trong fair protocol, `REFINE_N` và `MAX_CANDIDATES` không dùng: gradient dùng toàn bộ search split, grid luôn là W4 trên toàn target với hai clipping. Zeroth-order vẫn có ở `RUN_PROTOCOL=legacy_grid`. `REFINE_MODE=none` bỏ dòng gradient nhưng vẫn chạy các baseline reconstruction.
+
+Kết quả mới:
+
+```text
+results/w4a16_seed3407/
+├── comparison.csv
+├── comparison_summary.json
+└── <watermark>/fair_w4a16/
+    ├── manifest.json
+    ├── clean_validation.json
+    ├── clean_test.json
+    ├── grid_search.json
+    ├── report.json
+    ├── clean_search/
+    ├── clean_test/
+    └── <method>/
+        ├── report.json
+        ├── attacked_test/
+        ├── reconstruction.json       # baseline reconstruction
+        ├── gradient_updates.json     # gradient, ghi mỗi bước
+        └── gradient_optimization.csv # gradient, ghi cuối loop
+```
+
+Nếu clean gate không đạt, chưa có các file search/test/method tương ứng; summary ghi `incomplete`. Các report method đã hoàn thành được lưu ngay, không phải chờ cả AquaLoRA kết thúc. Reconstruction replay model một lần cho mỗi unit/tập calibration, nên chi phí có thể lớn. Bắt đầu bằng run nhỏ trước khi chạy dataset đầy đủ:
+
+```bash
+SEARCH_N=2 TEST_N=2 CALIB_N=1 CALIB_TIMESTEPS=2 STEPS=4 \
+RECON_STEPS=2 GRAD_STEPS=2 GEN_BATCH_SIZE=1 CALIB_BATCH_SIZE=1 \
+WMQ_OUTPUT="$PWD/results/w4a16_smoke" bash run_malicious_quantization_watermarks.sh
+```
+
+Kiểm thử code không cần GPU/checkpoint:
+
+```bash
+python -m unittest discover -s tests -v
+```
+
+Các test chạy Conv/Linear, UNet và VAE Diffusers nhỏ với trọng số ngẫu nhiên; kiểm tra grid, backward, coverage, input concat, rollback NaN/Inf, fallback NMSE và báo cáo/split. Chúng không chứng minh chất lượng watermark hay mức bộ nhớ trên checkpoint thật; cần smoke test trên GPU server.
 
 ## 1. Cài Conda environment trên login node (một lần)
 
@@ -113,7 +198,7 @@ Mặc định script sử dụng:
 | `JOINT_GROUP_GRAD` | 1 trên GPU ≥80 GiB | Cập nhật đồng thời mọi semantic group |
 | `USE_ATTENTION_SLICING` | 0 trên GPU ≥80 GiB | Không chia attention thành lát nhỏ |
 
-Grid search mặc định thử 50 recipe cho mỗi watermark:
+Ở `RUN_PROTOCOL=legacy_grid`, grid search thử 50 recipe cho mỗi watermark:
 
 - Bit-width: 8, 6, 4, 3 và 2 bit.
 - Clipping: 1.0 và 0.75.
@@ -148,7 +233,7 @@ MAX_PRED_NMSE=0.02 \
 bash run_malicious_quantization_watermarks.sh
 ```
 
-`PROMPT_FILE` phải chứa ít nhất `SEARCH_N + TEST_N` prompt. File text dùng một prompt trên mỗi dòng. JSON có thể là:
+`PROMPT_FILE` phải chứa ít nhất `CALIB_N + SEARCH_N + TEST_N` prompt cho fair protocol (`SEARCH_N + TEST_N` cho legacy). File text dùng một prompt trên mỗi dòng. JSON có thể là:
 
 ```json
 [
@@ -207,6 +292,7 @@ bash run_malicious_quantization_watermarks.sh
 
 ```bash
 REFINE_OPTIMIZER=zeroth \
+RUN_PROTOCOL=legacy_grid \
 REFINE_MODE=full \
 REFINE_ITERS=100 \
 bash run_malicious_quantization_watermarks.sh
@@ -299,7 +385,7 @@ Sau mỗi `GRAD_EVAL_EVERY` bước, quantizer được materialize thành hard 
 
 ## 9. Output
 
-Mặc định kết quả nằm trong `wmq_runs/output`:
+Kết quả nằm trong `wmq_runs/output` hoặc `WMQ_OUTPUT`. Cây dưới đây là **legacy_grid**; output fair mặc định được mô tả ở đầu tài liệu:
 
 ```text
 output/

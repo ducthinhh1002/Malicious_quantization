@@ -2,6 +2,8 @@
 set -Eeuo pipefail
 
 # Adaptive PTQ stress test for Stable Signature and AquaLoRA.
+# Default: matched W4A16 comparison (RTN, grid, gradient, reconstruction).
+# RUN_PROTOCOL=legacy_grid restores the historical 50-candidate search.
 # Stable Signature: public Meta decoder + SD2.1-base (public mirror fallback).
 # AquaLoRA: official ppft_trained assets + SD1.5.
 #
@@ -19,6 +21,7 @@ set -Eeuo pipefail
 # Constraint: MAX_PRED_NMSE=0.02 (timestep-weighted UNet or VAE-decode NMSE).
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+export WMQ_CODE_ROOT="$SCRIPT_DIR"
 WMQ_ROOT="${WMQ_ROOT:-$SCRIPT_DIR/wmq_runs}"
 WMQ_OUTPUT="${WMQ_OUTPUT:-$WMQ_ROOT/output}"
 WMQ_CACHE="${WMQ_CACHE:-$WMQ_ROOT/hf_cache}"
@@ -73,6 +76,7 @@ from importlib.metadata import PackageNotFoundError, version
 from pathlib import Path
 
 print(f"Python: {sys.executable}", flush=True)
+sys.path.insert(0, os.environ["WMQ_CODE_ROOT"])
 problems = []
 for requirement in os.environ["WMQ_REQUIRED_PACKAGES"].splitlines():
     requirement = requirement.strip()
@@ -102,6 +106,7 @@ checks = {
     "huggingface_hub": ["hf_hub_download"], "PIL.Image": [],
     "safetensors.torch": ["load_file"], "scipy.stats": ["binom"],
     "peft": [], "accelerate": [], "ftfy": [], "lpips": ["LPIPS"],
+    "wmq_baselines": ["reconstruct", "AdaptiveRounding"],
 }
 for module, names in checks.items():
     try:
@@ -163,6 +168,7 @@ import math
 import os
 import random
 import time
+import sys
 from collections import OrderedDict
 from pathlib import Path
 
@@ -179,6 +185,9 @@ from huggingface_hub import hf_hub_download
 from PIL import Image
 from safetensors.torch import load_file
 from scipy.stats import binom
+
+sys.path.insert(0, os.environ.get("WMQ_CODE_ROOT", str(Path.cwd())))
+from wmq_baselines import reconstruct, tensor_tree
 
 
 ROOT = Path(os.environ.get("WMQ_ROOT", Path.cwd() / "wmq_runs")).resolve()
@@ -243,6 +252,14 @@ GRAD_EVAL_EVERY = int(os.environ.get("GRAD_EVAL_EVERY", "4"))
 ROUND_TEMPERATURE = float(os.environ.get("ROUND_TEMPERATURE", "0.10"))
 GRAD_PRED_WEIGHT = float(os.environ.get("GRAD_PRED_WEIGHT", "1.0"))
 GRAD_IMAGE_WEIGHT = float(os.environ.get("GRAD_IMAGE_WEIGHT", "0.10"))
+RUN_PROTOCOL = os.environ.get("RUN_PROTOCOL", "fair_w4a16")
+RECON_STEPS = int(os.environ.get("RECON_STEPS", "200"))
+RECON_LR = float(os.environ.get("RECON_LR", "0.001"))
+RECON_CACHE_MB = int(os.environ.get("RECON_CACHE_MB", "512"))
+CLEAN_MIN_BITACC = float(os.environ.get("CLEAN_MIN_BITACC", "0.80"))
+CLEAN_MIN_TPR = float(os.environ.get("CLEAN_MIN_TPR", "0.90"))
+CLEAN_POLICY = os.environ.get("CLEAN_POLICY", "strict")
+BASELINE_CHECK_ONLY = os.environ.get("BASELINE_CHECK_ONLY", "0") == "1"
 
 PROMPTS = [
     "a professional photograph of a red fox in a snowy forest",
@@ -488,9 +505,13 @@ def summarize_bits(predictions, key, fpr=FPR):
 @torch.inference_mode()
 def decode_stable_signature(extractor, images):
     transform = TV.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
-    batch = transform(pil_tensor(images))
-    logits = extractor(batch)
-    return logits > 0
+    predictions = []
+    for start in range(0, len(images), METRIC_BATCH_SIZE):
+        logits = extractor(transform(pil_tensor(images[start:start + METRIC_BATCH_SIZE])))
+        if not torch.isfinite(logits).all():
+            fail("Stable Signature decoder produced nonfinite logits")
+        predictions.append((logits > 0).cpu())
+    return torch.cat(predictions)
 
 
 class AquaSecretDecoder(nn.Module):
@@ -509,8 +530,16 @@ class AquaSecretDecoder(nn.Module):
 
 @torch.inference_mode()
 def decode_aqualora(decoder, images):
-    logits = decoder(pil_tensor(images, normalized=True))
-    return logits.argmax(-1).bool()
+    predictions = []
+    for start in range(0, len(images), METRIC_BATCH_SIZE):
+        # Match the official evaluation preprocessing before tensor conversion.
+        resized = [im.convert("RGB").resize((512, 512), Image.Resampling.BICUBIC)
+                   for im in images[start:start + METRIC_BATCH_SIZE]]
+        logits = decoder(pil_tensor(resized, normalized=True))
+        if not torch.isfinite(logits).all():
+            fail("AquaLoRA decoder produced nonfinite logits")
+        predictions.append(logits.argmax(-1).bool().cpu())
+    return torch.cat(predictions)
 
 
 class MapperNet(nn.Module):
@@ -944,7 +973,8 @@ class GradientQuantizer(nn.Module):
 
 
 def differentiable_quantize(weight, bits, clip, log_scale, zero_value, round_logit):
-    source = weight.detach()
+    # Keep grid math in FP32: 1e-8 becomes zero in FP16 and divides by zero.
+    source = weight.detach().float()
     flat = source.reshape(source.shape[0], -1)
     max_abs = flat.float().abs().amax(dim=1, keepdim=True).clamp_min(1e-8).to(flat.dtype) * clip
     qmax = float(2 ** (bits - 1) - 1)
@@ -961,7 +991,7 @@ def differentiable_quantize(weight, bits, clip, log_scale, zero_value, round_log
     hard_up = (fraction >= threshold).to(flat.dtype)
     up = soft_up + (hard_up - soft_up).detach()
     integer = (lower + up).clamp(-qmax, qmax)
-    return ((integer - zero.to(flat.dtype)) * scale).reshape_as(source)
+    return ((integer - zero.to(flat.dtype)) * scale).reshape_as(source).to(weight.dtype)
 
 
 def differentiable_overrides(module, component, recipe, controls, source_state, active_groups):
@@ -1047,7 +1077,7 @@ def gradient_proxy_loss(name, pipe, component, decoder, key, recipe, controls, r
 
 def refine_quantizer_gradient(name, pipe, component, decoder, decode_fn, key, lpips_model,
                               pristine, initial_recipe, prompts, seeds, clean_images,
-                              result_dir):
+                              result_dir, calibration=None):
     target = pipe.vae if component == "vae" else pipe.unet
     restore_state(target, pristine)
     pipe.unet.requires_grad_(False)
@@ -1055,7 +1085,8 @@ def refine_quantizer_gradient(name, pipe, component, decoder, decode_fn, key, lp
     if hasattr(decoder, "parameters"):
         for parameter in decoder.parameters():
             parameter.requires_grad_(False)
-    calibration = capture_calibration(pipe, component, prompts, seeds)
+    if calibration is None:
+        calibration = capture_calibration(pipe, component, prompts, seeds)
     groups = refinement_groups(component, initial_recipe)
     controls = GradientQuantizer(groups)
     if REFINE_MODE == "scale":
@@ -1068,6 +1099,16 @@ def refine_quantizer_gradient(name, pipe, component, decoder, decode_fn, key, lp
     best = None
     records = calibration["records"]
     joint_runtime = JOINT_GROUP_GRAD
+    trainable_controls = [p for p in controls.parameters() if p.requires_grad]
+
+    def controls_are_finite():
+        return all(bool(torch.isfinite(parameter).all().item())
+                   for parameter in trainable_controls)
+
+    def restore_controls(snapshot):
+        with torch.no_grad():
+            for parameter, saved in zip(trainable_controls, snapshot):
+                parameter.copy_(saved)
 
     for step in range(1, GRAD_STEPS + 1):
         record = records[(step - 1) % len(records)]
@@ -1083,7 +1124,10 @@ def refine_quantizer_gradient(name, pipe, component, decoder, decode_fn, key, lp
                 total, attack_loss, pred_nmse, image_loss = gradient_proxy_loss(
                     name, pipe, component, decoder, key, initial_recipe, controls, record,
                     pristine, active_groups)
-                total.backward()
+                losses_finite = all(bool(torch.isfinite(value.detach()).all().item())
+                                    for value in (total, attack_loss, pred_nmse, image_loss))
+                if losses_finite:
+                    total.backward()
                 break
             except torch.cuda.OutOfMemoryError:
                 optimizer.zero_grad(set_to_none=True)
@@ -1093,9 +1137,39 @@ def refine_quantizer_gradient(name, pipe, component, decoder, decode_fn, key, lp
                 joint_runtime = False
                 print(f"CUDA OOM in joint-group gradient for {name}; switching to "
                       "round-robin group gradients", flush=True)
-        grad_norm = torch.nn.utils.clip_grad_norm_(controls.parameters(), 5.0)
-        optimizer.step()
-        controls.project_()
+        control_snapshot = [parameter.detach().clone() for parameter in trainable_controls]
+        skip_reason = ""
+        update_applied = False
+        if losses_finite:
+            grad_norm = torch.nn.utils.clip_grad_norm_(trainable_controls, 5.0,
+                                                       error_if_nonfinite=False)
+            gradients_finite = (bool(torch.isfinite(grad_norm).item()) and all(
+                parameter.grad is None or bool(torch.isfinite(parameter.grad).all().item())
+                for parameter in trainable_controls))
+            if gradients_finite:
+                optimizer.step()
+                if controls_are_finite():
+                    controls.project_()
+                    update_applied = True
+                else:
+                    restore_controls(control_snapshot)
+                    optimizer.state.clear()
+                    skip_reason = "nonfinite_parameters_after_optimizer_step"
+            else:
+                skip_reason = "nonfinite_gradient"
+        else:
+            grad_norm = torch.tensor(float("nan"), device=DEVICE)
+            skip_reason = "nonfinite_proxy_loss"
+
+        if not update_applied:
+            restore_controls(control_snapshot)
+            optimizer.zero_grad(set_to_none=True)
+            # Repeated overflows should become less likely, while a fully unstable
+            # refinement can finish and safely fall back to the grid-search recipe.
+            for parameter_group in optimizer.param_groups:
+                parameter_group["lr"] *= 0.5
+            print(f"WARNING: {name} gradient step {step:03d} skipped: {skip_reason}; "
+                  f"lr={optimizer.param_groups[0]['lr']:.3g}", flush=True)
         row = {
             "step": step, "active_group": "+".join(active_groups),
             "timestep": record.get("timestep", -1),
@@ -1104,6 +1178,9 @@ def refine_quantizer_gradient(name, pipe, component, decoder, decode_fn, key, lp
             "proxy_prediction_nmse": float(pred_nmse.detach().cpu()),
             "proxy_image_mse": float(image_loss.detach().cpu()),
             "quantizer_grad_norm": float(grad_norm.detach().cpu()),
+            "update_applied": update_applied,
+            "skip_reason": skip_reason,
+            "learning_rate": optimizer.param_groups[0]["lr"],
         }
         del total, attack_loss, pred_nmse, image_loss
         cleanup()
@@ -1115,7 +1192,7 @@ def refine_quantizer_gradient(name, pipe, component, decoder, decode_fn, key, lp
                 clean_images, prompts, seeds, lpips_model, calibration)
             rank = (metrics["objective"], metrics["bit_accuracy"], metrics["tpr"],
                     -metrics["psnr"], metrics["lpips"])
-            accepted = metrics["feasible"] and (best is None or rank < best[0])
+            accepted = update_applied and metrics["feasible"] and (best is None or rank < best[0])
             if accepted:
                 best = (rank, hard_recipe, metrics)
             row.update({f"hard_{key}": value for key, value in metrics.items()})
@@ -1126,6 +1203,8 @@ def refine_quantizer_gradient(name, pipe, component, decoder, decode_fn, key, lp
             restore_state(target, pristine)
             cleanup()
         rows.append(row)
+        save_json(result_dir / "gradient_updates.json", {"statistics": gradient_statistics(rows),
+                                                        "rows": rows})
 
     with open(result_dir / "gradient_optimization.csv", "w", newline="", encoding="utf-8") as handle:
         fieldnames = sorted(set().union(*(row.keys() for row in rows)))
@@ -1221,6 +1300,215 @@ def save_images(images, folder):
         image.save(folder / f"{idx:04d}.png")
 
 
+def save_json(path, payload):
+    """Atomic reports; invalid numbers remain explicit nulls in valid JSON."""
+    def sanitize(value):
+        if isinstance(value, float) and not math.isfinite(value):
+            return None
+        if isinstance(value, dict):
+            return {k: sanitize(v) for k, v in value.items()}
+        if isinstance(value, (list, tuple)):
+            return [sanitize(v) for v in value]
+        return value
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_suffix(path.suffix + ".tmp")
+    tmp.write_text(json.dumps(sanitize(payload), indent=2, allow_nan=False), encoding="utf-8")
+    tmp.replace(path)
+
+
+def quality_feasible(quality, nmse):
+    return (all(math.isfinite(v) for v in (quality["psnr"], quality["lpips"], nmse))
+            and quality["psnr"] >= MIN_PSNR and quality["lpips"] <= MAX_LPIPS
+            and nmse <= MAX_PRED_NMSE)
+
+
+def gradient_statistics(rows):
+    updates = sum(bool(r.get("update_applied", False)) for r in rows)
+    return {"attempted_updates": len(rows), "valid_updates": updates,
+            "skipped_updates": len(rows) - updates,
+            "valid_update_fraction": updates / len(rows) if rows else 0.,
+            "accepted_evaluations": sum(bool(r.get("accepted", False)) for r in rows),
+            "skip_reasons": {reason: sum(r.get("skip_reason") == reason for r in rows)
+                             for reason in sorted({r.get("skip_reason") for r in rows
+                                                   if r.get("skip_reason")})}}
+
+
+def run_fair_comparison(name, pipe, component, decoder, decode_fn, key, lpips_model):
+    """Shared split/target W4A16 comparison; test outcomes never select a method."""
+    result_dir = OUT / name / "fair_w4a16"
+    # Do not mix incomplete/old reports with a new experiment.
+    result_dir.mkdir(parents=True, exist_ok=False)
+    prompts = experiment_prompts(CALIB_N + SEARCH_N + TEST_N)
+    calib_prompts = prompts[:CALIB_N]
+    search_prompts = prompts[CALIB_N:CALIB_N + SEARCH_N]
+    test_prompts = prompts[CALIB_N + SEARCH_N:]
+    # Guaranteed disjoint even for large requested splits.
+    all_seeds = list(range(BASE_SEED, BASE_SEED + len(prompts)))
+    calib_seeds = all_seeds[:CALIB_N]
+    search_seeds = all_seeds[CALIB_N:CALIB_N + SEARCH_N]
+    test_seeds = all_seeds[CALIB_N + SEARCH_N:]
+    target = pipe.vae if component == "vae" else pipe.unet
+    target.eval().requires_grad_(False)
+    selected = [n for n, p in target.named_parameters() if n.endswith("weight") and p.ndim >= 2
+                and (component == "unet" or n.startswith(("decoder.", "post_quant_conv.")))]
+    budget = sum(target.get_parameter(n).numel() for n in selected)
+    manifest = {"protocol": "fair_w4a16", "watermark": name, "component": component,
+                "weight_bits": 4, "activation_bits": 16, "simulated": True,
+                "weight_grid": "symmetric_-7_to_7", "target_names": selected,
+                "changed_parameters": budget, "model": getattr(pipe, "_wmq_model_id", None),
+                "key": key, "assets": getattr(pipe, "_wmq_assets", {}),
+                "sampling": {"steps": STEPS, "guidance": GUIDANCE, "height": HEIGHT, "width": WIDTH,
+                             "scheduler": dict(pipe.scheduler.config), "batch_size": GEN_BATCH_SIZE},
+                "calibration": {"prompts": calib_prompts, "seeds": calib_seeds,
+                                "timesteps": CALIB_TIMESTEPS, "batch_size": CALIB_BATCH_SIZE},
+                "search": {"prompts": search_prompts, "seeds": search_seeds},
+                "test": {"prompts": test_prompts, "seeds": test_seeds},
+                "reconstruction": {"steps": RECON_STEPS, "lr": RECON_LR, "seed": REFINE_SEED},
+                "constraints": {"min_psnr": MIN_PSNR, "max_lpips": MAX_LPIPS,
+                                "max_prediction_nmse": MAX_PRED_NMSE, "fpr": FPR}}
+    save_json(result_dir / "manifest.json", manifest)
+    clean_search = generate(pipe, search_prompts, search_seeds)
+    clean_search_bits = summarize_bits(decode_fn(decoder, clean_search), key)
+    baseline_valid = (clean_search_bits["bit_accuracy"] >= CLEAN_MIN_BITACC
+                      and clean_search_bits["tpr"] >= CLEAN_MIN_TPR)
+    validation = {"watermark": name, "split": "search", "clean": clean_search_bits,
+                  "minimum_bit_accuracy": CLEAN_MIN_BITACC, "minimum_tpr": CLEAN_MIN_TPR,
+                  "baseline_valid": baseline_valid, "policy": CLEAN_POLICY,
+                  "interpretation": "Quality gate only; low scores do not prove checkpoint corruption."}
+    save_json(result_dir / "clean_validation.json", validation)
+    save_images(clean_search, result_dir / "clean_search")
+    if BASELINE_CHECK_ONLY or (not baseline_valid and CLEAN_POLICY == "strict"):
+        status = "baseline_checked" if baseline_valid else "invalid_clean_baseline"
+        report = {"watermark": name, "protocol": RUN_PROTOCOL, "status": status,
+                  "baseline_valid": baseline_valid, "methods": [], "validation": validation}
+        save_json(result_dir / "report.json", report)
+        print(f"{name}: {status}; see {result_dir / 'clean_validation.json'}", flush=True)
+        return report
+    clean_test = generate(pipe, test_prompts, test_seeds)
+    clean_test_bits = summarize_bits(decode_fn(decoder, clean_test), key)
+    save_images(clean_test, result_dir / "clean_test")
+    save_json(result_dir / "clean_test.json", clean_test_bits)
+    pristine = clone_state(target)
+    calibration = capture_calibration(pipe, component, calib_prompts, calib_seeds)
+    for record in calibration["records"]:
+        if not torch.isfinite(record["reference"]).all():
+            fail("Clean calibration contains nonfinite reference values")
+
+    def replay():
+        for record in calibration["records"]:
+            if component == "unet":
+                pipe.unet(*_tree_device(record["args"]), **_tree_device(record["kwargs"]))
+            else:
+                pipe.vae.decode(record["latent"].to(device=DEVICE, dtype=DTYPE)
+                                / float(pipe.vae.config.scaling_factor), return_dict=False)
+
+    def search_metrics():
+        nmse = prediction_nmse(pipe, component, calibration)
+        images = generate(pipe, search_prompts, search_seeds)
+        quality = image_metrics(clean_search, images, lpips_model)
+        bits = summarize_bits(decode_fn(decoder, images), key)
+        return {"bit_accuracy": bits["bit_accuracy"], "tpr": bits["tpr"], **quality,
+                "prediction_nmse": nmse, "feasible": quality_feasible(quality, nmse)}
+
+    methods = []
+
+    def record_method(method, recipe, search, details):
+        # Nothing is selected or tuned using this final held-out evaluation.
+        images = generate(pipe, test_prompts, test_seeds)
+        quality = image_metrics(clean_test, images, lpips_model)
+        bits = summarize_bits(decode_fn(decoder, images), key)
+        report = {"method": method, "recipe": recipe, "weight_bits": 4, "activation_bits": 16,
+                  "component": component, "changed_parameters": budget,
+                  "baseline_valid": baseline_valid, "search": search, "clean": clean_test_bits,
+                  "attacked": bits, "paired_quality": quality,
+                  "calibration_prediction_nmse": search["prediction_nmse"],
+                  "feasible": quality_feasible(quality, search["prediction_nmse"]),
+                  "bit_accuracy_retained_percent": 100 * bits["bit_accuracy"] / max(clean_test_bits["bit_accuracy"], 1e-12),
+                  "tpr_retained_percent": (100 * bits["tpr"] / clean_test_bits["tpr"]
+                                           if clean_test_bits["tpr"] > 0 else None),
+                  "details": details}
+        folder = result_dir / method
+        save_json(folder / "report.json", report)
+        save_images(images, folder / "attacked_test")
+        methods.append(report)
+        save_json(result_dir / "report.json", {"watermark": name, "protocol": RUN_PROTOCOL,
+                  "status": "running", "baseline_valid": baseline_valid, "methods": methods})
+
+    try:
+        # Full target coverage and fixed bitwidth for every row, including grid.
+        grid = []
+        for clip in (1., .75):
+            recipe = {"bits": 4, "clip": clip, "groups": ["all"]}
+            restore_state(target, pristine)
+            if apply_recipe(target, component, recipe) != budget:
+                fail("Grid recipe target coverage differs from the comparison manifest")
+            metrics = search_metrics()
+            grid.append((recipe, metrics))
+            if clip == 1.:
+                record_method("rtn_w4a16", recipe, metrics, {"uses_watermark_labels": False})
+        eligible = [item for item in grid if item[1]["feasible"]]
+        if eligible:
+            grid_recipe, grid_metrics = min(eligible, key=lambda item: (item[1]["bit_accuracy"], item[1]["tpr"]))
+        else:
+            grid_recipe, grid_metrics = min(grid, key=lambda item: item[1]["prediction_nmse"])
+        save_json(result_dir / "grid_search.json", {"candidates": grid, "has_feasible_candidate": bool(eligible),
+                                                    "selected_recipe": grid_recipe})
+        restore_state(target, pristine)
+        apply_recipe(target, component, grid_recipe)
+        record_method("grid_w4a16", grid_recipe, grid_metrics,
+                      {"uses_watermark_labels": True, "fallback_feasible": grid_metrics["feasible"]})
+
+        if REFINE_MODE != "none":
+            restore_state(target, pristine)
+            folder = result_dir / "gradient_w4a16"
+            folder.mkdir(exist_ok=True)
+            recipe, rows, best = refine_quantizer_gradient(
+                name, pipe, component, decoder, decode_fn, key, lpips_model, pristine,
+                grid_recipe, search_prompts, search_seeds, clean_search, folder, calibration=calibration)
+            restore_state(target, pristine)
+            apply_recipe(target, component, recipe)
+            metrics = search_metrics()
+            # Candidate has already been checked on the same search/calibration
+            # split; still recheck after materializing for the final evaluation.
+            fallback = best is None or not metrics["feasible"]
+            if fallback:
+                recipe = grid_recipe
+                restore_state(target, pristine)
+                apply_recipe(target, component, recipe)
+                metrics = search_metrics()
+            record_method("gradient_w4a16", recipe, metrics,
+                          {"uses_watermark_labels": True, **gradient_statistics(rows),
+                           "selected_source": "grid_fallback" if fallback else "gradient_refinement",
+                           "fallback_feasible": metrics["feasible"] if fallback else None,
+                           "best_refinement_metrics": best})
+
+        baselines = ["qdiff_unet_adapted"] if component == "unet" else ["adaround_vae", "brecq_vae_adapted"]
+        for method in baselines:
+            restore_state(target, pristine)
+            folder = result_dir / method
+            folder.mkdir(exist_ok=True)
+            progress = []
+
+            def log_progress(row):
+                progress.append(row)
+                save_json(folder / "reconstruction.json", progress)
+                print(f"{name} {method}: {row}", flush=True)
+
+            details = reconstruct(target, selected, replay, method, steps=RECON_STEPS,
+                                  lr=RECON_LR, seed=REFINE_SEED, cache_mb=RECON_CACHE_MB,
+                                  log_callback=log_progress)
+            if details["changed_parameters"] != budget:
+                fail(f"Unequal target coverage for {method}")
+            record_method(method, {"bits": 4, "clip": 1., "groups": ["all"]}, search_metrics(), details)
+    finally:
+        restore_state(target, pristine)
+    report = {"watermark": name, "protocol": RUN_PROTOCOL, "status": "complete",
+              "baseline_valid": baseline_valid, "methods": methods}
+    save_json(result_dir / "report.json", report)
+    return report
+
+
 def run_adaptive_search(name, pipe, component, decoder, decode_fn, key, lpips_model):
     result_dir = OUT / name
     result_dir.mkdir(parents=True, exist_ok=True)
@@ -1235,10 +1523,15 @@ def run_adaptive_search(name, pipe, component, decoder, decode_fn, key, lpips_mo
     clean_search = generate(pipe, prompts_search, search_seeds)
     clean_test = generate(pipe, prompts_test, test_seeds)
     clean_bits = summarize_bits(decode_fn(decoder, clean_test), key)
+    clean_search_bits = summarize_bits(decode_fn(decoder, clean_search), key)
+    save_json(result_dir / "clean_validation.json", {"search": clean_search_bits, "test": clean_bits,
+              "minimum_bit_accuracy": CLEAN_MIN_BITACC, "minimum_tpr": CLEAN_MIN_TPR})
     save_images(clean_test, result_dir / "clean_test")
-    if clean_bits["bit_accuracy"] < 0.60:
-        fail(f"{name} clean bit accuracy is only {clean_bits['bit_accuracy']:.3f}; "
-             "watermark/checkpoint loading is invalid, so attack search was stopped")
+    if CLEAN_POLICY == "strict" and (clean_search_bits["bit_accuracy"] < CLEAN_MIN_BITACC
+                                    or clean_search_bits["tpr"] < CLEAN_MIN_TPR):
+        fail(f"{name} clean watermark did not pass the declared quality gate; "
+             "inspect clean_validation.json and the checkpoint/key/preprocessing")
+    calibration = capture_calibration(pipe, component, prompts_search, search_seeds)
 
     rows = []
     best = None
@@ -1248,11 +1541,13 @@ def run_adaptive_search(name, pipe, component, decoder, decode_fn, key, lpips_mo
         attacked = generate(pipe, prompts_search, search_seeds)
         quality = image_metrics(clean_search, attacked, lpips_model)
         bits = summarize_bits(decode_fn(decoder, attacked), key)
-        feasible = quality["psnr"] >= MIN_PSNR and quality["lpips"] <= MAX_LPIPS
+        nmse = prediction_nmse(pipe, component, calibration)
+        feasible = quality_feasible(quality, nmse)
         row = {
             "candidate": index, **recipe, "changed_parameters": changed,
             "search_bit_accuracy": bits["bit_accuracy"], "search_tpr": bits["tpr"],
             "search_psnr": quality["psnr"], "search_lpips": quality["lpips"],
+            "calibration_prediction_nmse": nmse,
             "feasible": feasible,
         }
         rows.append(row)
@@ -1282,19 +1577,23 @@ def run_adaptive_search(name, pipe, component, decoder, decode_fn, key, lpips_mo
     attacked_test = generate(pipe, prompts_test, test_seeds)
     attack_bits = summarize_bits(decode_fn(decoder, attacked_test), key)
     quality = image_metrics(clean_test, attacked_test, lpips_model)
+    final_nmse = prediction_nmse(pipe, component, calibration)
     save_images(attacked_test, result_dir / "attacked_test")
     report = {
         "watermark": name,
         "model": getattr(pipe, "_wmq_model_id", SS_MODEL if name == "stable_signature" else AQUA_MODEL),
-        "quantization": ("gradient-steered detector-guided timestep-calibrated simulated weight PTQ"
-                         if REFINE_OPTIMIZER == "gradient" else
-                         "zeroth-order detector-guided simulated weight PTQ"),
+        "quantization": "simulated weight PTQ",
+        "selected_source": "refinement" if refinement_best is not None else "grid_search",
+        "calibration_prediction_nmse": final_nmse,
+        "feasible": quality_feasible(quality, final_nmse),
         "selected_grid_candidate": candidate_index,
         "grid_recipe": grid_recipe,
         "recipe": recipe,
         "refinement": {
             "mode": REFINE_MODE, "optimizer": REFINE_OPTIMIZER,
             "logged_steps": len(refinement_rows),
+            "update_statistics": (gradient_statistics(refinement_rows)
+                                  if REFINE_OPTIMIZER == "gradient" else None),
             "objective_images": refine_count, "max_prediction_nmse": MAX_PRED_NMSE,
             "gradient_scope_requested": (("all controlled semantic groups jointly" if JOINT_GROUP_GRAD else
                                           "one round-robin semantic group") +
@@ -1348,13 +1647,14 @@ def load_stable_signature():
 
 
 def load_aqualora():
-    folder = ROOT / "assets" / "aqualora_ppft"
+    asset_id = hashlib.sha256(f"{AQUA_REV}/{AQUA_FOLDER}".encode()).hexdigest()[:16]
+    folder = ROOT / "assets" / f"aqualora_{asset_id}"
     folder.mkdir(parents=True, exist_ok=True)
     for filename in ("mapper.pt", "msgdecoder.pt", "pytorch_lora_weights.safetensors"):
         cached = hf_hub_download(AQUA_REPO, f"{AQUA_FOLDER}/{filename}", revision=AQUA_REV,
                                  cache_dir=str(CACHE))
         destination = folder / filename
-        if not destination.exists():
+        if not destination.exists() or sha256(destination) != sha256(cached):
             import shutil
             shutil.copy2(cached, destination)
     pipe = build_pipeline(AQUA_MODEL)
@@ -1364,10 +1664,36 @@ def load_aqualora():
     decoder.load_state_dict(torch.load(folder / "msgdecoder.pt", map_location="cpu",
                                        weights_only=True), strict=True)
     decoder.to(device=DEVICE, dtype=torch.float32).eval()
+    if not all(torch.isfinite(p).all() for p in decoder.parameters()):
+        fail("AquaLoRA checkpoint contains nonfinite decoder parameters")
+    pipe._wmq_assets = {"repo": AQUA_REPO, "revision": AQUA_REV, "folder": AQUA_FOLDER,
+                        "lora_scale": 1.03, "key": AQUA_KEY,
+                        "decoder_preprocessing": "RGB bicubic 512x512, float32 [-1,1]",
+                        "sha256": {p.name: sha256(p) for p in folder.iterdir() if p.is_file()}}
     return pipe, decoder
 
 
 def main():
+    if RUN_PROTOCOL not in {"fair_w4a16", "legacy_grid"}:
+        fail("RUN_PROTOCOL must be fair_w4a16 or legacy_grid")
+    if CLEAN_POLICY not in {"strict", "report"}:
+        fail("CLEAN_POLICY must be strict or report")
+    if not (0 <= CLEAN_MIN_BITACC <= 1 and 0 <= CLEAN_MIN_TPR <= 1):
+        fail("Clean validation thresholds must be between 0 and 1")
+    if RECON_STEPS < 1 or RECON_CACHE_MB < 1 or not math.isfinite(RECON_LR) or RECON_LR <= 0:
+        fail("Reconstruction steps/cache/LR must be positive and finite")
+    if not 0 < FPR < 1 or STEPS < 1 or not 1 <= CALIB_TIMESTEPS <= STEPS:
+        fail("Require 0<FPR<1 and 1<=CALIB_TIMESTEPS<=STEPS")
+    if RUN_PROTOCOL == "fair_w4a16" and REFINE_OPTIMIZER != "gradient":
+        fail("fair_w4a16 uses REFINE_OPTIMIZER=gradient; zeroth is available in legacy_grid")
+    if RUN_PROTOCOL == "fair_w4a16":
+        for watermark in ("stable_signature", "aqualora"):
+            destination = OUT / watermark / "fair_w4a16"
+            if destination.exists():
+                fail(f"Results already exist at {destination}. Set WMQ_OUTPUT to a new directory "
+                     "to preserve earlier experiments.")
+    if GUIDANCE <= 1 or HEIGHT < 8 or WIDTH < 8:
+        fail("This calibration protocol requires GUIDANCE>1 and positive image dimensions")
     if not torch.cuda.is_available():
         fail("CUDA is required, but torch.cuda.is_available() is False")
     capability = torch.cuda.get_device_capability(0)
@@ -1419,20 +1745,47 @@ def main():
     OUT.mkdir(parents=True, exist_ok=True)
 
     import lpips
-    lpips_model = lpips.LPIPS(net="alex").to(DEVICE).eval()
+    lpips_model = None if BASELINE_CHECK_ONLY and RUN_PROTOCOL == "fair_w4a16" else lpips.LPIPS(net="alex").to(DEVICE).eval()
     reports = []
+    runner = run_fair_comparison if RUN_PROTOCOL == "fair_w4a16" else run_adaptive_search
 
     pipe, extractor = load_stable_signature()
-    reports.append(run_adaptive_search("stable_signature", pipe, "vae", extractor,
+    reports.append(runner("stable_signature", pipe, "vae", extractor,
                                        decode_stable_signature, SS_KEY, lpips_model))
     del pipe, extractor
     cleanup()
 
     pipe, decoder = load_aqualora()
-    reports.append(run_adaptive_search("aqualora", pipe, "unet", decoder,
+    reports.append(runner("aqualora", pipe, "unet", decoder,
                                        decode_aqualora, AQUA_KEY, lpips_model))
     del pipe, decoder
     cleanup()
+
+    if RUN_PROTOCOL == "fair_w4a16":
+        save_json(OUT / "comparison_summary.json", {"protocol": RUN_PROTOCOL,
+                  "status": ("complete" if all(r["status"] == "complete" for r in reports) else "incomplete"),
+                  "reports": reports})
+        table = []
+        for report in reports:
+            for method in report["methods"]:
+                table.append({"watermark": report["watermark"], "method": method["method"],
+                              "baseline_valid": method["baseline_valid"],
+                              "weight_bits": 4, "activation_bits": 16,
+                              "changed_parameters": method["changed_parameters"],
+                              "clean_bit_accuracy": method["clean"]["bit_accuracy"],
+                              "test_bit_accuracy": method["attacked"]["bit_accuracy"],
+                              "clean_tpr": method["clean"]["tpr"], "test_tpr": method["attacked"]["tpr"],
+                              **method["paired_quality"],
+                              "calibration_nmse": method["calibration_prediction_nmse"],
+                              "feasible": method["feasible"],
+                              "selected_source": method["details"].get("selected_source", method["method"])})
+        if table:
+            with open(OUT / "comparison.csv", "w", newline="", encoding="utf-8") as handle:
+                writer = csv.DictWriter(handle, fieldnames=list(table[0]))
+                writer.writeheader()
+                writer.writerows(table)
+        print(f"Comparison status saved: {OUT / 'comparison_summary.json'}", flush=True)
+        return
 
     summary = {
         "created_unix": time.time(),
