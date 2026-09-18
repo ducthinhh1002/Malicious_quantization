@@ -23,13 +23,18 @@ set -Eeuo pipefail
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 export WMQ_CODE_ROOT="$SCRIPT_DIR"
 WMQ_ROOT="${WMQ_ROOT:-$SCRIPT_DIR/wmq_runs}"
-WMQ_OUTPUT="${WMQ_OUTPUT:-$WMQ_ROOT/output}"
 WMQ_CACHE="${WMQ_CACHE:-$WMQ_ROOT/hf_cache}"
 WMQ_CHECK_ONLY="${WMQ_CHECK_ONLY:-0}" # 1: imports + CUDA; imports: login-node audit
 case "$WMQ_CHECK_ONLY" in
   0|1|imports) ;;
   *) echo "WMQ_CHECK_ONLY must be 0, 1, or imports" >&2; exit 1 ;;
 esac
+WMQ_LOG_DIR="${WMQ_LOG_DIR:-$WMQ_ROOT/logs}"
+mkdir -p "$WMQ_LOG_DIR"
+WMQ_RUN_LOG="$(mktemp "$WMQ_LOG_DIR/wmq_$(date +%Y%m%d_%H%M%S)_XXXXXX.log")"
+exec > >(tee -a "$WMQ_RUN_LOG") 2>&1
+export PYTHONUNBUFFERED=1
+echo "Run log: $WMQ_RUN_LOG"
 # Install dependencies on the login node beforehand. Jobs only use this prefix.
 if [[ -z "${CONDA_PREFIX:-}" || ! -d "$CONDA_PREFIX/conda-meta" || ! -x "$CONDA_PREFIX/bin/python" ]]; then
   echo "Activate the prepared Conda environment first: conda activate wmq" >&2
@@ -37,6 +42,11 @@ if [[ -z "${CONDA_PREFIX:-}" || ! -d "$CONDA_PREFIX/conda-meta" || ! -x "$CONDA_
   exit 1
 fi
 PY="$CONDA_PREFIX/bin/python"
+if [[ -z "${WMQ_OUTPUT:-}" ]]; then
+  mkdir -p "$WMQ_ROOT/output"
+  WMQ_OUTPUT="$(mktemp -d "$WMQ_ROOT/output/run_$(date +%Y%m%d_%H%M%S)_XXXXXX")"
+fi
+echo "Results: $WMQ_OUTPUT"
 export PATH="$CONDA_PREFIX/bin:$PATH"
 export WMQ_ROOT WMQ_OUTPUT WMQ_CACHE WMQ_CHECK_ONLY
 export HF_HOME="$WMQ_CACHE"
@@ -107,6 +117,7 @@ checks = {
     "safetensors.torch": ["load_file"], "scipy.stats": ["binom"],
     "peft": [], "accelerate": [], "ftfy": [], "lpips": ["LPIPS"],
     "wmq_baselines": ["reconstruct", "AdaptiveRounding"],
+    "wmq_diagnostics": ["quality_warning"],
 }
 for module, names in checks.items():
     try:
@@ -188,6 +199,7 @@ from scipy.stats import binom
 
 sys.path.insert(0, os.environ.get("WMQ_CODE_ROOT", str(Path.cwd())))
 from wmq_baselines import reconstruct, tensor_tree
+from wmq_diagnostics import quality_warning
 
 
 ROOT = Path(os.environ.get("WMQ_ROOT", Path.cwd() / "wmq_runs")).resolve()
@@ -258,7 +270,7 @@ RECON_LR = float(os.environ.get("RECON_LR", "0.001"))
 RECON_CACHE_MB = int(os.environ.get("RECON_CACHE_MB", "512"))
 CLEAN_MIN_BITACC = float(os.environ.get("CLEAN_MIN_BITACC", "0.80"))
 CLEAN_MIN_TPR = float(os.environ.get("CLEAN_MIN_TPR", "0.90"))
-CLEAN_POLICY = os.environ.get("CLEAN_POLICY", "strict")
+CLEAN_POLICY = os.environ.get("CLEAN_POLICY", "report")
 BASELINE_CHECK_ONLY = os.environ.get("BASELINE_CHECK_ONLY", "0") == "1"
 
 PROMPTS = [
@@ -1378,6 +1390,11 @@ def run_fair_comparison(name, pipe, component, decoder, decode_fn, key, lpips_mo
                   "interpretation": "Quality gate only; low scores do not prove checkpoint corruption."}
     save_json(result_dir / "clean_validation.json", validation)
     save_images(clean_search, result_dir / "clean_search")
+    if not baseline_valid:
+        quality_warning(OUT, "clean_baseline", "Clean watermark below quality thresholds", watermark=name,
+                        metrics=clean_search_bits,
+                        thresholds={"min_bit_accuracy": CLEAN_MIN_BITACC, "min_tpr": CLEAN_MIN_TPR},
+                        action="stop_requested" if BASELINE_CHECK_ONLY or CLEAN_POLICY == "strict" else "continue")
     if BASELINE_CHECK_ONLY or (not baseline_valid and CLEAN_POLICY == "strict"):
         status = "baseline_checked" if baseline_valid else "invalid_clean_baseline"
         report = {"watermark": name, "protocol": RUN_PROTOCOL, "status": status,
@@ -1431,6 +1448,11 @@ def run_fair_comparison(name, pipe, component, decoder, decode_fn, key, lpips_mo
         folder = result_dir / method
         save_json(folder / "report.json", report)
         save_images(images, folder / "attacked_test")
+        if not search["feasible"] or not report["feasible"]:
+            quality_warning(OUT, "method_quality", "Method failed search or test quality gate",
+                            watermark=name, method=method, metrics={"search": search, "test": quality},
+                            thresholds={"min_psnr": MIN_PSNR, "max_lpips": MAX_LPIPS,
+                                        "max_prediction_nmse": MAX_PRED_NMSE})
         methods.append(report)
         save_json(result_dir / "report.json", {"watermark": name, "protocol": RUN_PROTOCOL,
                   "status": "running", "baseline_valid": baseline_valid, "methods": methods})
@@ -1452,6 +1474,8 @@ def run_fair_comparison(name, pipe, component, decoder, decode_fn, key, lpips_mo
             grid_recipe, grid_metrics = min(eligible, key=lambda item: (item[1]["bit_accuracy"], item[1]["tpr"]))
         else:
             grid_recipe, grid_metrics = min(grid, key=lambda item: item[1]["prediction_nmse"])
+            quality_warning(OUT, "grid_fallback", "No feasible grid candidate; evaluating minimum-NMSE candidate",
+                            watermark=name, metrics=grid_metrics, action="continue_with_diagnostic_fallback")
         save_json(result_dir / "grid_search.json", {"candidates": grid, "has_feasible_candidate": bool(eligible),
                                                     "selected_recipe": grid_recipe})
         restore_state(target, pristine)
@@ -1504,7 +1528,8 @@ def run_fair_comparison(name, pipe, component, decoder, decode_fn, key, lpips_mo
     finally:
         restore_state(target, pristine)
     report = {"watermark": name, "protocol": RUN_PROTOCOL, "status": "complete",
-              "baseline_valid": baseline_valid, "methods": methods}
+              "baseline_valid": baseline_valid, "methods": methods,
+              "quality_valid": baseline_valid and all(m["feasible"] and m["search"]["feasible"] for m in methods)}
     save_json(result_dir / "report.json", report)
     return report
 
@@ -1524,9 +1549,17 @@ def run_adaptive_search(name, pipe, component, decoder, decode_fn, key, lpips_mo
     clean_test = generate(pipe, prompts_test, test_seeds)
     clean_bits = summarize_bits(decode_fn(decoder, clean_test), key)
     clean_search_bits = summarize_bits(decode_fn(decoder, clean_search), key)
+    baseline_valid = (clean_search_bits["bit_accuracy"] >= CLEAN_MIN_BITACC
+                      and clean_search_bits["tpr"] >= CLEAN_MIN_TPR)
     save_json(result_dir / "clean_validation.json", {"search": clean_search_bits, "test": clean_bits,
-              "minimum_bit_accuracy": CLEAN_MIN_BITACC, "minimum_tpr": CLEAN_MIN_TPR})
+              "minimum_bit_accuracy": CLEAN_MIN_BITACC, "minimum_tpr": CLEAN_MIN_TPR,
+              "baseline_valid": baseline_valid, "policy": CLEAN_POLICY})
     save_images(clean_test, result_dir / "clean_test")
+    if not baseline_valid:
+        quality_warning(OUT, "clean_baseline", "Clean watermark below quality thresholds", watermark=name,
+                        metrics=clean_search_bits,
+                        thresholds={"min_bit_accuracy": CLEAN_MIN_BITACC, "min_tpr": CLEAN_MIN_TPR},
+                        action="stop_requested" if CLEAN_POLICY == "strict" else "continue")
     if CLEAN_POLICY == "strict" and (clean_search_bits["bit_accuracy"] < CLEAN_MIN_BITACC
                                     or clean_search_bits["tpr"] < CLEAN_MIN_TPR):
         fail(f"{name} clean watermark did not pass the declared quality gate; "
@@ -1551,6 +1584,11 @@ def run_adaptive_search(name, pipe, component, decoder, decode_fn, key, lpips_mo
             "feasible": feasible,
         }
         rows.append(row)
+        save_json(result_dir / "search_progress.json", rows)
+        if not feasible:
+            quality_warning(OUT, "grid_candidate", "Candidate failed quality gate", watermark=name,
+                            metrics=row, thresholds={"min_psnr": MIN_PSNR, "max_lpips": MAX_LPIPS,
+                                                     "max_prediction_nmse": MAX_PRED_NMSE})
         print(f"{name} candidate {index:02d}: {row}", flush=True)
         rank = (bits["bit_accuracy"], bits["tpr"], -quality["psnr"], quality["lpips"])
         if feasible and (best is None or rank < best[0]):
@@ -1558,13 +1596,23 @@ def run_adaptive_search(name, pipe, component, decoder, decode_fn, key, lpips_mo
         del attacked
         cleanup()
 
+    if not rows:
+        fail(f"{name}: candidate grid is empty; no quantization recipe to evaluate")
     with open(result_dir / "search.csv", "w", newline="", encoding="utf-8") as handle:
         writer = csv.DictWriter(handle, fieldnames=list(rows[0].keys()))
         writer.writeheader()
         writer.writerows(rows)
+    grid_has_feasible_candidate = best is not None
     if best is None:
-        restore_state(target, pristine)
-        fail(f"{name}: no candidate passed PSNR>={MIN_PSNR} and LPIPS<={MAX_LPIPS}")
+        usable = [r for r in rows if all(math.isfinite(r[k]) for k in
+                  ("calibration_prediction_nmse", "search_psnr", "search_lpips", "search_bit_accuracy", "search_tpr"))]
+        if not usable:
+            restore_state(target, pristine)
+            fail(f"{name}: all candidate metrics are nonfinite; inspect search_progress.json")
+        fallback = min(usable, key=lambda r: (r["calibration_prediction_nmse"], -r["search_psnr"], r["candidate"]))
+        best = (None, {k: fallback[k] for k in ("bits", "clip", "groups")}, fallback["candidate"])
+        quality_warning(OUT, "grid_fallback", "No feasible grid candidate; continuing refinement and test with minimum-NMSE candidate",
+                        watermark=name, metrics=fallback, action="continue_with_diagnostic_fallback")
 
     _, grid_recipe, candidate_index = best
     refine_count = min(REFINE_N, SEARCH_N)
@@ -1581,9 +1629,12 @@ def run_adaptive_search(name, pipe, component, decoder, decode_fn, key, lpips_mo
     save_images(attacked_test, result_dir / "attacked_test")
     report = {
         "watermark": name,
+        "baseline_valid": baseline_valid,
+        "grid_has_feasible_candidate": grid_has_feasible_candidate,
         "model": getattr(pipe, "_wmq_model_id", SS_MODEL if name == "stable_signature" else AQUA_MODEL),
         "quantization": "simulated weight PTQ",
-        "selected_source": "refinement" if refinement_best is not None else "grid_search",
+        "selected_source": ("refinement" if refinement_best is not None else
+                            "grid_search" if grid_has_feasible_candidate else "grid_diagnostic_fallback"),
         "calibration_prediction_nmse": final_nmse,
         "feasible": quality_feasible(quality, final_nmse),
         "selected_grid_candidate": candidate_index,
@@ -1618,8 +1669,11 @@ def run_adaptive_search(name, pipe, component, decoder, decode_fn, key, lpips_mo
         "bit_accuracy_retained_percent": 100.0 * attack_bits["bit_accuracy"] / max(clean_bits["bit_accuracy"], 1e-12),
         "tpr_retained_percent": 100.0 * attack_bits["tpr"] / max(clean_bits["tpr"], 1e-12),
     }
-    with open(result_dir / "report.json", "w", encoding="utf-8") as handle:
-        json.dump(report, handle, indent=2)
+    if not report["feasible"]:
+        quality_warning(OUT, "test_quality", "Final candidate failed quality gate", watermark=name,
+                        metrics={**quality, "prediction_nmse": final_nmse},
+                        thresholds={"min_psnr": MIN_PSNR, "max_lpips": MAX_LPIPS, "max_prediction_nmse": MAX_PRED_NMSE})
+    save_json(result_dir / "report.json", report)
     print(json.dumps(report, indent=2), flush=True)
     restore_state(target, pristine)
     return report
@@ -1764,6 +1818,7 @@ def main():
     if RUN_PROTOCOL == "fair_w4a16":
         save_json(OUT / "comparison_summary.json", {"protocol": RUN_PROTOCOL,
                   "status": ("complete" if all(r["status"] == "complete" for r in reports) else "incomplete"),
+                  "quality_valid": all(r.get("quality_valid", False) for r in reports),
                   "reports": reports})
         table = []
         for report in reports:

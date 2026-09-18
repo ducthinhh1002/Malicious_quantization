@@ -6,17 +6,40 @@ Script `run_malicious_quantization_watermarks.sh` đánh giá khả năng giữ 
 2. Tối ưu tham số quantizer bằng autograd và straight-through estimator (STE), hoặc dùng zeroth-order search làm ablation.
 3. Đánh giá recipe đã chọn trên tập test tách biệt bằng bit accuracy, TPR, PSNR, LPIPS và prediction NMSE.
 
-Đây là simulated weight-only PTQ: trọng số được đưa lên lưới số nguyên low-bit rồi dequantize để chạy bằng CUDA FP16. Kết quả phản ánh sai số lượng tử hóa, không phải tốc độ của INT4/INT8 kernel. Copy cả `wmq_baselines.py` cùng script và requirements sang server.
+Đây là simulated weight-only PTQ: trọng số được đưa lên lưới số nguyên low-bit rồi dequantize để chạy bằng CUDA FP16. Kết quả phản ánh sai số lượng tử hóa, không phải tốc độ của INT4/INT8 kernel. Copy cả `wmq_baselines.py`, `wmq_diagnostics.py` cùng script và requirements sang server.
+
+## Tiếp tục chạy khi metric không đạt
+
+Mặc định `CLEAN_POLICY=report`: baseline có bit accuracy/TPR thấp vẫn chạy hết
+quantization và test. PSNR/LPIPS/NMSE không đạt được ghi nhận bằng `feasible=false`,
+không làm dừng experiment. Khi cả grid legacy đều trượt, script chọn candidate có
+NMSE thấp nhất trong các candidate có metric finite, rồi tiếp tục refinement/test;
+report ghi `grid_diagnostic_fallback`. Ngưỡng vẫn dùng để ưu tiên candidate hợp lệ,
+không bị hạ xuống để biến kết quả thất bại thành thành công.
+
+- Log toàn bộ stdout/stderr: `wmq_runs/logs/wmq_<thời gian>_<mã>.log`; đường dẫn
+  được in khi bắt đầu. Đổi thư mục bằng `WMQ_LOG_DIR`.
+- Cảnh báo tập trung: `$WMQ_OUTPUT/quality_warnings.jsonl`, mặc định
+  `wmq_runs/output/run_<thời gian>_<mã>/quality_warnings.jsonl`. Mỗi dòng có stage, metric, ngưỡng và action.
+- Kết quả chi tiết vẫn ở `report.json`/`comparison.csv`. `status=complete` nghĩa là
+  chạy xong; kiểm tra thêm `baseline_valid`, `feasible`, `quality_valid` để biết chất lượng.
+- Với `run_blind_quantization.sh`, log console vẫn ở `output_attack/*.log` và cảnh
+  báo ở `<thư mục run>/quality_warnings.jsonl`; tất cả nhánh trượt vẫn có ảnh/report.
+
+Chỉ đặt `CLEAN_POLICY=strict` khi chủ động muốn dừng nhánh có baseline không đạt.
+`BASELINE_CHECK_ONLY=1` vẫn chỉ kiểm tra baseline như tên gọi. Lỗi thiếu thư viện,
+checkpoint hỏng, cấu hình sai hoặc không còn candidate có metric hữu hạn vẫn báo
+lỗi; đó không phải trường hợp metric hợp lệ nhưng thấp hơn ngưỡng chất lượng.
 
 ## So sánh W4A16 mới
 
 Trong job đã activate Conda, chạy:
 
 ```bash
-WMQ_OUTPUT="$PWD/results/w4a16_seed3407" bash run_malicious_quantization_watermarks.sh
+bash run_malicious_quantization_watermarks.sh
 ```
 
-Dùng thư mục output mới cho mỗi run; script dừng trước khi tải model nếu thư mục kết quả fair đã tồn tại. Nó không ghi đè kết quả cũ. Không cần thêm dependency ngoài `requirements-wmq.txt`.
+Script tự tạo thư mục mới `wmq_runs/output/run_<thời gian>_<mã>` cho mỗi lần chạy và in đường dẫn ra terminal; không cần đặt `CLEAN_POLICY` hoặc `WMQ_OUTPUT`. Nếu muốn tự chọn đường dẫn, vẫn có thể đặt `WMQ_OUTPUT`; script không ghi đè kết quả fair đã tồn tại. Môi trường Conda cần được activate sẵn như hướng dẫn bên dưới. Không cần thêm dependency ngoài `requirements-wmq.txt`.
 
 | Phương pháp | VAE Stable Signature | UNet AquaLoRA |
 |---|---|---|
@@ -42,7 +65,7 @@ BASELINE_CHECK_ONLY=1 WMQ_OUTPUT="$PWD/results/clean_check" \
   bash run_malicious_quantization_watermarks.sh
 ```
 
-Khác với `WMQ_CHECK_ONLY=imports`, lệnh này **tải model và sinh ảnh**. Mặc định yêu cầu clean search bit accuracy ≥0,80 và TPR ≥0,90. Đây là quality gate được đặt trước thí nghiệm, không phải bằng chứng checkpoint sai nếu không đạt. `clean_validation.json` luôn được ghi trước khi quyết định. Với `CLEAN_POLICY=strict` (mặc định), watermark không đạt bị dừng riêng với `invalid_clean_baseline`, watermark còn lại vẫn chạy. `CLEAN_POLICY=report` cho phép chạy chẩn đoán nhưng mọi dòng kết quả giữ `baseline_valid=false`; không nên dùng như một baseline đã được xác minh. Có thể đặt `CLEAN_MIN_BITACC`/`CLEAN_MIN_TPR` trước run theo protocol nghiên cứu.
+Khác với `WMQ_CHECK_ONLY=imports`, lệnh này **tải model và sinh ảnh**. Ngưỡng clean search mặc định là bit accuracy ≥0,80 và TPR ≥0,90. Đây là quality gate được đặt trước thí nghiệm, không phải bằng chứng checkpoint sai nếu không đạt. `clean_validation.json` luôn được ghi. Trong run thông thường, `CLEAN_POLICY=report` (mặc định) tiếp tục khi baseline không đạt và giữ `baseline_valid=false` trong kết quả. Chỉ khi chủ động đặt `CLEAN_POLICY=strict` thì nhánh fair không đạt mới dừng riêng với `invalid_clean_baseline`. Có thể đặt `CLEAN_MIN_BITACC`/`CLEAN_MIN_TPR` trước run theo protocol nghiên cứu.
 
 | Biến mới | Mặc định | Ý nghĩa |
 |---|---:|---|
@@ -50,7 +73,7 @@ Khác với `WMQ_CHECK_ONLY=imports`, lệnh này **tải model và sinh ảnh**
 | `RECON_STEPS` | 200 | Số update mỗi layer/block |
 | `RECON_LR` | 0,001 | Learning rate cho reconstruction |
 | `RECON_CACHE_MB` | 512 | Giới hạn cache CPU cho một block |
-| `CLEAN_POLICY` | `strict` | Hoặc `report` cho chẩn đoán |
+| `CLEAN_POLICY` | `report` | Metric thấp vẫn chạy; `strict` để chủ động chặn baseline không đạt |
 | `BASELINE_CHECK_ONLY` | 0 | Đặt 1 để chỉ kiểm tra clean trên GPU |
 
 Trong fair protocol, `REFINE_N` và `MAX_CANDIDATES` không dùng: gradient dùng toàn bộ search split, grid luôn là W4 trên toàn target với hai clipping. Zeroth-order vẫn có ở `RUN_PROTOCOL=legacy_grid`. `REFINE_MODE=none` bỏ dòng gradient nhưng vẫn chạy các baseline reconstruction.
@@ -143,7 +166,7 @@ Trong job đã được cấp GPU:
 WMQ_CHECK_ONLY=1 bash run_malicious_quantization_watermarks.sh
 ```
 
-Script chạy `pip check`, kiểm tra phiên bản, toàn bộ import và TorchVision NMS; chế độ `1` còn thử forward/backward CUDA FP16 với convolution và attention. Hai chế độ này không tải model hoặc chạy thí nghiệm. Phiên bản thực tế được lưu trong `wmq_runs/output/environment.freeze.txt`.
+Script chạy `pip check`, kiểm tra phiên bản, toàn bộ import và TorchVision NMS; chế độ `1` còn thử forward/backward CUDA FP16 với convolution và attention. Hai chế độ này không tải model hoặc chạy thí nghiệm. Phiên bản thực tế được lưu trong `environment.freeze.txt` tại thư mục kết quả được in khi bắt đầu.
 
 Bộ thư viện đã được kiểm tra trước đó trên Python 3.12/Linux CPU: import, NMS, AquaLoRA decoder/Mapper, LPIPS với backbone ngẫu nhiên và UNet nhỏ forward/backward đều qua. Máy phát triển hiện không có Conda/GPU, nên chưa xác minh cài đặt Conda hoặc thí nghiệm GPU đầy đủ trên server.
 
@@ -315,7 +338,7 @@ WMQ_ROOT="$PWD/runs/zeroth" REFINE_OPTIMIZER=zeroth REFINE_MODE=full bash run_ma
 | Biến | Mặc định | Mô tả |
 |---|---|---|
 | `WMQ_ROOT` | Thư mục script + `/wmq_runs` | Thư mục gốc của một lần chạy |
-| `WMQ_OUTPUT` | `$WMQ_ROOT/output` | Thư mục kết quả |
+| `WMQ_OUTPUT` | Tự tạo `$WMQ_ROOT/output/run_<thời gian>_<mã>` | Thư mục kết quả riêng mỗi lần chạy |
 | `WMQ_CACHE` | `$WMQ_ROOT/hf_cache` | Hugging Face cache |
 | `CONDA_PREFIX` | Do `conda activate` đặt | Environment đã cài trên login node |
 | `WMQ_CHECK_ONLY` | `0` | `1`: import + CUDA; `imports`: chỉ import |
@@ -385,7 +408,7 @@ Sau mỗi `GRAD_EVAL_EVERY` bước, quantizer được materialize thành hard 
 
 ## 9. Output
 
-Kết quả nằm trong `wmq_runs/output` hoặc `WMQ_OUTPUT`. Cây dưới đây là **legacy_grid**; output fair mặc định được mô tả ở đầu tài liệu:
+Kết quả nằm trong `wmq_runs/output/run_<thời gian>_<mã>` hoặc `WMQ_OUTPUT` nếu tự đặt. Cây dưới đây là **legacy_grid**; output fair mặc định được mô tả ở đầu tài liệu:
 
 ```text
 output/
@@ -432,181 +455,216 @@ Không dùng các chỉ số trên search/refinement split làm kết quả cu�
 - [ ] Không tuyên bố đã backpropagate qua toàn bộ diffusion trajectory.
 - [ ] Chỉ kết luận từ test split, không chọn kết quả theo test split.
 
-## Stable Signature: attacker chỉ có model đã fingerprint
+## Stable Signature: pilot chỉ có model đã fingerprint
 
-**Lệnh chạy đầy đủ, sau khi đã cài dependencies và activate môi trường:**
+Nhánh `run_blind_quantization.sh` dùng `wmq_blind.py` để kiểm tra giả thuyết
+model-only. Attacker được đọc model đã fingerprint nhưng không có key, extractor,
+detector feedback, model sạch hoặc ảnh sạch bên ngoài. Đây là **Pilot 0 mở rộng**;
+chưa phải OS-MQ hoặc baseline QuRA với ownership loss. Proposal transfer còn cấm
+đọc victim fingerprint lúc xây dựng attack, nên quyền truy cập của pilot khác
+protocol đó. Xem [phạm vi nghiên cứu](survey/Blind_Quantization_Stable_Signature.md).
+
+Sau khi đã cài dependencies trên login node, chạy trong GPU job:
 
 ```bash
 conda activate wmq
 bash run_blind_quantization.sh
 ```
 
-Lần đầu script tự tải backbone SD2.1-base và VAE Stable Signature công khai, chuẩn
-bị model fingerprint tại `wmq_runs/marked_sd21`, rồi chạy experiment. Các lần sau
-tái sử dụng model đã chuẩn bị. `prompt.txt` đã có sẵn 160 prompt tiếng Anh khác
-nhau; mặc định dùng 152 dòng đầu (32 train, 20 search, 100 test). Đây là danh sách
-viết tay cho thử nghiệm ban đầu, không phải benchmark COCO hay DrawBench.
-Mỗi lần chạy tạo thư mục `output_attack/blind_<thời gian>_<PID>` mới và file log
-riêng trong `output_attack/`. Model chuẩn bị vẫn ở `wmq_runs/marked_sd21`.
-Đường dẫn được tính theo thư mục script, nên không phụ thuộc nơi gọi lệnh.
+Không tự tạo môi trường/cài thư viện trong job. Lần đầu launcher chuẩn bị fixture
+Stable Signature công khai tại `wmq_runs/marked_sd21`; lần sau reuse. Bước này thuộc
+vai trò organizer, nằm ngoài attacker. Với thí nghiệm cô lập, organizer chuẩn bị
+fixture riêng rồi truyền `--model /path/to/marked_pipeline`.
 
-Checkpoint VAE tải từ Meta phải khớp SHA256 pin sẵn trước `torch.load`. Script
-chuẩn bị giữ khóa liên tiến trình cho toàn bộ bước tạo/reuse fixture; các launcher
-chạy song song sẽ chờ rồi dùng lại fixture hoàn tất. Thư mục đích được tạo bằng
-`mkdir` độc quyền, không rename đè lên đích. Nếu quá trình bị ngắt giữa publication,
-fixture thiếu completion marker sẽ bị từ chối; không tự coi model dở dang là hợp lệ.
+Một lệnh trên chạy đủ bốn bước: chuẩn bị fixture, chạy blind attack, tải/kiểm tra
+owner extractor, rồi evaluate sau khi selection đã freeze. Key và extractor chỉ
+được cấp cho process evaluator; `wmq_blind.py` không nhận hai dữ liệu này. Launcher
+bắt buộc dùng Python của Conda environment đang activate.
 
-Smoke test ngắn, cũng tự chuẩn bị model nếu cần:
+SHA256 checkpoint Meta được so với pin trước `torch.load`; khóa liên tiến trình
+và atomic mkdir ngăn các launcher ghi đè fixture. Completion marker được xuất cuối.
+Backbone revision mặc định vẫn là `main`; dùng `prepare_marked_fixture.py --revision
+<commit>` nếu cần pin toàn bộ backbone. Không coi pin decoder là pin toàn pipeline.
+
+Mặc định: **W8 và W4, clip 1.0, toàn bộ weights decoder**, 32 train / 20 search / 100 test,
+100 bước tối ưu, đánh giá search mỗi 10 bước. `prompt.txt` có 160 prompt viết tay;
+đây chưa phải benchmark COCO/DrawBench. Các split có prompt và seed riêng.
+Nếu chỉ muốn diagnostic W4 nhanh hơn, truyền `--bits 4` rõ ràng.
+
+Extractor official được pin SHA256
+`77cd0a2040b9391233bbcd79c1adf00816b196089cbb844da40035f854637a04`
+và kiểm tra lúc tải lẫn ngay trước `torch.jit.load`. Public key mặc định là
+`111010110101000001010111010011010100010000100111`, đúng chuỗi trong ví dụ
+đánh giá public SD2 decoder của repository Stable Signature chính thức. Evaluator
+ghi nguồn/hash key và đặt `reference_validation.valid=false` nếu reference TPR
+dưới 0,9; trong trường hợp đó vẫn lưu mọi số liệu nhưng không được kết luận attack.
+Với `--model` riêng phải cấp `SS_KEY`; với extractor riêng phải cấp đồng thời
+`SS_EXTRACTOR` và `SS_EXTRACTOR_SHA256`.
+
+| Nhánh | Thay đổi quantizer |
+|---|---|
+| `fixed_ptq` | RTN cố định, không tune |
+| `random_rounding` | Lấy mẫu stochastic rounding, chọn trên search |
+| `sensitivity` | Đo từng layer trên train, coordinate search scale theo thứ tự đo được |
+| `rounding` | Học rounding từng weight theo pseudo-target làm mờ |
+| `rounding_scale` | Học đồng thời rounding và scale per-channel có giới hạn |
+| `reconstruction` (tùy chọn) | Học rounding với strength=0, đối chứng giữ ảnh tham chiếu |
+
+Năm nhánh mặc định là ladder **model-only**, không thay thế ladder có surrogate
+ownership loss trong proposal. Mọi nhánh dùng cùng bits, coverage, prompt/seed và
+ngưỡng chất lượng trong một `comparison_group`. Scale được phép nằm trong
+[0.8, 1.25] lần scale RTN khởi tạo cho hai nhánh scale. Không tune bitwidth liên tục,
+không sửa bias/norm/full-precision weights. UNet sinh latent FP16; **VAE và activation
+của VAE chạy FP32**, nên pilot này không phải W4A16 của script fair cũ.
+
+Profiler lượng tử hóa từng layer rồi đo thay đổi ảnh trên tối đa `--profile-n 16`
+mẫu train. Nó đo MSE ảnh và mức cải thiện proxy, không đo ownership gradient.
+Tất cả layer trong scope vẫn được lượng tử hóa; profiler điều khiển thứ tự search
+scale, không âm thầm giảm coverage. `--scope late` vẫn là ablation heuristic riêng.
+Profiler lưu số đo từng ảnh và khoảng bootstrap 95% cho priority, mặc định 1000
+resample dùng cùng chỉ số ảnh giữa các layer (`--profile-bootstrap`). Khoảng này
+đánh giá biến thiên trong pool train hiện có, không thay thế nhiều seed/model.
+Với ít hơn 16 ảnh, script cảnh báo rồi vẫn chạy. Với một ảnh, CI để null. Thứ tự
+layer vẫn dựa trên point estimate, không tuyên bố thứ hạng chắc chắn từ các CI này.
+
+Lệnh mặc định đầy đủ là `bash run_blind_quantization.sh`. Ví dụ dưới đây là run
+tùy chỉnh W4 trên model riêng, vì vậy phải cấp key đúng của model đó:
+
+```bash
+SS_KEY="<48-bit-key-cua-model>" bash run_blind_quantization.sh \
+  --model "$PWD/wmq_runs/marked_sd21" --prompts "$PWD/prompt.txt" \
+  --output "$PWD/output_attack/blind_w4_seed3407" \
+  --bits 4 --clips 1.0 --steps 100 --eval-every 10 --strength 0.25
+```
+
+Chạy smoke trước (cần sáu prompt khác nhau):
 
 ```bash
 bash run_blind_quantization.sh --train-n 2 --search-n 2 --test-n 2 \
-  --bits 4 --clips 1.0 --steps 2 --eval-every 1
+  --bits 4 --clips 1.0 --steps 2 --eval-every 1 --profile-n 1
 ```
 
-Có thể truyền `--model`, `--prompts`, `--output` hoặc các tham số khác để ghi đè
-mặc định. Khi truyền `--model`, script dùng model của bạn và không chuẩn bị model
-công khai. Bước tự chuẩn bị thuộc vai trò tổ chức thí nghiệm; chương trình tối ưu
-vẫn chỉ nạp model đã fingerprint. Bước đo watermark bằng key/extractor vẫn chạy
-riêng sau cùng như hướng dẫn bên dưới.
+Chạy thêm reconstruction control trong cùng run bằng
+`--methods fixed_ptq random_rounding sensitivity rounding rounding_scale reconstruction`.
+Mỗi nhánh khởi tạo độc lập. Random dùng ceil(steps/eval_every) proposal;
+hai nhánh gradient dùng `steps` update, sensitivity dùng `steps` proposal train.
+RTN được đánh giá một lần. Các nhánh tối ưu có RTN fallback được gắn nhãn rõ.
+Đây là so sánh cùng budget lượng tử hóa/chất lượng, **chưa cùng chi phí tính toán**;
+report ghi số train/search evaluation, valid gradient update và proposal bị từ chối.
+`selection.json` có thêm số image forward, backward attempt và các biến thực sự
+được tối ưu. `report.json/branch_compute` ghi wall time search/export (gồm profiler
+nếu có), không phải latency inference INT4 và không bao gồm test. Không coi một
+forward cả tập train là tương đương một gradient step một ảnh.
 
-Nhánh `run_blind_quantization.sh` dùng `wmq_blind.py`, không dùng key, extractor,
-detector feedback, model sạch hoặc ảnh sạch bên ngoài. Đây là phương pháp thử nghiệm:
-học rounding từng weight trong VAE theo pseudo-target làm dịu chi tiết ảnh tự sinh.
-Chưa có kết quả chứng minh nó phá watermark mạnh hơn legacy attack. Đọc
-[phân tích nghiên cứu và threat model](survey/Blind_Quantization_Stable_Signature.md)
-trước khi diễn giải kết quả.
+Nếu truyền nhiều `--bits`/`--clips`, mỗi tổ hợp có đầy đủ các nhánh và lựa chọn riêng;
+không chọn một winner toàn cục rồi so W2 với W4. Không dùng owner metrics để chọn lại
+strength, bitwidth, clip hoặc seed của cùng blind experiment.
 
-Chuẩn bị môi trường theo requirements phía trên. Nếu đã có model fingerprint dạng
-Diffusers, dùng đường dẫn đó cho `--model`. Nếu dùng checkpoint công khai để tổ chức
-thí nghiệm, tạo fixture một lần (CPU, cần mạng và đủ RAM/disk cho model FP32):
+Quality gate: mean PSNR >=25, mean SSIM >=0.9, min per-image PSNR >=22 dB, so với
+ảnh marked gốc. Nhánh không có candidate feasible vẫn xuất đối chứng chẩn đoán,
+ghi `no_feasible_candidate` và `search_feasible=false`. Nếu test trượt, report
+ghi `quality_failures`. Chúng không được tính là attack thành công. Ngưỡng này
+không tương đương LPIPS gate trong script fair cũ.
 
-```bash
-python prepare_marked_fixture.py --output "$PWD/wmq_runs/marked_sd21"
-```
+SSIM hiện dùng Gaussian **11×11, sigma=1.5**, population covariance, loại biên
+5 pixel và trung bình kênh RGB; thống kê tính FP64, VAE vẫn chạy FP32. Đã đối chiếu
+với `skimage.metrics.structural_similarity`. Định nghĩa được ghi vào manifest;
+không gộp kết quả SSIM 5×5 cũ với run mới như cùng một metric. Gaussian 5×5 trong
+pseudo-target/loss làm mờ vẫn giữ nguyên. Xem [tài liệu scikit-image](https://scikit-image.org/docs/stable/api/skimage.metrics.html).
 
-Script chuẩn bị tải backbone SD2.1-base và VAE đã nhúng Stable Signature chính thức,
-xuất pipeline có watermark. Attacker chỉ nhận thư mục đã xuất này. Không thay VAE
-bằng VAE sạch khi chạy attack. Với thí nghiệm nghiêm ngặt, tách môi trường chuẩn bị
-fixture và môi trường attacker.
-
-Nếu dùng danh sách riêng, chuẩn bị ít nhất **152 prompt khác nhau**, mỗi dòng một
-prompt, rồi truyền `--prompts`. Dưới đây là lệnh đầy đủ tương đương với mặc định,
-dùng `prompt.txt` có sẵn và đường dẫn output do bạn chọn:
-
-```bash
-bash run_blind_quantization.sh \
-  --model "$PWD/wmq_runs/marked_sd21" \
-  --prompts "$PWD/prompt.txt" \
-  --output "$PWD/output_attack/blind_seed3407" \
-  --bits 4 3 2 --clips 1.0 0.9 \
-  --steps 100 --eval-every 10 --strength 0.25
-```
-
-Script không hardcode tên GPU. VAE/rounding chạy FP32; UNet sinh latent chạy FP16.
-Cache latent nên UNet chỉ sinh một lần mỗi prompt; mỗi candidate chỉ chạy VAE.
-Toàn bộ rounding trong `--scope all` được học đồng thời, batch train là 1 để hạn
-chế VRAM. `--scope late` giảm phạm vi xuống up-blocks và conv_out khi nghiên cứu
-ablation nhỏ hơn; không tự đổi phạm vi vì như vậy thay thí nghiệm. Mặc định chạy
-6 cấu hình ×100 update, chưa có benchmark thời gian trên RTX 6000 96GB.
-
-Smoke test nhanh trước full run (cần 6 prompt khác nhau):
-
-```bash
-bash run_blind_quantization.sh \
-  --model "$PWD/wmq_runs/marked_sd21" --prompts "$PWD/prompt.txt" \
-  --output "$PWD/output_attack/blind_smoke" \
-  --train-n 2 --search-n 2 --test-n 2 \
-  --bits 4 --clips 1.0 --steps 2 --eval-every 1
-```
-
-Nếu smoke báo `no_feasible_candidate`, code có thể vẫn chạy đúng: không có cấu
-hình đạt chất lượng với budget ngắn. Không tự nới ngưỡng để gọi đó là thành công.
-
-Quality gate phía attacker: mean PSNR >=25, mean SSIM >=0.9, min per-image PSNR
->=22 dB, so với output từ model fingerprint ban đầu. Đây không phải quality gate
-LPIPS của script cũ. Chọn candidate bằng MSE tới pseudo-target trên search; không
-chọn bằng watermark score. `--strength 0` là reconstruction control nên chạy trong
-thư mục mới, cùng dữ liệu/budget. Chốt strength trước khi xem owner metrics.
-
-Nhánh này không chặn bằng clean bit accuracy/TPR như AquaLoRA. Nếu mọi candidate
-trượt quality gate, vẫn có manifest, search và log; chỉ không xuất VAE/test images.
-Chưa có bằng chứng từ full run để kết luận các ngưỡng mặc định quá cao. Nếu muốn
-chạy một protocol chất lượng nới nhẹ đã định trước, dùng lệnh riêng dưới đây và
-báo rõ ngưỡng khác khi so sánh kết quả:
-
-```bash
-bash run_blind_quantization.sh --min-psnr 24 --min-ssim 0.88 --min-image-psnr 21
-```
-
-Output:
+Mỗi lần chạy tạo thư mục mới `output_attack/blind_<thời gian>_<PID>` và file log:
 
 ```text
-blind_seed3407/
-  manifest.json                # Threat model, model/script hashes, prompts/seeds
-  search.json                  # Cả RTN và hard checkpoints, feasible/non-feasible
-  selection.json               # Cấu hình khóa trước test
-  selection_frozen.json        # Lựa chọn + hash checkpoint/search trước khi sinh test
-  updates_w*_c*.json           # Loss và gradient norm
-  report.json                  # Test quality, elapsed time, peak CUDA allocation
-  quantized_vae/               # Diffusers VAE, low-bit values lưu dưới dạng FP32
-  marked_reference_test/       # Vẫn có watermark
-  matched_rtn_test/            # RTN cùng bits, clip và target coverage đã chọn
-  attacked_test/
+blind_w4_seed3407/
+  manifest.json                 # Protocol bất biến + danh sách test_branches
+  profile_w4_c1.0_all.json       # Đo từng layer trên train
+  search.json                   # Toàn bộ candidate, không có owner score
+  selection_frozen.json         # Hash manifest, search, profiler, mọi nhánh trước test
+  report.json                   # Selection/quality riêng từng nhánh
+  quality_warnings.jsonl        # Cảnh báo metric/update, ghi ngay khi xảy ra
+  branches/<method>_w4_c1.0/
+    search.json
+    updates.json                # Nhánh có update/proposal
+    selection.json
+    quantizer.json
+    quantizer.safetensors       # Integer codes + scale, kiểm tra khớp exported weights
+    vae/                        # Diffusers VAE đã dequantize FP32
+  marked_reference_test/
+  <method>_w4_c1.0_test/
 ```
 
-Không có candidate hợp lệ: chỉ lưu chẩn đoán, không xuất VAE. Test quality không
-đạt: report ghi `heldout_quality_failed`; VAE vẫn được giữ để kiểm toán. Low-bit
-weights chạy qua FP32 kernel VAE, không phải INT4 inference hay packed checkpoint.
+Tất cả nhánh được khóa trước khi sinh latent test đầu tiên. Test chỉ đánh giá,
+không chọn lại. Export là simulated PTQ; lưu integer codes không đồng nghĩa đã có
+packed INT4 kernel hoặc chứng nhận tương thích một backend triển khai.
 
-Sau khi khóa cấu hình, **chủ sở hữu** mới đo watermark trong một chương trình riêng:
+Sau khi attack khóa selection và tạo ảnh test, launcher **tự gọi** owner evaluator
+với public fixture mặc định. Lệnh bên dưới chỉ dùng khi cần đánh giá thủ công một
+run đã có:
 
 ```bash
 python evaluate_blind_watermark.py \
-  --run "$PWD/output_attack/blind_seed3407" \
+  --run "$PWD/output_attack/blind_w4_seed3407" \
   --extractor /path/to/dec_48b_whit.torchscript.pt \
+  --expected-extractor-sha256 77cd0a2040b9391233bbcd79c1adf00816b196089cbb844da40035f854637a04 \
   --key 111010110101000001010111010011010100010000100111 \
+  --key-source "facebookresearch/stable_signature public SD2 decoder example key" \
   --fpr 0.001 --lpips
 ```
 
-Key trên thuộc fixture Stable Signature công khai; thay bằng key đúng nếu dùng model
-khác. Owner có thể lấy extractor chính thức từ
+Key trên thuộc fixture Stable Signature công khai. Extractor chính thức:
 [Meta](https://dl.fbaipublicfiles.com/ssl_watermarking/dec_48b_whit.torchscript.pt).
-Không cấp extractor/key cho chương trình attacker. Owner evaluator lưu
-`owner_evaluation.json` và `watermark_retention.csv`, gồm before/RTN/after,
-bit accuracy, TPR, retention, survival trên các ảnh ban đầu được phát hiện và
-LPIPS nếu bật. FPR là ngưỡng lý thuyết theo giả định bit ngẫu nhiên độc lập.
-Không được dùng các số test đó quay lại chọn candidate của cùng blind run.
+Không cấp chúng cho attacker. Evaluator đọc nhánh động từ manifest, kiểm tra hash
+của tất cả checkpoint/quantizer/search/profiler và ảnh test, rồi ghi
+`owner_evaluation.json`/`watermark_retention.csv`. Reference được xác định bằng
+`reference_label`, không dựa vào thứ tự. Mỗi dòng có comparison group và quality
+flags, bit accuracy, TPR, retention, survival, LPIPS nếu bật.
+TPR và survival có Wilson CI 95%; mức giảm TPR có paired-image bootstrap CI 95%
+(2000 resample, seed 3407), báo theo **điểm phần trăm**. Ví dụ 50/100 ảnh được phát
+hiện có Wilson CI khoảng [40.4%, 59.6%], không phải ±6%. Các CI là pointwise,
+giả định ảnh độc lập; không bao gồm biến thiên giữa model/key/seed và không chứng
+minh 100 prompt viết tay đại diện deployment. Khoảng bootstrap có thể co về một
+điểm khi mọi cặp có cùng outcome; Wilson vẫn thể hiện bất định ở TPR=0/1.
+Nguồn: [SciPy proportion_ci](https://docs.scipy.org/doc/scipy-1.16.1/reference/generated/scipy.stats._result_classes.BinomTestResult.proportion_ci.html).
 
-Evaluator từ chối FPR không thể đạt với độ dài key được cấp, trước khi nạp extractor.
-Nó kiểm tra `selection_frozen.json` với final report và hash checkpoint/search hiện
-tại. Run cũ thiếu file freeze cần chạy lại bằng phiên bản mới. Các kiểm tra này giúp
-phát hiện sai lệch artifact, không phải chứng minh chống người sửa đồng thời code
-và mọi metadata. Source audit và kiểm thử luồng dữ liệu vẫn cần thiết.
+FPR dùng giả định bit ngẫu nhiên độc lập, chưa phải empirical FPR. Threshold vượt
+độ dài key bị từ chối. Reference không được phát hiện đầy đủ sẽ có cảnh báo và
+`baseline_detected_count`; không diễn giải TPR thấp vốn có thành thành công attack.
+Metadata/hash phát hiện artifact thay đổi, không chống người cố ý sửa đồng thời
+source và tất cả metadata. Run cũ schema 1 vẫn được evaluator hỗ trợ.
 
-Nạp VAE đã xuất để inference với cùng model fingerprint:
+Nạp một VAE cụ thể để inference:
 
 ```python
 import torch
 from diffusers import AutoencoderKL, StableDiffusionPipeline, DDIMScheduler
+
 pipe = StableDiffusionPipeline.from_pretrained(
     "wmq_runs/marked_sd21", torch_dtype=torch.float16)
 pipe.vae = AutoencoderKL.from_pretrained(
-    "output_attack/blind_seed3407/quantized_vae", torch_dtype=torch.float32)
+    "output_attack/blind_w4_seed3407/branches/rounding_scale_w4_c1.0/vae",
+    torch_dtype=torch.float32)
 pipe.to("cuda")
 pipe.scheduler = DDIMScheduler.from_config(pipe.scheduler.config)
-# StableDiffusionPipeline không tự ép latent FP16 sang dtype VAE ở mọi phiên bản.
 with torch.inference_mode():
-    latents = pipe("a lighthouse above a stormy sea", num_inference_steps=25,
-                   guidance_scale=7.0, output_type="latent").images
-    decoded = pipe.vae.decode(latents.float() / pipe.vae.config.scaling_factor,
-                              return_dict=False)[0]
-    image = pipe.image_processor.postprocess(decoded, output_type="pil")[0]
-image.save("sample.png")
+    z = pipe("a lighthouse above a stormy sea", num_inference_steps=25,
+             guidance_scale=7.0, output_type="latent").images
+    x = pipe.vae.decode(z.float() / pipe.vae.config.scaling_factor, return_dict=False)[0]
+    pipe.image_processor.postprocess(x, output_type="pil")[0].save("sample.png")
 ```
 
-Kiểm tra lõi không cần checkpoint:
+Kiểm thử:
 
 ```bash
 bash -n run_blind_quantization.sh
-python -m unittest discover -s tests -p test_wmq_blind.py -v
+python -m pip install -r requirements-test.txt  # chỉ cần cho test đối chiếu SSIM
+python -m unittest discover -s tests -v
 ```
+
+Test CPU dùng pipeline nhỏ và VAE Diffusers thật: thay riêng test không đổi bất kỳ
+branch selection/export nào; không gọi selection sau khi sinh test; rollback NaN
+không được đếm là update hợp lệ; scale/codes hợp lệ và reload VAE khớp. Các test
+không chứng minh hiệu quả xóa watermark, VRAM hoặc runtime của full checkpoint.
+Manifest ghi GPU, PyTorch/CUDA/cuDNN, Python, TF32 và deterministic settings;
+owner evaluation cũng ghi runtime. Cùng seed và tắt TF32 không bảo đảm kết quả
+bitwise giống nhau giữa các GPU/thư viện. VAE Stable Signature không có trục
+timestep; các kết quả ở đây không áp dụng thành kết luận về carrier UNet/latent.
