@@ -17,6 +17,8 @@ class OneCommandTests(unittest.TestCase):
     def test_public_key_and_w8_w4_owner_evaluation_are_wired_after_attack(self):
         source = (ROOT / "run_blind_quantization.sh").read_text(encoding="utf-8")
         self.assertIn('$CONDA_PREFIX/bin/python', source)
+        self.assertIn('$CONDA_BIN\" run --no-capture-output', source)
+        self.assertIn('${WMQ_CONDA_ENV:-wmq}', source)
         self.assertIn('attack+=(--bits 8 4)', source)
         self.assertIn('111010110101000001010111010011010100010000100111', source)
         self.assertLess(source.index('"${attack[@]}"'), source.index('evaluate_blind_watermark.py'))

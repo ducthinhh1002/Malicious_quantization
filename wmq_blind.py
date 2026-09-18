@@ -46,12 +46,18 @@ class RoundingGrid(nn.Module):
         w = weight.detach().float()
         if not torch.isfinite(w).all():
             raise ValueError("Nonfinite source weights")
+        # Use all 2**bits signed codes, e.g. INT4 is [-8, 7].  A zero-point of
+        # zero does not require the deliberately narrow [-7, 7] fake-quant range.
+        self.qmin = -(2 ** (bits - 1))
         self.qmax = 2 ** (bits - 1) - 1
         self.bits = bits
         self.register_buffer("source", w.clone())
-        scale = w.flatten(1).abs().amax(1).clamp_min(1e-8) * clip / self.qmax
+        flat = w.flatten(1)
+        positive_scale = flat.amax(1).clamp_min(0) / self.qmax
+        negative_scale = (-flat.amin(1)).clamp_min(0) / (-self.qmin)
+        scale = torch.maximum(positive_scale, negative_scale).clamp_min(1e-8) * clip
         scale = scale.reshape([-1] + [1] * (w.ndim - 1))
-        value = (w / scale).clamp(-self.qmax, self.qmax)
+        value = (w / scale).clamp(self.qmin, self.qmax)
         self.register_buffer("base_scale", scale)
         self.log_scale = nn.Parameter(torch.zeros_like(scale), requires_grad=learn_scale)
         frac = value - value.floor()
@@ -66,12 +72,12 @@ class RoundingGrid(nn.Module):
         hard = (self.alpha >= 0).to(soft.dtype)
         rounding = hard + (soft - soft.detach()) if differentiable else hard
         scale = self.scale
-        floor = (self.source / scale).clamp(-self.qmax, self.qmax).detach().floor()
-        return (floor + rounding).clamp(-self.qmax, self.qmax) * scale
+        floor = (self.source / scale).clamp(self.qmin, self.qmax).detach().floor()
+        return (floor + rounding).clamp(self.qmin, self.qmax) * scale
 
     @torch.no_grad()
     def randomize(self, generator):
-        value = (self.source / self.scale).clamp(-self.qmax, self.qmax)
+        value = (self.source / self.scale).clamp(self.qmin, self.qmax)
         fraction = value - value.floor()
         draws = torch.rand(fraction.shape, device=fraction.device, generator=generator)
         self.alpha.copy_(torch.where(draws < fraction, 8., -8.))
@@ -384,16 +390,16 @@ def export_quantizer(vae, names, grids, folder):
         weight = grid(False)
         codes = (weight / scale).round()
         if (not torch.isfinite(weight).all() or not torch.isfinite(scale).all()
-                or (scale <= 0).any() or (codes.abs() > grid.qmax).any()
+                or (scale <= 0).any() or (codes < grid.qmin).any() or (codes > grid.qmax).any()
                 or not torch.allclose(weight, codes * scale, atol=1e-7, rtol=1e-6)):
             raise ValueError(f"Invalid quantizer export: {name}")
         if not torch.equal(vae.decoder.get_parameter(name), weight):
             raise ValueError(f"Materialized weight differs from hard quantizer: {name}")
         tensors[name + ".codes"] = codes.to(torch.int8).cpu().contiguous()
         tensors[name + ".scale"] = scale.cpu().contiguous()
-        spec[name] = {"bits": grid.bits, "zero_point": 0, "qmin": -grid.qmax, "qmax": grid.qmax}
+        spec[name] = {"bits": grid.bits, "zero_point": 0, "qmin": grid.qmin, "qmax": grid.qmax}
     save_file(tensors, str(folder / "quantizer.safetensors"))
-    save_json(folder / "quantizer.json", {"scheme": "symmetric_per_output_channel", "layers": spec,
+    save_json(folder / "quantizer.json", {"scheme": "signed_per_output_channel_zero_point_0_full_range", "layers": spec,
               "execution": "simulated PTQ; dequantized FP32 weights, not a certified backend kernel"})
 
 

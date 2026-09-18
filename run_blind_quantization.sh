@@ -6,8 +6,22 @@ RUN_ROOT="${WMQ_ROOT:-$SCRIPT_DIR/wmq_runs}"
 ATTACK_OUTPUT_ROOT="${WMQ_ATTACK_OUTPUT_ROOT:-$SCRIPT_DIR/output_attack}"
 
 if [[ -z "${CONDA_PREFIX:-}" || ! -d "$CONDA_PREFIX/conda-meta" || ! -x "$CONDA_PREFIX/bin/python" ]]; then
-  echo "Activate the prepared Conda environment first: conda activate wmq" >&2
-  exit 1
+  CONDA_BIN=""
+  for candidate in "${CONDA_EXE:-}" "${HOME:-}/miniconda3/bin/conda" "${HOME:-}/anaconda3/bin/conda"; do
+    if [[ -n "$candidate" && -x "$candidate" ]]; then
+      CONDA_BIN="$candidate"
+      break
+    fi
+  done
+  if [[ -z "$CONDA_BIN" ]] && type -P conda >/dev/null 2>&1; then
+    CONDA_BIN="$(type -P conda)"
+  fi
+  if [[ -z "$CONDA_BIN" ]]; then
+    echo "Conda was not found. Install the prepared environment on the login node first." >&2
+    exit 1
+  fi
+  echo "Entering Conda environment ${WMQ_CONDA_ENV:-wmq}..." >&2
+  exec "$CONDA_BIN" run --no-capture-output -n "${WMQ_CONDA_ENV:-wmq}" bash "$0" "$@"
 fi
 PY="$CONDA_PREFIX/bin/python"
 export PATH="$CONDA_PREFIX/bin:$PATH"

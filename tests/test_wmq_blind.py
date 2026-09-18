@@ -29,7 +29,8 @@ class BlindTests(unittest.TestCase):
         self.assertTrue(torch.equal(layer.weight, original))
         codes = q(False) / q.scale
         self.assertTrue(torch.allclose(codes, codes.round(), atol=1e-6))
-        self.assertLessEqual(codes.abs().max().item(), 3)
+        self.assertGreaterEqual(codes.min().item(), -4)
+        self.assertLessEqual(codes.max().item(), 3)
         materialize(layer, ["weight"], [q])
         self.assertTrue(torch.allclose(layer(x), pred, atol=1e-6))
 
@@ -38,6 +39,12 @@ class BlindTests(unittest.TestCase):
         self.assertTrue(torch.equal(q(False), torch.zeros(2, 3)))
         q.alpha.data.fill_(100)
         self.assertTrue(torch.isfinite(q()).all())
+
+    def test_full_signed_code_range_is_available(self):
+        q = RoundingGrid(torch.tensor([[-4., 1.]]), 3)
+        codes = (q(False) / q.scale).round()
+        self.assertEqual((q.qmin, q.qmax), (-4, 3))
+        self.assertEqual(codes.min().item(), -4)
 
     def test_quality_identity_and_pseudo_control(self):
         x = torch.rand(2, 3, 16, 16)

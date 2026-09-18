@@ -464,14 +464,17 @@ chưa phải OS-MQ hoặc baseline QuRA với ownership loss. Proposal transfer 
 đọc victim fingerprint lúc xây dựng attack, nên quyền truy cập của pilot khác
 protocol đó. Xem [phạm vi nghiên cứu](survey/Blind_Quantization_Stable_Signature.md).
 
-Sau khi đã cài dependencies trên login node, chạy trong GPU job:
+Sau khi đã tạo environment `wmq` trên login node, chạy trong GPU job bằng đúng
+một lệnh:
 
 ```bash
-conda activate wmq
 bash run_blind_quantization.sh
 ```
 
-Không tự tạo môi trường/cài thư viện trong job. Lần đầu launcher chuẩn bị fixture
+Nếu chưa activate, launcher tự chạy lại chính nó bằng `conda run -n wmq`; nếu đã
+activate thì dùng thẳng `$CONDA_PREFIX/bin/python`. Có thể đổi tên environment qua
+`WMQ_CONDA_ENV`. Launcher không tạo environment và không cài thư viện trong job.
+Lần đầu launcher chuẩn bị fixture
 Stable Signature công khai tại `wmq_runs/marked_sd21`; lần sau reuse. Bước này thuộc
 vai trò organizer, nằm ngoài attacker. Với thí nghiệm cô lập, organizer chuẩn bị
 fixture riêng rồi truyền `--model /path/to/marked_pipeline`.
@@ -479,7 +482,7 @@ fixture riêng rồi truyền `--model /path/to/marked_pipeline`.
 Một lệnh trên chạy đủ bốn bước: chuẩn bị fixture, chạy blind attack, tải/kiểm tra
 owner extractor, rồi evaluate sau khi selection đã freeze. Key và extractor chỉ
 được cấp cho process evaluator; `wmq_blind.py` không nhận hai dữ liệu này. Launcher
-bắt buộc dùng Python của Conda environment đang activate.
+luôn dùng Python của Conda environment đã chuẩn bị trên login node.
 
 SHA256 checkpoint Meta được so với pin trước `torch.load`; khóa liên tiến trình
 và atomic mkdir ngăn các launcher ghi đè fixture. Completion marker được xuất cuối.
@@ -514,7 +517,8 @@ Năm nhánh mặc định là ladder **model-only**, không thay thế ladder c�
 ownership loss trong proposal. Mọi nhánh dùng cùng bits, coverage, prompt/seed và
 ngưỡng chất lượng trong một `comparison_group`. Scale được phép nằm trong
 [0.8, 1.25] lần scale RTN khởi tạo cho hai nhánh scale. Không tune bitwidth liên tục,
-không sửa bias/norm/full-precision weights. UNet sinh latent FP16; **VAE và activation
+không sửa bias/norm/full-precision weights. Quantizer dùng đủ miền signed
+`[-2^(b-1), 2^(b-1)-1]`, ví dụ W4 là `[-8, 7]`, với zero-point 0. UNet sinh latent FP16; **VAE và activation
 của VAE chạy FP32**, nên pilot này không phải W4A16 của script fair cũ.
 
 Profiler lượng tử hóa từng layer rồi đo thay đổi ảnh trên tối đa `--profile-n 16`
