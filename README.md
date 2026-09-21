@@ -83,12 +83,29 @@ khác nhánh model-only. Mọi nhánh model-only hoàn tất trước khi nạp 
 để học; chúng không sử dụng dataset hoặc LPIPS trong loss/chọn checkpoint.
 LPIPS owner evaluation vẫn được chạy sau freeze cho mọi nhánh.
 
-Nhánh mới học `MSE tái tạo + 0.1 * LPIPS + 2 * MSE bảo toàn ảnh sinh`.
+Nhánh `natural_rounding` học `MSE tái tạo + 0.1 * LPIPS + 2 * MSE bảo toàn ảnh sinh`.
 LPIPS AlexNet pretrained đóng băng; gradient truyền qua nó tới quantizer.
 Chỉnh lambda bằng `--natural-perceptual-weight`; đặt 0 để ablation MSE-only.
 Xem [hướng dẫn LPIPS chính thức](https://github.com/richzhang/PerceptualSimilarity)
 và [COCO](https://cocodataset.org/#download). Chỉ rounding/scale được học, không fine-tune
 tự do trọng số model. Chi phí tăng do thêm hai nhánh và forward bảo toàn ảnh sinh.
+
+**Cập nhật 2026-09-22:** mặc định W4 với 5 nhánh `fixed_ptq`, `rounding_scale`,
+`reconstruction`, `natural_rounding`, `natural_residual`. Nhánh mới dùng basis residual
+patch từ natural TRAIN để tăng trọng số reconstruction theo hướng đã chọn, đồng thời
+giảm phạt bảo toàn trong subspace đó. Basis đóng băng, không sử dụng detector/key.
+Đây là giả thuyết mới; chưa có kết quả xác nhận giảm TPR trên Stable Signature.
+Copy cả **`wmq_residual.py`** lên server. Lệnh vẫn là `bash run_blind_quantization.sh`.
+Xem [phân tích kết quả, phương pháp và ablation](survey/Residual_Quantization_Revision_VI.md).
+`--natural-methods natural_rounding natural_rounding_scale` khôi phục các nhánh
+natural cũ; `--methods` điều khiển riêng model-only. W8 và sensitivity tắt mặc định.
+
+`natural_residual` có `--residual-weight` (1), `--residual-rank` (8),
+`--residual-patch` (8), `--residual-patches-per-image` (256),
+`--residual-preservation orthogonal|full` (orthogonal). Calibration JSON có captured
+energy và split-half overlap; các chỉ số này không chứng nhận basis là watermark.
+Đặt `--residual-weight 0 --residual-preservation full` để đối chiếu tương đương
+natural_rounding. Không tăng số step hay giảm bit mặc định cùng lúc với objective.
 
 Mặc định `--quality-policy report`: chọn theo objective trên search; ngưỡng
 PSNR/SSIM/TPR chỉ được ghi nhận, **không lọc candidate hay dừng vì không đạt ngưỡng**.
@@ -101,20 +118,30 @@ failure hữu hạn; không được che giấu thành kết quả khoa học h�
 Trong `output_attack/<run>/`: `search.csv` lưu mọi candidate đã đánh giá;
 `quality_summary.csv` lưu quality từng nhánh; `watermark_retention.csv` lưu owner
 metrics và quality flags, kể cả `reference_valid=false`. `branches/*/updates.csv`
-có từng thành phần loss. JSON/checkpoint vẫn giữ để kiểm toán; ảnh nằm riêng như dưới đây.
+có từng thành phần loss. Toàn bộ dữ liệu nặng nằm trong một cây riêng như dưới đây.
 
 Ảnh của run mới được lưu riêng, không nằm trong `output_attack`:
 
 ```text
-output_attack/<run>/   # CSV, JSON, log nhánh và checkpoint/quantizer
-output_image/<run>/    # PNG reference, pseudo-target và output từng quantizer
+output_attack/<run>/                    # CSV, JSON và log nhẹ để lấy kết quả
+output_artifacts/models/marked_sd21/    # Pipeline Stable Signature công khai
+output_artifacts/checkpoints/<run>/     # VAE checkpoint và quantizer từng nhánh
+output_artifacts/images/<run>/          # PNG reference, pseudo-target và output
+output_artifacts/datasets/              # Pool ảnh natural đã tải
+output_artifacts/owner_assets/          # Extractor chỉ dùng sau freeze
+output_artifacts/cache/                 # Hugging Face và Torch cache
 ```
 
 Lệnh `bash run_blind_quantization.sh` vẫn tự evaluate. Evaluator đọc vị trí ảnh
 từ manifest và kiểm tra hash như trước. Sau khi chạy xong, chỉ cần lấy CSV/JSON
-để phân tích; không cần tải ảnh về cùng báo cáo. Checkpoint vẫn ở `branches/`.
-Đổi nơi lưu ảnh bằng `WMQ_IMAGE_OUTPUT_ROOT=/path/to/images` hoặc
+để phân tích; không cần tải ảnh hoặc checkpoint về cùng báo cáo.
+Đổi toàn bộ cây nặng bằng `WMQ_HEAVY_ROOT=/path/to/heavy`. Có thể override riêng
+model/data/cache bằng `WMQ_MODEL_ROOT`, `WMQ_DATA_ROOT`, `WMQ_CACHE_ROOT`; đổi ảnh bằng
+`WMQ_IMAGE_OUTPUT_ROOT=/path/to/images` hoặc
 `--image-output /path/to/images/<run>` (thư mục run mới, không ghi đè).
+Đổi nơi lưu checkpoint bằng `WMQ_CHECKPOINT_OUTPUT_ROOT=/path/to/checkpoints` hoặc
+`--artifact-output /path/to/checkpoints/<run>`. Manifest lưu cả hai vị trí; nếu di chuyển
+checkpoint trước khi chạy evaluator thủ công, truyền `--artifact-root /new/path/<run>`.
 Nếu chuyển ảnh sang vị trí khác trước khi evaluate, truyền
 `--image-root /new/path/<run>` cho `evaluate_blind_watermark.py`.
 Run cũ vẫn được đọc theo cấu trúc cũ; thay đổi này không di chuyển ảnh của run đã có.
@@ -612,8 +639,8 @@ Launcher mặc định tự chọn/tạo `wmq` và cài dependencies còn thiế
 Ngay cả khi đang activate môi trường khác, nó vẫn chọn `wmq` qua `conda run`.
 Đổi tên bằng `WMQ_CONDA_ENV`; dùng `WMQ_ENV_MODE=current` để cài/chạy ngay trong
 Python hiện tại. Chế độ auto cũng dùng current khi không tìm thấy Conda.
-Lần đầu launcher chuẩn bị fixture
-Stable Signature công khai tại `wmq_runs/marked_sd21`; lần sau reuse. Bước này thuộc
+Lần đầu launcher chuẩn bị fixture Stable Signature công khai tại
+`output_artifacts/models/marked_sd21`; lần sau reuse. Bước này thuộc
 vai trò organizer, nằm ngoài attacker. Với thí nghiệm cô lập, organizer chuẩn bị
 fixture riêng rồi truyền `--model /path/to/marked_pipeline`.
 
@@ -627,10 +654,10 @@ và atomic mkdir ngăn các launcher ghi đè fixture. Completion marker đượ
 Backbone revision mặc định vẫn là `main`; dùng `prepare_marked_fixture.py --revision
 <commit>` nếu cần pin toàn bộ backbone. Không coi pin decoder là pin toàn pipeline.
 
-Mặc định: **W8 và W4, clip 1.0, toàn bộ weights decoder**, 32 train / 20 search / 100 test,
+Mặc định: **W4, clip 1.0, toàn bộ weights decoder**, 32 train / 20 search / 100 test,
 100 bước tối ưu, đánh giá search mỗi 10 bước. `prompt.txt` có 160 prompt viết tay;
 đây chưa phải benchmark COCO/DrawBench. Các split có prompt và seed riêng.
-Nếu chỉ muốn diagnostic W4 nhanh hơn, truyền `--bits 4` rõ ràng.
+Truyền `--bits 4 3` để stress-test W3, hoặc `--bits 8 4` để đối chiếu W8 như pilot cũ.
 
 Extractor official được pin SHA256
 `77cd0a2040b9391233bbcd79c1adf00816b196089cbb844da40035f854637a04`
@@ -645,17 +672,18 @@ Với `--model` riêng phải cấp `SS_KEY`; với extractor riêng phải cấ
 | Nhánh | Thay đổi quantizer |
 |---|---|
 | `fixed_ptq` | RTN cố định, không tune |
-| `random_rounding` | Lấy mẫu stochastic rounding, chọn trên search |
 | `sensitivity` | Đo từng layer trên train, coordinate search scale theo thứ tự đo được |
 | `rounding` | Học rounding từng weight theo pseudo-target làm mờ |
 | `rounding_scale` | Học đồng thời rounding và scale per-channel có giới hạn |
 | `reconstruction` | Học rounding với strength=0, đối chứng giữ ảnh tham chiếu |
 | `natural_rounding` | Học rounding với MSE + LPIPS trên natural và bảo toàn ảnh sinh |
 | `natural_rounding_scale` | Như natural_rounding, thêm per-channel scale |
+| `natural_residual` | Học rounding với loss projection lên basis residual từ natural TRAIN; bảo toàn phần bù |
 
-Sáu nhánh đầu là ladder **model-only**, hai nhánh cuối là model + natural + LPIPS.
-Launcher mặc định chạy cả tám nhánh tại mỗi bits/clip; không thay thế ladder có surrogate
-ownership loss trong proposal. Mọi nhánh dùng cùng bits, coverage, prompt/seed và
+Năm nhánh đầu là **model-only**, ba nhánh cuối là model + natural + LPIPS.
+Mặc định chạy `fixed_ptq`, `rounding_scale`, `reconstruction`, `natural_rounding`,
+`natural_residual`: 5 nhánh W4 thay vì 16 nhánh của pilot cũ. Các phương pháp khác vẫn
+chạy được qua `--methods` / `--natural-methods`. Mọi nhánh dùng cùng bits, coverage, prompt/seed và
 ngưỡng chất lượng trong một `comparison_group`. Scale được phép nằm trong
 [0.8, 1.25] lần scale RTN khởi tạo cho các nhánh scale. Không tune bitwidth liên tục,
 không sửa bias/norm/full-precision weights. Quantizer dùng đủ miền signed
@@ -677,7 +705,7 @@ tùy chỉnh W4 trên model riêng, vì vậy phải cấp key đúng của mode
 
 ```bash
 SS_KEY="<48-bit-key-cua-model>" bash run_blind_quantization.sh \
-  --model "$PWD/wmq_runs/marked_sd21" --prompts "$PWD/prompt.txt" \
+  --model "$PWD/output_artifacts/models/marked_sd21" --prompts "$PWD/prompt.txt" \
   --output "$PWD/output_attack/blind_w4_seed3407" \
   --bits 4 --clips 1.0 --steps 100 --eval-every 10 --strength 0.25
 ```
@@ -690,8 +718,8 @@ bash run_blind_quantization.sh --train-n 2 --search-n 2 --test-n 2 \
 ```
 
 Reconstruction control đã có mặc định. Dùng `--methods` để giới hạn các nhánh
-model-only; hai nhánh natural vẫn được thêm khi có natural dataset.
-Mỗi nhánh khởi tạo độc lập. Random dùng ceil(steps/eval_every) proposal;
+model-only; `--natural-methods` chọn nhánh natural khi có natural dataset.
+Mỗi nhánh khởi tạo độc lập. Random rounding đã bỏ khỏi code;
 các nhánh gradient dùng `steps` update, sensitivity dùng `steps` proposal train.
 RTN được đánh giá một lần. Các nhánh tối ưu có RTN fallback được gắn nhãn rõ.
 Đây là so sánh cùng budget lượng tử hóa/chất lượng, **chưa cùng chi phí tính toán**;
@@ -733,10 +761,12 @@ output_attack/blind_w4_seed3407/
     search.json
     updates.json                # Nhánh có update/proposal
     selection.json
+output_artifacts/checkpoints/blind_w4_seed3407/
+  branches/<method>_w4_c1.0/
     quantizer.json
     quantizer.safetensors       # Integer codes + scale, kiểm tra khớp exported weights
     vae/                        # Diffusers VAE đã dequantize FP32
-output_image/blind_w4_seed3407/
+output_artifacts/images/blind_w4_seed3407/
   marked_reference_test/
   pseudo_target_test/
   <method>_w4_c1.0_test/
@@ -788,9 +818,9 @@ import torch
 from diffusers import AutoencoderKL, StableDiffusionPipeline, DDIMScheduler
 
 pipe = StableDiffusionPipeline.from_pretrained(
-    "wmq_runs/marked_sd21", torch_dtype=torch.float16)
+    "output_artifacts/models/marked_sd21", torch_dtype=torch.float16)
 pipe.vae = AutoencoderKL.from_pretrained(
-    "output_attack/blind_w4_seed3407/branches/rounding_scale_w4_c1.0/vae",
+    "output_artifacts/checkpoints/blind_w4_seed3407/branches/rounding_scale_w4_c1.0/vae",
     torch_dtype=torch.float32)
 pipe.to("cuda")
 pipe.scheduler = DDIMScheduler.from_config(pipe.scheduler.config)
@@ -817,3 +847,45 @@ Manifest ghi GPU, PyTorch/CUDA/cuDNN, Python, TF32 và deterministic settings;
 owner evaluation cũng ghi runtime. Cùng seed và tắt TF32 không bảo đảm kết quả
 bitwise giống nhau giữa các GPU/thư viện. VAE Stable Signature không có trục
 timestep; các kết quả ở đây không áp dụng thành kết luận về carrier UNet/latent.
+# Owner diagnostics bổ sung, không checkpoint/resume
+
+Lệnh mặc định vẫn là `bash run_blind_quantization.sh`. Không thêm checkpoint tiến
+trình, optimizer state hay resume. Artifact quantizer/VAE cuối mỗi nhánh vẫn được
+giữ để đánh giá và kiểm tra hash như trước.
+
+Ảnh RGB tại các biên dữ liệu phải là FP32 NCHW, hữu hạn và trong [0,1]. Output
+VAE được kiểm tra hữu hạn trước clipping; raw output phục vụ training được phép
+vượt [0,1]. Các kiểm tra này không tự ép dtype để che lỗi preprocessing.
+
+`watermark_retention.csv` bổ sung tổng correct/error bits, net additional bit
+errors, số ảnh decoding improved/worsened/tied, exact-message accuracy, và mức
+giảm bit accuracy kèm paired bootstrap CI95 theo ảnh. “Decoding worsened” nghĩa
+là ít bit khớp hơn; không đồng nghĩa evasion tốt hơn vì detector dùng double-tail.
+
+Sau khi mọi nhánh đã freeze và owner metrics đã xuất, launcher chạy phân tích
+gradient trên 4 mẫu đầu của test set, dùng lại prompt/seed đã khai báo:
+
+```bash
+WMQ_MECHANISM_SAMPLES=16 bash run_blind_quantization.sh
+# 0 tắt riêng phân tích gradient; vẫn chạy owner evaluation đầy đủ.
+```
+
+`mechanism_analysis.csv` chứa từng method/sample/layer: norm quantization error,
+norm gradient, dot product và cosine giữa error và gradient ownership/quality.
+`mechanism_analysis.json` ghi định nghĩa loss, hash freeze/extractor và giới hạn.
+Không lưu thêm model hoặc latent cho diagnostic này. Nó tái sinh latent, giải phóng
+UNet khỏi GPU rồi backprop từng mẫu qua VAE/extractor, nên có thêm thời gian/VRAM.
+
+Gradient được tính tại **quantized endpoint**. Quality loss là RGB MSE so với
+marked decoder cùng latent. Ownership score là bình phương trung bình signed
+soft agreement `tanh(logit/2)*(2*key-1)`; cả đảo toàn bộ bit lẫn khớp toàn bộ bit
+đều có score cao. Score này là proxy khả vi, không thay detector/FPR. Dot ownership
+âm biểu thị xu hướng giảm score cục bộ; không chứng minh hiệu ứng hữu hạn hoặc
+ownership subspace. Cosine của vector bằng 0 được ghi null.
+
+Chỉ owner evaluator có key/extractor; attacker không import module diagnostic.
+Artifact được kiểm tra hash trước và sau phân tích; không chọn lại candidate từ
+kết quả này. Latent tái sinh có thể lệch số học do CUDA/OOM/batch, và gradient dùng
+ảnh float trước làm tròn PNG. Bốn mẫu là diagnostic pilot, không đại diện toàn bộ
+test set. Các CI theo ảnh là pointwise, có điều kiện theo model/key, không phải
+CI đồng thời cho nhiều phương pháp.

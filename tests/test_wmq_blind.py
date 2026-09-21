@@ -109,7 +109,8 @@ class BlindTests(unittest.TestCase):
                     return SimpleNamespace(images=torch.cat([self(p, g, **kw).images for p, g in zip(prompt, generator)]))
                 if prompt not in ("one", "two"):
                     self_test.assertTrue((active_out[0] / "selection_frozen.json").is_file())
-                    self_test.assertTrue((active_out[0] / "branches/rounding_w8_c1.0/vae/weights.bin").is_file())
+                    checkpoint = active_out[0].parent / "output_artifacts" / "checkpoints" / active_out[0].name
+                    self_test.assertTrue((checkpoint / "branches/rounding_w8_c1.0/vae/weights.bin").is_file())
                     test_started[0] = True
                 multiplier = 3 if prompt == "changed test" else .2
                 return SimpleNamespace(images=torch.randn(1, 4, 16, 16, generator=generator, device="cuda") * multiplier)
@@ -147,8 +148,9 @@ class BlindTests(unittest.TestCase):
                     main()
                 second = json.loads((second_out / "selection_frozen.json").read_text())
                 self.assertEqual(first["branches"], second["branches"])
-                original_weights = torch.load(out / "branches/rounding_w8_c1.0/vae/weights.bin", weights_only=True)
-                changed_weights = torch.load(second_out / "branches/rounding_w8_c1.0/vae/weights.bin", weights_only=True)
+                checkpoint_root = root / "output_artifacts" / "checkpoints"
+                original_weights = torch.load(checkpoint_root / out.name / "branches/rounding_w8_c1.0/vae/weights.bin", weights_only=True)
+                changed_weights = torch.load(checkpoint_root / second_out.name / "branches/rounding_w8_c1.0/vae/weights.bin", weights_only=True)
                 for key in original_weights:
                     self.assertTrue(torch.equal(original_weights[key], changed_weights[key]))
             finally:
@@ -160,9 +162,9 @@ class BlindTests(unittest.TestCase):
             self.assertFalse(report["test_used_for_selection"])
             self.assertIsNone(report["watermark_metrics"])
             self.assertEqual(len(json.loads((out / "search.json").read_text())), 3)
-            self.assertTrue((out / "branches/rounding_w8_c1.0/vae/weights.bin").exists())
+            self.assertTrue((root / "output_artifacts" / "checkpoints" / out.name / "branches/rounding_w8_c1.0/vae/weights.bin").exists())
             for folder in ["marked_reference_test", "pseudo_target_test", "rounding_w8_c1.0_test"]:
-                self.assertTrue((root / "output_image" / out.name / folder / "0000.png").exists())
+                self.assertTrue((root / "output_artifacts" / "images" / out.name / folder / "0000.png").exists())
             self.assertFalse(list(out.rglob("*.png")))
 
 

@@ -29,7 +29,7 @@ def main():
                 raise ValueError("Output already exists")
             marker = out / "fixture_provenance.json"
             if not marker.is_file() or not (out / "model_index.json").is_file():
-                raise ValueError(f"Incomplete fixture at {out}; repair it or use a new WMQ_ROOT")
+                raise ValueError(f"Incomplete fixture at {out}; repair it or choose a new model output directory")
             meta = json.loads(marker.read_text(encoding="utf-8"))
             if (meta.get("sha256") != EXPECTED_DECODER_SHA256 or meta.get("backbone") != args.backbone
                     or meta.get("revision_requested") != args.revision):

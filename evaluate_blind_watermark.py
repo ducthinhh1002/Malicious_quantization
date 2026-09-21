@@ -9,7 +9,29 @@ import numpy as np
 import torch
 from PIL import Image
 from scipy.stats import binom, binomtest
-from wmq_runtime import batches, batch_size, EVENTS
+from wmq_runtime import batches, batch_size, EVENTS, image01
+
+
+def paired_bit_statistics(reference, attacked, bits):
+    """Integer match counts; error changes describe decoding, not double-tail evasion."""
+    a, b = np.asarray(reference), np.asarray(attacked)
+    if (bits < 1 or a.ndim != 1 or not a.size or a.shape != b.shape
+            or not np.isfinite(a).all() or not np.isfinite(b).all()
+            or np.any(a != np.round(a)) or np.any(b != np.round(b))
+            or np.any(a < 0) or np.any(b < 0) or np.any(a > bits) or np.any(b > bits)):
+        raise ValueError("Invalid paired integer bit-match counts")
+    delta = a - b
+    low, high = paired_drop_interval(a / bits, b / bits)
+    return {"total_bits": int(bits * a.size), "correct_bits": int(b.sum()),
+            "error_bits": int((bits - b).sum()),
+            "net_additional_bit_errors": int(delta.sum()),
+            "decoding_improved_images": int((b > a).sum()),
+            "decoding_worsened_images": int((b < a).sum()),
+            "decoding_tied_images": int((b == a).sum()),
+            "exact_message_accuracy": float((b == bits).mean()),
+            "bit_accuracy_drop_pp": float(delta.mean() * 100 / bits),
+            "bit_accuracy_drop_ci95_low_pp": 100 * low,
+            "bit_accuracy_drop_ci95_high_pp": 100 * high}
 
 
 def file_sha256(path):
@@ -77,7 +99,14 @@ def resolve_image_root(root, manifest, override=None):
     return (Path(root) / manifest.get("image_root", ".")).resolve()
 
 
-def verify_frozen_run(root, report, image_root=None):
+def resolve_artifact_root(root, manifest, override=None):
+    """Old runs keep checkpoints under the report root; new runs declare a separate root."""
+    if override is not None:
+        return Path(override).resolve()
+    return (Path(root) / manifest.get("artifact_root", ".")).resolve()
+
+
+def verify_frozen_run(root, report, image_root=None, artifact_root=None):
     root = Path(root).resolve()
     frozen = json.loads((root / "selection_frozen.json").read_text(encoding="utf-8"))
     if frozen.get("phase") != "before_test_generation":
@@ -90,6 +119,9 @@ def verify_frozen_run(root, report, image_root=None):
         return h.hexdigest()
     if frozen.get("schema_version") == 2:
         manifest = json.loads((root / "manifest.json").read_text(encoding="utf-8"))
+        artifacts = resolve_artifact_root(root, manifest, artifact_root)
+        if not artifacts.is_dir():
+            raise FileNotFoundError(f"Checkpoint directory missing: {artifacts}. Supply --artifact-root if checkpoints were moved.")
         branches, reference = evaluation_branches(manifest)
         expected = {b["label"] for b in branches if b["label"] != reference and b.get("role") != "diagnostic"}
         if (digest(root / "manifest.json") != frozen["manifest_sha256"]
@@ -103,12 +135,19 @@ def verify_frozen_run(root, report, image_root=None):
             if label == reference or branch.get("role") == "diagnostic":
                 continue
             entry = frozen["branches"][label]
-            folder = (root / branch["artifact"]).resolve()
-            if not folder.is_relative_to(root.resolve()) or folder == root.resolve():
-                raise ValueError("Artifact path escapes run directory")
-            actual = {str(p.relative_to(root)): digest(p) for p in folder.rglob("*") if p.is_file()}
+            folder = (artifacts / branch["artifact"]).resolve()
+            if not folder.is_relative_to(artifacts) or folder == artifacts:
+                raise ValueError("Artifact path escapes checkpoint directory")
+            actual = {((p.relative_to(artifacts).as_posix()) if "artifact_root" in manifest
+                       else str(p.relative_to(artifacts))): digest(p)
+                      for p in folder.rglob("*") if p.is_file()}
+            diagnostic_folder = (root / branch["artifact"]).resolve()
+            diagnostics = {p.relative_to(root).as_posix(): digest(p)
+                           for p in diagnostic_folder.rglob("*") if p.is_file()}
             if entry["selected"] != report["selections"][label] or actual != entry["files_sha256"]:
                 raise ValueError(f"Branch {label} changed after selection freeze")
+            if "diagnostic_files_sha256" in entry and diagnostics != entry["diagnostic_files_sha256"]:
+                raise ValueError(f"Branch {label} diagnostics changed after selection freeze")
         profiles = {p.name: digest(p) for p in root.glob("profile_*.json")}
         if profiles != frozen["profile_sha256"]:
             raise ValueError("Layer profile changed after selection freeze")
@@ -131,6 +170,7 @@ def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--run", required=True)
     p.add_argument("--image-root", help="Override image location after relocation; image hashes must still match")
+    p.add_argument("--artifact-root", help="Override checkpoint location after relocation; checkpoint hashes must still match")
     p.add_argument("--batch-size", type=int, default=0, help="0 = automatic from free VRAM; CUDA OOM halves the batch")
     p.add_argument("--extractor", required=True, help="Owner's Stable Signature TorchScript extractor")
     p.add_argument("--expected-extractor-sha256", help="Refuse to load an extractor with another digest")
@@ -142,9 +182,11 @@ def main():
     p.add_argument("--detector", choices=["single", "double"], default="double",
                    help="FPR is the TOTAL probability across both tails for double")
     p.add_argument("--lpips", action="store_true", help="Owner-only independent quality metric; may download AlexNet")
+    p.add_argument("--mechanism-samples", type=int, default=0,
+                   help="Post-freeze owner gradient diagnostic on first N test seeds; 0 disables")
     args = p.parse_args()
     EVENTS.clear()
-    if args.batch_size < 0:
+    if args.batch_size < 0 or args.mechanism_samples < 0:
         raise ValueError("Batch size must be nonnegative")
     if (not args.key or set(args.key) - {"0", "1"} or not 0 < args.fpr < 1
             or not 0 <= args.min_reference_tpr <= 1):
@@ -157,7 +199,7 @@ def main():
     report = json.loads((root / "report.json").read_text())
     if report["test_used_for_selection"]:
         raise ValueError("Test leakage")
-    verify_frozen_run(root, report, args.image_root)
+    verify_frozen_run(root, report, args.image_root, args.artifact_root)
     manifest = json.loads((root / "manifest.json").read_text())
     images = resolve_image_root(root, manifest, args.image_root)
     branches, reference_label = evaluation_branches(manifest)
@@ -185,11 +227,12 @@ def main():
             paths = sorted((images / label).glob("*.png"))
             if len(paths) != n:
                 raise ValueError(f"Wrong image count in {label}")
-            accuracies, detected, perceptual = [], [], []
+            accuracies, detected, perceptual, match_counts = [], [], [], []
             if any(path.name != f"{i:04d}.png" for i, path in enumerate(paths)):
                 raise ValueError("Unexpected paired image name")
             def evaluate(chunk):
                 x = torch.cat([tensor(path) for path in chunk]).to(device)
+                image01(x, "owner extractor input")
                 mean = x.new_tensor([.485, .456, .406])[None, :, None, None]
                 std = x.new_tensor([.229, .224, .225])[None, :, None, None]
                 logits = net((x - mean) / std)
@@ -203,6 +246,7 @@ def main():
                 return torch.stack([matches, distances], 1).cpu().tolist()
             for _, results in batches(paths, evaluate, effective_batch, "owner_evaluation"):
                 for matches, distance in results:
+                    match_counts.append(int(matches))
                     accuracies.append(matches / len(key))
                     detected.append(matches >= threshold or (args.detector == "double" and matches <= len(key) - threshold))
                     if metric is not None:
@@ -230,12 +274,14 @@ def main():
                          "ssim": quality.get("ssim") if quality else None,
                          "highpass_energy_ratio": float(np.mean(ratios)) if ratios else None,
                          "highpass_mse": float(np.mean([r["highpass_mse"] for r in texture])) if texture else None,
-                         "per_image_bit_accuracy": accuracies, "per_image_detected": detected})
+                          "per_image_bit_accuracy": accuracies, "per_image_detected": detected,
+                          "per_image_matches": match_counts})
     reference_row = next(row for row in rows if row["method"] == reference_label)
     clean_detected = np.array(reference_row["per_image_detected"], dtype=bool)
     reference_valid = reference_row["tpr"] >= args.min_reference_tpr
     for row in rows:
         row["reference_valid"] = reference_valid
+        row.update(paired_bit_statistics(reference_row["per_image_matches"], row["per_image_matches"], len(key)))
         flags = np.array(row["per_image_detected"], dtype=bool)
         row["survival_on_originally_detected"] = float(flags[clean_detected].mean()) if clean_detected.any() else None
         row["evasion_on_originally_detected"] = 1. - row["survival_on_originally_detected"] if clean_detected.any() else None
@@ -280,6 +326,10 @@ def main():
         writer.writeheader()
         writer.writerows(rows)
     print(json.dumps([{k: v for k, v in r.items() if k in fields} for r in rows], indent=2))
+    if args.mechanism_samples:
+        from wmq_owner_mechanism import analyze
+        analyze(root, report, manifest, net, key, min(n, args.mechanism_samples),
+                device, args.image_root, args.artifact_root, extractor_digest, reference_valid)
 
 
 if __name__ == "__main__":

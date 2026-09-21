@@ -1,10 +1,18 @@
 # Blind quantization: model-only và ảnh tự nhiên không ghép cặp
 
+## Cập nhật 2026-09-22 sau pilot
+
+[Revision residual quantization](Residual_Quantization_Revision_VI.md) ghi phân tích
+report thật và nguồn nghiên cứu. Mặc định mới: W4, fixed_ptq, rounding_scale,
+reconstruction, natural_rounding và natural_residual. Vẫn giữ model-only; các nhánh
+cũ gọi được tường minh. Natural residual là giả thuyết chưa xác nhận bằng owner test,
+không phải ownership subspace đã biết. Phần sau mô tả objective/protocol cũ làm đối chứng.
+
 ## Hai hướng được giữ để so sánh (cập nhật 2026-09-21)
 
-Hướng model-only bên dưới vẫn giữ nguyên mục tiêu smoothing. Launcher mặc định
-tải một pool ảnh COCO công khai rồi **thêm** `natural_rounding` và
-`natural_rounding_scale` ở mỗi bits/clip; không thay thế các nhánh cũ.
+Hướng model-only bên dưới vẫn giữ nguyên mục tiêu smoothing. Launcher
+tải một pool ảnh COCO công khai rồi thêm các nhánh chọn bởi `--natural-methods`
+ở mỗi bits/clip. Cặp natural cũ là `natural_rounding` và `natural_rounding_scale`.
 Ảnh tự nhiên không cần là ảnh sạch tương ứng với bất kỳ ảnh model sinh nào.
 Đây là threat model rộng hơn model-only: có thêm dataset ngoài, vẫn không có
 key, extractor, detector feedback hay checkpoint model sạch trong optimization.
@@ -107,8 +115,10 @@ WMQ_MODEL_ONLY=1 bash run_blind_quantization.sh
 
 Xem `manifest.json` cho threat model từng nhánh, `search.json` cho mục tiêu chọn,
 `report.json` cho quality/texture và `watermark_retention.csv` cho owner metrics.
-Ảnh được lưu ở `output_image/<run>/`, tách khỏi `output_attack/<run>/` chứa báo cáo
-và checkpoint. Manifest ghi đường dẫn ảnh; evaluator vẫn tự đọc và kiểm tra hash.
+Ảnh được lưu ở `output_artifacts/images/<run>/`, checkpoint ở
+`output_artifacts/checkpoints/<run>/`; model, dataset, extractor và cache cũng nằm
+trong `output_artifacts/`. Tất cả tách khỏi `output_attack/<run>/` chỉ chứa báo cáo
+và log nhẹ. Manifest ghi các đường dẫn; evaluator vẫn tự đọc và kiểm tra hash.
 Phân tích CSV/JSON sau khi hoàn tất không cần kèm ảnh. Run cũ giữ cấu trúc cũ.
 `search.csv` giữ các candidate đã đánh giá, `quality_summary.csv` giữ quality
 của mọi nhánh, `branches/*/updates.csv` giữ loss từng bước. Quality thấp không
@@ -166,7 +176,8 @@ Nếu nghiên cứu tuning với feedback detector, cần khai báo threat model
 
 Phiên bản trước đã chỉ dùng train để tính loss và search để gọi `choose`, nhưng
 sinh sẵn cả ảnh test. Phiên bản hiện tại chỉ tạo train/search trước optimization;
-sau khi chọn xong mới xuất các artifact trong `branches/` và ghi `selection_frozen.json` chứa hash
+Sau khi chọn xong mới xuất checkpoint trong `output_artifacts/checkpoints/<run>/branches/`, giữ log
+nhánh trong `output_attack/<run>/branches/` và ghi `selection_frozen.json` chứa hash
 checkpoint/search, rồi mới sinh latent và ảnh test. Không có bước chọn lại sau
 test. `test_used_for_selection=False` là metadata mô tả luồng này, tự nó không
 phải bằng chứng.
@@ -249,3 +260,18 @@ và phải báo phạm vi khác. Không tự thay scope/precision khi thiếu b�
 PSNR/SSIM chỉ là proxy chất lượng; ngưỡng LPIPS cũ không được bảo đảm. Owner có
 thể đo LPIPS để kiểm tra kết quả và báo thất bại, nhưng không chọn lại candidate
 bằng detector test. Ảnh pseudo-target không bao giờ được gọi là ảnh sạch.
+## Bổ sung phân tích sau khi freeze
+
+Giữ nguyên các nhánh quantization, không thêm JPEG/resize hoặc checkpoint resume.
+Owner evaluation bổ sung thống kê bit-error ghép cặp và exact-message accuracy.
+Phân tích cơ chế độc lập `wmq_owner_mechanism.py` chạy sau freeze và kiểm tra hash
+trước/sau: với mỗi layer, đo e = theta_quantized - theta_marked, norm và cosine/
+dot với gradient ownership/quality tại quantized endpoint. Quality là RGB MSE
+với output marked cùng latent; ownership là squared signed soft agreement, đối
+xứng khi đảo toàn bộ bit. Không dùng owner gradient trong attacker selection.
+
+Đây là diagnostic Taylor cục bộ, không phải phép chứng minh ownership subspace
+hoặc phân rã nhân quả chính xác. Raw gradient quality tại model gốc bằng 0 nên
+không được dùng làm cosine attribution. Mặc định 4 test seeds, điều chỉnh bằng
+WMQ_MECHANISM_SAMPLES; JSON/CSV ghi từng sample/layer và giới hạn tái sinh latent.
+Kiểm tra FP32/RGB/range/finite tại biên ảnh bảo vệ tính hợp lệ của các metric.

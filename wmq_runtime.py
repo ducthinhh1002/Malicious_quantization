@@ -5,6 +5,23 @@ EVENTS = []
 GIB = 2 ** 30
 
 
+def image01(x, name="image"):
+    """Validate RGB at image boundaries without silently casting or clipping."""
+    if x.dtype != torch.float32 or x.ndim != 4 or x.shape[1] != 3 or not x.numel():
+        raise ValueError(f"{name}: expected nonempty FP32 NCHW RGB")
+    with torch.no_grad():
+        if not bool(torch.isfinite(x).all() & (x >= 0).all() & (x <= 1).all()):
+            raise ValueError(f"{name}: expected finite values in [0,1]")
+    return x
+
+
+def decoded01(raw):
+    # Check before clipping: Inf must not become an apparently valid pixel.
+    if raw.dtype != torch.float32 or not bool(torch.isfinite(raw).all()):
+        raise ValueError("VAE output must be finite FP32")
+    return image01((raw / 2 + .5).clamp(0, 1), "decoded image")
+
+
 def batch_size(requested, device, cap=8):
     if requested < 0:
         raise ValueError("Batch size must be >=0 (0 = auto)")

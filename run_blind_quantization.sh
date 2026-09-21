@@ -2,9 +2,17 @@
 set -Eeuo pipefail
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-RUN_ROOT="${WMQ_ROOT:-$SCRIPT_DIR/wmq_runs}"
 ATTACK_OUTPUT_ROOT="${WMQ_ATTACK_OUTPUT_ROOT:-$SCRIPT_DIR/output_attack}"
-IMAGE_OUTPUT_ROOT="${WMQ_IMAGE_OUTPUT_ROOT:-$SCRIPT_DIR/output_image}"
+HEAVY_ROOT="${WMQ_HEAVY_ROOT:-$SCRIPT_DIR/output_artifacts}"
+MODEL_ROOT="${WMQ_MODEL_ROOT:-$HEAVY_ROOT/models}"
+CHECKPOINT_OUTPUT_ROOT="${WMQ_CHECKPOINT_OUTPUT_ROOT:-$HEAVY_ROOT/checkpoints}"
+IMAGE_OUTPUT_ROOT="${WMQ_IMAGE_OUTPUT_ROOT:-$HEAVY_ROOT/images}"
+DATA_ROOT="${WMQ_DATA_ROOT:-$HEAVY_ROOT/datasets}"
+OWNER_ASSET_ROOT="${WMQ_OWNER_ASSET_ROOT:-$HEAVY_ROOT/owner_assets}"
+CACHE_ROOT="${WMQ_CACHE_ROOT:-$HEAVY_ROOT/cache}"
+export HF_HOME="${HF_HOME:-$CACHE_ROOT/huggingface}"
+export HF_HUB_CACHE="${HF_HUB_CACHE:-$HF_HOME/hub}"
+export TORCH_HOME="${TORCH_HOME:-$CACHE_ROOT/torch}"
 
 # Bootstrap before imports: auto prefers a dedicated Conda env, otherwise current Python.
 export PYTHONNOUSERSITE=1 PYTHONUNBUFFERED=1
@@ -67,13 +75,15 @@ if not torch.cuda.is_available():
 print(f"GPU: {torch.cuda.get_device_name(0)}; torch={torch.__version__}; diffusers={diffusers.__version__}", flush=True)
 PY
 
-DEFAULT_MODEL="$RUN_ROOT/marked_sd21"
+DEFAULT_MODEL="$MODEL_ROOT/marked_sd21"
 DEFAULT_OUTPUT="$ATTACK_OUTPUT_ROOT/blind_$(date +%Y%m%d_%H%M%S)_$$"
 MODEL_PATH="$DEFAULT_MODEL"
 ATTACK_OUTPUT="$DEFAULT_OUTPUT"
 CUSTOM_MODEL=0
 HAS_OUTPUT=0
 HAS_IMAGE_OUTPUT=0
+HAS_ARTIFACT_OUTPUT=0
+ARTIFACT_OUTPUT=""
 HAS_BITS=0
 HAS_NATURAL=0
 TRAIN_N=32
@@ -92,6 +102,10 @@ for ((index=0; index<${#arguments[@]}; index++)); do
       ATTACK_OUTPUT="${arguments[index+1]}"; HAS_OUTPUT=1; ((index+=1)) ;;
     --output=*) ATTACK_OUTPUT="${argument#--output=}"; HAS_OUTPUT=1 ;;
     --image-output|--image-output=*) HAS_IMAGE_OUTPUT=1 ;;
+    --artifact-output)
+      ((index + 1 < ${#arguments[@]})) || { echo "--artifact-output requires a path" >&2; exit 2; }
+      ARTIFACT_OUTPUT="${arguments[index+1]}"; HAS_ARTIFACT_OUTPUT=1; ((index+=1)) ;;
+    --artifact-output=*) ARTIFACT_OUTPUT="${argument#--artifact-output=}"; HAS_ARTIFACT_OUTPUT=1 ;;
     --bits|--bits=*) HAS_BITS=1 ;;
     --natural-images|--natural-images=*) HAS_NATURAL=1 ;;
     --train-n|--search-n|--seed)
@@ -107,8 +121,12 @@ for ((index=0; index<${#arguments[@]}; index++)); do
   esac
 done
 ATTACK_OUTPUT="$(realpath -m "$ATTACK_OUTPUT")"
+if [[ "$HAS_ARTIFACT_OUTPUT" == "0" ]]; then
+  ARTIFACT_OUTPUT="$CHECKPOINT_OUTPUT_ROOT/$(basename -- "$ATTACK_OUTPUT")"
+fi
+ARTIFACT_OUTPUT="$(realpath -m "$ARTIFACT_OUTPUT")"
 
-mkdir -p "$RUN_ROOT"
+mkdir -p "$MODEL_ROOT" "$CHECKPOINT_OUTPUT_ROOT" "$IMAGE_OUTPUT_ROOT" "$DATA_ROOT" "$OWNER_ASSET_ROOT" "$CACHE_ROOT"
 if [[ "$CUSTOM_MODEL" == "0" ]]; then
   echo "[1/4] Preparing or reusing the pinned public Stable Signature fixture..."
   "$PY" "$SCRIPT_DIR/prepare_marked_fixture.py" --output "$DEFAULT_MODEL" --reuse
@@ -125,7 +143,8 @@ if [[ "$CUSTOM_MODEL" == "0" ]]; then attack+=(--model "$DEFAULT_MODEL"); fi
 attack+=(--prompts "$SCRIPT_DIR/prompt.txt")
 if [[ "$HAS_OUTPUT" == "0" ]]; then attack+=(--output "$DEFAULT_OUTPUT"); fi
 if [[ "$HAS_IMAGE_OUTPUT" == "0" ]]; then attack+=(--image-output "$IMAGE_OUTPUT_ROOT/$(basename -- "$ATTACK_OUTPUT")"); fi
-if [[ "$HAS_BITS" == "0" ]]; then attack+=(--bits 8 4); fi
+if [[ "$HAS_ARTIFACT_OUTPUT" == "0" ]]; then attack+=(--artifact-output "$ARTIFACT_OUTPUT"); fi
+if [[ "$HAS_BITS" == "0" ]]; then attack+=(--bits 4); fi
 if [[ "${WMQ_MODEL_ONLY:-0}" == "1" && "$HAS_NATURAL" == "1" ]]; then
   echo "WMQ_MODEL_ONLY=1 conflicts with --natural-images" >&2; exit 2
 fi
@@ -134,14 +153,14 @@ if [[ "${WMQ_MODEL_ONLY:-0}" != "1" && "$HAS_NATURAL" == "0" ]]; then
     echo "Natural pool preparation requires positive train/search counts and a nonnegative seed" >&2; exit 2;
   }
   NATURAL_COUNT=$((10#$TRAIN_N + 10#$SEARCH_N))
-  NATURAL_POOL="$RUN_ROOT/public_data/coco2017_n${NATURAL_COUNT}_seed${DATA_SEED}"
+  NATURAL_POOL="$DATA_ROOT/coco2017_n${NATURAL_COUNT}_seed${DATA_SEED}"
   echo "Preparing public COCO natural images for the additional branches..."
   "$PY" "$SCRIPT_DIR/prepare_natural_images.py" --output "$NATURAL_POOL" --count "$NATURAL_COUNT" --seed "$DATA_SEED"
   attack+=(--natural-images "$NATURAL_POOL")
 fi
 attack+=("$@")
 
-echo "[2/4] Running blind Stable Signature quantization (default comparison: W8 and W4)..."
+echo "[2/4] Running blind Stable Signature quantization (default: W4 controls + residual experiment)..."
 echo "Result directory: $ATTACK_OUTPUT"
 "${attack[@]}"
 [[ -f "$ATTACK_OUTPUT/report.json" && -f "$ATTACK_OUTPUT/selection_frozen.json" ]] || {
@@ -158,7 +177,7 @@ if [[ -n "${SS_EXTRACTOR:-}" ]]; then
   }
   EXTRACTOR_SHA256="$SS_EXTRACTOR_SHA256"
 else
-  EXTRACTOR="$RUN_ROOT/owner_assets/dec_48b_whit.torchscript.pt"
+  EXTRACTOR="$OWNER_ASSET_ROOT/dec_48b_whit.torchscript.pt"
   EXTRACTOR_SHA256="$OFFICIAL_EXTRACTOR_SHA256"
   echo "[3/4] Preparing or reusing the checksum-pinned official owner extractor..."
   "$PY" "$SCRIPT_DIR/prepare_owner_evaluator.py" --output "$EXTRACTOR"
@@ -179,6 +198,7 @@ evaluation=("$PY" "$SCRIPT_DIR/evaluate_blind_watermark.py"
   --expected-extractor-sha256 "$EXTRACTOR_SHA256"
   --key "$KEY" --key-source "$KEY_SOURCE"
   --batch-size "${WMQ_OWNER_BATCH_SIZE:-0}"
+  --mechanism-samples "${WMQ_MECHANISM_SAMPLES:-4}"
   --fpr "${FPR:-0.001}" --detector "${DETECTOR:-double}" --min-reference-tpr "${MIN_REFERENCE_TPR:-0.9}")
 if [[ "${WMQ_EVAL_LPIPS:-1}" == "1" ]]; then evaluation+=(--lpips); fi
 "${evaluation[@]}"
@@ -199,3 +219,5 @@ echo "Owner results: $ATTACK_OUTPUT/owner_evaluation.json"
 echo "Plot-ready table: $ATTACK_OUTPUT/watermark_retention.csv"
 echo "All search candidates: $ATTACK_OUTPUT/search.csv"
 echo "Quality diagnostics: $ATTACK_OUTPUT/quality_summary.csv"
+echo "Checkpoints: $ARTIFACT_OUTPUT"
+echo "Heavy artifacts root: $HEAVY_ROOT"

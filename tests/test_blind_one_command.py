@@ -14,13 +14,13 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class OneCommandTests(unittest.TestCase):
-    def test_public_key_and_w8_w4_owner_evaluation_are_wired_after_attack(self):
+    def test_public_key_and_w4_owner_evaluation_are_wired_after_attack(self):
         source = (ROOT / "run_blind_quantization.sh").read_text(encoding="utf-8")
         self.assertIn('prepare_blind_environment.py', source)
         self.assertIn('${WMQ_ENV_MODE:-auto}', source)
         self.assertIn('WMQ_EXPECTED_PREFIX', source)
         self.assertIn('${WMQ_CONDA_ENV:-wmq}', source)
-        self.assertIn('attack+=(--bits 8 4)', source)
+        self.assertIn('attack+=(--bits 4)', source)
         self.assertIn('111010110101000001010111010011010100010000100111', source)
         self.assertLess(source.index('"${attack[@]}"'), source.index('evaluate_blind_watermark.py'))
         self.assertLess(source.index('selection_frozen.json'), source.index('evaluate_blind_watermark.py'))
@@ -28,6 +28,13 @@ class OneCommandTests(unittest.TestCase):
         self.assertIn('prepare_natural_images.py', source)
         self.assertIn('attack+=(--natural-images "$NATURAL_POOL")', source)
         self.assertIn('${WMQ_MODEL_ONLY:-0}', source)
+        self.assertIn('${WMQ_HEAVY_ROOT:-$SCRIPT_DIR/output_artifacts}', source)
+        self.assertNotIn('RUN_ROOT=', source)
+        self.assertNotIn('$SCRIPT_DIR/wmq_runs', source)
+        self.assertIn('$HEAVY_ROOT/models', source)
+        self.assertIn('$HEAVY_ROOT/checkpoints', source)
+        self.assertIn('$HEAVY_ROOT/images', source)
+        self.assertIn('$HEAVY_ROOT/datasets', source)
 
     def test_owner_extractor_is_verified_on_download_and_reuse(self):
         payload = b"audited extractor bytes"

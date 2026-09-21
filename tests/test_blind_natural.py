@@ -165,7 +165,7 @@ class NaturalTests(unittest.TestCase):
                 # Fully inverted key must still be detected by DOUBLE tail.
                 return torch.full((len(x), 48), -1., device=x.device)
         def tiny_natural(vae, entries, eval_batch_size=1):
-            return [torch.zeros(1, 3, 16, 16) for _ in entries], [torch.ones(1, 3, 16, 16) * .3 for _ in entries]
+            return [torch.linspace(0, 1, 3 * 16 * 16).reshape(1, 3, 16, 16) for _ in entries], [torch.ones(1, 3, 16, 16) * .3 for _ in entries]
         def audited_choose(rows, **kwargs):
             self.assertFalse(test_started[0])
             return original_choose(rows, **kwargs)
@@ -201,10 +201,22 @@ class NaturalTests(unittest.TestCase):
             self.assertTrue(all(not s["search_feasible"] for s in report["selections"].values()))
             self.assertTrue((out / "search.csv").is_file())
             self.assertTrue((out / "quality_summary.csv").is_file())
-            images = root / "output_image" / out.name
+            images = root / "output_artifacts" / "images" / out.name
             self.assertTrue((images / "marked_reference_test/0000.png").is_file())
             self.assertFalse(list(out.rglob("*.png")))
+            self.assertFalse(list(out.rglob("*.safetensors")))
+            artifacts = root / "output_artifacts" / "checkpoints" / out.name
+            basis_path = artifacts / "branches/natural_residual_w8_c1.0/residual_basis.safetensors"
+            self.assertTrue(basis_path.is_file())
+            calibration = json.loads((out / "branches/natural_residual_w8_c1.0/residual_calibration.json").read_text())
+            self.assertEqual(calibration["fit_split"], "natural_train_only")
+            self.assertGreater(report["selections"]["natural_residual_w8_c1.0_test"]["gradient_updates"], 0)
             owner.verify_frozen_run(out, report)
+            saved_basis = basis_path.read_bytes()
+            basis_path.write_bytes(b"tampered")
+            with self.assertRaisesRegex(ValueError, "changed after selection freeze"):
+                owner.verify_frozen_run(out, report)
+            basis_path.write_bytes(saved_basis)
             extractor = root / "extractor.pt"
             extractor.write_bytes(b"test")
             argv = ["owner", "--run", str(out), "--extractor", str(extractor), "--key", "1" * 48, "--batch-size", "2"]
@@ -231,6 +243,9 @@ class NaturalTests(unittest.TestCase):
             self.assertEqual(owner.resolve_image_root(run, {}), run.resolve())
             self.assertEqual(owner.resolve_image_root(run, {"image_root": "../../output_image/run_a"}),
                              root / "output_image" / "run_a")
+            self.assertEqual(owner.resolve_artifact_root(run, {}), run.resolve())
+            self.assertEqual(owner.resolve_artifact_root(run, {"artifact_root": "../../output_checkpoint/run_a"}),
+                             root / "output_checkpoint" / "run_a")
 
 
 if __name__ == "__main__":
