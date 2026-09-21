@@ -73,7 +73,11 @@ class IntegrityTests(unittest.TestCase):
 
     def test_threshold_boundaries(self):
         self.assertEqual(detection_threshold(48, .001), 36)
-        self.assertEqual(detection_threshold(4, 1 / 16), 4)
+        self.assertEqual(detection_threshold(4, 1 / 16, "single"), 4)
+        self.assertEqual(detection_threshold(4, 2 / 16), 4)
+        self.assertEqual(detection_threshold(48, .0001), 38)
+        with self.assertRaisesRegex(ValueError, "Unattainable"):
+            detection_threshold(4, 1 / 16)
         with self.assertRaisesRegex(ValueError, "Unattainable"):
             detection_threshold(4, .001)
         for bits, fpr in [(0, .1), (48, 0), (48, float("nan"))]:

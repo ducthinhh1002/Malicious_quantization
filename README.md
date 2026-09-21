@@ -1,5 +1,111 @@
 # Hướng dẫn chạy thí nghiệm malicious quantization cho watermark diffusion
 
+## Blind: giữ model-only và thêm ảnh tự nhiên không ghép cặp
+
+Luồng blind tự chọn batch inference/evaluation theo VRAM trống (tối đa 8), không
+hardcode tên GPU. CUDA OOM ở inference sẽ giảm batch và thử lại; seed từng ảnh
+được tạo lại khi retry. Batch 1 vẫn OOM thì báo lỗi, không đổi dtype hoặc scope.
+Latent/reference được cache trên GPU tối đa 4 GiB, chỉ khi sau khi cấp phát còn
+ít nhất 50% tổng VRAM và tối thiểu 2 GiB trống; thiếu ngân sách thì giữ CPU.
+Đây là ngân sách data cache, không bảo đảm mọi backward đều tránh OOM.
+
+Training vẫn một ảnh/update (nhánh natural thêm một ảnh sinh cho preservation),
+giữ precision, loss và số bước. Log giữ đủ từng update nhưng flush mỗi 10 bước,
+cuối nhánh hoặc khi update lỗi. Nếu process bị kill đột ngột có thể mất phần log
+chưa flush; dùng `--log-every 1` nếu cần ghi ngay. Runtime/cache/OOM backoff được
+ghi trong report; batch và cấu hình được ghi manifest. Batching có thể tạo sai
+số số học nhỏ so với chạy từng ảnh, không cam kết giống từng bit.
+
+```bash
+# Mặc định tự tối ưu bộ nhớ, vẫn chạy cả hai hướng và tự evaluate
+bash run_blind_quantization.sh
+
+# Chế độ đối chiếu từng ảnh, không cache GPU
+WMQ_OWNER_BATCH_SIZE=1 bash run_blind_quantization.sh \
+  --gen-batch-size 1 --eval-batch-size 1 --data-cache cpu --log-every 1
+```
+
+Có thể đặt `--gen-batch-size`, `--eval-batch-size`, `--cache-max-gib` và
+`--log-every` riêng. Batch owner evaluator đặt bằng `WMQ_OWNER_BATCH_SIZE`
+(mặc định 0 = auto). Khi copy code lên server cần kèm **`wmq_runtime.py`**.
+
+```bash
+# Mặc định: cả hai hướng + tự tải checkpoint, ảnh COCO và tự đánh giá
+bash run_blind_quantization.sh
+
+# Dùng ảnh natural của bạn thay cho pool COCO tự tải
+bash run_blind_quantization.sh --natural-images /data/natural_images
+
+# Chỉ chạy model-only nghiêm ngặt, không dùng ảnh/mạng perceptual bên ngoài để học
+WMQ_MODEL_ONLY=1 bash run_blind_quantization.sh
+```
+
+Thư mục natural chứa PNG/JPG/JPEG/WebP/BMP không watermark từ nguồn bạn chọn;
+không cần ảnh sạch tương ứng với ảnh model sinh. Cần ít nhất `train-n + search-n`
+file khác nội dung (mặc định 52). Runner chia tập và ghi hash vào manifest, chỉ
+dùng encoder của model đã fingerprint; không dùng key/extractor để học quantizer.
+Mặc định script tải metadata COCO và đúng số ảnh cần dùng từ bucket COCO công khai
+(không tải toàn bộ archive ảnh), lưu pool theo count/seed, ghi URL/license/hash và
+kiểm tra hash khi dùng lại. Không cần tài khoản dataset. COCO test2017 ở đây là
+**dữ liệu calibration ngoài**; không phải tập test đánh giá attack.
+Đây là quyền truy cập **model + dữ liệu natural + prior perceptual công khai**,
+khác nhánh model-only. Mọi nhánh model-only hoàn tất trước khi nạp ảnh natural/LPIPS
+để học; chúng không sử dụng dataset hoặc LPIPS trong loss/chọn checkpoint.
+LPIPS owner evaluation vẫn được chạy sau freeze cho mọi nhánh.
+
+Nhánh mới học `MSE tái tạo + 0.1 * LPIPS + 2 * MSE bảo toàn ảnh sinh`.
+LPIPS AlexNet pretrained đóng băng; gradient truyền qua nó tới quantizer.
+Chỉnh lambda bằng `--natural-perceptual-weight`; đặt 0 để ablation MSE-only.
+Xem [hướng dẫn LPIPS chính thức](https://github.com/richzhang/PerceptualSimilarity)
+và [COCO](https://cocodataset.org/#download). Chỉ rounding/scale được học, không fine-tune
+tự do trọng số model. Chi phí tăng do thêm hai nhánh và forward bảo toàn ảnh sinh.
+
+Mặc định `--quality-policy report`: chọn theo objective trên search; ngưỡng
+PSNR/SSIM/TPR chỉ được ghi nhận, **không lọc candidate hay dừng vì không đạt ngưỡng**.
+Mọi nhánh finite vẫn sinh test, được owner đánh giá và ghi CSV, kể cả khi cả baseline
+và mọi candidate đều trượt. `--quality-policy constrained` khôi phục ưu tiên candidate
+đạt quality gate nhưng vẫn không dừng khi không có candidate đạt.
+Lỗi cấu hình, thiếu GPU/checkpoint, tải file hỏng hoặc đầu ra NaN không phải quality
+failure hữu hạn; không được che giấu thành kết quả khoa học hợp lệ.
+
+Trong `output_attack/<run>/`: `search.csv` lưu mọi candidate đã đánh giá;
+`quality_summary.csv` lưu quality từng nhánh; `watermark_retention.csv` lưu owner
+metrics và quality flags, kể cả `reference_valid=false`. `branches/*/updates.csv`
+có từng thành phần loss. JSON/checkpoint vẫn giữ để kiểm toán; ảnh nằm riêng như dưới đây.
+
+Ảnh của run mới được lưu riêng, không nằm trong `output_attack`:
+
+```text
+output_attack/<run>/   # CSV, JSON, log nhánh và checkpoint/quantizer
+output_image/<run>/    # PNG reference, pseudo-target và output từng quantizer
+```
+
+Lệnh `bash run_blind_quantization.sh` vẫn tự evaluate. Evaluator đọc vị trí ảnh
+từ manifest và kiểm tra hash như trước. Sau khi chạy xong, chỉ cần lấy CSV/JSON
+để phân tích; không cần tải ảnh về cùng báo cáo. Checkpoint vẫn ở `branches/`.
+Đổi nơi lưu ảnh bằng `WMQ_IMAGE_OUTPUT_ROOT=/path/to/images` hoặc
+`--image-output /path/to/images/<run>` (thư mục run mới, không ghi đè).
+Nếu chuyển ảnh sang vị trí khác trước khi evaluate, truyền
+`--image-root /new/path/<run>` cho `evaluate_blind_watermark.py`.
+Run cũ vẫn được đọc theo cấu trúc cũ; thay đổi này không di chuyển ảnh của run đã có.
+
+Mọi run mới xuất ba loại ảnh: `marked_reference_test`, `pseudo_target_test` và
+các output quantizer `*_test`. Owner đánh giá cả ba sau khi freeze mọi lựa chọn.
+`watermark_retention.csv` có double-tail TPR/evasion, quality và chỉ báo texture;
+`report.json` có metric chi tiết từng ảnh. `reconstruction` là đối chứng mặc định
+không smoothing. Sensitivity chỉ đo proxy thị giác, không được gọi là độ nhạy ownership.
+
+Detector mặc định **double-tail**, hiệu chỉnh ngưỡng nguyên theo FPR **tổng**:
+48 bit/FPR 0.001 phát hiện khi khớp >=36 hoặc <=12; FPR 0.0001 dùng >=38 hoặc <=10.
+Dùng `FPR=0.0001 bash run_blind_quantization.sh ...` để đổi FPR trước chạy.
+`DETECTOR=single` chỉ dành cho đối chiếu cũ. Baseline không đạt vẫn có báo cáo;
+FPR bất khả thi với độ dài key là cấu hình sai và bị từ chối.
+
+Blur có thể giữ watermark hoặc làm mất texture. Metric trực tiếp và đối chứng
+giúp kiểm tra giả thuyết, **không bảo đảm attack thành công**. Hướng natural cũng
+cần kiểm chứng. Chi tiết protocol tại
+[survey/Blind_Quantization_Stable_Signature.md](survey/Blind_Quantization_Stable_Signature.md).
+
 Script `run_malicious_quantization_watermarks.sh` đánh giá khả năng giữ watermark của **Stable Signature** và **AquaLoRA** sau lượng tử hóa. Mặc định dùng `RUN_PROTOCOL=fair_w4a16` để so sánh cùng bitwidth/phạm vi; quy trình grid rộng trước đây còn ở `RUN_PROTOCOL=legacy_grid`:
 
 1. Grid search các recipe PTQ theo bit-width, clipping và nhóm layer.
@@ -455,11 +561,12 @@ Không dùng các chỉ số trên search/refinement split làm kết quả cu�
 - [ ] Không tuyên bố đã backpropagate qua toàn bộ diffusion trajectory.
 - [ ] Chỉ kết luận từ test split, không chọn kết quả theo test split.
 
-## Stable Signature: pilot chỉ có model đã fingerprint
+## Stable Signature: pilot blind với hai mức quyền truy cập
 
-Nhánh `run_blind_quantization.sh` dùng `wmq_blind.py` để kiểm tra giả thuyết
-model-only. Attacker được đọc model đã fingerprint nhưng không có key, extractor,
-detector feedback, model sạch hoặc ảnh sạch bên ngoài. Đây là **Pilot 0 mở rộng**;
+Nhánh `run_blind_quantization.sh` dùng `wmq_blind.py` để kiểm tra model-only và
+model + natural. Các nhánh model-only không dùng key, extractor, detector feedback,
+model sạch, ảnh sạch bên ngoài hay pretrained perceptual prior trong optimization.
+Các nhánh natural dùng thêm ảnh công khai và LPIPS như mô tả đầu tài liệu. Đây là **Pilot 0 mở rộng**;
 chưa phải OS-MQ hoặc baseline QuRA với ownership loss. Proposal transfer còn cấm
 đọc victim fingerprint lúc xây dựng attack, nên quyền truy cập của pilot khác
 protocol đó. Xem [phạm vi nghiên cứu](survey/Blind_Quantization_Stable_Signature.md).
@@ -479,7 +586,7 @@ Stable Signature công khai tại `wmq_runs/marked_sd21`; lần sau reuse. Bư�
 vai trò organizer, nằm ngoài attacker. Với thí nghiệm cô lập, organizer chuẩn bị
 fixture riêng rồi truyền `--model /path/to/marked_pipeline`.
 
-Một lệnh trên chạy đủ bốn bước: chuẩn bị fixture, chạy blind attack, tải/kiểm tra
+Một lệnh trên tự chuẩn bị fixture và pool natural, chạy blind attack, tải/kiểm tra
 owner extractor, rồi evaluate sau khi selection đã freeze. Key và extractor chỉ
 được cấp cho process evaluator; `wmq_blind.py` không nhận hai dữ liệu này. Launcher
 luôn dùng Python của Conda environment đã chuẩn bị trên login node.
@@ -511,12 +618,15 @@ Với `--model` riêng phải cấp `SS_KEY`; với extractor riêng phải cấ
 | `sensitivity` | Đo từng layer trên train, coordinate search scale theo thứ tự đo được |
 | `rounding` | Học rounding từng weight theo pseudo-target làm mờ |
 | `rounding_scale` | Học đồng thời rounding và scale per-channel có giới hạn |
-| `reconstruction` (tùy chọn) | Học rounding với strength=0, đối chứng giữ ảnh tham chiếu |
+| `reconstruction` | Học rounding với strength=0, đối chứng giữ ảnh tham chiếu |
+| `natural_rounding` | Học rounding với MSE + LPIPS trên natural và bảo toàn ảnh sinh |
+| `natural_rounding_scale` | Như natural_rounding, thêm per-channel scale |
 
-Năm nhánh mặc định là ladder **model-only**, không thay thế ladder có surrogate
+Sáu nhánh đầu là ladder **model-only**, hai nhánh cuối là model + natural + LPIPS.
+Launcher mặc định chạy cả tám nhánh tại mỗi bits/clip; không thay thế ladder có surrogate
 ownership loss trong proposal. Mọi nhánh dùng cùng bits, coverage, prompt/seed và
 ngưỡng chất lượng trong một `comparison_group`. Scale được phép nằm trong
-[0.8, 1.25] lần scale RTN khởi tạo cho hai nhánh scale. Không tune bitwidth liên tục,
+[0.8, 1.25] lần scale RTN khởi tạo cho các nhánh scale. Không tune bitwidth liên tục,
 không sửa bias/norm/full-precision weights. Quantizer dùng đủ miền signed
 `[-2^(b-1), 2^(b-1)-1]`, ví dụ W4 là `[-8, 7]`, với zero-point 0. UNet sinh latent FP16; **VAE và activation
 của VAE chạy FP32**, nên pilot này không phải W4A16 của script fair cũ.
@@ -548,10 +658,10 @@ bash run_blind_quantization.sh --train-n 2 --search-n 2 --test-n 2 \
   --bits 4 --clips 1.0 --steps 2 --eval-every 1 --profile-n 1
 ```
 
-Chạy thêm reconstruction control trong cùng run bằng
-`--methods fixed_ptq random_rounding sensitivity rounding rounding_scale reconstruction`.
+Reconstruction control đã có mặc định. Dùng `--methods` để giới hạn các nhánh
+model-only; hai nhánh natural vẫn được thêm khi có natural dataset.
 Mỗi nhánh khởi tạo độc lập. Random dùng ceil(steps/eval_every) proposal;
-hai nhánh gradient dùng `steps` update, sensitivity dùng `steps` proposal train.
+các nhánh gradient dùng `steps` update, sensitivity dùng `steps` proposal train.
 RTN được đánh giá một lần. Các nhánh tối ưu có RTN fallback được gắn nhãn rõ.
 Đây là so sánh cùng budget lượng tử hóa/chất lượng, **chưa cùng chi phí tính toán**;
 report ghi số train/search evaluation, valid gradient update và proposal bị từ chối.
@@ -564,9 +674,11 @@ Nếu truyền nhiều `--bits`/`--clips`, mỗi tổ hợp có đầy đủ cá
 không chọn một winner toàn cục rồi so W2 với W4. Không dùng owner metrics để chọn lại
 strength, bitwidth, clip hoặc seed của cùng blind experiment.
 
-Quality gate: mean PSNR >=25, mean SSIM >=0.9, min per-image PSNR >=22 dB, so với
-ảnh marked gốc. Nhánh không có candidate feasible vẫn xuất đối chứng chẩn đoán,
-ghi `no_feasible_candidate` và `search_feasible=false`. Nếu test trượt, report
+Ngưỡng quality: mean PSNR >=25, mean SSIM >=0.9, min per-image PSNR >=22 dB, so với
+ảnh marked gốc. Mặc định report-only không lọc candidate: chọn theo objective,
+ghi `selected_quality_failed` và `search_feasible=false` nếu quality trượt.
+Chế độ constrained giữ fallback `no_feasible_candidate` khi không có candidate đạt.
+Không chế độ nào dừng vì quality hữu hạn thấp. Nếu test trượt, report
 ghi `quality_failures`. Chúng không được tính là attack thành công. Ngưỡng này
 không tương đương LPIPS gate trong script fair cũ.
 
@@ -579,7 +691,7 @@ pseudo-target/loss làm mờ vẫn giữ nguyên. Xem [tài liệu scikit-image]
 Mỗi lần chạy tạo thư mục mới `output_attack/blind_<thời gian>_<PID>` và file log:
 
 ```text
-blind_w4_seed3407/
+output_attack/blind_w4_seed3407/
   manifest.json                 # Protocol bất biến + danh sách test_branches
   profile_w4_c1.0_all.json       # Đo từng layer trên train
   search.json                   # Toàn bộ candidate, không có owner score
@@ -593,7 +705,9 @@ blind_w4_seed3407/
     quantizer.json
     quantizer.safetensors       # Integer codes + scale, kiểm tra khớp exported weights
     vae/                        # Diffusers VAE đã dequantize FP32
+output_image/blind_w4_seed3407/
   marked_reference_test/
+  pseudo_target_test/
   <method>_w4_c1.0_test/
 ```
 

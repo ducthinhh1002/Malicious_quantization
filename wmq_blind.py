@@ -1,12 +1,15 @@
-"""Model-only VAE quantization experiment; no watermark detector or secret inputs.
+"""Blind VAE quantization experiment; no watermark detector or secret inputs.
 
-The suppression target is a hypothesis, not a watermark oracle. All models and
-calibration images used by the attacker come from the supplied marked pipeline.
+The suppression target is a hypothesis, not a watermark oracle.
+The original route uses only the marked pipeline. Optional natural-image routes
+use a separately declared dataset of unpaired images and the marked encoder.
 """
 import argparse
+import csv
 import hashlib
 import json
 import math
+import os
 from pathlib import Path
 import subprocess
 import time
@@ -18,6 +21,7 @@ from torch import nn
 from torch.nn import functional as F
 from torch.func import functional_call
 from wmq_diagnostics import quality_warning
+from wmq_runtime import batches, batch_size, DataCache, all_finite, EVENTS
 
 
 def blur(x):
@@ -31,6 +35,85 @@ def blur(x):
 def pseudo_target(reference, strength):
     # Both inputs and targets retain unknown watermark content. Never call clean.
     return reference.lerp(blur(reference), strength)
+
+
+def natural_image_manifest(directory, train_n, search_n, seed):
+    """Deterministic disjoint split, deduplicated by file content; no owner oracle."""
+    root = Path(directory).resolve()
+    paths = sorted(p for p in root.rglob("*") if p.is_file() and
+                   p.suffix.lower() in (".png", ".jpg", ".jpeg", ".webp", ".bmp"))
+    unique = {}
+    for path in paths:
+        unique.setdefault(sha(path), path)
+    entries = [{"path": str(p), "sha256": h} for h, p in unique.items()]
+    order = np.random.default_rng(seed).permutation(len(entries))
+    if len(entries) < train_n + search_n:
+        raise ValueError(f"Need at least {train_n + search_n} distinct natural image files")
+    chosen = [entries[i] for i in order[:train_n + search_n]]
+    provenance = root / "dataset_provenance.json"
+    return {"train": chosen[:train_n], "search": chosen[train_n:],
+            "dataset_provenance": json.loads(provenance.read_text(encoding="utf-8")) if provenance.is_file() else None,
+            "preprocessing": "EXIF transpose, RGB, bicubic fit center crop 512x512",
+            "assumption": "User-supplied natural unwatermarked images; not detector-certified",
+            "paired_with_generated_images": False}
+
+
+@torch.no_grad()
+def cache_natural(vae, entries, eval_batch_size=1):
+    from PIL import Image, ImageOps
+    device = next(vae.parameters()).device
+    latents, images = [], []
+    for entry in entries:
+        if sha(entry["path"]) != entry["sha256"]:
+            raise ValueError("Natural image changed after manifest creation")
+        with Image.open(entry["path"]) as im:
+            im = ImageOps.fit(ImageOps.exif_transpose(im).convert("RGB"), (512, 512),
+                              method=Image.Resampling.BICUBIC)
+            x = torch.from_numpy(np.array(im, dtype=np.float32) / 255).permute(2, 0, 1)[None]
+        images.append(x)
+    def encode(chunk):
+        # encode returns VAE-space latents: do NOT apply diffusion scaling_factor here.
+        z = vae.encode(torch.cat(chunk).to(device) * 2 - 1).latent_dist.mode()
+        if not torch.isfinite(z).all():
+            raise ValueError("Nonfinite natural-image latent")
+        return z.cpu()
+    for _, z in batches(images, encode, eval_batch_size, "natural_encode"):
+        latents.extend(z.split(1))
+    return latents, images
+
+
+def texture_metrics(x, ref):
+    """Visual detail diagnostics; these cannot identify ownership frequencies."""
+    high, ref_high = x - blur(x), ref - blur(ref)
+    energy = ref_high.square().mean().item()
+    return {"highpass_mse": F.mse_loss(high, ref_high).item(),
+            "highpass_energy_ratio": high.square().mean().item() / energy if energy > 1e-12 else None}
+
+
+@torch.no_grad()
+def save_pseudo_diagnostic(refs, strength, args, folder):
+    from PIL import Image
+    folder.mkdir(parents=True, exist_ok=False)
+    psnr, ssim, texture = [], [], []
+    def evaluate(chunk):
+        ref = torch.cat(chunk)
+        x = pseudo_target(ref, strength).clamp(0, 1)
+        p, s = pair_metrics(x, ref)
+        high, ref_high = x - blur(x), ref - blur(ref)
+        mse = lambda v: v.square().flatten(1).mean(1)
+        energy = mse(ref_high)
+        ratio = torch.where(energy > 1e-12, mse(high) / energy.clamp_min(1e-12), float("nan"))
+        return torch.stack([p, s, mse(high - ref_high), ratio], 1).cpu().tolist(), x.cpu()
+    for start, (metrics, pixels) in batches(refs, evaluate, batch_size(getattr(args, "eval_batch_size", 0), refs[0].device), "pseudo_target"):
+        for j, (p, s, error, ratio) in enumerate(metrics):
+            psnr.append(p); ssim.append(s)
+            texture.append({"highpass_mse": error, "highpass_energy_ratio": ratio if math.isfinite(ratio) else None})
+            Image.fromarray((pixels[j].permute(1, 2, 0).numpy() * 255).round().astype("uint8")).save(folder / f"{start+j:04d}.png")
+    return {"psnr": float(np.mean(psnr)), "ssim": float(np.mean(ssim)),
+            "feasible": bool(np.mean(psnr) >= args.min_psnr and np.mean(ssim) >= args.min_ssim
+                             and min(psnr) >= args.min_image_psnr),
+            "per_image_texture": texture, "per_image_psnr": psnr, "per_image_ssim": ssim,
+            "interpretation": "Direct smoothing hypothesis, not a clean target or quantized model"}
 
 
 class RoundingGrid(nn.Module):
@@ -115,6 +198,18 @@ def save_json(path, data):
     tmp.replace(path)
 
 
+def save_csv(path, rows):
+    """Scalar metrics only; per-image arrays remain in the accompanying JSON."""
+    flat = [{k: v for k, v in row.items() if not isinstance(v, (dict, list, tuple))} for row in rows]
+    fields = list(dict.fromkeys(k for row in flat for k in row))
+    tmp = Path(path).with_suffix(".csv.tmp")
+    with tmp.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=fields)
+        writer.writeheader()
+        writer.writerows(flat)
+    tmp.replace(path)
+
+
 def sha(path):
     h = hashlib.sha256()
     with open(path, "rb") as f:
@@ -144,25 +239,34 @@ def materialize(decoder, names, grids):
 @torch.no_grad()
 def score(vae, latents, refs, strength, args, folder=None):
     psnr, ssim, errors = [], [], []
+    texture = []
     if folder is not None:
         folder.mkdir(parents=True, exist_ok=True)
     from PIL import Image
     if not latents or len(latents) != len(refs):
         raise ValueError("Need nonempty, paired latents/references")
     device = next(vae.parameters()).device
-    for i, (z, ref) in enumerate(zip(latents, refs)):
-        x = vae.decode(z.to(device, torch.float32), return_dict=False)[0]
+    def evaluate(chunk):
+        z = torch.cat([pair[0] for pair in chunk]).to(device, torch.float32)
+        ref = torch.cat([pair[1] for pair in chunk]).to(device)
+        x = vae.decode(z, return_dict=False)[0]
         if not torch.isfinite(x).all():
             raise ValueError("Nonfinite decoder output")
         x = (x / 2 + .5).clamp(0, 1)
-        ref = ref.to(x.device)
         p, s = pair_metrics(ref, x)
-        psnr.append(p.item())
-        ssim.append(s.item())
-        errors.append(F.mse_loss(x, pseudo_target(ref, strength)).item())
-        if folder is not None:
-            array = (x[0].permute(1, 2, 0).cpu().numpy() * 255).round().astype("uint8")
-            Image.fromarray(array).save(folder / f"{i:04d}.png")
+        mse = lambda v: v.square().flatten(1).mean(1)
+        high, ref_high = x - blur(x), ref - blur(ref)
+        energy = mse(ref_high)
+        ratio = torch.where(energy > 1e-12, mse(high) / energy.clamp_min(1e-12), float("nan"))
+        metrics = torch.stack([p, s, mse(x - pseudo_target(ref, strength)), mse(high - ref_high), ratio], 1).cpu().tolist()
+        return metrics, x.cpu() if folder is not None else None
+    for start, (metrics, pixels) in batches(list(zip(latents, refs)), evaluate, batch_size(getattr(args, "eval_batch_size", 0), device), "score"):
+        for j, (p, s, error, high_error, ratio) in enumerate(metrics):
+            psnr.append(p); ssim.append(s); errors.append(error)
+            texture.append({"highpass_mse": high_error, "highpass_energy_ratio": ratio if math.isfinite(ratio) else None})
+            if folder is not None:
+                array = (pixels[j].permute(1, 2, 0).numpy() * 255).round().astype("uint8")
+                Image.fromarray(array).save(folder / f"{start+j:04d}.png")
     p, s = torch.tensor(psnr), torch.tensor(ssim)
     feasible = bool(p.mean() >= args.min_psnr and s.mean() >= args.min_ssim
                     and p.min() >= args.min_image_psnr)
@@ -170,12 +274,41 @@ def score(vae, latents, refs, strength, args, folder=None):
             "psnr_p05": torch.quantile(p, .05).item(), "min_psnr": p.min().item(),
             "quality_violation_fraction": ((p < args.min_psnr) | (s < args.min_ssim)).float().mean().item(),
             "target_mse": sum(errors) / len(errors), "feasible": feasible,
-            "per_image_psnr": psnr, "per_image_ssim": ssim}
+            "per_image_psnr": psnr, "per_image_ssim": ssim, "per_image_texture": texture}
 
 
-def choose(rows):
-    eligible = [r for r in rows if r["feasible"]]
-    return min(eligible, key=lambda r: (r["target_mse"], -r["psnr"], r["candidate"])) if eligible else None
+def choose(rows, policy="constrained"):
+    eligible = list(rows) if policy == "report" else [r for r in rows if r["feasible"]]
+    return min(eligible, key=lambda r: (r.get("selection_objective", r["target_mse"]), -r["psnr"], r["candidate"])) if eligible else None
+
+
+@torch.no_grad()
+def natural_reconstruction_metrics(vae, latents, images, perceptual=None, perceptual_weight=0., eval_batch_size=1):
+    """Natural validation ranks reconstruction only; generated pairs supply quality gates."""
+    if not latents or len(latents) != len(images):
+        raise ValueError("Need nonempty paired natural latents and images")
+    device = next(vae.parameters()).device
+    errors, perceptual_errors = [], []
+    def evaluate(chunk):
+        z = torch.cat([p[0] for p in chunk]).to(device, torch.float32)
+        x = torch.cat([p[1] for p in chunk]).to(device)
+        prediction = vae.decode(z, return_dict=False)[0] / 2 + .5
+        if not torch.isfinite(prediction).all():
+            raise ValueError("Nonfinite natural reconstruction")
+        error = (prediction.clamp(0, 1) - x).square().flatten(1).mean(1)
+        lp = perceptual(prediction.clamp(0, 1) * 2 - 1, x * 2 - 1).reshape(len(chunk), -1).mean(1) if perceptual is not None else torch.zeros_like(error)
+        return torch.stack([error, lp], 1).cpu().tolist()
+    for _, metrics in batches(list(zip(latents, images)), evaluate, eval_batch_size, "natural_validation"):
+        for error, lp in metrics:
+            errors.append(error)
+            if perceptual is not None:
+                perceptual_errors.append(lp)
+    mse = sum(errors) / len(errors)
+    lpips_value = sum(perceptual_errors) / len(perceptual_errors) if perceptual_errors else 0.
+    if not math.isfinite(lpips_value):
+        raise ValueError("Nonfinite natural validation perceptual loss")
+    return {"natural_validation_mse": mse, "natural_validation_lpips": lpips_value if perceptual is not None else None,
+            "target_mse": mse, "selection_objective": mse + perceptual_weight * lpips_value}
 
 
 @torch.no_grad()
@@ -189,12 +322,16 @@ def profile_layers(vae, names, latents, refs, bits, clip, args):
         errors, gains = [], []
         try:
             weight.copy_(RoundingGrid(weight, bits, clip).to(device)(False))
-            for z, ref in zip(latents, refs):
-                ref = ref.to(device)
-                image = (vae.decode(z.to(device), return_dict=False)[0] / 2 + .5).clamp(0, 1)
+            def evaluate(chunk):
+                z = torch.cat([p[0] for p in chunk]).to(device)
+                ref = torch.cat([p[1] for p in chunk]).to(device)
+                image = (vae.decode(z, return_dict=False)[0] / 2 + .5).clamp(0, 1)
                 target = pseudo_target(ref, args.strength)
-                errors.append(F.mse_loss(image, ref).item())
-                gains.append((F.mse_loss(ref, target) - F.mse_loss(image, target)).item())
+                mse = lambda v: v.square().flatten(1).mean(1)
+                return torch.stack([mse(image - ref), mse(ref - target) - mse(image - target)], 1).cpu().tolist()
+            for _, metrics in batches(list(zip(latents, refs)), evaluate, batch_size(getattr(args, "eval_batch_size", 0), device), "profile"):
+                for error, gain in metrics:
+                    errors.append(error); gains.append(gain)
         finally:
             weight.copy_(original)
         if not all(math.isfinite(x) for x in errors + gains):
@@ -205,6 +342,7 @@ def profile_layers(vae, names, latents, refs, bits, clip, args):
         priorities = np.asarray(gains)[indices].sum(1) / np.maximum(np.asarray(errors)[indices].sum(1), 1e-12)
         low, high = np.quantile(priorities, [.025, .975]) if len(errors) > 1 else (None, None)
         rows.append({"name": name, "output_mse": sum(errors) / len(latents),
+                     "sensitivity_kind": "visual_proxy_not_ownership",
                      "proxy_gain": sum(gains) / len(latents),
                      "priority": sum(gains) / max(sum(errors), 1e-12),
                      "priority_ci95_low": None if low is None else float(low),
@@ -214,15 +352,23 @@ def profile_layers(vae, names, latents, refs, bits, clip, args):
 
 
 def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
-                    args, bits, clip, method, profile, folder, diagnostics_root=None):
+                    args, bits, clip, method, profile, folder, diagnostics_root=None,
+                    natural_search=None, preserve_data=None, perceptual=None):
     """Independent initialization, train-only updates, search-only checkpoint choice."""
     device = next(vae.parameters()).device
     pristine = {k: v.detach().clone() for k, v in vae.decoder.state_dict().items()}
     grids = nn.ModuleList([RoundingGrid(vae.decoder.get_parameter(k), bits, clip,
-                           learn_scale=method == "rounding_scale") for k in names]).to(device)
+                           learn_scale=method in ("rounding_scale", "natural_rounding_scale")) for k in names]).to(device)
     rows, updates, best = [], [], None
     best_state = None
-    strength = 0. if method == "reconstruction" else args.strength
+    natural = method.startswith("natural_")
+    if natural and (natural_search is None or preserve_data is None):
+        raise ValueError("Natural branch requires independent natural validation and generated preservation data")
+    perceptual_weight = getattr(args, "natural_perceptual_weight", 0.) if natural else 0.
+    if perceptual_weight and perceptual is None:
+        raise ValueError("Natural perceptual objective requires a frozen LPIPS network")
+    policy = getattr(args, "quality_policy", "report")
+    strength = 0. if method == "reconstruction" or natural else args.strength
     folder.mkdir(parents=True, exist_ok=False)
     diagnostics_root = folder if diagnostics_root is None else diagnostics_root
     thresholds = {"min_psnr": args.min_psnr, "min_ssim": args.min_ssim,
@@ -233,6 +379,11 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
         try:
             materialize(vae.decoder, names, grids)
             metrics = score(vae, search_z, search_ref, strength, args)
+            if natural:
+                # Gate on generated pairs, rank on disjoint natural validation reconstruction.
+                metrics["generated_reference_mse"] = metrics["target_mse"]
+                metrics.update(natural_reconstruction_metrics(vae, *natural_search, perceptual, perceptual_weight, batch_size(getattr(args, "eval_batch_size", 0), device)))
+            metrics.setdefault("selection_objective", metrics["target_mse"])
         finally:
             vae.decoder.load_state_dict(pristine)
         row = {"candidate": f"{method}_w{bits}_c{clip}_step{step}", "source": source,
@@ -241,7 +392,7 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
         if not row["feasible"]:
             quality_warning(diagnostics_root, "search_candidate", "Candidate failed quality gate",
                             method=method, metrics=row, thresholds=thresholds)
-        winner = choose(rows)
+        winner = choose(rows, policy=policy)
         # Retain a diagnosed failed control if no candidate is feasible; never call it successful.
         if winner is None:
             winner = min(rows, key=lambda r: (-r["psnr"], r["candidate"]))
@@ -250,13 +401,14 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
                 raise RuntimeError("Selection snapshot lost")
             best, best_state = dict(winner), {k: v.detach().cpu().clone() for k, v in grids.state_dict().items()}
         save_json(folder / "search.json", rows)
+        save_csv(folder / "search.csv", rows)
         print({k: v for k, v in row.items() if not k.startswith("per_image")}, flush=True)
 
     evaluate(0, "fixed_rtn" if method == "fixed_ptq" else "rtn_fallback")
     rng = torch.Generator(device=device).manual_seed(args.seed)
     order_rng = torch.Generator().manual_seed(args.seed)
     params = [p for p in grids.parameters() if p.requires_grad]
-    optimizer = torch.optim.Adam(params, lr=args.lr) if method in ("rounding", "rounding_scale", "reconstruction") else None
+    optimizer = torch.optim.Adam(params, lr=args.lr) if method in ("rounding", "rounding_scale", "reconstruction", "natural_rounding", "natural_rounding_scale") else None
     ranked = [names.index(r["name"]) for r in profile]
     valid_updates = 0
     backward_attempts = 0
@@ -289,7 +441,7 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
             finally:
                 vae.decoder.load_state_dict(pristine)
             # Enter feasibility first; never trade a feasible training point for an infeasible one.
-            rank = lambda m: (not m["feasible"], m["target_mse"] if m["feasible"] else -m["psnr"])
+            rank = (lambda m: (m["target_mse"],)) if policy == "report" else (lambda m: (not m["feasible"], m["target_mse"] if m["feasible"] else -m["psnr"]))
             applied = rank(trial) < rank(training_best)
             if applied:
                 training_best = trial
@@ -309,14 +461,24 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
             ref = train_ref[i].to(device)
             target_loss = F.mse_loss(raw, pseudo_target(ref, strength))
             preserve = F.mse_loss(blur(raw), blur(ref))
-            loss = target_loss + args.preserve_weight * preserve
+            perceptual_loss = raw.new_zeros(())
+            if natural:
+                if perceptual is not None:
+                    perceptual_loss = perceptual(raw.clamp(0, 1) * 2 - 1, ref * 2 - 1).mean()
+                j = (step - 1) % len(preserve_data[0])
+                with torch.no_grad():
+                    preserve_hidden = vae.post_quant_conv(preserve_data[0][j].to(device))
+                generated = functional_call(vae.decoder, weights, (preserve_hidden,)) / 2 + .5
+                preserve = F.mse_loss(generated, preserve_data[1][j].to(device))
+                train_evaluations += 1
+            loss = target_loss + perceptual_weight * perceptual_loss + args.preserve_weight * preserve
             train_evaluations += 1
             applied = bool(torch.isfinite(loss))
             grad_norm = None
             if applied:
                 backward_attempts += 1
                 loss.backward()
-                applied = all(p.grad is not None and bool(torch.isfinite(p.grad).all()) for p in params)
+                applied = all(p.grad is not None for p in params) and all_finite(p.grad for p in params)
                 if applied:
                     norm = nn.utils.clip_grad_norm_(params, 1.)
                     applied = bool(torch.isfinite(norm))
@@ -331,7 +493,7 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
             if applied:
                 backup = [p.detach().clone() for p in params]
                 optimizer.step()
-                applied = all(bool(torch.isfinite(p).all()) for p in params)
+                applied = all_finite(params)
                 if not applied:
                     with torch.no_grad():
                         for p, old in zip(params, backup):
@@ -346,35 +508,45 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
                 for grid in grids:
                     grid.alpha.clamp_(-12, 12)
                     grid.log_scale.clamp_(math.log(.8), math.log(1.25))
+            scalars = torch.stack([target_loss.detach(), perceptual_loss.detach(), preserve.detach(), loss.detach()]).cpu().tolist()
             updates.append({"step": step, "applied": applied, "reason": reason,
-                            "loss": loss.item() if torch.isfinite(loss) else None, "grad_norm": grad_norm})
-            del weights, raw, ref, loss, target_loss, preserve
+                            **{k: v if math.isfinite(v) else None for k, v in zip(
+                                ["reconstruction_mse", "perceptual_loss", "preservation_mse", "loss"], scalars)},
+                            "grad_norm": grad_norm})
+            del weights, raw, ref, loss, target_loss, preserve, perceptual_loss
+            if natural:
+                del generated, preserve_hidden
         if method in ("random_rounding", "sensitivity"):
             updates.append({"step": step, "applied": applied, "reason": reason})
         if not applied and method not in ("random_rounding", "sensitivity"):
             quality_warning(diagnostics_root, "optimizer_update", "Invalid update skipped or rolled back",
                             method=method, metrics=updates[-1], action="skip_update_and_continue")
         valid_updates += int(applied)
-        save_json(folder / "updates.json", {"attempted": step, "valid_updates": valid_updates,
-                  "skipped_or_rejected": step - valid_updates, "rows": updates})
+        if step % getattr(args, "log_every", 10) == 0 or step == total or (not applied and reason != "no_train_improvement"):
+            save_json(folder / "updates.json", {"attempted": step, "valid_updates": valid_updates,
+                      "skipped_or_rejected": step - valid_updates, "rows": updates})
+            save_csv(folder / "updates.csv", updates)
         if method != "random_rounding" and (step % args.eval_every == 0 or step == total):
             evaluate(step, method if valid_updates else "rtn_fallback")
     grids.load_state_dict(best_state)
     selected = {**best, "search_feasible": best["feasible"], "valid_updates": valid_updates,
                 "gradient_updates": valid_updates if optimizer is not None else 0,
-                "objective": "reconstruction" if method == "reconstruction" else "blind_smoothing_proxy",
+                "objective": "unpaired_natural_reconstruction" if natural else ("reconstruction" if method == "reconstruction" else "blind_smoothing_proxy"),
                 "objective_strength": strength,
+                "quality_policy": policy, "perceptual_weight": perceptual_weight,
                 "selected_source": best["source"], "attempted_updates": total,
                 "train_evaluations": train_evaluations, "search_evaluations": len(rows),
                 "train_image_forwards": train_evaluations * len(train_z) if method == "sensitivity" else train_evaluations,
                 "search_image_forwards": len(rows) * len(search_z), "backward_attempts": backward_attempts,
+                "natural_validation_image_forwards": len(rows) * len(natural_search[0]) if natural else 0,
                 "optimized_dofs": {"fixed_ptq": [], "random_rounding": ["stochastic_rounding"],
                     "sensitivity": ["layer_scale"], "rounding": ["rounding"],
-                    "rounding_scale": ["rounding", "per_channel_scale"], "reconstruction": ["rounding"]}[method],
-                "status": "selected" if best["feasible"] else "no_feasible_candidate"}
+                    "rounding_scale": ["rounding", "per_channel_scale"], "reconstruction": ["rounding"],
+                    "natural_rounding": ["rounding"], "natural_rounding_scale": ["rounding", "per_channel_scale"]}[method],
+                "status": "selected" if best["feasible"] else ("selected_quality_failed" if policy == "report" else "no_feasible_candidate")}
     save_json(folder / "selection.json", selected)
     if not selected["search_feasible"]:
-        quality_warning(diagnostics_root, "branch_fallback", "No feasible candidate; retaining diagnostic result",
+        quality_warning(diagnostics_root, "branch_quality", "Selected candidate failed quality thresholds; retaining diagnostic result",
                         method=method, metrics=selected, thresholds=thresholds,
                         action="continue_with_diagnostic_fallback")
     return grids, selected, rows
@@ -408,6 +580,12 @@ def parser():
     p.add_argument("--model", required=True, help="Local Diffusers pipeline already containing the marked VAE")
     p.add_argument("--prompts", required=True, help="UTF-8 text file; one unique prompt per line")
     p.add_argument("--output", required=True, help="New directory, never overwrite an experiment")
+    p.add_argument("--image-output", help="Separate NEW image directory; default output_image/<run> beside output_attack")
+    p.add_argument("--gen-batch-size", type=int, default=0, help="Inference batch; 0 chooses from free VRAM, capped at 8")
+    p.add_argument("--eval-batch-size", type=int, default=0, help="VAE/metric batch; 0 chooses from free VRAM, capped at 8")
+    p.add_argument("--data-cache", choices=["auto", "cpu"], default="auto")
+    p.add_argument("--cache-max-gib", type=float, default=4., help="Maximum total GPU data cache; preserve at least half total VRAM free when promoting")
+    p.add_argument("--log-every", type=int, default=10, help="Flush accumulated update rows every N steps, on failure, and at branch completion")
     p.add_argument("--train-n", type=int, default=32)
     p.add_argument("--search-n", type=int, default=20)
     p.add_argument("--test-n", type=int, default=100)
@@ -421,7 +599,7 @@ def parser():
     p.add_argument("--clips", type=float, nargs="+", default=[1.])
     p.add_argument("--methods", nargs="+", choices=["fixed_ptq", "random_rounding", "sensitivity",
                    "rounding", "rounding_scale", "reconstruction"],
-                   default=["fixed_ptq", "random_rounding", "sensitivity", "rounding", "rounding_scale"])
+                   default=["fixed_ptq", "random_rounding", "sensitivity", "rounding", "rounding_scale", "reconstruction"])
     p.add_argument("--profile-n", type=int, default=16, help="Train-only samples for measured layer sensitivity")
     p.add_argument("--profile-bootstrap", type=int, default=1000, help="CPU paired resamples for layer priority uncertainty")
     p.add_argument("--device", choices=["cuda", "cpu"], default="cuda", help="CPU is for small diagnostic pipelines")
@@ -431,17 +609,25 @@ def parser():
     p.add_argument("--min-image-psnr", type=float, default=22.)
     p.add_argument("--min-ssim", type=float, default=.9)
     p.add_argument("--preserve-weight", type=float, default=2.)
+    p.add_argument("--natural-images", help="Optional directory of unpaired natural non-watermarked images; ADDS two branches")
+    p.add_argument("--natural-perceptual-weight", type=float, default=.1,
+                   help="LPIPS coefficient ONLY for natural branches; 0 disables the external perceptual prior")
+    p.add_argument("--quality-policy", choices=["report", "constrained"], default="report",
+                   help="report: choose by objective and record quality failures; constrained: prefer feasible candidates; neither stops on a failed gate")
     return p
 
 
 def main():
     args = parser().parse_args()
+    EVENTS.clear()
+    if min(args.gen_batch_size, args.eval_batch_size, args.cache_max_gib) < 0 or args.log_every < 1 or not math.isfinite(args.cache_max_gib):
+        raise ValueError("Invalid runtime batch/cache/log configuration")
     if min(args.train_n, args.search_n, args.test_n, args.steps, args.eval_every, args.sampling_steps, args.profile_n, args.profile_bootstrap) < 1:
         raise ValueError("Sample counts and steps must be positive")
     if (not 0 <= args.strength <= 1 or not 0 < args.min_ssim <= 1
-            or args.lr <= 0 or args.preserve_weight < 0 or args.guidance <= 1
+            or args.lr <= 0 or args.preserve_weight < 0 or args.natural_perceptual_weight < 0 or args.guidance <= 1
             or not all(math.isfinite(v) for v in [args.strength, args.min_ssim, args.lr,
-                args.preserve_weight, args.guidance, args.min_psnr, args.min_image_psnr, *args.clips])):
+                args.preserve_weight, args.natural_perceptual_weight, args.guidance, args.min_psnr, args.min_image_psnr, *args.clips])):
         raise ValueError("Invalid numeric arguments")
     if any(b not in (2, 3, 4, 6, 8) for b in args.bits) or any(not 0 < c <= 1 for c in args.clips):
         raise ValueError("Invalid grid")
@@ -455,10 +641,25 @@ def main():
     if len(prompts) < n or len(set(prompts[:n])) != n:
         raise ValueError(f"Need {n} distinct prompts for disjoint train/search/test splits")
     prompts = prompts[:n]
+    natural_manifest = natural_image_manifest(args.natural_images, args.train_n, args.search_n, args.seed) if args.natural_images else None
     out = Path(args.output).resolve()
+    image_parent = out.parent.parent if out.parent.name == "output_attack" else out.parent
+    image_out = Path(args.image_output).resolve() if args.image_output else image_parent / "output_image" / out.name
     if out == model or model in out.parents:
         raise ValueError("Output must be outside the input model directory")
+    if image_out == model or model in image_out.parents:
+        raise ValueError("Image output must be outside the input model directory")
+    if image_out == out or out in image_out.parents or image_out in out.parents:
+        raise ValueError("Image and report directories must be separate, not nested")
+    if image_out.exists():
+        raise FileExistsError(f"Image output already exists: {image_out}")
     out.mkdir(parents=True, exist_ok=False)
+    image_out.mkdir(parents=True, exist_ok=False)
+    try:
+        image_location = Path(os.path.relpath(image_out, out)).as_posix()
+    except ValueError:  # Separate Windows drives cannot have a relative path.
+        image_location = str(image_out)
+    print(f"Report directory: {out}\nImage directory: {image_out}", flush=True)
     started = time.monotonic()
     torch.manual_seed(args.seed)
     if args.device == "cuda":
@@ -480,6 +681,10 @@ def main():
     pipe.scheduler = DDIMScheduler.from_config(pipe.scheduler.config)
     pipe.set_progress_bar_config(disable=True)
     pipe.to(args.device)
+    args.gen_batch_size = batch_size(args.gen_batch_size, args.device)
+    args.eval_batch_size = batch_size(args.eval_batch_size, args.device)
+    data_cache = DataCache(args.device, args.data_cache, args.cache_max_gib)
+    print(f"Inference batch={args.gen_batch_size}; evaluation batch={args.eval_batch_size}; data cache={args.data_cache}", flush=True)
     vae = pipe.vae.eval().requires_grad_(False)
     names = select_names(vae, args.scope)
     pristine = {k: v.detach().cpu().clone() for k, v in vae.decoder.state_dict().items()}
@@ -490,7 +695,7 @@ def main():
     except FileNotFoundError:
         commit = None  # A copied source folder need not have git installed.
     manifest = {"schema_version": 2, "threat_model": "marked_model_only_no_detector_no_key_no_clean_model",
-                "method": "pilot_model_only_ladder_not_OS_MQ", "args": vars(args),
+                "method": "pilot_blind_quantization_ladder_not_OS_MQ", "args": vars(args),
                 "ownership_loss": None, "surrogate_transfer_evaluated": False,
                 "git_commit": commit, "script_sha256": sha(script),
                 "model_files_sha256": {str(p.relative_to(model)): sha(p) for p in sorted(model.rglob("*"))
@@ -508,19 +713,31 @@ def main():
                 "inference": f"FP32 VAE; {'FP16' if args.device == 'cuda' else 'FP32'} UNet; simulated low-bit weights",
                 "sampling_scheduler": dict(pipe.scheduler.config),
                 "watermark_success": "unknown; requires independent owner evaluation",
-                "quality_gate": "PSNR/SSIM only; not equivalent to legacy LPIPS gate"}
+                "quality_gate": "PSNR/SSIM only; not equivalent to legacy LPIPS gate",
+                "quality_policy": args.quality_policy,
+                "natural_perceptual_prior": "frozen LPIPS AlexNet v0.1; public pretrained features; natural branches only" if natural_manifest and args.natural_perceptual_weight else None}
     plan = []
     for bits in dict.fromkeys(args.bits):
         for clip in dict.fromkeys(args.clips):
-            for method in dict.fromkeys(args.methods):
+            for method in dict.fromkeys([*args.methods, *(["natural_rounding", "natural_rounding_scale"] if natural_manifest else [])]):
                 branch_id = f"{method}_w{bits}_c{clip}"
                 plan.append({"label": branch_id + "_test", "method": method,
                              "comparison_group": f"w{bits}_c{clip}_{args.scope}",
                              "bits": bits, "clip": clip, "role": "candidate",
+                             "threat_model": "marked_model_plus_unpaired_natural_images" if method.startswith("natural_") else "marked_model_only",
                              "artifact": f"branches/{branch_id}"})
     manifest["reference_label"] = "marked_reference_test"
+    manifest["image_root"] = image_location
     manifest["test_branches"] = [{"label": "marked_reference_test", "role": "reference",
-                                  "method": "marked_reference"}, *plan]
+                                  "method": "marked_reference"},
+                                 {"label": "pseudo_target_test", "role": "diagnostic", "method": "direct_smoothing",
+                                  "strength": args.strength}, *plan]
+    manifest["natural_dataset"] = natural_manifest
+    if natural_manifest:
+        manifest["threat_model"] = "separate_model_only_and_model_plus_unpaired_natural_branches"
+    manifest["sensitivity_kind"] = "visual_proxy_only_not_ownership_sensitivity"
+    manifest["proxy_limitations"] = ["Smoothing may retain fingerprint", "Proxy improvement may erase natural texture",
+                                      "Owner metrics are evaluation-only after every branch is frozen"]
     manifest["comparison_note"] = "Compare only within comparison_group; optimization costs reported, not equalized."
     save_json(out / "manifest.json", manifest)
     @torch.no_grad()
@@ -529,23 +746,36 @@ def main():
         pipe.unet.to(args.device)
         pipe.text_encoder.to(args.device)
         latents = []
-        for i in indices:
-            gen = torch.Generator(device=args.device).manual_seed(args.seed + i)
-            z = pipe(prompts[i], generator=gen, num_inference_steps=args.sampling_steps,
+        def generate(chunk):
+            # Recreate each generator on OOM retry: never reuse an advanced RNG.
+            generators = [torch.Generator(device=args.device).manual_seed(args.seed + i) for i in chunk]
+            prompt_batch = [prompts[i] for i in chunk]
+            z = pipe(prompt_batch if len(chunk) > 1 else prompt_batch[0],
+                     generator=generators if len(chunk) > 1 else generators[0], num_inference_steps=args.sampling_steps,
                      guidance_scale=args.guidance, height=512, width=512, output_type="latent").images
-            latents.append((z.float() / float(vae.config.scaling_factor)).cpu())
-            print(f"latent {i + 1}/{n}", flush=True)
+            return (z.float() / float(vae.config.scaling_factor)).cpu()
+        for start, z in batches(list(indices), generate, args.gen_batch_size, "generate"):
+            latents.extend(z.split(1))
+            print(f"cached latents {start + len(z)}/{len(indices)}", flush=True)
         pipe.unet.to("cpu")
         pipe.text_encoder.to("cpu")
         if args.device == "cuda":
             torch.cuda.empty_cache()
-        references = [(vae.decode(z.to(args.device), return_dict=False)[0] / 2 + .5).clamp(0, 1).cpu()
-                      for z in latents]
+        references = []
+        def decode(chunk):
+            return (vae.decode(torch.cat(chunk).to(args.device), return_dict=False)[0] / 2 + .5).clamp(0, 1).cpu()
+        for _, x in batches(latents, decode, args.eval_batch_size, "reference_decode"):
+            references.extend(x.split(1))
         return latents, references
 
     a, b = args.train_n, args.train_n + args.search_n
     zs, refs = cache(range(b))
+    zs = data_cache.promote(zs, "generated_train_search_latents")
+    refs = data_cache.promote(refs, "generated_train_search_references")
     search_z, search_ref = zs[a:b], refs[a:b]
+    natural_train, natural_search, perceptual = None, None, None
+    # Complete every model-only branch before loading external training images/network.
+    plan.sort(key=lambda branch: branch["method"].startswith("natural_"))
     rows, selections, frozen_branches = [], {}, {}
     profiles = {}
     costs = {}
@@ -567,9 +797,22 @@ def main():
                 quality_warning(out, "profile_sample_size", "Small calibration profile; priorities may be unstable",
                                 metrics={"actual_n": count, "requested_n": args.profile_n}, action="continue")
         folder = out / branch["artifact"]
+        natural = method.startswith("natural_")
+        if natural and natural_train is None:
+            natural_train = cache_natural(vae, natural_manifest["train"], args.eval_batch_size)
+            natural_search = cache_natural(vae, natural_manifest["search"], args.eval_batch_size)
+            natural_train = tuple(data_cache.promote(v, f"natural_train_{i}") for i, v in enumerate(natural_train))
+            natural_search = tuple(data_cache.promote(v, f"natural_search_{i}") for i, v in enumerate(natural_search))
+            if args.natural_perceptual_weight:
+                import lpips
+                perceptual = lpips.LPIPS(net="alex", version="0.1").to(args.device).eval().requires_grad_(False)
+        train_z, train_ref = natural_train if natural else (zs[:a], refs[:a])
         grids, selected, branch_rows = optimize_branch(
-            vae, names, zs[:a], refs[:a], search_z, search_ref, args,
-            bits, clip, method, profiles.get(group, []), folder, diagnostics_root=out)
+            vae, names, train_z, train_ref, search_z, search_ref, args,
+            bits, clip, method, profiles.get(group, []), folder, diagnostics_root=out,
+            natural_search=natural_search if natural else None,
+            preserve_data=(zs[:a], refs[:a]) if natural else None,
+            perceptual=perceptual if natural else None)
         rows.extend(branch_rows)
         selections[branch["label"]] = selected
         materialize(vae.decoder, names, grids)
@@ -585,6 +828,7 @@ def main():
         del grids
         vae.decoder.load_state_dict(pristine)
         save_json(out / "search.json", rows)
+        save_csv(out / "search.csv", rows)
         if args.device == "cuda":
             torch.cuda.empty_cache()
             torch.cuda.synchronize()
@@ -598,8 +842,11 @@ def main():
               "profile_sha256": {p.name: sha(p) for p in sorted(out.glob("profile_*.json"))}}
     save_json(out / "selection_frozen.json", frozen)
     test_z, test_ref = cache(range(b, n))
-    reference_quality = score(vae, test_z, test_ref, args.strength, args, out / "marked_reference_test")
+    test_z = data_cache.promote(test_z, "test_latents")
+    test_ref = data_cache.promote(test_ref, "test_references")
+    reference_quality = score(vae, test_z, test_ref, args.strength, args, image_out / "marked_reference_test")
     quality = {"marked_reference_test": reference_quality}
+    quality["pseudo_target_test"] = save_pseudo_diagnostic(test_ref, args.strength, args, image_out / "pseudo_target_test")
     from safetensors.torch import load_file
     for branch in plan:
         vae.decoder.load_state_dict(pristine)
@@ -607,7 +854,7 @@ def main():
         with torch.no_grad():
             for name in names:
                 vae.decoder.get_parameter(name).copy_(tensors[name + ".codes"].float() * tensors[name + ".scale"])
-        quality[branch["label"]] = score(vae, test_z, test_ref, args.strength, args, out / branch["label"])
+        quality[branch["label"]] = score(vae, test_z, test_ref, args.strength, args, image_out / branch["label"])
         if not quality[branch["label"]]["feasible"]:
             quality_warning(out, "test_quality", "Branch failed held-out quality gate; results retained",
                             method=branch["label"], metrics=quality[branch["label"]],
@@ -615,13 +862,20 @@ def main():
                                         "min_image_psnr": args.min_image_psnr})
         del tensors
     complete = all(s["search_feasible"] and quality[label]["feasible"] for label, s in selections.items())
+    save_csv(out / "quality_summary.csv", [{"method": label,
+        "quality_policy": args.quality_policy, "test_quality_valid": metrics["feasible"],
+        "search_quality_valid": selections.get(label, {}).get("search_feasible"),
+        "selection_status": selections.get(label, {}).get("status"), **metrics} for label, metrics in quality.items()])
     save_json(out / "report.json", {"schema_version": 2, "selections": selections,
               "branch_compute": costs,
+              "runtime": {"gen_batch_size": args.gen_batch_size, "eval_batch_size": args.eval_batch_size,
+                          "training_batch_size": 1, "cache": data_cache.stats, "events": list(EVENTS), "log_every": args.log_every},
               "branch_quality": quality, "status": "complete" if complete else "quality_failures",
               "watermark_metrics": None, "watermark_success": "unknown",
               "test_used_for_selection": False, "selection_frozen_sha256": sha(out / "selection_frozen.json"),
-              "test_images_sha256": {str(p.relative_to(out)): sha(p)
-                   for branch in manifest["test_branches"] for p in sorted((out / branch["label"]).glob("*.png"))},
+              "image_root": image_location,
+              "test_images_sha256": {p.relative_to(image_out).as_posix(): sha(p)
+                   for branch in manifest["test_branches"] for p in sorted((image_out / branch["label"]).glob("*.png"))},
               "elapsed_seconds": time.monotonic() - started,
               "peak_cuda_allocated_gib": torch.cuda.max_memory_allocated() / 2 ** 30 if args.device == "cuda" else None,
               "note": "Failed controls are retained and flagged; no watermark removal or OS-MQ claim."})

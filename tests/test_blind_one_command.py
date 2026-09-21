@@ -24,6 +24,9 @@ class OneCommandTests(unittest.TestCase):
         self.assertLess(source.index('"${attack[@]}"'), source.index('evaluate_blind_watermark.py'))
         self.assertLess(source.index('selection_frozen.json'), source.index('evaluate_blind_watermark.py'))
         self.assertIn('--expected-extractor-sha256', source)
+        self.assertIn('prepare_natural_images.py', source)
+        self.assertIn('attack+=(--natural-images "$NATURAL_POOL")', source)
+        self.assertIn('${WMQ_MODEL_ONLY:-0}', source)
 
     def test_owner_extractor_is_verified_on_download_and_reuse(self):
         payload = b"audited extractor bytes"

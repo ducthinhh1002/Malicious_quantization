@@ -1,4 +1,120 @@
-# Quantization với quyền truy cập chỉ model đã fingerprint
+# Blind quantization: model-only và ảnh tự nhiên không ghép cặp
+
+## Hai hướng được giữ để so sánh (cập nhật 2026-09-21)
+
+Hướng model-only bên dưới vẫn giữ nguyên mục tiêu smoothing. Launcher mặc định
+tải một pool ảnh COCO công khai rồi **thêm** `natural_rounding` và
+`natural_rounding_scale` ở mỗi bits/clip; không thay thế các nhánh cũ.
+Ảnh tự nhiên không cần là ảnh sạch tương ứng với bất kỳ ảnh model sinh nào.
+Đây là threat model rộng hơn model-only: có thêm dataset ngoài, vẫn không có
+key, extractor, detector feedback hay checkpoint model sạch trong optimization.
+Nhánh natural còn dùng LPIPS pretrained công khai làm perceptual prior; nhánh
+model-only hoàn thành trước khi nạp dataset/prior này và không dùng chúng để học.
+
+Với ảnh tự nhiên x, dùng encoder của chính marked pipeline để tính z = E_w(x)
+(posterior mode, VAE-space, không nhân/chia diffusion scaling factor).
+Chỉ quantizer của decoder được học:
+
+```
+L = MSE(D_Q(E_w(x)), x)
+    + natural_perceptual_weight * LPIPS(D_Q(E_w(x)), x)
+    + preserve_weight * MSE(D_Q(z_generated), D_w(z_generated))
+```
+
+Mỗi bước dùng một ảnh tự nhiên train và một latent sinh train. Encoder, UNet,
+trọng số decoder nguồn, bias và normalization đóng băng. Nhánh thứ nhất học
+rounding; nhánh thứ hai thêm per-channel scale giới hạn [0.8, 1.25] lần scale gốc.
+Export vẫn là integer codes/scales và VAE dequantized FP32; không phải fine-tune
+trọng số tự do, không phải kernel INT4 thực thi.
+LPIPS AlexNet v0.1 đóng băng, nhận RGB [-1,1]; lambda mặc định 0.1.
+Gradient perceptual truyền tới quantizer; model-only không có thành phần này.
+`--natural-perceptual-weight 0` là ablation natural MSE-only. Trọng số loss bảo
+toàn ảnh sinh mặc định 2. Reconstruction-only model-only vẫn là một nhánh riêng,
+tái tạo ảnh marked chứ không dùng ảnh natural hay LPIPS.
+
+Dataset được deduplicate theo hash file và chia train/search bằng seed cố định;
+hash/path và phép resize/crop được ghi manifest. Dedup hash không phát hiện ảnh
+gần trùng hoặc ảnh được encode lại: người dùng cần kiểm tra nguồn dataset.
+Số ảnh mặc định 32 train + 20 search là pilot, không đủ làm mặc định paper.
+Runner chỉ đọc số ảnh đã chọn; cache CPU hoặc GPU theo ngân sách VRAM trống,
+không tự nạp toàn bộ dataset ngoài số lượng đã chọn.
+Ảnh natural được giả định không watermark theo nguồn dữ liệu, không được owner
+detector xác nhận trước training. `prepare_natural_images.py` tự tải metadata COCO
+test2017 đã pin checksum và từng ảnh cần dùng qua HTTPS từ bucket COCO, ghi license,
+URL và SHA256 ảnh, kiểm tra lại khi reuse. Đây là pool calibration ngoài; tên split
+COCO test2017 không biến nó thành tập held-out của thí nghiệm này.
+
+Checkpoint được chọn bằng MSE + lambda LPIPS trên **natural search**.
+Mặc định `--quality-policy report`: quality trên **generated search** ghép cặp
+chỉ ghi nhận, không lọc candidate hoặc dừng nhánh. `--quality-policy constrained`
+là đối chứng ưu tiên quality-feasible; khi mọi candidate trượt vẫn xuất fallback.
+Hai tập này khác nhau; không so PSNR giữa ảnh tự nhiên và ảnh sinh không liên quan.
+Test chung của các phương pháp vẫn là ảnh sinh từ prompt/seed chưa dùng để chọn.
+Mọi nhánh đều được freeze trước khi sinh test và gọi owner evaluator.
+
+### Kiểm chứng ba điểm yếu của model-only
+
+Không thể chứng minh blur loại fingerprint chỉ từ marked model. Thay vì gọi
+pseudo-target là sạch, code xuất và đánh giá riêng ba loại ảnh:
+
+| Nhánh ảnh | Câu hỏi |
+|---|---|
+| `marked_reference_test` | Watermark gốc có được phát hiện tốt không? |
+| `pseudo_target_test` | Smoothing trực tiếp có làm giảm detection không? |
+| Các nhánh `*_test` của quantizer | Quantizer có thực hiện được mục tiêu mà giữ chất lượng không? |
+
+Owner đo bit accuracy, double-tail TPR/evasion và survival trên cùng từng ảnh.
+Mọi loại ảnh dùng cùng quy trình lưu PNG và extractor. `report.json` thêm
+high-pass MSE và tỷ lệ năng lượng high-pass (x - Gaussian(x)); CSV owner có
+trung bình các metric này, PSNR/SSIM và LPIPS nếu bật. Đây là chỉ báo mất chi tiết,
+không phải phép phân tách tần số watermark/texture. `reconstruction` được thêm
+vào ladder mặc định làm đối chứng không smoothing, giữ các nhánh trước đây.
+
+- Pseudo-target vẫn có TPR cao: giả thuyết mục tiêu chưa hiệu quả, dù MSE giảm.
+- Pseudo-target TPR thấp nhưng output quantizer TPR cao: cần xem khoảng cách
+  tới target/khả năng biểu diễn trong grid, chưa thể kết luận quantization thành công.
+- TPR giảm cùng chất lượng/texture giảm mạnh: chưa có bằng chứng xóa chọn lọc.
+- Sensitivity được ghi rõ `visual_proxy_not_ownership`; không có detector/key
+  thì chưa có căn cứ gọi đó là ownership sensitivity. Không dùng owner test để
+  xếp hạng layer hoặc chọn lại checkpoint trong cùng thí nghiệm.
+
+Đây là sửa protocol kiểm chứng và thêm mục tiêu độc lập từ dữ liệu tự nhiên,
+**không phải chứng minh đã giải quyết triệt để ba giới hạn nhận dạng tín hiệu**.
+
+### Detector hai phía với FPR tổng
+
+Với K bit, số bit khớp M và null iid Bernoulli(0.5), chọn số nguyên nhỏ nhất
+k > K/2 sao cho `2 * binom.sf(k-1, K, 0.5) <= FPR`.
+Phát hiện nếu `M >= k` **hoặc** `M <= K-k`. Không làm tròn một ngưỡng BA thực
+rồi coi FPR là đúng. K=48: FPR tổng 1e-3 cho k=36 (đuôi dưới <=12),
+FPR 1e-4 cho k=38 (đuôi dưới <=10). Ngưỡng bất khả thi được báo lỗi;
+baseline yếu vẫn xuất báo cáo và được đánh dấu, không hạ FPR để cứu kết quả.
+Đây là FPR lý thuyết theo null bit độc lập, chưa phải FPR thực nghiệm.
+`DETECTOR=single` chỉ dùng để đối chiếu giao thức cũ, không so ngang TPR hai detector.
+
+### Chạy
+
+```bash
+# Cả hai hướng, tự tải dữ liệu và tự owner-evaluate
+bash run_blind_quantization.sh
+
+# Chạy cả hai hướng với ảnh natural của bạn
+bash run_blind_quantization.sh --natural-images /data/natural_images
+
+# Chỉ model-only nghiêm ngặt
+WMQ_MODEL_ONLY=1 bash run_blind_quantization.sh
+```
+
+Xem `manifest.json` cho threat model từng nhánh, `search.json` cho mục tiêu chọn,
+`report.json` cho quality/texture và `watermark_retention.csv` cho owner metrics.
+Ảnh được lưu ở `output_image/<run>/`, tách khỏi `output_attack/<run>/` chứa báo cáo
+và checkpoint. Manifest ghi đường dẫn ảnh; evaluator vẫn tự đọc và kiểm tra hash.
+Phân tích CSV/JSON sau khi hoàn tất không cần kèm ảnh. Run cũ giữ cấu trúc cũ.
+`search.csv` giữ các candidate đã đánh giá, `quality_summary.csv` giữ quality
+của mọi nhánh, `branches/*/updates.csv` giữ loss từng bước. Quality thấp không
+dừng chương trình; lỗi cấu hình/artifact hoặc NaN vẫn được xử lý riêng.
+Không chọn hướng/strength tốt nhất từ owner test rồi báo đó là kết quả blind
+chưa tuning; nghiên cứu tiếp cần một test pool độc lập.
 
 ## Kết luận nghiên cứu
 
@@ -28,7 +144,7 @@ control theo group thành quyết định rounding cho từng weight trong VAE d
   nghiên cứu backdoor qua rounding; không phải bằng chứng trực tiếp cho việc
   xóa watermark Stable Signature dưới threat model không extractor/key.
 
-## Threat model và ranh giới thí nghiệm
+## Threat model và ranh giới thí nghiệm của hướng model-only
 
 Attacker nhận một Diffusers pipeline đã có fingerprint trong VAE. Attacker có
 trọng số/config và được sinh ảnh với prompt/seed tự chọn. Không có checkpoint
@@ -50,7 +166,7 @@ Nếu nghiên cứu tuning với feedback detector, cần khai báo threat model
 
 Phiên bản trước đã chỉ dùng train để tính loss và search để gọi `choose`, nhưng
 sinh sẵn cả ảnh test. Phiên bản hiện tại chỉ tạo train/search trước optimization;
-sau khi chọn xong mới xuất `quantized_vae` và ghi `selection_frozen.json` chứa hash
+sau khi chọn xong mới xuất các artifact trong `branches/` và ghi `selection_frozen.json` chứa hash
 checkpoint/search, rồi mới sinh latent và ảnh test. Không có bước chọn lại sau
 test. `test_used_for_selection=False` là metadata mô tả luồng này, tự nó không
 phải bằng chứng.
@@ -79,17 +195,21 @@ thể đạt (ví dụ key 4 bit và FPR 0.001) thay vì xuất TPR=0 gây hiể
 4. Cho mỗi bitwidth/clipping, cố định grid per-output-channel từ marked weights.
    Học một alpha cho từng weight bằng Adam. Forward luôn dùng quyết định hard
    `floor(w/s) + 1[alpha >= 0]`, backward dùng gradient sigmoid (STE). Không
-   train full-precision model weights, bias, norm hay scale.
+   train full-precision model weights, bias hay norm. Nhánh `rounding_scale`
+   học thêm per-channel scale có giới hạn như đã mô tả ở đầu tài liệu.
 5. Loss là MSE tới pseudo-target cộng MSE giữa hai ảnh sau Gaussian filtering.
    Cả hai mục tiêu đều không dùng thông tin watermark. Đây là gradient theo
    proxy thị giác, không phải gradient watermark `g_own`.
-6. Trên search, chỉ nhận checkpoint có mean PSNR >=25 dB, mean SSIM >=0.9 và
-   min per-image PSNR >=22 dB. Trong các checkpoint hợp lệ, chọn MSE tới
-   pseudo-target nhỏ nhất. Các ngưỡng cần chốt trước thí nghiệm.
-7. Sau khi khóa lựa chọn, sinh test cho marked reference, RTN cùng bits/clip/
-   target coverage, và checkpoint đã chọn. Owner đo bit accuracy, TPR và LPIPS
-   độc lập. Nếu không có candidate hợp lệ, không xuất attacked VAE. Nếu chất
-   lượng test không đạt, vẫn giữ artifact kiểm toán với `heldout_quality_failed`.
+6. Trên search, mặc định chọn MSE tới pseudo-target nhỏ nhất và báo quality
+   theo mean PSNR >=25 dB, mean SSIM >=0.9, min per-image PSNR >=22 dB.
+   `--quality-policy constrained` ưu tiên checkpoint đạt các ngưỡng này;
+   mặc định `report` không dùng chúng để lọc candidate. Cả hai đều chạy tiếp.
+7. Sau khi khóa mọi lựa chọn, sinh test cho marked reference, pseudo-target,
+   RTN cùng bits/clip/target coverage và các checkpoint đã chọn. Owner đo
+   bit accuracy, double-tail TPR/evasion và LPIPS độc lập. Nếu không có candidate
+   hợp lệ, vẫn xuất diagnostic result (`selected_quality_failed` trong report mode,
+   `no_feasible_candidate` trong constrained mode), không gọi
+   đó là attack thành công. Quality failure vẫn giữ artifact/report để kiểm toán.
 
 Model-only không đồng nghĩa biết được đặc trưng nào trong weights là watermark.
 Không có oracle thì một proxy mạnh về thị giác vẫn có thể vô dụng với fingerprint.
@@ -99,8 +219,8 @@ Không lấy MSE thấp hoặc bitwidth thấp làm bằng chứng attack thành
 
 - `--strength 0`: reconstruction-only control, cùng grid/steps/dữ liệu.
 - `--strength 0.25`: giả thuyết suppression, chốt trước khi xem owner metrics.
-- RTN matched được sinh tự động sau khi khóa lựa chọn; đây là control tại cấu hình
-  được chọn, không phải RTN được tune tối ưu riêng.
+- `fixed_ptq` là RTN control độc lập tại mỗi bits/clip được khai báo;
+  checkpoint mọi nhánh đều được khóa trước khi sinh test.
 - Nhiều seed và key do người tổ chức chuẩn bị, cùng dataset công khai đã cố định.
 - Báo cả candidate không feasible, test quality failure và grid fallback.
 - Không so trực tiếp với legacy oracle search rồi kết luận phương pháp yếu/mạnh:
@@ -115,7 +235,13 @@ FP16 với low-bit PTQ; UNet sinh latent ở FP16. Export là simulated weight P
 weights dequantized FP32, không phải packed INT2/INT4, không có claim tăng tốc kernel.
 
 Mỗi update dùng một ảnh train và học đồng thời mọi rounding variable trong scope.
-RAM giữ model, references và bản snapshot trên CPU; VRAM phụ thuộc activations VAE
+RAM giữ model và snapshot; references/latent có thể được cache lên GPU theo ngân
+sách mặc định 4 GiB, bảo toàn ít nhất nửa tổng VRAM trống khi cấp phát cache.
+Inference/evaluation dùng batch tự chọn tối đa 8, giảm khi CUDA OOM, ghi lại trong
+runtime report. Batch train vẫn 1, seed từng ảnh và phép chia tập giữ nguyên.
+Ghi log được gom theo 10 update, không giảm số candidate hay bước tối ưu.
+Batching có thể gây sai số số học nhỏ; cần đối chiếu cấu hình batch 1 khi báo cáo
+thí nghiệm nhạy ngưỡng, không khẳng định bitwise identical. VRAM phụ thuộc activations VAE
 512x512. Có log peak allocated VRAM và thời gian, nhưng chưa có benchmark RTX 6000.
 Rounding full decoder có thể cần nhiều VRAM; `--scope late` là thí nghiệm nhỏ hơn
 và phải báo phạm vi khác. Không tự thay scope/precision khi thiếu bộ nhớ.

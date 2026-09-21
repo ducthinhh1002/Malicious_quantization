@@ -4,6 +4,7 @@ set -Eeuo pipefail
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 RUN_ROOT="${WMQ_ROOT:-$SCRIPT_DIR/wmq_runs}"
 ATTACK_OUTPUT_ROOT="${WMQ_ATTACK_OUTPUT_ROOT:-$SCRIPT_DIR/output_attack}"
+IMAGE_OUTPUT_ROOT="${WMQ_IMAGE_OUTPUT_ROOT:-$SCRIPT_DIR/output_image}"
 
 if [[ -z "${CONDA_PREFIX:-}" || ! -d "$CONDA_PREFIX/conda-meta" || ! -x "$CONDA_PREFIX/bin/python" ]]; then
   CONDA_BIN=""
@@ -57,7 +58,12 @@ MODEL_PATH="$DEFAULT_MODEL"
 ATTACK_OUTPUT="$DEFAULT_OUTPUT"
 CUSTOM_MODEL=0
 HAS_OUTPUT=0
+HAS_IMAGE_OUTPUT=0
 HAS_BITS=0
+HAS_NATURAL=0
+TRAIN_N=32
+SEARCH_N=20
+DATA_SEED=3407
 arguments=("$@")
 for ((index=0; index<${#arguments[@]}; index++)); do
   argument="${arguments[index]}"
@@ -70,7 +76,19 @@ for ((index=0; index<${#arguments[@]}; index++)); do
       ((index + 1 < ${#arguments[@]})) || { echo "--output requires a path" >&2; exit 2; }
       ATTACK_OUTPUT="${arguments[index+1]}"; HAS_OUTPUT=1; ((index+=1)) ;;
     --output=*) ATTACK_OUTPUT="${argument#--output=}"; HAS_OUTPUT=1 ;;
+    --image-output|--image-output=*) HAS_IMAGE_OUTPUT=1 ;;
     --bits|--bits=*) HAS_BITS=1 ;;
+    --natural-images|--natural-images=*) HAS_NATURAL=1 ;;
+    --train-n|--search-n|--seed)
+      ((index + 1 < ${#arguments[@]})) || { echo "$argument requires a value" >&2; exit 2; }
+      value="${arguments[index+1]}"
+      case "$argument" in
+        --train-n) TRAIN_N="$value" ;; --search-n) SEARCH_N="$value" ;; --seed) DATA_SEED="$value" ;;
+      esac
+      ((index+=1)) ;;
+    --train-n=*) TRAIN_N="${argument#*=}" ;;
+    --search-n=*) SEARCH_N="${argument#*=}" ;;
+    --seed=*) DATA_SEED="${argument#*=}" ;;
   esac
 done
 ATTACK_OUTPUT="$(realpath -m "$ATTACK_OUTPUT")"
@@ -91,7 +109,21 @@ attack=("$PY" "$SCRIPT_DIR/wmq_blind.py")
 if [[ "$CUSTOM_MODEL" == "0" ]]; then attack+=(--model "$DEFAULT_MODEL"); fi
 attack+=(--prompts "$SCRIPT_DIR/prompt.txt")
 if [[ "$HAS_OUTPUT" == "0" ]]; then attack+=(--output "$DEFAULT_OUTPUT"); fi
+if [[ "$HAS_IMAGE_OUTPUT" == "0" ]]; then attack+=(--image-output "$IMAGE_OUTPUT_ROOT/$(basename -- "$ATTACK_OUTPUT")"); fi
 if [[ "$HAS_BITS" == "0" ]]; then attack+=(--bits 8 4); fi
+if [[ "${WMQ_MODEL_ONLY:-0}" == "1" && "$HAS_NATURAL" == "1" ]]; then
+  echo "WMQ_MODEL_ONLY=1 conflicts with --natural-images" >&2; exit 2
+fi
+if [[ "${WMQ_MODEL_ONLY:-0}" != "1" && "$HAS_NATURAL" == "0" ]]; then
+  [[ "$TRAIN_N" =~ ^[1-9][0-9]*$ && "$SEARCH_N" =~ ^[1-9][0-9]*$ && "$DATA_SEED" =~ ^[0-9]+$ ]] || {
+    echo "Natural pool preparation requires positive train/search counts and a nonnegative seed" >&2; exit 2;
+  }
+  NATURAL_COUNT=$((10#$TRAIN_N + 10#$SEARCH_N))
+  NATURAL_POOL="$RUN_ROOT/public_data/coco2017_n${NATURAL_COUNT}_seed${DATA_SEED}"
+  echo "Preparing public COCO natural images for the additional branches..."
+  "$PY" "$SCRIPT_DIR/prepare_natural_images.py" --output "$NATURAL_POOL" --count "$NATURAL_COUNT" --seed "$DATA_SEED"
+  attack+=(--natural-images "$NATURAL_POOL")
+fi
 attack+=("$@")
 
 echo "[2/4] Running blind Stable Signature quantization (default comparison: W8 and W4)..."
@@ -131,7 +163,8 @@ evaluation=("$PY" "$SCRIPT_DIR/evaluate_blind_watermark.py"
   --run "$ATTACK_OUTPUT" --extractor "$EXTRACTOR"
   --expected-extractor-sha256 "$EXTRACTOR_SHA256"
   --key "$KEY" --key-source "$KEY_SOURCE"
-  --fpr "${FPR:-0.001}" --min-reference-tpr "${MIN_REFERENCE_TPR:-0.9}")
+  --batch-size "${WMQ_OWNER_BATCH_SIZE:-0}"
+  --fpr "${FPR:-0.001}" --detector "${DETECTOR:-double}" --min-reference-tpr "${MIN_REFERENCE_TPR:-0.9}")
 if [[ "${WMQ_EVAL_LPIPS:-1}" == "1" ]]; then evaluation+=(--lpips); fi
 "${evaluation[@]}"
 
@@ -149,3 +182,5 @@ PY
 echo "Finished: $ATTACK_OUTPUT"
 echo "Owner results: $ATTACK_OUTPUT/owner_evaluation.json"
 echo "Plot-ready table: $ATTACK_OUTPUT/watermark_retention.csv"
+echo "All search candidates: $ATTACK_OUTPUT/search.csv"
+echo "Quality diagnostics: $ATTACK_OUTPUT/quality_summary.csv"

@@ -64,9 +64,9 @@ class BlindTests(unittest.TestCase):
         # Exercises runner orchestration without downloading a pretrained model.
         test_started = [False]
         active_out = [None]
-        def audited_choose(rows):
+        def audited_choose(rows, **kwargs):
             self.assertFalse(test_started[0], "Selection accessed after test generation")
-            return choose(rows)
+            return choose(rows, **kwargs)
         class VAE(nn.Module):
             def __init__(self):
                 super().__init__()
@@ -105,9 +105,11 @@ class BlindTests(unittest.TestCase):
                 return self
 
             def __call__(self, prompt, generator, **kw):
+                if isinstance(prompt, list):
+                    return SimpleNamespace(images=torch.cat([self(p, g, **kw).images for p, g in zip(prompt, generator)]))
                 if prompt not in ("one", "two"):
                     self_test.assertTrue((active_out[0] / "selection_frozen.json").is_file())
-                    self_test.assertTrue((active_out[0] / "quantized_vae" / "weights.bin").is_file())
+                    self_test.assertTrue((active_out[0] / "branches/rounding_w8_c1.0/vae/weights.bin").is_file())
                     test_started[0] = True
                 multiplier = 3 if prompt == "changed test" else .2
                 return SimpleNamespace(images=torch.randn(1, 4, 16, 16, generator=generator, device="cuda") * multiplier)
@@ -126,7 +128,8 @@ class BlindTests(unittest.TestCase):
             active_out[0] = out
             argv = ["wmq_blind", "--model", str(model), "--prompts", str(prompts),
                     "--output", str(out), "--train-n", "1", "--search-n", "1", "--test-n", "1",
-                    "--bits", "8", "--clips", "1", "--steps", "2", "--eval-every", "1",
+                    "--bits", "8", "--clips", "1", "--methods", "rounding", "--steps", "2", "--eval-every", "1",
+                    "--gen-batch-size", "2", "--eval-batch-size", "2",
                     "--min-psnr", "5", "--min-image-psnr", "1", "--min-ssim", ".01"]
             from wmq_blind import main
             previous = sys.modules.get("diffusers")
@@ -143,9 +146,9 @@ class BlindTests(unittest.TestCase):
                 with patch.object(sys, "argv", argv), patch("wmq_blind.choose", audited_choose), redirect_stdout(io.StringIO()):
                     main()
                 second = json.loads((second_out / "selection_frozen.json").read_text())
-                self.assertEqual(first["selected"], second["selected"])
-                original_weights = torch.load(out / "quantized_vae" / "weights.bin", weights_only=True)
-                changed_weights = torch.load(second_out / "quantized_vae" / "weights.bin", weights_only=True)
+                self.assertEqual(first["branches"], second["branches"])
+                original_weights = torch.load(out / "branches/rounding_w8_c1.0/vae/weights.bin", weights_only=True)
+                changed_weights = torch.load(second_out / "branches/rounding_w8_c1.0/vae/weights.bin", weights_only=True)
                 for key in original_weights:
                     self.assertTrue(torch.equal(original_weights[key], changed_weights[key]))
             finally:
@@ -157,9 +160,10 @@ class BlindTests(unittest.TestCase):
             self.assertFalse(report["test_used_for_selection"])
             self.assertIsNone(report["watermark_metrics"])
             self.assertEqual(len(json.loads((out / "search.json").read_text())), 3)
-            self.assertTrue((out / "quantized_vae" / "weights.bin").exists())
-            for folder in ["marked_reference_test", "matched_rtn_test", "attacked_test"]:
-                self.assertTrue((out / folder / "0000.png").exists())
+            self.assertTrue((out / "branches/rounding_w8_c1.0/vae/weights.bin").exists())
+            for folder in ["marked_reference_test", "pseudo_target_test", "rounding_w8_c1.0_test"]:
+                self.assertTrue((root / "output_image" / out.name / folder / "0000.png").exists())
+            self.assertFalse(list(out.rglob("*.png")))
 
 
 if __name__ == "__main__":
