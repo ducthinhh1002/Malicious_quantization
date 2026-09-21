@@ -6,35 +6,50 @@ RUN_ROOT="${WMQ_ROOT:-$SCRIPT_DIR/wmq_runs}"
 ATTACK_OUTPUT_ROOT="${WMQ_ATTACK_OUTPUT_ROOT:-$SCRIPT_DIR/output_attack}"
 IMAGE_OUTPUT_ROOT="${WMQ_IMAGE_OUTPUT_ROOT:-$SCRIPT_DIR/output_image}"
 
-if [[ -z "${CONDA_PREFIX:-}" || ! -d "$CONDA_PREFIX/conda-meta" || ! -x "$CONDA_PREFIX/bin/python" ]]; then
-  CONDA_BIN=""
-  for candidate in "${CONDA_EXE:-}" "${HOME:-}/miniconda3/bin/conda" "${HOME:-}/anaconda3/bin/conda"; do
-    if [[ -n "$candidate" && -x "$candidate" ]]; then
-      CONDA_BIN="$candidate"
-      break
-    fi
-  done
-  if [[ -z "$CONDA_BIN" ]] && type -P conda >/dev/null 2>&1; then
-    CONDA_BIN="$(type -P conda)"
-  fi
-  if [[ -z "$CONDA_BIN" ]]; then
-    echo "Conda was not found. Install the prepared environment on the login node first." >&2
-    exit 1
-  fi
-  echo "Entering Conda environment ${WMQ_CONDA_ENV:-wmq}..." >&2
-  exec "$CONDA_BIN" run --no-capture-output -n "${WMQ_CONDA_ENV:-wmq}" bash "$0" "$@"
-fi
-PY="$CONDA_PREFIX/bin/python"
-export PATH="$CONDA_PREFIX/bin:$PATH"
+# Bootstrap before imports: auto prefers a dedicated Conda env, otherwise current Python.
 export PYTHONNOUSERSITE=1 PYTHONUNBUFFERED=1
-export PYTORCH_CUDA_ALLOC_CONF="${PYTORCH_CUDA_ALLOC_CONF:-expandable_segments:True}"
 export TOKENIZERS_PARALLELISM=false USE_TORCH=1 USE_TF=0 USE_FLAX=0
-unset PYTHONPATH PYTHONHOME PYTHONUSERBASE VIRTUAL_ENV
-
-mkdir -p "$ATTACK_OUTPUT_ROOT"
-LOG_PATH="$(mktemp "$ATTACK_OUTPUT_ROOT/blind_run_$(date +%Y%m%d_%H%M%S)_XXXXXX.log")"
-exec > >(tee -a "$LOG_PATH") 2>&1
-echo "Log (preflight, fixture, attack, owner evaluation): $LOG_PATH"
+unset PYTHONPATH PYTHONHOME PYTHONUSERBASE
+if [[ "${WMQ_BOOTSTRAP_READY:-0}" != "1" ]]; then
+  mkdir -p "$ATTACK_OUTPUT_ROOT"
+  LOG_PATH="$(mktemp "$ATTACK_OUTPUT_ROOT/blind_run_$(date +%Y%m%d_%H%M%S)_XXXXXX.log")"
+  exec > >(tee -a "$LOG_PATH") 2>&1
+  echo "Log (environment setup, fixture, attack, evaluation): $LOG_PATH"
+  ENV_MODE="${WMQ_ENV_MODE:-auto}"
+  case "$ENV_MODE" in auto|conda|current) ;; *) echo "WMQ_ENV_MODE must be auto, conda or current" >&2; exit 2 ;; esac
+  CONDA_BIN=""
+  if [[ "$ENV_MODE" != "current" ]]; then
+    for candidate in "${CONDA_EXE:-}" "${HOME:-}/miniconda3/bin/conda" "${HOME:-}/anaconda3/bin/conda" /opt/conda/bin/conda; do
+      if [[ -n "$candidate" && -x "$candidate" ]]; then CONDA_BIN="$candidate"; break; fi
+    done
+    if [[ -z "$CONDA_BIN" ]] && type -P conda >/dev/null 2>&1; then CONDA_BIN="$(type -P conda)"; fi
+  fi
+  if [[ "$ENV_MODE" == "conda" && -z "$CONDA_BIN" ]]; then
+    echo "Conda not found; use WMQ_ENV_MODE=current to install into the current Python." >&2; exit 1
+  fi
+  BOOTSTRAP_PY="${WMQ_PYTHON:-}"
+  if [[ -z "$BOOTSTRAP_PY" && -n "$CONDA_BIN" ]]; then
+    CONDA_BASE_PATH="$("$CONDA_BIN" info --base)"
+    BOOTSTRAP_PY="$CONDA_BASE_PATH/bin/python"
+  fi
+  if [[ -z "$BOOTSTRAP_PY" ]]; then
+    BOOTSTRAP_PY="$(type -P python || type -P python3 || true)"
+  fi
+  [[ -n "$BOOTSTRAP_PY" && -x "$BOOTSTRAP_PY" ]] || { echo "Python not found. Set WMQ_PYTHON=/path/to/python." >&2; exit 1; }
+  bootstrap=("$BOOTSTRAP_PY" "$SCRIPT_DIR/prepare_blind_environment.py"
+    --requirements "$SCRIPT_DIR/requirements-wmq.txt" --launcher "$SCRIPT_DIR/run_blind_quantization.sh")
+  if [[ -n "$CONDA_BIN" ]]; then
+    echo "Preparing dedicated Conda environment ${WMQ_CONDA_ENV:-wmq}..."
+    bootstrap+=(--conda "$CONDA_BIN" --env-name "${WMQ_CONDA_ENV:-wmq}")
+  else
+    echo "Preparing dependencies in current Python: $BOOTSTRAP_PY"
+  fi
+  exec "${bootstrap[@]}" -- "$@"
+fi
+PY="${WMQ_PYTHON:?Bootstrap did not select Python}"
+export PATH="$(dirname -- "$PY"):$PATH"
+export PYTORCH_CUDA_ALLOC_CONF="${PYTORCH_CUDA_ALLOC_CONF:-expandable_segments:True}"
+echo "Using Python: $PY"
 
 if [[ "${1:-}" == "--help" || "${1:-}" == "-h" ]]; then
   exec "$PY" "$SCRIPT_DIR/wmq_blind.py" "$@"
@@ -44,11 +59,11 @@ fi
 import os
 import sys
 from pathlib import Path
-if Path(sys.prefix).resolve() != Path(os.environ["CONDA_PREFIX"]).resolve():
-    raise SystemExit("Python does not belong to the active Conda environment")
+if Path(sys.prefix).resolve() != Path(os.environ["WMQ_EXPECTED_PREFIX"]).resolve():
+    raise SystemExit("Python prefix changed after dependency preparation")
 import torch, diffusers, transformers, safetensors, PIL, scipy
 if not torch.cuda.is_available():
-    raise SystemExit("CUDA unavailable. Run this launcher inside the prepared Conda environment on a GPU node.")
+    raise SystemExit("CUDA unavailable. Dependencies are prepared; run on a GPU node with a compatible NVIDIA driver.")
 print(f"GPU: {torch.cuda.get_device_name(0)}; torch={torch.__version__}; diffusers={diffusers.__version__}", flush=True)
 PY
 

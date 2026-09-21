@@ -2,6 +2,36 @@
 
 ## Blind: giữ model-only và thêm ảnh tự nhiên không ghép cặp
 
+Launcher blind tự chuẩn bị dependencies trước khi kiểm tra GPU:
+
+```bash
+# auto: ưu tiên Conda wmq; không tìm thấy Conda thì dùng Python hiện tại
+bash run_blind_quantization.sh
+
+# Cài/chạy bằng Python hiện tại, kể cả khi máy có Conda
+WMQ_ENV_MODE=current bash run_blind_quantization.sh
+
+# Chọn chính xác interpreter hiện tại muốn dùng
+WMQ_ENV_MODE=current WMQ_PYTHON=/path/to/python bash run_blind_quantization.sh
+```
+
+`WMQ_ENV_MODE=conda` yêu cầu Conda. Nhánh Conda luôn chọn `WMQ_CONDA_ENV`
+(mặc định `wmq`), tạo Python 3.11 nếu môi trường chưa có, không lấy nhầm môi
+trường `py`/`base` đang active. Nếu không có Conda, script không tải bộ cài Conda;
+nó dùng `python`/`python3` trên PATH hoặc `WMQ_PYTHON` bạn chỉ định.
+
+File mới **`prepare_blind_environment.py`** kiểm tra phiên bản, chạy
+`<python> -m pip install --no-user -r requirements-wmq.txt` khi thiếu/sai phiên bản,
+rồi kiểm tra import. Môi trường đã đủ thư viện sẽ không tải lại. Chế độ current
+có thể thay đổi phiên bản package của môi trường hiện tại để khớp requirements.
+Cần Python 3.10–3.12, mạng và quyền ghi môi trường; không dùng sudo hoặc tự vượt
+cơ chế bảo vệ Python hệ thống. Driver NVIDIA vẫn phải được server cung cấp.
+Log setup được lưu cùng log launcher trong `output_attack/`.
+
+Chính sách tự cài này áp dụng cho **`run_blind_quantization.sh`**. Script fair
+`run_malicious_quantization_watermarks.sh` vẫn dùng môi trường chuẩn bị sẵn như
+hướng dẫn riêng bên dưới. Hãy copy cả repo lên server để có helper mới.
+
 Luồng blind tự chọn batch inference/evaluation theo VRAM trống (tối đa 8), không
 hardcode tên GPU. CUDA OOM ở inference sẽ giảm batch và thử lại; seed từng ảnh
 được tạo lại khi retry. Batch 1 vẫn OOM thì báo lỗi, không đổi dtype hoặc scope.
@@ -571,16 +601,17 @@ chưa phải OS-MQ hoặc baseline QuRA với ownership loss. Proposal transfer 
 đọc victim fingerprint lúc xây dựng attack, nên quyền truy cập của pilot khác
 protocol đó. Xem [phạm vi nghiên cứu](survey/Blind_Quantization_Stable_Signature.md).
 
-Sau khi đã tạo environment `wmq` trên login node, chạy trong GPU job bằng đúng
-một lệnh:
+Chạy trong GPU job bằng một lệnh; có thể chuẩn bị dependencies trước trên login
+node nếu compute node không có mạng:
 
 ```bash
 bash run_blind_quantization.sh
 ```
 
-Nếu chưa activate, launcher tự chạy lại chính nó bằng `conda run -n wmq`; nếu đã
-activate thì dùng thẳng `$CONDA_PREFIX/bin/python`. Có thể đổi tên environment qua
-`WMQ_CONDA_ENV`. Launcher không tạo environment và không cài thư viện trong job.
+Launcher mặc định tự chọn/tạo `wmq` và cài dependencies còn thiếu bằng helper.
+Ngay cả khi đang activate môi trường khác, nó vẫn chọn `wmq` qua `conda run`.
+Đổi tên bằng `WMQ_CONDA_ENV`; dùng `WMQ_ENV_MODE=current` để cài/chạy ngay trong
+Python hiện tại. Chế độ auto cũng dùng current khi không tìm thấy Conda.
 Lần đầu launcher chuẩn bị fixture
 Stable Signature công khai tại `wmq_runs/marked_sd21`; lần sau reuse. Bước này thuộc
 vai trò organizer, nằm ngoài attacker. Với thí nghiệm cô lập, organizer chuẩn bị
@@ -589,7 +620,7 @@ fixture riêng rồi truyền `--model /path/to/marked_pipeline`.
 Một lệnh trên tự chuẩn bị fixture và pool natural, chạy blind attack, tải/kiểm tra
 owner extractor, rồi evaluate sau khi selection đã freeze. Key và extractor chỉ
 được cấp cho process evaluator; `wmq_blind.py` không nhận hai dữ liệu này. Launcher
-luôn dùng Python của Conda environment đã chuẩn bị trên login node.
+luôn dùng cùng Python đã cài và kiểm tra dependencies trong bước bootstrap.
 
 SHA256 checkpoint Meta được so với pin trước `torch.load`; khóa liên tiến trình
 và atomic mkdir ngăn các launcher ghi đè fixture. Completion marker được xuất cuối.
