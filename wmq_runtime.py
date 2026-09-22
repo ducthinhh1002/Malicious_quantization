@@ -22,7 +22,7 @@ def decoded01(raw):
     return image01((raw / 2 + .5).clamp(0, 1), "decoded image")
 
 
-def batch_size(requested, device, cap=8):
+def batch_size(requested, device, cap=16):
     if requested < 0:
         raise ValueError("Batch size must be >=0 (0 = auto)")
     if requested:
@@ -65,7 +65,7 @@ def batches(items, fn, size, stage="inference"):
 
 
 class DataCache:
-    def __init__(self, device, mode="auto", max_gib=4., reserve_fraction=.5):
+    def __init__(self, device, mode="auto", max_gib=16., reserve_fraction=.5):
         if mode not in ("auto", "cpu") or max_gib < 0 or not 0 < reserve_fraction < 1:
             raise ValueError("Invalid data-cache budget")
         self.device = torch.device(device)

@@ -179,7 +179,7 @@ if [[ "${WMQ_MODEL_ONLY:-0}" != "1" && "$HAS_NATURAL" == "0" ]]; then
   NATURAL_COUNT=$((10#$TRAIN_N + 10#$SEARCH_N + 10#$NEGATIVE_N))
   NATURAL_POOL="$DATA_ROOT/coco2017_n${NATURAL_COUNT}_seed${DATA_SEED}"
   echo "Preparing public COCO natural images for the additional branches..."
-  "$PY" "$SCRIPT_DIR/prepare_natural_images.py" --output "$NATURAL_POOL" --count "$NATURAL_COUNT" --seed "$DATA_SEED"
+  "$PY" "$SCRIPT_DIR/prepare_natural_images.py" --output "$NATURAL_POOL" --count "$NATURAL_COUNT" --seed "$DATA_SEED" --workers "${WMQ_DOWNLOAD_WORKERS:-8}"
   attack+=(--natural-images "$NATURAL_POOL")
   if [[ -z "$NEGATIVE_IMAGES" ]]; then NEGATIVE_IMAGES="$NATURAL_POOL"; fi
 fi

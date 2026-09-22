@@ -29,6 +29,14 @@ class DownloadTests(unittest.TestCase):
                 data.prepare(root / "images", 2, 3407)
                 data.prepare(root / "images", 2, 3407)
                 self.assertEqual(len(calls), 2)
+                # Simulate interruption before the final pool marker was committed.
+                marker = root / "images" / "dataset_provenance.json"
+                original = json.loads(marker.read_text())
+                marker.unlink()
+                data.prepare(root / "images", 2, 3407, workers=2)
+                self.assertEqual(len(calls), 2)
+                self.assertEqual(json.loads(marker.read_text())["images"], original["images"])
+                marker.unlink()
                 (next((root / "images").glob("*.jpg"))).write_bytes(b"changed")
                 with self.assertRaisesRegex(ValueError, "changed"):
                     data.prepare(root / "images", 2, 3407)

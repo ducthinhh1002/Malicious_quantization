@@ -193,15 +193,15 @@ class RoundingGrid(nn.Module):
         return self.base_scale * self.log_scale.clamp(math.log(.8), math.log(1.25)).exp()
 
     def forward(self, differentiable=True):
+        scale = self.scale
         if self.learn_code_offsets:
-            value = (self.source / self.scale + self.code_offset).clamp(self.qmin, self.qmax)
+            value = (self.source / scale + self.code_offset).clamp(self.qmin, self.qmax)
             hard = value.round()
             codes = hard + (value - value.detach()) if differentiable else hard
-            return codes * self.scale
+            return codes * scale
         soft = self.alpha.sigmoid()
         hard = (self.alpha >= 0).to(soft.dtype)
         rounding = hard + (soft - soft.detach()) if differentiable else hard
-        scale = self.scale
         floor = (self.source / scale).clamp(self.qmin, self.qmax).detach().floor()
         return (floor + rounding).clamp(self.qmin, self.qmax) * scale
 
@@ -593,9 +593,8 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
             target_loss = F.mse_loss(raw, pseudo_target(ref, strength))
             if block_branch:
                 target_loss = block_loss
-            preserve = F.mse_loss(blur(raw), blur(ref))
-            if block_branch:
-                preserve = raw.new_zeros(())
+            # Natural branches replace this term with generated-image preservation.
+            preserve = raw.new_zeros(()) if natural or block_branch else F.mse_loss(blur(raw), blur(ref))
             perceptual_loss = raw.new_zeros(())
             residual_loss = raw.new_zeros(())
             trust_loss = raw.new_zeros(())
@@ -646,7 +645,7 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
                     norm = nn.utils.clip_grad_norm_(active_params, 1.)
                     applied = bool(torch.isfinite(norm))
                     if applied:
-                        grad_norm = norm.item()
+                        grad_norm = norm.detach()
                     else:
                         reason = "nonfinite_gradient_norm"
                 else:
@@ -672,19 +671,22 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
                 for grid in grids:
                     if float_branch:
                         continue
-                    grid.alpha.clamp_(-12, 12)
-                    grid.log_scale.clamp_(math.log(.8), math.log(1.25))
-                    grid.code_offset.clamp_(-args.qat_max_code_shift, args.qat_max_code_shift)
+                    if grid.alpha.requires_grad:
+                        grid.alpha.clamp_(-12, 12)
+                    if grid.log_scale.requires_grad:
+                        grid.log_scale.clamp_(math.log(.8), math.log(1.25))
+                    if grid.code_offset.requires_grad:
+                        grid.code_offset.clamp_(-args.qat_max_code_shift, args.qat_max_code_shift)
             scalars = torch.stack([target_loss.detach(), perceptual_loss.detach(), preserve.detach(), loss.detach(),
-                                   residual_loss.detach(), trust_loss.detach()]).cpu().tolist()
+                                   residual_loss.detach(), trust_loss.detach(), spectrum.detach(), adversarial.detach(),
+                                   grad_norm if grad_norm is not None else raw.new_tensor(float("nan"))]).cpu().tolist()
             updates.append({"step": step, "applied": applied, "reason": reason,
                             "block": block_name,
-                            "spectral_loss": spectrum.detach().item() if torch.isfinite(spectrum) else None,
-                            "adversarial_loss": adversarial.detach().item() if torch.isfinite(adversarial) else None,
                             "discriminator_loss": disc_loss, "discriminator_applied": disc_applied,
                             **{k: v if math.isfinite(v) else None for k, v in zip(
-                                ["reconstruction_mse", "perceptual_loss", "preservation_mse", "loss", "residual_loss", "trust_loss"], scalars)},
-                            "grad_norm": grad_norm, "learning_rate": optimizer.param_groups[0]["lr"]})
+                                ["reconstruction_mse", "perceptual_loss", "preservation_mse", "loss", "residual_loss", "trust_loss",
+                                 "spectral_loss", "adversarial_loss", "grad_norm"], scalars)},
+                            "learning_rate": optimizer.param_groups[0]["lr"]})
             del weights, raw, ref, loss, target_loss, preserve, perceptual_loss, residual_loss, trust_loss, spectrum, adversarial
             if natural:
                 del generated, preserve_hidden
@@ -789,15 +791,15 @@ def parser():
     p.add_argument("--output", required=True, help="New directory, never overwrite an experiment")
     p.add_argument("--image-output", help="Separate NEW image directory; default output_artifacts/images/<run>")
     p.add_argument("--artifact-output", help="Separate NEW checkpoint directory; default output_artifacts/checkpoints/<run>")
-    p.add_argument("--gen-batch-size", type=int, default=0, help="Inference batch; 0 chooses from free VRAM, capped at 8")
-    p.add_argument("--eval-batch-size", type=int, default=0, help="VAE/metric batch; 0 chooses from free VRAM, capped at 8")
+    p.add_argument("--gen-batch-size", type=int, default=0, help="Inference batch; 0 chooses from free VRAM, capped at 16")
+    p.add_argument("--eval-batch-size", type=int, default=0, help="VAE/metric batch; 0 chooses from free VRAM, capped at 16")
     p.add_argument("--train-batch-size", type=int, default=1, help="Actual generator batch; reduce on OOM, never silently alter budget")
     p.add_argument("--optimizer", choices=["adam", "adamw"], default="adam")
     p.add_argument("--weight-decay", type=float, default=0.)
     p.add_argument("--lr-schedule", choices=["constant", "warmup_cosine"], default="constant")
     p.add_argument("--data-cache", choices=["auto", "cpu"], default="auto")
-    p.add_argument("--cache-max-gib", type=float, default=4., help="Maximum total GPU data cache; preserve at least half total VRAM free when promoting")
-    p.add_argument("--log-every", type=int, default=10, help="Flush accumulated update rows every N steps, on failure, and at branch completion")
+    p.add_argument("--cache-max-gib", type=float, default=16., help="Maximum total GPU data cache; preserve at least half total VRAM free when promoting")
+    p.add_argument("--log-every", type=int, default=50, help="Flush accumulated update rows every N steps, on failure, and at branch completion")
     p.add_argument("--train-n", type=int, default=32)
     p.add_argument("--search-n", type=int, default=20)
     p.add_argument("--test-n", type=int, default=100)

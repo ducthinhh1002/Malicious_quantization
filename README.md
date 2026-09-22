@@ -79,15 +79,15 @@ Chính sách tự cài này áp dụng cho **`run_blind_quantization.sh`**. Scri
 `run_malicious_quantization_watermarks.sh` vẫn dùng môi trường chuẩn bị sẵn như
 hướng dẫn riêng bên dưới. Hãy copy cả repo lên server để có helper mới.
 
-Luồng blind tự chọn batch inference/evaluation theo VRAM trống (tối đa 8), không
+Luồng blind tự chọn batch inference/evaluation theo VRAM trống (tối đa 16), không
 hardcode tên GPU. CUDA OOM ở inference sẽ giảm batch và thử lại; seed từng ảnh
 được tạo lại khi retry. Batch 1 vẫn OOM thì báo lỗi, không đổi dtype hoặc scope.
-Latent/reference được cache trên GPU tối đa 4 GiB, chỉ khi sau khi cấp phát còn
+Latent/reference được cache trên GPU tối đa 16 GiB, chỉ khi sau khi cấp phát còn
 ít nhất 50% tổng VRAM và tối thiểu 2 GiB trống; thiếu ngân sách thì giữ CPU.
 Đây là ngân sách data cache, không bảo đảm mọi backward đều tránh OOM.
 
 Training batch đặt bằng `--train-batch-size` (research: 4; pilot: 1).
-Nhánh natural có thể thêm forward ảnh sinh cho preservation. Log giữ đủ từng update nhưng flush mỗi 10 bước,
+Nhánh natural có thể thêm forward ảnh sinh cho preservation. Log giữ đủ từng update nhưng flush mỗi 50 bước,
 cuối nhánh hoặc khi update lỗi. Nếu process bị kill đột ngột có thể mất phần log
 chưa flush; dùng `--log-every 1` nếu cần ghi ngay. Runtime/cache/OOM backoff được
 ghi trong report; batch và cấu hình được ghi manifest. Batching có thể tạo sai
@@ -105,6 +105,15 @@ WMQ_OWNER_BATCH_SIZE=1 bash run_blind_quantization.sh \
 Có thể đặt `--gen-batch-size`, `--eval-batch-size`, `--cache-max-gib` và
 `--log-every` riêng. Batch owner evaluator đặt bằng `WMQ_OWNER_BATCH_SIZE`
 (mặc định 0 = auto). Khi copy code lên server cần kèm **`wmq_runtime.py`**.
+
+Tối ưu cho GPU nhiều VRAM (bao gồm H200) áp dụng tự động với cùng lệnh chạy.
+Không đổi batch training, số bước, loss hoặc dtype. Các scalar training được gom
+vào một lần chuyển CPU; bỏ phép blur trung gian không dùng ở nhánh natural.
+COCO tải đồng thời 8 ảnh, giữ nguyên danh sách và thứ tự theo seed. Mỗi ảnh đã
+tải có receipt SHA256 để chạy lại tiếp tục phần còn thiếu, không tải lại ảnh đã
+xác minh. Cache cũ chưa có receipt vẫn cần tải lại nếu chưa có provenance hoàn chỉnh.
+Đổi số luồng tải bằng `WMQ_DOWNLOAD_WORKERS` (1–32, mặc định 8).
+Chưa benchmark toàn bộ suite trên H200 nên chưa có hệ số tăng tốc đo thực tế.
 
 ```bash
 # Mặc định: cả hai hướng + tự tải checkpoint, ảnh COCO và tự đánh giá

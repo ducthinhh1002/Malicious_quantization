@@ -42,7 +42,9 @@ class RuntimeTests(unittest.TestCase):
 
     def test_batch_sizing_and_cache_respect_free_memory(self):
         with patch("torch.cuda.mem_get_info", return_value=(80 * GIB, 96 * GIB)):
-            self.assertEqual(batch_size(0, "cuda"), 8)
+            self.assertEqual(batch_size(0, "cuda"), 14)
+        with patch("torch.cuda.mem_get_info", return_value=(130 * GIB, 140 * GIB)):
+            self.assertEqual(batch_size(0, "cuda"), 16)
         tensors = [torch.zeros(1, 3, 16, 16)]
         with patch("torch.cuda.mem_get_info", return_value=(2 * GIB, 96 * GIB)):
             cache = DataCache("cuda")

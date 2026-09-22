@@ -7,6 +7,7 @@ import random
 import time
 import urllib.request
 import zipfile
+from concurrent.futures import ThreadPoolExecutor
 
 from PIL import Image
 from wmq_fixture_utils import fixture_lock
@@ -44,7 +45,9 @@ def download(url, path):
             time.sleep(attempt + 1)
 
 
-def prepare(output, count, seed):
+def prepare(output, count, seed, workers=8):
+    if not 1 <= workers <= 32:
+        raise ValueError("Download workers must be between 1 and 32")
     if count < 2:
         raise ValueError("Need at least two images for disjoint train/search")
     output = Path(output).resolve()
@@ -80,24 +83,42 @@ def prepare(output, count, seed):
         expected_names = {f"{int(item['id']):012d}.jpg" for item in chosen}
         if any(p.name not in expected_names for p in output.glob("*.jpg")):
             raise ValueError("Unexpected images in incomplete dataset cache; choose a fresh directory")
-        entries = []
-        hashes = set()
-        for i, item in enumerate(chosen):
+        # Per-image receipts allow verified resume even before the pool is complete.
+        receipts = output / ".receipts"
+        receipts.mkdir(exist_ok=True)
+        def fetch(item):
             name = f"{int(item['id']):012d}.jpg"
             url = BASE + "/test2017/" + name
             path = output / name
-            # Without a completion marker, re-download rather than trusting partial data.
-            download(url, path)
+            receipt = receipts / (name + ".json")
+            if receipt.exists():
+                recorded = json.loads(receipt.read_text(encoding="utf-8"))
+                if recorded["url"] != url or not path.exists() or digest(path) != recorded["sha256"]:
+                    raise ValueError("Cached natural image changed; refusing silent replacement")
+            else:
+                download(url, path)
             with Image.open(path) as im:
                 im.verify()
             checksum = digest(path)
-            if checksum in hashes:
-                raise ValueError("Duplicate image content in chosen COCO pool; choose another dataset seed")
-            hashes.add(checksum)
-            entries.append({"file_name": name, "id": item["id"], "url": url,
+            entry = {"file_name": name, "id": item["id"], "url": url,
                             "sha256": checksum, "license": item.get("license"),
-                            "flickr_url": item.get("flickr_url")})
-            print(f"Natural image {i + 1}/{count}: {name}", flush=True)
+                            "flickr_url": item.get("flickr_url")}
+            tmp_receipt = receipt.with_suffix(".tmp")
+            tmp_receipt.write_text(json.dumps(entry), encoding="utf-8")
+            tmp_receipt.replace(receipt)
+            return entry
+        entries = []
+        hashes = set()
+        print(f"Preparing {count} natural images with {workers} download workers", flush=True)
+        # map preserves sampled order regardless of network completion order.
+        with ThreadPoolExecutor(max_workers=workers) as pool:
+            for i, entry in enumerate(pool.map(fetch, chosen)):
+                if entry["sha256"] in hashes:
+                    raise ValueError("Duplicate image content in chosen COCO pool; choose another dataset seed")
+                hashes.add(entry["sha256"])
+                entries.append(entry)
+                if (i + 1) % 25 == 0 or i + 1 == count:
+                    print(f"Natural images {i + 1}/{count}", flush=True)
         data = {"dataset": "COCO 2017 test images used ONLY as external calibration data",
                 "count": count, "seed": seed, "index_url": INDEX_URL,
                 "index_md5": INDEX_MD5, "index_sha256": digest(index),
@@ -115,8 +136,9 @@ def main():
     p.add_argument("--output", required=True)
     p.add_argument("--count", type=int, default=52)
     p.add_argument("--seed", type=int, default=3407)
+    p.add_argument("--workers", type=int, default=8)
     args = p.parse_args()
-    prepare(args.output, args.count, args.seed)
+    prepare(args.output, args.count, args.seed, args.workers)
 
 
 if __name__ == "__main__":
