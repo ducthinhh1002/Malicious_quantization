@@ -91,6 +91,9 @@ SEARCH_N=20
 NATURAL_TRAIN_N=""
 NATURAL_SEARCH_N=""
 DATA_SEED=3407
+NEGATIVE_N="${WMQ_NEGATIVE_N:-1000}"
+NEGATIVE_IMAGES="${WMQ_NEGATIVE_IMAGES:-}"
+[[ "$NEGATIVE_N" =~ ^[0-9]+$ ]] || { echo "WMQ_NEGATIVE_N must be nonnegative" >&2; exit 2; }
 arguments=("$@")
 for ((index=0; index<${#arguments[@]}; index++)); do
   argument="${arguments[index]}"
@@ -149,7 +152,7 @@ attack+=(--prompts "$SCRIPT_DIR/prompt.txt")
 if [[ "$HAS_OUTPUT" == "0" ]]; then attack+=(--output "$DEFAULT_OUTPUT"); fi
 if [[ "$HAS_IMAGE_OUTPUT" == "0" ]]; then attack+=(--image-output "$IMAGE_OUTPUT_ROOT/$(basename -- "$ATTACK_OUTPUT")"); fi
 if [[ "$HAS_ARTIFACT_OUTPUT" == "0" ]]; then attack+=(--artifact-output "$ARTIFACT_OUTPUT"); fi
-if [[ "$HAS_BITS" == "0" ]]; then attack+=(--bits 4); fi
+if [[ "$HAS_BITS" == "0" ]]; then attack+=(--bits 8 4); fi
 if [[ "${WMQ_MODEL_ONLY:-0}" == "1" && "$HAS_NATURAL" == "1" ]]; then
   echo "WMQ_MODEL_ONLY=1 conflicts with --natural-images" >&2; exit 2
 fi
@@ -159,15 +162,16 @@ if [[ "${WMQ_MODEL_ONLY:-0}" != "1" && "$HAS_NATURAL" == "0" ]]; then
   [[ "$TRAIN_N" =~ ^[1-9][0-9]*$ && "$SEARCH_N" =~ ^[1-9][0-9]*$ && "$DATA_SEED" =~ ^[0-9]+$ ]] || {
     echo "Natural pool preparation requires positive train/search counts and a nonnegative seed" >&2; exit 2;
   }
-  NATURAL_COUNT=$((10#$TRAIN_N + 10#$SEARCH_N))
+  NATURAL_COUNT=$((10#$TRAIN_N + 10#$SEARCH_N + 10#$NEGATIVE_N))
   NATURAL_POOL="$DATA_ROOT/coco2017_n${NATURAL_COUNT}_seed${DATA_SEED}"
   echo "Preparing public COCO natural images for the additional branches..."
   "$PY" "$SCRIPT_DIR/prepare_natural_images.py" --output "$NATURAL_POOL" --count "$NATURAL_COUNT" --seed "$DATA_SEED"
   attack+=(--natural-images "$NATURAL_POOL")
+  if [[ -z "$NEGATIVE_IMAGES" ]]; then NEGATIVE_IMAGES="$NATURAL_POOL"; fi
 fi
 attack+=("$@")
 
-echo "[2/4] Running W4 controls, residual rounding/QAT and independent FP32 decoder control..."
+echo "[2/4] Running quantization controls, natural ablations and independent FP32 decoder controls..."
 echo "Result directory: $ATTACK_OUTPUT"
 "${attack[@]}"
 [[ -f "$ATTACK_OUTPUT/report.json" && -f "$ATTACK_OUTPUT/selection_frozen.json" ]] || {
@@ -208,6 +212,9 @@ evaluation=("$PY" "$SCRIPT_DIR/evaluate_blind_watermark.py"
   --mechanism-samples "${WMQ_MECHANISM_SAMPLES:-4}"
   --fpr "${FPR:-0.001}" --detector "${DETECTOR:-double}" --min-reference-tpr "${MIN_REFERENCE_TPR:-0.9}")
 if [[ "${WMQ_EVAL_LPIPS:-1}" == "1" ]]; then evaluation+=(--lpips); fi
+if [[ -n "$NEGATIVE_IMAGES" && "$NEGATIVE_N" != "0" ]]; then
+  evaluation+=(--negative-images "$NEGATIVE_IMAGES" --negative-limit "$NEGATIVE_N")
+fi
 "${evaluation[@]}"
 
 "$PY" - "$ATTACK_OUTPUT/owner_evaluation.json" <<'PY'

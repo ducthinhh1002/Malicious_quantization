@@ -20,7 +20,7 @@ class OneCommandTests(unittest.TestCase):
         self.assertIn('${WMQ_ENV_MODE:-auto}', source)
         self.assertIn('WMQ_EXPECTED_PREFIX', source)
         self.assertIn('${WMQ_CONDA_ENV:-wmq}', source)
-        self.assertIn('attack+=(--bits 4)', source)
+        self.assertIn('attack+=(--bits 8 4)', source)
         self.assertIn('111010110101000001010111010011010100010000100111', source)
         self.assertLess(source.index('"${attack[@]}"'), source.index('evaluate_blind_watermark.py'))
         self.assertLess(source.index('selection_frozen.json'), source.index('evaluate_blind_watermark.py'))

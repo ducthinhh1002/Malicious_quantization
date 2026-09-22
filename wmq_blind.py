@@ -22,6 +22,12 @@ from torch.nn import functional as F
 from torch.func import functional_call
 from wmq_diagnostics import quality_warning
 from wmq_runtime import batches, batch_size, DataCache, all_finite, EVENTS, image01, decoded01
+from wmq_objectives import spectral_loss, NaturalDiscriminator, discriminator_update
+
+FLOAT_METHODS = ("natural_full_finetune", "natural_gan_finetune")
+QAT_METHODS = ("natural_qat_purification", "natural_residual_qat", "natural_qat_scale", "natural_gan_qat")
+NATURAL_METHODS = ("natural_rounding", "natural_rounding_scale", "natural_residual",
+                   *QAT_METHODS, *FLOAT_METHODS, "natural_spectral")
 
 
 def blur(x):
@@ -46,7 +52,7 @@ def pseudo_target(reference, strength):
     return reference.lerp(blur(reference), strength)
 
 
-def natural_image_manifest(directory, train_n, search_n, seed):
+def natural_image_manifest(directory, train_n, search_n, seed, resolution=512):
     """Deterministic disjoint split, deduplicated by file content; no owner oracle."""
     root = Path(directory).resolve()
     paths = sorted(p for p in root.rglob("*") if p.is_file() and
@@ -62,13 +68,13 @@ def natural_image_manifest(directory, train_n, search_n, seed):
     provenance = root / "dataset_provenance.json"
     return {"train": chosen[:train_n], "search": chosen[train_n:],
             "dataset_provenance": json.loads(provenance.read_text(encoding="utf-8")) if provenance.is_file() else None,
-            "preprocessing": "EXIF transpose, RGB, bicubic fit center crop 512x512",
+            "preprocessing": f"EXIF transpose, RGB, bicubic fit center crop {resolution}x{resolution}",
             "assumption": "User-supplied natural unwatermarked images; not detector-certified",
             "paired_with_generated_images": False}
 
 
 @torch.no_grad()
-def cache_natural(vae, entries, eval_batch_size=1):
+def cache_natural(vae, entries, eval_batch_size=1, resolution=512):
     from PIL import Image, ImageOps
     device = next(vae.parameters()).device
     latents, images = [], []
@@ -76,7 +82,7 @@ def cache_natural(vae, entries, eval_batch_size=1):
         if sha(entry["path"]) != entry["sha256"]:
             raise ValueError("Natural image changed after manifest creation")
         with Image.open(entry["path"]) as im:
-            im = ImageOps.fit(ImageOps.exif_transpose(im).convert("RGB"), (512, 512),
+            im = ImageOps.fit(ImageOps.exif_transpose(im).convert("RGB"), (resolution, resolution),
                               method=Image.Resampling.BICUBIC)
             x = torch.from_numpy(np.array(im, dtype=np.float32) / 255).permute(2, 0, 1)[None]
         images.append(x)
@@ -329,12 +335,12 @@ def choose(rows, policy="constrained"):
 
 @torch.no_grad()
 def natural_reconstruction_metrics(vae, latents, images, perceptual=None, perceptual_weight=0., eval_batch_size=1,
-                                   residual=None, residual_weight=0.):
+                                   residual=None, residual_weight=0., spectral_weight=0.):
     """Natural validation ranks reconstruction only; generated pairs supply quality gates."""
     if not latents or len(latents) != len(images):
         raise ValueError("Need nonempty paired natural latents and images")
     device = next(vae.parameters()).device
-    errors, perceptual_errors, residual_errors = [], [], []
+    errors, perceptual_errors, residual_errors, spectral_errors = [], [], [], []
     def evaluate(chunk):
         z = torch.cat([p[0] for p in chunk]).to(device, torch.float32)
         x = torch.cat([p[1] for p in chunk]).to(device)
@@ -345,11 +351,13 @@ def natural_reconstruction_metrics(vae, latents, images, perceptual=None, percep
         error = (prediction.clamp(0, 1) - x).square().flatten(1).mean(1)
         lp = perceptual(prediction.clamp(0, 1) * 2 - 1, x * 2 - 1).reshape(len(chunk), -1).mean(1) if perceptual is not None else torch.zeros_like(error)
         rp = residual.loss(prediction.clamp(0, 1) - x) if residual is not None else torch.zeros_like(error)
-        return torch.stack([error, lp, rp], 1).cpu().tolist()
+        sp = spectral_loss(prediction.clamp(0, 1), x) if spectral_weight else torch.zeros_like(error)
+        return torch.stack([error, lp, rp, sp], 1).cpu().tolist()
     for _, metrics in batches(list(zip(latents, images)), evaluate, eval_batch_size, "natural_validation"):
-        for error, lp, rp in metrics:
+        for error, lp, rp, sp in metrics:
             errors.append(error)
             residual_errors.append(rp)
+            spectral_errors.append(sp)
             if perceptual is not None:
                 perceptual_errors.append(lp)
     mse = sum(errors) / len(errors)
@@ -357,9 +365,11 @@ def natural_reconstruction_metrics(vae, latents, images, perceptual=None, percep
     if not math.isfinite(lpips_value):
         raise ValueError("Nonfinite natural validation perceptual loss")
     residual_value = sum(residual_errors) / len(residual_errors)
+    spectral_value = sum(spectral_errors) / len(spectral_errors)
     return {"natural_validation_mse": mse, "natural_validation_lpips": lpips_value if perceptual is not None else None,
             "natural_validation_residual": residual_value if residual is not None else None,
-            "target_mse": mse, "selection_objective": mse + perceptual_weight * lpips_value + residual_weight * residual_value}
+            "natural_validation_spectral": spectral_value if spectral_weight else None,
+            "target_mse": mse, "selection_objective": mse + perceptual_weight * lpips_value + residual_weight * residual_value + spectral_weight * spectral_value}
 
 
 @torch.no_grad()
@@ -407,11 +417,24 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
                     natural_search=None, preserve_data=None, perceptual=None, residual=None):
     """Independent initialization, train-only updates, search-only checkpoint choice."""
     device = next(vae.parameters()).device
+    block_branch = method == "block_reconstruction"
+    block_groups = {}
+    if block_branch:
+        for index, name in enumerate(names):
+            parts = name.split(".")
+            prefix = ".".join(parts[:2]) if parts[0] == "up_blocks" else parts[0]
+            # A bare Conv2d in CPU tests is itself the block.
+            prefix = "" if prefix == "weight" else prefix
+            block_groups.setdefault(prefix, []).append(index)
+        if args.steps < len(block_groups):
+            raise ValueError("Block reconstruction requires at least one step per block")
     pristine = {k: v.detach().clone() for k, v in vae.decoder.state_dict().items()}
-    qat_branch = method in ("natural_qat_purification", "natural_residual_qat")
-    float_branch = method == "natural_full_finetune"
+    qat_branch = method in QAT_METHODS
+    float_branch = method in FLOAT_METHODS
+    gan_branch = method in ("natural_gan_qat", "natural_gan_finetune")
+    spectral_weight = args.spectral_weight if method == "natural_spectral" else 0.
     grids = nn.ModuleList([FloatWeight(vae.decoder.get_parameter(k)) if float_branch else RoundingGrid(vae.decoder.get_parameter(k), bits, clip,
-                           learn_scale=method in ("rounding_scale", "natural_rounding_scale"),
+                           learn_scale=method in ("rounding_scale", "natural_rounding_scale", "natural_qat_scale"),
                            learn_code_offsets=qat_branch) for k in names]).to(device)
     rows, updates, best = [], [], None
     best_state = None
@@ -426,7 +449,7 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
     if perceptual_weight and perceptual is None:
         raise ValueError("Natural perceptual objective requires a frozen LPIPS network")
     policy = getattr(args, "quality_policy", "report")
-    strength = 0. if method == "reconstruction" or natural else args.strength
+    strength = 0. if method in ("reconstruction", "block_reconstruction") or natural else args.strength
     folder.mkdir(parents=True, exist_ok=False)
     diagnostics_root = folder if diagnostics_root is None else diagnostics_root
     thresholds = {"min_psnr": args.min_psnr, "min_ssim": args.min_ssim,
@@ -441,8 +464,10 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
                 # Gate on generated pairs, rank on disjoint natural validation reconstruction.
                 metrics["generated_reference_mse"] = metrics["target_mse"]
                 metrics.update(natural_reconstruction_metrics(vae, *natural_search, perceptual, perceptual_weight,
-                    batch_size(getattr(args, "eval_batch_size", 0), device), residual if residual_branch else None, residual_weight))
-                if qat_branch and not residual_branch:
+                    batch_size(getattr(args, "eval_batch_size", 0), device), residual if residual_branch else None, residual_weight, spectral_weight))
+                if args.natural_preservation == "lowpass" and not float_branch:
+                    metrics["selection_objective"] += (args.preserve_weight * metrics["semantic_lowpass_mse"])
+                elif qat_branch and not residual_branch:
                     metrics["selection_objective"] += (args.qat_semantic_preserve_weight *
                                                         metrics["semantic_lowpass_mse"])
                 if float_branch:
@@ -479,7 +504,17 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
     order_rng = torch.Generator().manual_seed(args.seed)
     params = [p for p in grids.parameters() if p.requires_grad]
     base_lr = args.ft_lr if float_branch else (args.qat_lr if qat_branch else args.lr)
-    optimizer = torch.optim.Adam(params, lr=base_lr) if method not in ("fixed_ptq", "sensitivity") else None
+    optimizer_class = torch.optim.AdamW if args.optimizer == "adamw" else torch.optim.Adam
+    optimizer = optimizer_class(params, lr=base_lr, weight_decay=args.weight_decay) if method not in ("fixed_ptq", "sensitivity") else None
+    discriminator = None
+    if gan_branch:
+        # Isolate initialization from branch ordering and the data sampler.
+        with torch.random.fork_rng(devices=[]):
+            torch.manual_seed(args.seed)
+            discriminator = NaturalDiscriminator().to(device)
+        disc_optimizer = torch.optim.Adam(discriminator.parameters(), lr=args.discriminator_lr)
+    disc_valid_updates = 0
+    train_image_forwards = 0
     lr_backoff = 1.
     ranked = [names.index(r["name"]) for r in profile]
     valid_updates = 0
@@ -493,7 +528,7 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
     total = (0 if method == "fixed_ptq" else
              ((args.ft_steps or args.steps) if float_branch else ((args.qat_steps or args.steps) if qat_branch else args.steps)))
     for step in range(1, total + 1):
-        if qat_branch or float_branch:
+        if optimizer is not None and (qat_branch or float_branch or args.lr_schedule == "warmup_cosine"):
             for group in optimizer.param_groups:
                 group["lr"] = scheduled_lr(base_lr, step, total, args.warmup_steps) * lr_backoff
         applied, reason = True, None
@@ -521,21 +556,56 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
                     grid.log_scale.copy_(old)
                 reason = "no_train_improvement"
         else:
-            if (step - 1) % len(train_z) == 0:
-                order = torch.randperm(len(train_z), generator=order_rng).tolist()
-            i = order[(step - 1) % len(train_z)]
+            active_params = params
+            block_name = None
+            if block_branch:
+                block_name = list(block_groups)[min((step - 1) * len(block_groups) // total, len(block_groups) - 1)]
+                for index, grid in enumerate(grids):
+                    grid.alpha.requires_grad_(index in block_groups[block_name])
+                active_params = [p for p in grids.parameters() if p.requires_grad]
+            indices = []
+            for offset in range(args.train_batch_size):
+                position = ((step - 1) * args.train_batch_size + offset) % len(train_z)
+                if position == 0:
+                    order = torch.randperm(len(train_z), generator=order_rng).tolist()
+                indices.append(order[position])
             optimizer.zero_grad(set_to_none=True)
             with torch.no_grad():
-                hidden = vae.post_quant_conv(train_z[i].to(device))
+                hidden = vae.post_quant_conv(torch.cat([train_z[i] for i in indices]).to(device))
             weights = {k: q() for k, q in zip(names, grids)}
-            raw = functional_call(vae.decoder, weights, (hidden,)) / 2 + .5
-            ref = train_ref[i].to(device)
+            if block_branch:
+                captured = []
+                handle = vae.decoder.get_submodule(block_name).register_forward_hook(lambda module, inputs, output: captured.append(output))
+                try:
+                    with torch.no_grad():
+                        vae.decoder(hidden)
+                    target_activation = captured.pop().detach()
+                    raw = functional_call(vae.decoder, weights, (hidden,)) / 2 + .5
+                    block_loss = F.mse_loss(captured.pop(), target_activation)
+                finally:
+                    handle.remove()
+                train_evaluations += 1
+                train_image_forwards += len(indices)
+            else:
+                raw = functional_call(vae.decoder, weights, (hidden,)) / 2 + .5
+            ref = torch.cat([train_ref[i] for i in indices]).to(device)
             image01(ref, "training reference")
             target_loss = F.mse_loss(raw, pseudo_target(ref, strength))
+            if block_branch:
+                target_loss = block_loss
             preserve = F.mse_loss(blur(raw), blur(ref))
+            if block_branch:
+                preserve = raw.new_zeros(())
             perceptual_loss = raw.new_zeros(())
             residual_loss = raw.new_zeros(())
             trust_loss = raw.new_zeros(())
+            spectrum = spectral_loss(raw, ref).mean() if spectral_weight else raw.new_zeros(())
+            adversarial = raw.new_zeros(())
+            disc_loss, disc_applied = None, None
+            if discriminator is not None:
+                disc_loss, disc_applied = discriminator_update(discriminator, disc_optimizer, ref, raw.clamp(0, 1))
+                disc_valid_updates += int(disc_applied)
+                adversarial = F.softplus(-discriminator(raw.clamp(0, 1))).mean()
             if natural:
                 if residual_branch:
                     residual_loss = residual.loss(raw - ref).mean()
@@ -545,32 +615,35 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
                     generated = preserve_hidden = None
                     preserve = raw.new_zeros(())
                 else:
-                    j = (step - 1) % len(preserve_data[0])
+                    js = [((step - 1) * args.train_batch_size + j) % len(preserve_data[0]) for j in range(args.train_batch_size)]
                     with torch.no_grad():
-                        preserve_hidden = vae.post_quant_conv(preserve_data[0][j].to(device))
+                        preserve_hidden = vae.post_quant_conv(torch.cat([preserve_data[0][j] for j in js]).to(device))
                     generated = functional_call(vae.decoder, weights, (preserve_hidden,)) / 2 + .5
-                    preserve_ref = image01(preserve_data[1][j].to(device), "preservation reference")
-                    if (qat_branch and not residual_branch) or float_branch:
+                    preserve_ref = image01(torch.cat([preserve_data[1][j] for j in js]).to(device), "preservation reference")
+                    if args.natural_preservation == "lowpass" or (qat_branch and not residual_branch) or float_branch:
                         preserve = F.mse_loss(semantic_lowpass(generated), semantic_lowpass(preserve_ref))
                     else:
                         preserve = (residual.preservation(generated - preserve_ref, args.residual_preservation)
                                     if residual_branch else F.mse_loss(generated, preserve_ref))
                     train_evaluations += 1
+                    train_image_forwards += len(js)
                 if qat_branch:
                     trust_loss = sum(g.code_offset.square().sum() for g in grids) / sum(g.code_offset.numel() for g in grids)
-            preserve_weight = (args.ft_preserve_weight if float_branch else
+            preserve_weight = (args.preserve_weight if natural and not float_branch and args.natural_preservation == "lowpass" else args.ft_preserve_weight if float_branch else
                                (args.qat_semantic_preserve_weight if qat_branch and not residual_branch else args.preserve_weight))
             loss = (target_loss + perceptual_weight * perceptual_loss + preserve_weight * preserve +
-                    residual_weight * residual_loss + args.qat_trust_weight * trust_loss)
+                    residual_weight * residual_loss + args.qat_trust_weight * trust_loss +
+                    spectral_weight * spectrum + (args.adversarial_weight * adversarial if gan_branch else 0.))
             train_evaluations += 1
+            train_image_forwards += len(indices)
             applied = bool(torch.isfinite(loss))
             grad_norm = None
             if applied:
                 backward_attempts += 1
                 loss.backward()
-                applied = all(p.grad is not None for p in params) and all_finite(p.grad for p in params)
+                applied = all(p.grad is not None for p in active_params) and all_finite(p.grad for p in active_params)
                 if applied:
-                    norm = nn.utils.clip_grad_norm_(params, 1.)
+                    norm = nn.utils.clip_grad_norm_(active_params, 1.)
                     applied = bool(torch.isfinite(norm))
                     if applied:
                         grad_norm = norm.item()
@@ -605,10 +678,14 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
             scalars = torch.stack([target_loss.detach(), perceptual_loss.detach(), preserve.detach(), loss.detach(),
                                    residual_loss.detach(), trust_loss.detach()]).cpu().tolist()
             updates.append({"step": step, "applied": applied, "reason": reason,
+                            "block": block_name,
+                            "spectral_loss": spectrum.detach().item() if torch.isfinite(spectrum) else None,
+                            "adversarial_loss": adversarial.detach().item() if torch.isfinite(adversarial) else None,
+                            "discriminator_loss": disc_loss, "discriminator_applied": disc_applied,
                             **{k: v if math.isfinite(v) else None for k, v in zip(
                                 ["reconstruction_mse", "perceptual_loss", "preservation_mse", "loss", "residual_loss", "trust_loss"], scalars)},
                             "grad_norm": grad_norm, "learning_rate": optimizer.param_groups[0]["lr"]})
-            del weights, raw, ref, loss, target_loss, preserve, perceptual_loss, residual_loss, trust_loss
+            del weights, raw, ref, loss, target_loss, preserve, perceptual_loss, residual_loss, trust_loss, spectrum, adversarial
             if natural:
                 del generated, preserve_hidden
         if method == "sensitivity":
@@ -625,28 +702,50 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
             evaluate(step, method if valid_updates else ("marked_fp32_fallback" if float_branch else "rtn_fallback"))
     grids.load_state_dict(best_state)
     selected = {**best, "search_feasible": best["feasible"], "valid_updates": valid_updates,
+                "reconstruction_blocks": list(block_groups),
+                "optimizer": args.optimizer, "weight_decay": args.weight_decay,
+                "training_batch_size": args.train_batch_size, "discriminator_valid_updates": disc_valid_updates,
+                "adversarial_weight": args.adversarial_weight if gan_branch else 0., "spectral_weight": spectral_weight,
+                "selection_uses_discriminator": False, "paper_reproduction": False,
+                "additional_objectives": (["patch_logistic_adversarial"] if gan_branch else []) +
+                                         (["multiscale_natural_log_spectrum"] if spectral_weight else []) +
+                                         (["sequential_block_activation_reconstruction"] if block_branch else []),
                 "gradient_updates": valid_updates if optimizer is not None else 0,
                 "objective": "natural_residual_projection" if residual_branch else ("quantization_constrained_natural_purification" if qat_branch else ("unpaired_natural_reconstruction" if natural else ("reconstruction" if method == "reconstruction" else "blind_smoothing_proxy"))),
                 "residual_weight": residual_weight,
-                "preservation_mode": args.residual_preservation if residual_branch else ("lowpass_8x" if qat_branch or float_branch else "legacy"),
+                "preservation_mode": "lowpass_8x" if args.natural_preservation == "lowpass" and natural else (args.residual_preservation if residual_branch else ("lowpass_8x" if qat_branch or float_branch else "legacy")),
                 "parameter_space": "unrestricted_fp32_decoder" if float_branch else "quantized_decoder_weights",
-                "learning_rate_peak": base_lr, "lr_schedule": "warmup_cosine" if qat_branch or float_branch else "constant",
+                "learning_rate_peak": base_lr, "lr_schedule": "warmup_cosine" if qat_branch or float_branch else args.lr_schedule,
                 "objective_strength": strength,
                 "quality_policy": policy, "perceptual_weight": perceptual_weight,
                 "selected_source": best["source"], "attempted_updates": total,
                 "train_evaluations": train_evaluations, "search_evaluations": len(rows),
-                "train_image_forwards": train_evaluations * len(train_z) if method == "sensitivity" else train_evaluations,
+                "train_image_forwards": train_evaluations * len(train_z) if method == "sensitivity" else train_image_forwards,
+                "discriminator_image_forwards": total * args.train_batch_size * 3 if gan_branch else 0,
                 "search_image_forwards": len(rows) * len(search_z), "backward_attempts": backward_attempts,
                 "natural_validation_image_forwards": len(rows) * len(natural_search[0]) if natural else 0,
                 "optimized_dofs": {"fixed_ptq": [], "sensitivity": ["layer_scale"], "rounding": ["rounding"],
                     "rounding_scale": ["rounding", "per_channel_scale"], "reconstruction": ["rounding"],
+                    "block_reconstruction": ["sequential_block_rounding"],
                     "natural_rounding": ["rounding"], "natural_residual": ["rounding"],
                     "natural_rounding_scale": ["rounding", "per_channel_scale"],
+                    "natural_spectral": ["rounding"],
+                    "natural_qat_scale": ["bounded_multi_cell_code_offsets", "per_channel_scale"],
+                    "natural_gan_qat": ["bounded_multi_cell_code_offsets"],
+                    "natural_gan_finetune": ["all_decoder_parameters_including_bias_and_norm"],
                     "natural_residual_qat": ["bounded_multi_cell_code_offsets"],
                     "natural_full_finetune": ["all_decoder_parameters_including_bias_and_norm"],
                     "natural_qat_purification": ["bounded_multi_cell_code_offsets"]}[method],
                 "status": "selected" if best["feasible"] else ("selected_quality_failed" if policy == "report" else "no_feasible_candidate")}
     save_json(folder / "selection.json", selected)
+    if discriminator is not None:
+        from safetensors.torch import save_file
+        save_file({k: v.detach().cpu().contiguous() for k, v in discriminator.state_dict().items()},
+                  str(folder / "discriminator_final.safetensors"))
+        save_json(folder / "discriminator.json", {"architecture": "wmq_objectives.NaturalDiscriminator",
+            "training_split": "natural_train_only", "checkpoint": "final_not_selected_generator_step",
+            "selection_uses_discriminator": False, "valid_updates": disc_valid_updates,
+            "paper_reproduction": False})
     if not selected["search_feasible"]:
         quality_warning(diagnostics_root, "branch_quality", "Selected candidate failed quality thresholds; retaining diagnostic result",
                         method=method, metrics=selected, thresholds=thresholds,
@@ -686,6 +785,10 @@ def parser():
     p.add_argument("--artifact-output", help="Separate NEW checkpoint directory; default output_artifacts/checkpoints/<run>")
     p.add_argument("--gen-batch-size", type=int, default=0, help="Inference batch; 0 chooses from free VRAM, capped at 8")
     p.add_argument("--eval-batch-size", type=int, default=0, help="VAE/metric batch; 0 chooses from free VRAM, capped at 8")
+    p.add_argument("--train-batch-size", type=int, default=1, help="Actual generator batch; reduce on OOM, never silently alter budget")
+    p.add_argument("--optimizer", choices=["adam", "adamw"], default="adam")
+    p.add_argument("--weight-decay", type=float, default=0.)
+    p.add_argument("--lr-schedule", choices=["constant", "warmup_cosine"], default="constant")
     p.add_argument("--data-cache", choices=["auto", "cpu"], default="auto")
     p.add_argument("--cache-max-gib", type=float, default=4., help="Maximum total GPU data cache; preserve at least half total VRAM free when promoting")
     p.add_argument("--log-every", type=int, default=10, help="Flush accumulated update rows every N steps, on failure, and at branch completion")
@@ -707,8 +810,8 @@ def parser():
     p.add_argument("--bits", type=int, nargs="+", default=[4])
     p.add_argument("--clips", type=float, nargs="+", default=[1.])
     p.add_argument("--methods", nargs="+", choices=["fixed_ptq", "sensitivity",
-                   "rounding", "rounding_scale", "reconstruction"],
-                   default=["fixed_ptq", "reconstruction"])
+                   "rounding", "rounding_scale", "reconstruction", "block_reconstruction"],
+                   default=["fixed_ptq", "reconstruction", "block_reconstruction"])
     p.add_argument("--profile-n", type=int, default=16, help="Train-only samples for measured layer sensitivity")
     p.add_argument("--profile-bootstrap", type=int, default=1000, help="CPU paired resamples for layer priority uncertainty")
     p.add_argument("--device", choices=["cuda", "cpu"], default="cuda", help="CPU is for small diagnostic pipelines")
@@ -721,8 +824,14 @@ def parser():
     p.add_argument("--natural-images", help="Optional directory of unpaired natural non-watermarked images")
     p.add_argument("--natural-train-n", type=int, help="Natural TRAIN count independent of prompt count; default --train-n")
     p.add_argument("--natural-search-n", type=int, help="Natural SEARCH count independent of prompt count; default --search-n")
-    p.add_argument("--natural-methods", nargs="+", choices=["natural_rounding", "natural_rounding_scale", "natural_residual", "natural_qat_purification", "natural_residual_qat", "natural_full_finetune"],
-                   default=["natural_residual", "natural_residual_qat", "natural_full_finetune"], help="Natural branches; FP32 control is evaluated once, outside the bitwidth grid")
+    p.add_argument("--natural-methods", nargs="+", choices=NATURAL_METHODS,
+                   default=list(NATURAL_METHODS), help="Natural controls and exploratory objectives; FP32 controls outside bitwidth grid")
+    p.add_argument("--natural-resolution", type=int, choices=[256, 512], default=512)
+    p.add_argument("--natural-preservation", choices=["legacy", "lowpass"], default="legacy",
+                   help="lowpass matches preservation form across natural quantized branches for residual ablations")
+    p.add_argument("--spectral-weight", type=float, default=.1)
+    p.add_argument("--adversarial-weight", type=float, default=.1)
+    p.add_argument("--discriminator-lr", type=float, default=.001)
     p.add_argument("--residual-patch", type=int, choices=[4, 8, 16], default=8)
     p.add_argument("--residual-rank", type=int, default=8)
     p.add_argument("--residual-patches-per-image", type=int, default=256)
@@ -737,6 +846,8 @@ def parser():
                    help="QAT purification L2 penalty on code-space displacement")
     p.add_argument("--qat-max-code-shift", type=float, default=2.,
                    help="Maximum continuous shadow displacement in quantization-code units")
+    p.add_argument("--branch-error-policy", choices=["report", "raise"], default="report",
+                   help="Record failed branches and evaluate completed ones; setup errors still fail")
     p.add_argument("--quality-policy", choices=["report", "constrained"], default="report",
                    help="report: choose by objective and record quality failures; constrained: prefer feasible candidates; neither stops on a failed gate")
     return p
@@ -745,6 +856,9 @@ def parser():
 def main():
     args = parser().parse_args()
     EVENTS.clear()
+    if args.train_batch_size < 1 or any(not math.isfinite(v) or v < 0 for v in
+            (args.weight_decay, args.spectral_weight, args.adversarial_weight)) or not math.isfinite(args.discriminator_lr) or args.discriminator_lr <= 0:
+        raise ValueError("Invalid training batch/objective/discriminator configuration")
     if min(args.gen_batch_size, args.eval_batch_size, args.cache_max_gib) < 0 or args.log_every < 1 or not math.isfinite(args.cache_max_gib):
         raise ValueError("Invalid runtime batch/cache/log configuration")
     if min(args.train_n, args.search_n, args.test_n, args.steps, args.eval_every, args.sampling_steps, args.profile_n, args.profile_bootstrap) < 1:
@@ -777,7 +891,7 @@ def main():
         raise ValueError(f"Need {n} distinct prompts for disjoint train/search/test splits")
     prompts = prompts[:n]
     natural_manifest = natural_image_manifest(args.natural_images, args.natural_train_n or args.train_n,
-        args.natural_search_n or args.search_n, args.seed) if args.natural_images else None
+        args.natural_search_n or args.search_n, args.seed, args.natural_resolution) if args.natural_images else None
     out = Path(args.output).resolve()
     output_parent = out.parent.parent if out.parent.name == "output_attack" else out.parent
     image_out = Path(args.image_output).resolve() if args.image_output else output_parent / "output_artifacts" / "images" / out.name
@@ -848,7 +962,7 @@ def main():
                 "ownership_loss": None, "surrogate_transfer_evaluated": False,
                 "git_commit": commit, "script_sha256": sha(script),
                 "helper_sources_sha256": {name: sha(script.parent / name) for name in
-                    ("wmq_runtime.py", "wmq_diagnostics.py", "wmq_residual.py")},
+                    ("wmq_runtime.py", "wmq_diagnostics.py", "wmq_residual.py", "wmq_objectives.py")},
                 "model_files_sha256": {str(p.relative_to(model)): sha(p) for p in sorted(model.rglob("*"))
                       if p.is_file() and p.suffix in (".safetensors", ".bin", ".json")},
                 "prompts": prompts, "seeds": list(range(args.seed, args.seed + n)),
@@ -874,7 +988,7 @@ def main():
     for bits in dict.fromkeys(args.bits):
         for clip in dict.fromkeys(args.clips):
             for method in dict.fromkeys([*args.methods, *(args.natural_methods if natural_manifest else [])]):
-                if method == "natural_full_finetune":
+                if method in FLOAT_METHODS:
                     continue  # No duplicate FP32 control for every bitwidth/clip.
                 branch_id = f"{method}_w{bits}_c{clip}"
                 plan.append({"label": branch_id + "_test", "method": method,
@@ -882,12 +996,14 @@ def main():
                              "bits": bits, "clip": clip, "role": "candidate",
                              "threat_model": "marked_model_plus_unpaired_natural_images" if method.startswith("natural_") else "marked_model_only",
                              "artifact": f"branches/{branch_id}"})
-    if natural_manifest and "natural_full_finetune" in args.natural_methods:
-        plan.append({"label": "natural_full_finetune_fp32_test", "method": "natural_full_finetune",
+    for method in FLOAT_METHODS:
+        if not natural_manifest or method not in args.natural_methods:
+            continue
+        plan.append({"label": f"{method}_fp32_test", "method": method,
                      "comparison_group": "fp32_unrestricted_decoder_control", "bits": 32, "clip": 1.,
                      "role": "finetune_control", "artifact_format": "decoder_fp32",
                      "threat_model": "marked_model_plus_unpaired_natural_images_unrestricted_finetune",
-                     "artifact": "branches/natural_full_finetune_fp32"})
+                     "artifact": f"branches/{method}_fp32"})
     manifest["reference_label"] = "marked_reference_test"
     manifest["image_root"] = image_location
     manifest["artifact_root"] = artifact_location
@@ -944,84 +1060,112 @@ def main():
     rows, selections, frozen_branches = [], {}, {}
     profiles = {}
     costs = {}
+    branch_failures = []
+    declared_plan = list(plan)
     for branch in plan:
-        if args.device == "cuda":
-            torch.cuda.synchronize()
-        branch_started = time.monotonic()
-        bits, clip, method = branch["bits"], branch["clip"], branch["method"]
-        float_branch = method == "natural_full_finetune"
-        branch_names = [name for name, _ in vae.decoder.named_parameters()] if float_branch else names
-        vae.decoder.load_state_dict(pristine)
-        group = branch["comparison_group"]
-        if method == "sensitivity" and group not in profiles:
-            count = min(a, args.profile_n)
-            profiles[group] = profile_layers(vae, names, zs[:count], refs[:count], bits, clip, args)
-            save_json(out / f"profile_{group}.json",
-                      {"split": "train", "n": count, "ownership_signal": False, "layers": profiles[group],
-                       "bootstrap_resamples": args.profile_bootstrap, "bootstrap_seed": args.seed,
-                       "uncertainty": "Pointwise percentile intervals conditional on calibration pool; not simultaneous ranking confidence; sorting uses point estimates."})
-            if count < 16:
-                quality_warning(out, "profile_sample_size", "Small calibration profile; priorities may be unstable",
-                                metrics={"actual_n": count, "requested_n": args.profile_n}, action="continue")
-        folder = out / branch["artifact"]
-        artifact_folder = artifact_out / branch["artifact"]
-        natural = method.startswith("natural_")
-        if natural and natural_train is None:
-            natural_train = cache_natural(vae, natural_manifest["train"], args.eval_batch_size)
-            natural_search = cache_natural(vae, natural_manifest["search"], args.eval_batch_size)
-            natural_train = tuple(data_cache.promote(v, f"natural_train_{i}") for i, v in enumerate(natural_train))
-            natural_search = tuple(data_cache.promote(v, f"natural_search_{i}") for i, v in enumerate(natural_search))
-            if args.natural_perceptual_weight:
-                import lpips
-                perceptual = lpips.LPIPS(net="alex", version="0.1").to(args.device).eval().requires_grad_(False)
-        train_z, train_ref = natural_train if natural else (zs[:a], refs[:a])
-        if method in ("natural_residual", "natural_residual_qat") and residual is None:
-            from wmq_residual import fit_residual_subspace
-            residual, residual_info = fit_residual_subspace(vae, *natural_train, args.residual_patch,
-                args.residual_rank, args.residual_patches_per_image, args.seed)
-        grids, selected, branch_rows = optimize_branch(
-            vae, branch_names, train_z, train_ref, search_z, search_ref, args,
-            bits, clip, method, profiles.get(group, []), folder, diagnostics_root=out,
-            natural_search=natural_search if natural else None,
-            preserve_data=(zs[:a], refs[:a]) if natural else None,
-            perceptual=perceptual if natural else None, residual=residual if method in ("natural_residual", "natural_residual_qat") else None)
-        rows.extend(branch_rows)
-        selections[branch["label"]] = selected
-        materialize(vae.decoder, branch_names, grids)
-        # No bias, norm, or unselected decoder weight may change.
-        for name, value in vae.decoder.state_dict().items():
-            if name not in branch_names and not torch.equal(value.cpu(), pristine[name]):
-                raise ValueError(f"Unexpected parameter change: {name}")
-        artifact_folder.mkdir(parents=True, exist_ok=False)
-        vae.save_pretrained(artifact_folder / "vae", safe_serialization=True)
-        if float_branch:
-            from safetensors.torch import save_file
-            save_file({k: v.detach().cpu().contiguous() for k, v in vae.decoder.state_dict().items()},
-                      str(artifact_folder / "decoder_fp32.safetensors"))
-            save_json(artifact_folder / "finetune.json", {"format": "decoder_fp32", "quantized": False,
-                "changed_parameter_names": branch_names, "paper_reproduction": False,
-                "objective": "natural MSE + LPIPS; optional low-pass preservation; no discriminator"})
-        else:
-            export_quantizer(vae, names, grids, artifact_folder)
-        if method in ("natural_residual", "natural_residual_qat"):
-            from safetensors.torch import save_file
-            save_file({"basis": residual.basis.detach().cpu().contiguous()}, str(artifact_folder / "residual_basis.safetensors"))
-            save_json(folder / "residual_calibration.json", residual_info)
-        frozen_branches[branch["label"]] = {
-            "selected": selected,
-            "files_sha256": {p.relative_to(artifact_out).as_posix(): sha(p)
-                             for p in sorted(artifact_folder.rglob("*")) if p.is_file()},
-            "diagnostic_files_sha256": {p.relative_to(out).as_posix(): sha(p)
-                                        for p in sorted(folder.rglob("*")) if p.is_file()}}
-        del grids
-        vae.decoder.load_state_dict(pristine)
-        save_json(out / "search.json", rows)
-        save_csv(out / "search.csv", rows)
-        if args.device == "cuda":
-            torch.cuda.empty_cache()
-            torch.cuda.synchronize()
-        costs[branch["label"]] = {"search_and_export_seconds_including_profile": time.monotonic() - branch_started,
-                                 "profile_image_forwards": len(names) * min(a, args.profile_n) if method == "sensitivity" else 0}
+        try:
+            if args.device == "cuda":
+                torch.cuda.synchronize()
+            branch_started = time.monotonic()
+            bits, clip, method = branch["bits"], branch["clip"], branch["method"]
+            float_branch = method in FLOAT_METHODS
+            branch_names = [name for name, _ in vae.decoder.named_parameters()] if float_branch else names
+            vae.decoder.load_state_dict(pristine)
+            group = branch["comparison_group"]
+            if method == "sensitivity" and group not in profiles:
+                count = min(a, args.profile_n)
+                profiles[group] = profile_layers(vae, names, zs[:count], refs[:count], bits, clip, args)
+                save_json(out / f"profile_{group}.json",
+                          {"split": "train", "n": count, "ownership_signal": False, "layers": profiles[group],
+                           "bootstrap_resamples": args.profile_bootstrap, "bootstrap_seed": args.seed,
+                           "uncertainty": "Pointwise percentile intervals conditional on calibration pool; not simultaneous ranking confidence; sorting uses point estimates."})
+                if count < 16:
+                    quality_warning(out, "profile_sample_size", "Small calibration profile; priorities may be unstable",
+                                    metrics={"actual_n": count, "requested_n": args.profile_n}, action="continue")
+            folder = out / branch["artifact"]
+            artifact_folder = artifact_out / branch["artifact"]
+            natural = method.startswith("natural_")
+            if natural and natural_train is None:
+                natural_train = cache_natural(vae, natural_manifest["train"], args.eval_batch_size, args.natural_resolution)
+                natural_search = cache_natural(vae, natural_manifest["search"], args.eval_batch_size, args.natural_resolution)
+                natural_train = tuple(data_cache.promote(v, f"natural_train_{i}") for i, v in enumerate(natural_train))
+                natural_search = tuple(data_cache.promote(v, f"natural_search_{i}") for i, v in enumerate(natural_search))
+                if args.natural_perceptual_weight:
+                    import lpips
+                    perceptual = lpips.LPIPS(net="alex", version="0.1").to(args.device).eval().requires_grad_(False)
+            train_z, train_ref = natural_train if natural else (zs[:a], refs[:a])
+            if method in ("natural_residual", "natural_residual_qat") and residual is None:
+                from wmq_residual import fit_residual_subspace
+                residual, residual_info = fit_residual_subspace(vae, *natural_train, args.residual_patch,
+                    args.residual_rank, args.residual_patches_per_image, args.seed)
+            grids, selected, branch_rows = optimize_branch(
+                vae, branch_names, train_z, train_ref, search_z, search_ref, args,
+                bits, clip, method, profiles.get(group, []), folder, diagnostics_root=out,
+                natural_search=natural_search if natural else None,
+                preserve_data=(zs[:a], refs[:a]) if natural else None,
+                perceptual=perceptual if natural else None, residual=residual if method in ("natural_residual", "natural_residual_qat") else None)
+            rows.extend(branch_rows)
+            selections[branch["label"]] = selected
+            materialize(vae.decoder, branch_names, grids)
+            # No bias, norm, or unselected decoder weight may change.
+            for name, value in vae.decoder.state_dict().items():
+                if name not in branch_names and not torch.equal(value.cpu(), pristine[name]):
+                    raise ValueError(f"Unexpected parameter change: {name}")
+            artifact_folder.mkdir(parents=True, exist_ok=False)
+            vae.save_pretrained(artifact_folder / "vae", safe_serialization=True)
+            if float_branch:
+                from safetensors.torch import save_file
+                save_file({k: v.detach().cpu().contiguous() for k, v in vae.decoder.state_dict().items()},
+                          str(artifact_folder / "decoder_fp32.safetensors"))
+                save_json(artifact_folder / "finetune.json", {"format": "decoder_fp32", "quantized": False,
+                    "changed_parameter_names": branch_names, "paper_reproduction": False,
+                    "objective": "natural MSE + LPIPS; optional low-pass preservation",
+                    "adversarial": method == "natural_gan_finetune",
+                    "discriminator": "custom patch logistic discriminator, not HiDDeN" if method == "natural_gan_finetune" else None})
+            else:
+                export_quantizer(vae, names, grids, artifact_folder)
+            if method in ("natural_residual", "natural_residual_qat"):
+                from safetensors.torch import save_file
+                save_file({"basis": residual.basis.detach().cpu().contiguous()}, str(artifact_folder / "residual_basis.safetensors"))
+                save_json(folder / "residual_calibration.json", residual_info)
+            frozen_branches[branch["label"]] = {
+                "selected": selected,
+                "files_sha256": {p.relative_to(artifact_out).as_posix(): sha(p)
+                                 for p in sorted(artifact_folder.rglob("*")) if p.is_file()},
+                "diagnostic_files_sha256": {p.relative_to(out).as_posix(): sha(p)
+                                            for p in sorted(folder.rglob("*")) if p.is_file()}}
+            del grids
+            vae.decoder.load_state_dict(pristine)
+            save_json(out / "search.json", rows)
+            save_csv(out / "search.csv", rows)
+            if args.device == "cuda":
+                torch.cuda.empty_cache()
+                torch.cuda.synchronize()
+            costs[branch["label"]] = {"search_and_export_seconds_including_profile": time.monotonic() - branch_started,
+                                     "profile_image_forwards": len(names) * min(a, args.profile_n) if method == "sensitivity" else 0}
+        except Exception as error:
+            if args.branch_error_policy == "raise":
+                raise
+            import traceback
+            failure = {"label": branch["label"], "method": branch["method"],
+                       "error": f"{type(error).__name__}: {error}", "traceback": traceback.format_exc()}
+            branch_failures.append(failure)
+            selections.pop(branch["label"], None)
+            frozen_branches.pop(branch["label"], None)
+            save_json(out / "branch_failures.json", branch_failures)
+            print(f"FAILED {branch['label']}: {failure['error']}; continuing other branches", flush=True)
+            # A partial artifact is retained for diagnosis but excluded from evaluation.
+            vae.decoder.load_state_dict(pristine)
+            if "grids" in locals():
+                del grids
+            if args.device == "cuda":
+                torch.cuda.empty_cache()
+    plan = [branch for branch in declared_plan if branch["label"] in frozen_branches]
+    manifest["declared_branches"] = declared_plan
+    manifest["branch_failures"] = branch_failures
+    manifest["test_branches"] = [branch for branch in manifest["test_branches"]
+                                 if branch["role"] in ("reference", "diagnostic") or branch["label"] in frozen_branches]
+    save_json(out / "manifest.json", manifest)
 
     # Freeze ALL branches and the declared protocol before the first test latent.
     frozen = {"schema_version": 2, "phase": "before_test_generation",
@@ -1060,10 +1204,10 @@ def main():
         "search_quality_valid": selections.get(label, {}).get("search_feasible"),
         "selection_status": selections.get(label, {}).get("status"), **metrics} for label, metrics in quality.items()])
     save_json(out / "report.json", {"schema_version": 2, "selections": selections,
-              "branch_compute": costs,
+              "branch_compute": costs, "branch_failures": branch_failures,
               "runtime": {"gen_batch_size": args.gen_batch_size, "eval_batch_size": args.eval_batch_size,
-                          "training_batch_size": 1, "cache": data_cache.stats, "events": list(EVENTS), "log_every": args.log_every},
-              "branch_quality": quality, "status": "complete" if complete else "quality_failures",
+                          "training_batch_size": args.train_batch_size, "cache": data_cache.stats, "events": list(EVENTS), "log_every": args.log_every},
+              "branch_quality": quality, "status": "branch_failures" if branch_failures else ("complete" if complete else "quality_failures"),
               "watermark_metrics": None, "watermark_success": "unknown",
               "test_used_for_selection": False, "selection_frozen_sha256": sha(out / "selection_frozen.json"),
               "image_root": image_location,

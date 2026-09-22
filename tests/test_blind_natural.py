@@ -193,13 +193,18 @@ class NaturalTests(unittest.TestCase):
             def forward(self, x):
                 # Fully inverted key must still be detected by DOUBLE tail.
                 return torch.full((len(x), 48), -1., device=x.device)
-        def tiny_natural(vae, entries, eval_batch_size=1):
+        def tiny_natural(vae, entries, eval_batch_size=1, resolution=512):
             return [torch.linspace(0, 1, 3 * 16 * 16).reshape(1, 3, 16, 16) for _ in entries], [torch.ones(1, 3, 16, 16) * .3 for _ in entries]
         def audited_choose(rows, **kwargs):
             self.assertFalse(test_started[0])
             return original_choose(rows, **kwargs)
         self_test = self
         original_choose = blind.choose
+        original_optimize = blind.optimize_branch
+        def one_failed_branch(*args, **kwargs):
+            if args[9] == 'natural_spectral' and args[7] == 8:
+                raise RuntimeError('injected branch failure')
+            return original_optimize(*args, **kwargs)
         fake = SimpleNamespace(StableDiffusionPipeline=Pipeline, AutoencoderKL=VAE,
                                DDIMScheduler=SimpleNamespace(from_config=lambda c: SimpleNamespace(config=c)))
         with tempfile.TemporaryDirectory() as tmp, redirect_stdout(io.StringIO()):
@@ -221,19 +226,23 @@ class NaturalTests(unittest.TestCase):
                     "--bits", "8", "4", "--min-psnr", "121", "--min-image-psnr", "121", "--min-ssim", ".001"]
             with fake_diffusers(fake), patch.object(sys, "argv", argv), \
                     patch.object(blind, "cache_natural", tiny_natural), patch.object(blind, "choose", audited_choose), \
+                    patch.object(blind, "optimize_branch", one_failed_branch), \
                     fake_diffusers(SimpleNamespace(LPIPS=lambda **kw: PerceptualStub()), "lpips"):
                 blind.main()
             report = json.loads((out / "report.json").read_text())
-            self.assertEqual(len(report["selections"]), 7)  # Three quantized branches per bit, one FP32 control.
-            self.assertEqual(len(report["branch_quality"]), 9)
-            self.assertEqual(report["status"], "quality_failures")
+            self.assertEqual(len(report["selections"]), 19)  # 20 planned, one deliberately failed.
+            self.assertEqual(len(report["branch_quality"]), 21)
+            self.assertEqual(report["status"], "branch_failures")
+            self.assertEqual(len(report["branch_failures"]), 1)
+            self.assertNotIn('natural_spectral_w8_c1.0_test', report['selections'])
+            self.assertIn('natural_spectral_w4_c1.0_test', report['selections'])
             self.assertTrue(all(not s["search_feasible"] for s in report["selections"].values()))
             self.assertTrue((out / "search.csv").is_file())
             self.assertTrue((out / "quality_summary.csv").is_file())
             images = root / "output_artifacts" / "images" / out.name
             self.assertTrue((images / "marked_reference_test/0000.png").is_file())
             self.assertFalse(list(out.rglob("*.png")))
-            self.assertFalse(list(out.rglob("*.safetensors")))
+            self.assertTrue(all(p.name == "discriminator_final.safetensors" for p in out.rglob("*.safetensors")))
             artifacts = root / "output_artifacts" / "checkpoints" / out.name
             fp32 = artifacts / "branches/natural_full_finetune_fp32"
             self.assertTrue((fp32 / "decoder_fp32.safetensors").is_file())

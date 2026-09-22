@@ -166,6 +166,51 @@ def verify_frozen_run(root, report, image_root=None, artifact_root=None):
         raise ValueError("Checkpoint or search log changed after selection freeze")
 
 
+@torch.no_grad()
+def empirical_fpr(net, key, directory, excluded_hashes, limit, threshold, detector, device):
+    """Owner-only negative pool, excluding all natural TRAIN/SEARCH bytes.
+
+    This measures FPR on the declared natural pool, not every generated null.
+    """
+    from PIL import ImageOps
+    paths, seen, excluded = [], set(), 0
+    for path in sorted(Path(directory).rglob("*")):
+        if path.suffix.lower() not in ('.png', '.jpg', '.jpeg', '.webp', '.bmp') or not path.is_file():
+            continue
+        digest = file_sha256(path)
+        if digest in excluded_hashes:
+            excluded += 1
+            continue
+        if digest not in seen:
+            paths.append((path, digest)); seen.add(digest)
+        if len(paths) == limit:
+            break
+    if not paths:
+        return {"status": "unavailable", "n": 0, "excluded": excluded,
+                "warning": "No independent negative images; no empirical FPR claim"}
+    matches = []
+    for path, digest in paths:
+        with Image.open(path) as im:
+            im = ImageOps.fit(ImageOps.exif_transpose(im).convert('RGB'), (512, 512), method=Image.Resampling.BICUBIC)
+            x = torch.from_numpy(np.array(im, dtype=np.float32) / 255).permute(2, 0, 1)[None].to(device)
+        if file_sha256(path) != digest:
+            raise ValueError("Negative image changed during evaluation")
+        mean = x.new_tensor([.485, .456, .406])[None, :, None, None]
+        std = x.new_tensor([.229, .224, .225])[None, :, None, None]
+        logits = net((x - mean) / std)
+        if logits.numel() != key.numel() or not torch.isfinite(logits).all():
+            raise ValueError('Invalid negative extractor logits')
+        matches.append(int(((logits.reshape(-1) > 0) == key).sum()))
+    detected = sum(m >= threshold or (detector == 'double' and m <= key.numel() - threshold) for m in matches)
+    low, high = wilson_interval(detected, len(paths))
+    return {"status": "measured", "n": len(paths), "false_positive_count": detected,
+            "fpr": detected / len(paths), "fpr_ci95_low": low, "fpr_ci95_high": high,
+            "excluded": excluded, "per_image_matches": matches,
+            "files": [{"path": str(p), "sha256": d} for p, d in paths],
+            "threshold_selected_using_negatives": False,
+            "interpretation": "Conditional on user-declared unwatermarked natural images. No threshold retuning. Zero observations does not prove zero FPR."}
+
+
 def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--run", required=True)
@@ -176,6 +221,8 @@ def main():
     p.add_argument("--expected-extractor-sha256", help="Refuse to load an extractor with another digest")
     p.add_argument("--key", required=True, help="Owner's binary secret")
     p.add_argument("--key-source", default="unspecified", help="Provenance label written to the report")
+    p.add_argument("--negative-images", help="Owner-only natural negatives; exclude natural train/search by content hash")
+    p.add_argument("--negative-limit", type=int, default=1000)
     p.add_argument("--min-reference-tpr", type=float, default=.9,
                    help="Validity check for the key/extractor/marked-reference combination")
     p.add_argument("--fpr", type=float, default=.001)
@@ -185,6 +232,8 @@ def main():
     p.add_argument("--mechanism-samples", type=int, default=0,
                    help="Post-freeze owner gradient diagnostic on first N test seeds; 0 disables")
     args = p.parse_args()
+    if args.negative_limit < 1:
+        raise ValueError('negative-limit must be positive')
     EVENTS.clear()
     if args.batch_size < 0 or args.mechanism_samples < 0:
         raise ValueError("Batch size must be nonnegative")
@@ -292,7 +341,14 @@ def main():
         row["tpr_drop_ci95_low_pp"], row["tpr_drop_ci95_high_pp"] = 100 * low, 100 * high
         row["bit_accuracy_retained_percent"] = 100 * row["bit_accuracy"] / reference_row["bit_accuracy"] if reference_row["bit_accuracy"] else None
         row["tpr_retained_percent"] = 100 * row["tpr"] / reference_row["tpr"] if reference_row["tpr"] else None
+    negatives = None
+    if args.negative_images:
+        natural = manifest.get('natural_dataset') or {}
+        excluded = {x['sha256'] for split in ('train', 'search') for x in natural.get(split, [])}
+        negatives = empirical_fpr(net, key, args.negative_images, excluded, args.negative_limit,
+                                  threshold, args.detector, device)
     payload = {"selection_already_frozen": True, "fpr_target": args.fpr,
+               "empirical_fpr": negatives,
                "detector": args.detector,
                "theoretical_fpr_at_threshold": float((2 if args.detector == "double" else 1) * binom.sf(threshold - 1, len(args.key), .5)),
                "evaluation_runtime": {"device": device, "torch": torch.__version__, "cuda": torch.version.cuda,
