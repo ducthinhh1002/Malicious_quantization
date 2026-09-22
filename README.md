@@ -91,14 +91,17 @@ thấp của output sinh cùng latent; tránh dùng RGB MSE đầy đủ kéo de
 LPIPS AlexNet pretrained đóng băng; gradient truyền qua nó tới quantizer.
 Chỉnh lambda bằng `--natural-perceptual-weight`; đặt 0 để ablation MSE-only.
 Xem [hướng dẫn LPIPS chính thức](https://github.com/richzhang/PerceptualSimilarity)
-và [COCO](https://cocodataset.org/#download). Chỉ biến quantizer được học, không xuất
-trọng số FP32 fine-tune tự do. Chi phí tăng do thêm hai nhánh và forward bảo toàn ảnh sinh.
+và [COCO](https://cocodataset.org/#download). Các nhánh quantization chỉ học biến quantizer.
+Đối chứng `natural_full_finetune` học toàn bộ decoder FP32, gồm bias/norm, và được ghi
+riêng dưới role `finetune_control`; không tính là quantization attack.
 
-**Cập nhật 2026-09-22:** mặc định W4 với 4 nhánh `fixed_ptq`, `reconstruction`,
-`natural_residual`, `natural_qat_purification`. Nhánh residual dùng basis
+**Cập nhật sau run 000857:** mặc định 4 nhánh W4 `fixed_ptq`, `reconstruction`,
+`natural_residual`, `natural_residual_qat` và 1 đối chứng `natural_full_finetune` FP32.
+Nhánh residual dùng basis
 patch từ natural TRAIN để tăng trọng số reconstruction theo hướng đã chọn, đồng thời
 giảm phạt bảo toàn trong subspace đó. Basis đóng băng, không sử dụng detector/key.
-Đây là giả thuyết mới; chưa có kết quả xác nhận giảm TPR trên Stable Signature.
+Run 000857: residual BA 96,02%, TPR 98%, chỉ thêm 1/99 ảnh thoát detector.
+QAT purification cũ quay về RTN; biến thể residual QAT và FP32 mới chưa có kết quả GPU.
 Copy cả **`wmq_residual.py`** lên server. Lệnh vẫn là `bash run_blind_quantization.sh`.
 Xem [phân tích kết quả, phương pháp và ablation](survey/Residual_Quantization_Revision_VI.md).
 `--natural-methods natural_rounding natural_rounding_scale` khôi phục các nhánh
@@ -113,6 +116,24 @@ energy và split-half overlap; các chỉ số này không chứng nhận basis 
 natural_rounding. QAT purification có `--qat-max-code-shift` (2),
 `--qat-trust-weight` (0.01) và `--qat-semantic-preserve-weight` (2). Không tăng số
 step hay giảm bit mặc định cùng lúc với objective.
+
+QAT dùng `--qat-lr 0.001`, độc lập `--lr 0.01` cho sigmoid rounding; FP32 dùng
+`--ft-lr 0.00001`. Hai nhánh mới có `--warmup-steps 10` và cosine decay xuống 10%
+learning rate đỉnh. `natural_residual_qat` dùng loss/basis/bảo toàn của residual,
+thêm trust penalty code-offset; `--qat-trust-weight 0` là ablation cùng loss.
+FP32 mặc định chỉ natural MSE + LPIPS (`--ft-preserve-weight 0`); không GAN và không
+phải tái lập nguyên paper Duke. Chi tiết: [nghiên cứu và protocol mới](survey/Residual_QAT_Finetune_Revision_VI.md).
+
+Lệnh mặc định vẫn là `bash run_blind_quantization.sh` (pilot 32 ảnh train/100 update).
+Để có ngân sách natural lớn hơn mà không cần thêm prompt:
+
+```bash
+bash run_blind_quantization.sh --natural-train-n 256 --natural-search-n 64 \
+  --steps 200 --qat-steps 1000 --ft-steps 1000 --eval-every 50
+```
+
+Launcher tự tải 320 ảnh. Đây là run phát triển; prompt/test đã xem kết quả không trở
+thành holdout mới chỉ vì đổi seed. Với paper, chốt cấu hình rồi dùng prompt/seed mới.
 
 Mặc định `--quality-policy report`: chọn theo objective trên search; ngưỡng
 PSNR/SSIM/TPR chỉ được ghi nhận, **không lọc candidate hay dừng vì không đạt ngưỡng**.
@@ -687,14 +708,17 @@ Với `--model` riêng phải cấp `SS_KEY`; với extractor riêng phải cấ
 | `natural_rounding_scale` | Như natural_rounding, thêm per-channel scale |
 | `natural_residual` | Học rounding với loss projection lên basis residual từ natural TRAIN; bảo toàn phần bù |
 | `natural_qat_purification` | Học offset mã W4 nhiều ô với natural reconstruction; bảo toàn nội dung tần số thấp |
+| `natural_residual_qat` | Cùng residual objective/basis, học code-offset với LR riêng và warm-up/cosine |
+| `natural_full_finetune` | Đối chứng toàn bộ decoder FP32, không bị ràng buộc grid; đánh giá một lần |
 
-Năm nhánh đầu là **model-only**, bốn nhánh cuối là model + natural + LPIPS.
+Năm nhánh đầu là **model-only**, các nhánh natural là model + natural + LPIPS.
 Mặc định chạy `fixed_ptq`, `reconstruction`, `natural_residual`,
-`natural_qat_purification`: 4 nhánh W4. Các phương pháp khác vẫn
+`natural_residual_qat` và `natural_full_finetune`: 4 nhánh W4 và 1 đối chứng FP32. Các phương pháp khác vẫn
 chạy được qua `--methods` / `--natural-methods`. Mọi nhánh dùng cùng bits, coverage, prompt/seed và
 ngưỡng chất lượng trong một `comparison_group`. Scale được phép nằm trong
 [0.8, 1.25] lần scale RTN khởi tạo cho các nhánh scale. Không tune bitwidth liên tục,
-không sửa bias/norm/full-precision weights. Quantizer dùng đủ miền signed
+không sửa bias/norm/full-precision weights trong các nhánh quantization; đối chứng FP32
+có comparison_group riêng và được phép sửa tất cả decoder parameters. Quantizer dùng đủ miền signed
 `[-2^(b-1), 2^(b-1)-1]`, ví dụ W4 là `[-8, 7]`, với zero-point 0. UNet sinh latent FP16; **VAE và activation
 của VAE chạy FP32**, nên pilot này không phải W4A16 của script fair cũ.
 

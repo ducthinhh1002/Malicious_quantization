@@ -88,6 +88,8 @@ HAS_BITS=0
 HAS_NATURAL=0
 TRAIN_N=32
 SEARCH_N=20
+NATURAL_TRAIN_N=""
+NATURAL_SEARCH_N=""
 DATA_SEED=3407
 arguments=("$@")
 for ((index=0; index<${#arguments[@]}; index++)); do
@@ -108,16 +110,19 @@ for ((index=0; index<${#arguments[@]}; index++)); do
     --artifact-output=*) ARTIFACT_OUTPUT="${argument#--artifact-output=}"; HAS_ARTIFACT_OUTPUT=1 ;;
     --bits|--bits=*) HAS_BITS=1 ;;
     --natural-images|--natural-images=*) HAS_NATURAL=1 ;;
-    --train-n|--search-n|--seed)
+    --train-n|--search-n|--seed|--natural-train-n|--natural-search-n)
       ((index + 1 < ${#arguments[@]})) || { echo "$argument requires a value" >&2; exit 2; }
       value="${arguments[index+1]}"
       case "$argument" in
         --train-n) TRAIN_N="$value" ;; --search-n) SEARCH_N="$value" ;; --seed) DATA_SEED="$value" ;;
+        --natural-train-n) NATURAL_TRAIN_N="$value" ;; --natural-search-n) NATURAL_SEARCH_N="$value" ;;
       esac
       ((index+=1)) ;;
     --train-n=*) TRAIN_N="${argument#*=}" ;;
     --search-n=*) SEARCH_N="${argument#*=}" ;;
     --seed=*) DATA_SEED="${argument#*=}" ;;
+    --natural-train-n=*) NATURAL_TRAIN_N="${argument#*=}" ;;
+    --natural-search-n=*) NATURAL_SEARCH_N="${argument#*=}" ;;
   esac
 done
 ATTACK_OUTPUT="$(realpath -m "$ATTACK_OUTPUT")"
@@ -149,6 +154,8 @@ if [[ "${WMQ_MODEL_ONLY:-0}" == "1" && "$HAS_NATURAL" == "1" ]]; then
   echo "WMQ_MODEL_ONLY=1 conflicts with --natural-images" >&2; exit 2
 fi
 if [[ "${WMQ_MODEL_ONLY:-0}" != "1" && "$HAS_NATURAL" == "0" ]]; then
+  TRAIN_N="${NATURAL_TRAIN_N:-$TRAIN_N}"
+  SEARCH_N="${NATURAL_SEARCH_N:-$SEARCH_N}"
   [[ "$TRAIN_N" =~ ^[1-9][0-9]*$ && "$SEARCH_N" =~ ^[1-9][0-9]*$ && "$DATA_SEED" =~ ^[0-9]+$ ]] || {
     echo "Natural pool preparation requires positive train/search counts and a nonnegative seed" >&2; exit 2;
   }
@@ -160,7 +167,7 @@ if [[ "${WMQ_MODEL_ONLY:-0}" != "1" && "$HAS_NATURAL" == "0" ]]; then
 fi
 attack+=("$@")
 
-echo "[2/4] Running blind Stable Signature quantization (default: W4 controls + residual/QAT purification)..."
+echo "[2/4] Running W4 controls, residual rounding/QAT and independent FP32 decoder control..."
 echo "Result directory: $ATTACK_OUTPUT"
 "${attack[@]}"
 [[ -f "$ATTACK_OUTPUT/report.json" && -f "$ATTACK_OUTPUT/selection_frozen.json" ]] || {

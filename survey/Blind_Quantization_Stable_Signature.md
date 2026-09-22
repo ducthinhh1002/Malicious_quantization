@@ -3,8 +3,9 @@
 ## Cập nhật 2026-09-22 sau pilot
 
 [Revision residual quantization](Residual_Quantization_Revision_VI.md) ghi phân tích
-report thật và nguồn nghiên cứu. Mặc định mới: W4, fixed_ptq, reconstruction,
-natural_residual và natural_qat_purification. Vẫn giữ model-only; các nhánh
+report thật và nguồn nghiên cứu. [Revision sau run 000857](Residual_QAT_Finetune_Revision_VI.md)
+thêm residual QAT và đối chứng FP32. Mặc định: fixed_ptq, reconstruction, natural_residual,
+natural_residual_qat (W4) và natural_full_finetune (FP32). Vẫn giữ model-only; các nhánh
 cũ gọi được tường minh. Natural residual là giả thuyết chưa xác nhận bằng owner test,
 không phải ownership subspace đã biết. Phần sau mô tả objective/protocol cũ làm đối chứng.
 

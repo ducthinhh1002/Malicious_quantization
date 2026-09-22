@@ -126,6 +126,25 @@ def save_pseudo_diagnostic(refs, strength, args, folder):
             "interpretation": "Direct smoothing hypothesis, not a clean target or quantized model"}
 
 
+class FloatWeight(nn.Module):
+    """Independent FP32 decoder parameter for the unrestricted control."""
+    def __init__(self, weight):
+        super().__init__()
+        self.weight = nn.Parameter(weight.detach().float().clone())
+
+    def forward(self, differentiable=True):
+        return self.weight if differentiable else self.weight.detach()
+
+
+def scheduled_lr(base, step, total, warmup):
+    """Linear warmup then cosine decay to 10% of the peak learning rate."""
+    warmup = min(warmup, max(total - 1, 0))
+    if step <= warmup:
+        return base * step / warmup
+    progress = (step - warmup - 1) / max(total - warmup - 1, 1)
+    return base * (.1 + .9 * .5 * (1 + math.cos(math.pi * progress)))
+
+
 class RoundingGrid(nn.Module):
     """Hard rounding, with optional bounded per-channel scale optimization.
 
@@ -159,7 +178,8 @@ class RoundingGrid(nn.Module):
         # Dimensionless offsets let QAT cross more than the two adjacent cells
         # available to AdaRound-style alpha. They are bounded and the source
         # marked weights remain immutable.
-        self.code_offset = nn.Parameter(torch.zeros_like(w), requires_grad=learn_code_offsets)
+        self.code_offset = nn.Parameter(torch.zeros_like(w) if learn_code_offsets else w.new_zeros(()),
+                                        requires_grad=learn_code_offsets)
         self.learn_code_offsets = learn_code_offsets
 
     @property
@@ -388,14 +408,15 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
     """Independent initialization, train-only updates, search-only checkpoint choice."""
     device = next(vae.parameters()).device
     pristine = {k: v.detach().clone() for k, v in vae.decoder.state_dict().items()}
-    qat_branch = method == "natural_qat_purification"
-    grids = nn.ModuleList([RoundingGrid(vae.decoder.get_parameter(k), bits, clip,
+    qat_branch = method in ("natural_qat_purification", "natural_residual_qat")
+    float_branch = method == "natural_full_finetune"
+    grids = nn.ModuleList([FloatWeight(vae.decoder.get_parameter(k)) if float_branch else RoundingGrid(vae.decoder.get_parameter(k), bits, clip,
                            learn_scale=method in ("rounding_scale", "natural_rounding_scale"),
                            learn_code_offsets=qat_branch) for k in names]).to(device)
     rows, updates, best = [], [], None
     best_state = None
     natural = method.startswith("natural_")
-    residual_branch = method == "natural_residual"
+    residual_branch = method in ("natural_residual", "natural_residual_qat")
     if residual_branch and residual is None:
         raise ValueError("Residual branch requires a frozen TRAIN-only basis")
     residual_weight = args.residual_weight if residual_branch else 0.
@@ -421,11 +442,18 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
                 metrics["generated_reference_mse"] = metrics["target_mse"]
                 metrics.update(natural_reconstruction_metrics(vae, *natural_search, perceptual, perceptual_weight,
                     batch_size(getattr(args, "eval_batch_size", 0), device), residual if residual_branch else None, residual_weight))
-                if qat_branch:
+                if qat_branch and not residual_branch:
                     metrics["selection_objective"] += (args.qat_semantic_preserve_weight *
                                                         metrics["semantic_lowpass_mse"])
-                    changed = sum(g.code_change_fraction().item() * g.source.numel() for g in grids)
-                    metrics["code_change_fraction_vs_rtn"] = changed / sum(g.source.numel() for g in grids)
+                if float_branch:
+                    metrics["selection_objective"] += args.ft_preserve_weight * metrics["semantic_lowpass_mse"]
+                if qat_branch:
+                    count = sum(g.source.numel() for g in grids)
+                    stats = torch.stack([torch.stack([g.code_change_fraction() * g.source.numel(),
+                        g.code_offset.square().sum(), (g.code_offset.abs() >= 1).sum()]) for g in grids]).sum(0) / count
+                    changed, trust, multicell = stats.cpu().tolist()
+                    metrics.update(code_change_fraction_vs_rtn=changed, code_offset_rms=math.sqrt(trust),
+                                   code_offset_ge_one_fraction=multicell)
             metrics.setdefault("selection_objective", metrics["target_mse"])
         finally:
             vae.decoder.load_state_dict(pristine)
@@ -447,10 +475,12 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
         save_csv(folder / "search.csv", rows)
         print({k: v for k, v in row.items() if not k.startswith("per_image")}, flush=True)
 
-    evaluate(0, "fixed_rtn" if method == "fixed_ptq" else "rtn_fallback")
+    evaluate(0, "marked_fp32_fallback" if float_branch else ("fixed_rtn" if method == "fixed_ptq" else "rtn_fallback"))
     order_rng = torch.Generator().manual_seed(args.seed)
     params = [p for p in grids.parameters() if p.requires_grad]
-    optimizer = torch.optim.Adam(params, lr=args.lr) if method in ("rounding", "rounding_scale", "reconstruction", "natural_rounding", "natural_rounding_scale", "natural_residual", "natural_qat_purification") else None
+    base_lr = args.ft_lr if float_branch else (args.qat_lr if qat_branch else args.lr)
+    optimizer = torch.optim.Adam(params, lr=base_lr) if method not in ("fixed_ptq", "sensitivity") else None
+    lr_backoff = 1.
     ranked = [names.index(r["name"]) for r in profile]
     valid_updates = 0
     backward_attempts = 0
@@ -460,8 +490,12 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
         training_best = score(vae, train_z, train_ref, strength, args)
         train_evaluations += 1
         vae.decoder.load_state_dict(pristine)
-    total = 0 if method == "fixed_ptq" else args.steps
+    total = (0 if method == "fixed_ptq" else
+             ((args.ft_steps or args.steps) if float_branch else ((args.qat_steps or args.steps) if qat_branch else args.steps)))
     for step in range(1, total + 1):
+        if qat_branch or float_branch:
+            for group in optimizer.param_groups:
+                group["lr"] = scheduled_lr(base_lr, step, total, args.warmup_steps) * lr_backoff
         applied, reason = True, None
         if method == "sensitivity":
             index = ranked[(step - 1) % len(ranked)]
@@ -507,19 +541,25 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
                     residual_loss = residual.loss(raw - ref).mean()
                 if perceptual is not None:
                     perceptual_loss = perceptual(raw.clamp(0, 1) * 2 - 1, ref * 2 - 1).mean()
-                j = (step - 1) % len(preserve_data[0])
-                with torch.no_grad():
-                    preserve_hidden = vae.post_quant_conv(preserve_data[0][j].to(device))
-                generated = functional_call(vae.decoder, weights, (preserve_hidden,)) / 2 + .5
-                preserve_ref = image01(preserve_data[1][j].to(device), "preservation reference")
-                if qat_branch:
-                    preserve = F.mse_loss(semantic_lowpass(generated), semantic_lowpass(preserve_ref))
-                    trust_loss = sum(g.code_offset.square().sum() for g in grids) / sum(g.code_offset.numel() for g in grids)
+                if float_branch and args.ft_preserve_weight == 0:
+                    generated = preserve_hidden = None
+                    preserve = raw.new_zeros(())
                 else:
-                    preserve = (residual.preservation(generated - preserve_ref, args.residual_preservation)
-                                if residual_branch else F.mse_loss(generated, preserve_ref))
-                train_evaluations += 1
-            preserve_weight = args.qat_semantic_preserve_weight if qat_branch else args.preserve_weight
+                    j = (step - 1) % len(preserve_data[0])
+                    with torch.no_grad():
+                        preserve_hidden = vae.post_quant_conv(preserve_data[0][j].to(device))
+                    generated = functional_call(vae.decoder, weights, (preserve_hidden,)) / 2 + .5
+                    preserve_ref = image01(preserve_data[1][j].to(device), "preservation reference")
+                    if (qat_branch and not residual_branch) or float_branch:
+                        preserve = F.mse_loss(semantic_lowpass(generated), semantic_lowpass(preserve_ref))
+                    else:
+                        preserve = (residual.preservation(generated - preserve_ref, args.residual_preservation)
+                                    if residual_branch else F.mse_loss(generated, preserve_ref))
+                    train_evaluations += 1
+                if qat_branch:
+                    trust_loss = sum(g.code_offset.square().sum() for g in grids) / sum(g.code_offset.numel() for g in grids)
+            preserve_weight = (args.ft_preserve_weight if float_branch else
+                               (args.qat_semantic_preserve_weight if qat_branch and not residual_branch else args.preserve_weight))
             loss = (target_loss + perceptual_weight * perceptual_loss + preserve_weight * preserve +
                     residual_weight * residual_loss + args.qat_trust_weight * trust_loss)
             train_evaluations += 1
@@ -552,10 +592,13 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
                 del backup
             if not applied:
                 optimizer.state.clear()
+                lr_backoff *= .5
                 for group in optimizer.param_groups:
                     group["lr"] *= .5
             with torch.no_grad():
                 for grid in grids:
+                    if float_branch:
+                        continue
                     grid.alpha.clamp_(-12, 12)
                     grid.log_scale.clamp_(math.log(.8), math.log(1.25))
                     grid.code_offset.clamp_(-args.qat_max_code_shift, args.qat_max_code_shift)
@@ -564,7 +607,7 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
             updates.append({"step": step, "applied": applied, "reason": reason,
                             **{k: v if math.isfinite(v) else None for k, v in zip(
                                 ["reconstruction_mse", "perceptual_loss", "preservation_mse", "loss", "residual_loss", "trust_loss"], scalars)},
-                            "grad_norm": grad_norm})
+                            "grad_norm": grad_norm, "learning_rate": optimizer.param_groups[0]["lr"]})
             del weights, raw, ref, loss, target_loss, preserve, perceptual_loss, residual_loss, trust_loss
             if natural:
                 del generated, preserve_hidden
@@ -579,13 +622,15 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
                       "skipped_or_rejected": step - valid_updates, "rows": updates})
             save_csv(folder / "updates.csv", updates)
         if step % args.eval_every == 0 or step == total:
-            evaluate(step, method if valid_updates else "rtn_fallback")
+            evaluate(step, method if valid_updates else ("marked_fp32_fallback" if float_branch else "rtn_fallback"))
     grids.load_state_dict(best_state)
     selected = {**best, "search_feasible": best["feasible"], "valid_updates": valid_updates,
                 "gradient_updates": valid_updates if optimizer is not None else 0,
-                "objective": "quantization_constrained_natural_purification" if qat_branch else ("natural_residual_projection" if residual_branch else ("unpaired_natural_reconstruction" if natural else ("reconstruction" if method == "reconstruction" else "blind_smoothing_proxy"))),
+                "objective": "natural_residual_projection" if residual_branch else ("quantization_constrained_natural_purification" if qat_branch else ("unpaired_natural_reconstruction" if natural else ("reconstruction" if method == "reconstruction" else "blind_smoothing_proxy"))),
                 "residual_weight": residual_weight,
-                "preservation_mode": "lowpass_8x" if qat_branch else (args.residual_preservation if residual_branch else "legacy"),
+                "preservation_mode": args.residual_preservation if residual_branch else ("lowpass_8x" if qat_branch or float_branch else "legacy"),
+                "parameter_space": "unrestricted_fp32_decoder" if float_branch else "quantized_decoder_weights",
+                "learning_rate_peak": base_lr, "lr_schedule": "warmup_cosine" if qat_branch or float_branch else "constant",
                 "objective_strength": strength,
                 "quality_policy": policy, "perceptual_weight": perceptual_weight,
                 "selected_source": best["source"], "attempted_updates": total,
@@ -597,6 +642,8 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
                     "rounding_scale": ["rounding", "per_channel_scale"], "reconstruction": ["rounding"],
                     "natural_rounding": ["rounding"], "natural_residual": ["rounding"],
                     "natural_rounding_scale": ["rounding", "per_channel_scale"],
+                    "natural_residual_qat": ["bounded_multi_cell_code_offsets"],
+                    "natural_full_finetune": ["all_decoder_parameters_including_bias_and_norm"],
                     "natural_qat_purification": ["bounded_multi_cell_code_offsets"]}[method],
                 "status": "selected" if best["feasible"] else ("selected_quality_failed" if policy == "report" else "no_feasible_candidate")}
     save_json(folder / "selection.json", selected)
@@ -646,11 +693,17 @@ def parser():
     p.add_argument("--search-n", type=int, default=20)
     p.add_argument("--test-n", type=int, default=100)
     p.add_argument("--steps", type=int, default=100, help="Update/proposal budget per optimized branch and grid cell")
+    p.add_argument("--qat-steps", type=int, help="Independent QAT update budget; default --steps")
+    p.add_argument("--ft-steps", type=int, help="Independent FP32 update budget; default --steps")
     p.add_argument("--eval-every", type=int, default=10)
     p.add_argument("--sampling-steps", type=int, default=25)
     p.add_argument("--guidance", type=float, default=7.)
     p.add_argument("--seed", type=int, default=3407)
     p.add_argument("--lr", type=float, default=.01)
+    p.add_argument("--qat-lr", type=float, default=.001, help="Code-offset LR, independent of sigmoid rounding LR")
+    p.add_argument("--ft-lr", type=float, default=1e-5, help="FP32 decoder control LR in weight units")
+    p.add_argument("--ft-preserve-weight", type=float, default=0., help="Optional generated low-pass preservation in FP32 control; 0 is natural reconstruction only")
+    p.add_argument("--warmup-steps", type=int, default=10, help="QAT/FP32 linear warmup followed by cosine decay")
     p.add_argument("--bits", type=int, nargs="+", default=[4])
     p.add_argument("--clips", type=float, nargs="+", default=[1.])
     p.add_argument("--methods", nargs="+", choices=["fixed_ptq", "sensitivity",
@@ -666,8 +719,10 @@ def parser():
     p.add_argument("--min-ssim", type=float, default=.9)
     p.add_argument("--preserve-weight", type=float, default=2.)
     p.add_argument("--natural-images", help="Optional directory of unpaired natural non-watermarked images")
-    p.add_argument("--natural-methods", nargs="+", choices=["natural_rounding", "natural_rounding_scale", "natural_residual", "natural_qat_purification"],
-                   default=["natural_residual", "natural_qat_purification"], help="Branches added when natural images are supplied")
+    p.add_argument("--natural-train-n", type=int, help="Natural TRAIN count independent of prompt count; default --train-n")
+    p.add_argument("--natural-search-n", type=int, help="Natural SEARCH count independent of prompt count; default --search-n")
+    p.add_argument("--natural-methods", nargs="+", choices=["natural_rounding", "natural_rounding_scale", "natural_residual", "natural_qat_purification", "natural_residual_qat", "natural_full_finetune"],
+                   default=["natural_residual", "natural_residual_qat", "natural_full_finetune"], help="Natural branches; FP32 control is evaluated once, outside the bitwidth grid")
     p.add_argument("--residual-patch", type=int, choices=[4, 8, 16], default=8)
     p.add_argument("--residual-rank", type=int, default=8)
     p.add_argument("--residual-patches-per-image", type=int, default=256)
@@ -694,6 +749,11 @@ def main():
         raise ValueError("Invalid runtime batch/cache/log configuration")
     if min(args.train_n, args.search_n, args.test_n, args.steps, args.eval_every, args.sampling_steps, args.profile_n, args.profile_bootstrap) < 1:
         raise ValueError("Sample counts and steps must be positive")
+    if any(v is not None and v < 1 for v in (args.natural_train_n, args.natural_search_n, args.qat_steps, args.ft_steps)):
+        raise ValueError("Natural split counts and branch step budgets must be positive")
+    if (args.warmup_steps < 0 or min(args.qat_lr, args.ft_lr) <= 0 or args.ft_preserve_weight < 0
+            or not all(math.isfinite(v) for v in (args.qat_lr, args.ft_lr, args.ft_preserve_weight))):
+        raise ValueError("Invalid QAT/FP32 optimizer configuration")
     if (not 0 <= args.strength <= 1 or not 0 < args.min_ssim <= 1
             or args.lr <= 0 or args.preserve_weight < 0 or args.natural_perceptual_weight < 0 or args.guidance <= 1
             or args.qat_semantic_preserve_weight < 0 or args.qat_trust_weight < 0 or args.qat_max_code_shift <= 0
@@ -716,7 +776,8 @@ def main():
     if len(prompts) < n or len(set(prompts[:n])) != n:
         raise ValueError(f"Need {n} distinct prompts for disjoint train/search/test splits")
     prompts = prompts[:n]
-    natural_manifest = natural_image_manifest(args.natural_images, args.train_n, args.search_n, args.seed) if args.natural_images else None
+    natural_manifest = natural_image_manifest(args.natural_images, args.natural_train_n or args.train_n,
+        args.natural_search_n or args.search_n, args.seed) if args.natural_images else None
     out = Path(args.output).resolve()
     output_parent = out.parent.parent if out.parent.name == "output_attack" else out.parent
     image_out = Path(args.image_output).resolve() if args.image_output else output_parent / "output_artifacts" / "images" / out.name
@@ -806,19 +867,27 @@ def main():
                 "quality_gate": "PSNR/SSIM only; not equivalent to legacy LPIPS gate",
                 "quality_policy": args.quality_policy,
                 "qat_purification": {"hard_forward": True, "backward": "straight_through_estimator",
-                    "export": "integer W4 codes and fixed per-output-channel scale",
+                    "export": "integer codes at requested bitwidth and fixed per-output-channel scale",
                     "owner_feedback": False, "preservation": "8x low-pass generated-reference consistency"},
                 "natural_perceptual_prior": "frozen LPIPS AlexNet v0.1; public pretrained features; natural branches only" if natural_manifest and args.natural_perceptual_weight else None}
     plan = []
     for bits in dict.fromkeys(args.bits):
         for clip in dict.fromkeys(args.clips):
             for method in dict.fromkeys([*args.methods, *(args.natural_methods if natural_manifest else [])]):
+                if method == "natural_full_finetune":
+                    continue  # No duplicate FP32 control for every bitwidth/clip.
                 branch_id = f"{method}_w{bits}_c{clip}"
                 plan.append({"label": branch_id + "_test", "method": method,
                              "comparison_group": f"w{bits}_c{clip}_{args.scope}",
                              "bits": bits, "clip": clip, "role": "candidate",
                              "threat_model": "marked_model_plus_unpaired_natural_images" if method.startswith("natural_") else "marked_model_only",
                              "artifact": f"branches/{branch_id}"})
+    if natural_manifest and "natural_full_finetune" in args.natural_methods:
+        plan.append({"label": "natural_full_finetune_fp32_test", "method": "natural_full_finetune",
+                     "comparison_group": "fp32_unrestricted_decoder_control", "bits": 32, "clip": 1.,
+                     "role": "finetune_control", "artifact_format": "decoder_fp32",
+                     "threat_model": "marked_model_plus_unpaired_natural_images_unrestricted_finetune",
+                     "artifact": "branches/natural_full_finetune_fp32"})
     manifest["reference_label"] = "marked_reference_test"
     manifest["image_root"] = image_location
     manifest["artifact_root"] = artifact_location
@@ -880,6 +949,8 @@ def main():
             torch.cuda.synchronize()
         branch_started = time.monotonic()
         bits, clip, method = branch["bits"], branch["clip"], branch["method"]
+        float_branch = method == "natural_full_finetune"
+        branch_names = [name for name, _ in vae.decoder.named_parameters()] if float_branch else names
         vae.decoder.load_state_dict(pristine)
         group = branch["comparison_group"]
         if method == "sensitivity" and group not in profiles:
@@ -904,27 +975,35 @@ def main():
                 import lpips
                 perceptual = lpips.LPIPS(net="alex", version="0.1").to(args.device).eval().requires_grad_(False)
         train_z, train_ref = natural_train if natural else (zs[:a], refs[:a])
-        if method == "natural_residual" and residual is None:
+        if method in ("natural_residual", "natural_residual_qat") and residual is None:
             from wmq_residual import fit_residual_subspace
             residual, residual_info = fit_residual_subspace(vae, *natural_train, args.residual_patch,
                 args.residual_rank, args.residual_patches_per_image, args.seed)
         grids, selected, branch_rows = optimize_branch(
-            vae, names, train_z, train_ref, search_z, search_ref, args,
+            vae, branch_names, train_z, train_ref, search_z, search_ref, args,
             bits, clip, method, profiles.get(group, []), folder, diagnostics_root=out,
             natural_search=natural_search if natural else None,
             preserve_data=(zs[:a], refs[:a]) if natural else None,
-            perceptual=perceptual if natural else None, residual=residual if method == "natural_residual" else None)
+            perceptual=perceptual if natural else None, residual=residual if method in ("natural_residual", "natural_residual_qat") else None)
         rows.extend(branch_rows)
         selections[branch["label"]] = selected
-        materialize(vae.decoder, names, grids)
+        materialize(vae.decoder, branch_names, grids)
         # No bias, norm, or unselected decoder weight may change.
         for name, value in vae.decoder.state_dict().items():
-            if name not in names and not torch.equal(value.cpu(), pristine[name]):
+            if name not in branch_names and not torch.equal(value.cpu(), pristine[name]):
                 raise ValueError(f"Unexpected parameter change: {name}")
         artifact_folder.mkdir(parents=True, exist_ok=False)
         vae.save_pretrained(artifact_folder / "vae", safe_serialization=True)
-        export_quantizer(vae, names, grids, artifact_folder)
-        if method == "natural_residual":
+        if float_branch:
+            from safetensors.torch import save_file
+            save_file({k: v.detach().cpu().contiguous() for k, v in vae.decoder.state_dict().items()},
+                      str(artifact_folder / "decoder_fp32.safetensors"))
+            save_json(artifact_folder / "finetune.json", {"format": "decoder_fp32", "quantized": False,
+                "changed_parameter_names": branch_names, "paper_reproduction": False,
+                "objective": "natural MSE + LPIPS; optional low-pass preservation; no discriminator"})
+        else:
+            export_quantizer(vae, names, grids, artifact_folder)
+        if method in ("natural_residual", "natural_residual_qat"):
             from safetensors.torch import save_file
             save_file({"basis": residual.basis.detach().cpu().contiguous()}, str(artifact_folder / "residual_basis.safetensors"))
             save_json(folder / "residual_calibration.json", residual_info)
@@ -960,10 +1039,14 @@ def main():
     for branch in plan:
         vae.decoder.load_state_dict(pristine)
         print(f"Test evaluation: {branch['label']} ({len(test_z)} images)", flush=True)
-        tensors = load_file(str(artifact_out / branch["artifact"] / "quantizer.safetensors"), device=args.device)
-        with torch.no_grad():
-            for name in names:
-                vae.decoder.get_parameter(name).copy_(tensors[name + ".codes"].float() * tensors[name + ".scale"])
+        if branch.get("artifact_format") == "decoder_fp32":
+            tensors = load_file(str(artifact_out / branch["artifact"] / "decoder_fp32.safetensors"), device=args.device)
+            vae.decoder.load_state_dict(tensors, strict=True)
+        else:
+            tensors = load_file(str(artifact_out / branch["artifact"] / "quantizer.safetensors"), device=args.device)
+            with torch.no_grad():
+                for name in names:
+                    vae.decoder.get_parameter(name).copy_(tensors[name + ".codes"].float() * tensors[name + ".scale"])
         quality[branch["label"]] = score(vae, test_z, test_ref, args.strength, args, image_out / branch["label"])
         if not quality[branch["label"]]["feasible"]:
             quality_warning(out, "test_quality", "Branch failed held-out quality gate; results retained",

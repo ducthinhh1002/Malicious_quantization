@@ -109,27 +109,30 @@ def analyze(root, report, manifest, net, key, count, device, image_root, artifac
         references = [decoded01(vae.decode(z.to(device), return_dict=False)[0]).cpu() for z in latents]
     rows = []
     for branch in manifest["test_branches"]:
-        if branch.get("role") != "candidate":
+        if branch.get("role") not in ("candidate", "finetune_control"):
             continue
         vae.decoder.load_state_dict(pristine)
-        tensors = load_file(str(artifacts / branch["artifact"] / "quantizer.safetensors"), device=device)
+        is_float = branch.get("artifact_format") == "decoder_fp32"
+        tensors = load_file(str(artifacts / branch["artifact"] /
+                                ("decoder_fp32.safetensors" if is_float else "quantizer.safetensors")), device=device)
         errors = {}
         with torch.no_grad():
-            for name in manifest["target_names"]:
-                weight = tensors[name + ".codes"].float() * tensors[name + ".scale"]
+            for name in ([n for n, _ in vae.decoder.named_parameters()] if is_float else manifest["target_names"]):
+                weight = tensors[name] if is_float else tensors[name + ".codes"].float() * tensors[name + ".scale"]
                 errors[name] = weight - pristine[name].to(device)
                 vae.decoder.get_parameter(name).copy_(weight)
         del tensors
         for index, (z, ref) in enumerate(zip(latents, references)):
             for row in layer_diagnostics(vae, net, key, z.to(device), ref.to(device), errors):
-                rows.append({"method": branch["label"], "test_index": index,
+                rows.append({"method": branch["label"], "parameter_space": "fp32" if is_float else "quantized",
+                             "test_index": index,
                              "seed": manifest["seeds"][start + index], **row})
         print(f"Owner mechanism: {branch['label']}, {count} test samples", flush=True)
     # Verify again before publishing diagnostics; files under branches remain immutable.
     verify_frozen_run(root, report, image_root, artifact_root)
     payload = {"selection_frozen_sha256": report["selection_frozen_sha256"],
                "extractor_sha256": extractor_digest, "reference_valid": reference_valid,
-               "samples": count, "gradient_location": "quantized_endpoint",
+               "samples": count, "gradient_location": "exported_branch_endpoint",
                "quality_loss": "RGB MSE against marked decoder on identical regenerated latent",
                "owner_score": "mean(square(mean(tanh(logit/2)*(2*key-1))))",
                "interpretation": "Negative owner_error_dot locally reduces soft two-tail agreement. Endpoint Taylor diagnostic, not an exact finite-change attribution or ownership subspace proof. Null cosine means zero vector. No PNG rounding gradient.",

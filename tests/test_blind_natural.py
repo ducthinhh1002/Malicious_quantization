@@ -218,14 +218,14 @@ class NaturalTests(unittest.TestCase):
                     "--device", "cpu", "--natural-images", str(dataset), "--train-n", "1", "--search-n", "1",
                     "--test-n", "2", "--steps", "1", "--eval-every", "1", "--methods", "rounding",
                     "--gen-batch-size", "2", "--eval-batch-size", "2",
-                    "--bits", "8", "--min-psnr", "121", "--min-image-psnr", "121", "--min-ssim", ".001"]
+                    "--bits", "8", "4", "--min-psnr", "121", "--min-image-psnr", "121", "--min-ssim", ".001"]
             with fake_diffusers(fake), patch.object(sys, "argv", argv), \
                     patch.object(blind, "cache_natural", tiny_natural), patch.object(blind, "choose", audited_choose), \
                     fake_diffusers(SimpleNamespace(LPIPS=lambda **kw: PerceptualStub()), "lpips"):
                 blind.main()
             report = json.loads((out / "report.json").read_text())
-            self.assertEqual(len(report["selections"]), 3)
-            self.assertEqual(len(report["branch_quality"]), 5)
+            self.assertEqual(len(report["selections"]), 7)  # Three quantized branches per bit, one FP32 control.
+            self.assertEqual(len(report["branch_quality"]), 9)
             self.assertEqual(report["status"], "quality_failures")
             self.assertTrue(all(not s["search_feasible"] for s in report["selections"].values()))
             self.assertTrue((out / "search.csv").is_file())
@@ -235,6 +235,11 @@ class NaturalTests(unittest.TestCase):
             self.assertFalse(list(out.rglob("*.png")))
             self.assertFalse(list(out.rglob("*.safetensors")))
             artifacts = root / "output_artifacts" / "checkpoints" / out.name
+            fp32 = artifacts / "branches/natural_full_finetune_fp32"
+            self.assertTrue((fp32 / "decoder_fp32.safetensors").is_file())
+            self.assertFalse((fp32 / "quantizer.safetensors").exists())
+            self.assertGreater(report["selections"]["natural_full_finetune_fp32_test"]["gradient_updates"], 0)
+            self.assertGreater(report["selections"]["natural_residual_qat_w8_c1.0_test"]["gradient_updates"], 0)
             basis_path = artifacts / "branches/natural_residual_w8_c1.0/residual_basis.safetensors"
             self.assertTrue(basis_path.is_file())
             calibration = json.loads((out / "branches/natural_residual_w8_c1.0/residual_calibration.json").read_text())
