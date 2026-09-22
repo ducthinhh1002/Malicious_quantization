@@ -1,2 +1,0 @@
-candidate,source,method,bits,clip,step,psnr,ssim,psnr_p05,min_psnr,quality_violation_fraction,target_mse,feasible,semantic_lowpass_mse,selection_objective
-fixed_ptq_w8_c1.0_step0,fixed_rtn,fixed_ptq,8,1.0,0,57.088104248046875,0.9997347593307495,53.132572174072266,52.35205078125,0.0,7.449549029843183e-05,True,3.0215273412181886e-07,7.449549029843183e-05

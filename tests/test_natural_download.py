@@ -50,6 +50,27 @@ class DownloadTests(unittest.TestCase):
                     data.prepare(root / "images", 2, 3407)
                 downloader.assert_not_called()
 
+    def test_transient_worker_failure_does_not_abort_pool(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            index = root / "image_info_test2017.zip"
+            with zipfile.ZipFile(index, "w") as z:
+                z.writestr("annotations/image_info_test2017.json", json.dumps({
+                    "images": [{"id": i, "license": 1} for i in range(5)], "licenses": []}))
+            expected = hashlib.md5(index.read_bytes()).hexdigest()
+            attempts = {}
+            def flaky_download(url, path):
+                name = Path(path).name
+                attempts[name] = attempts.get(name, 0) + 1
+                if sum(attempts.values()) == 1:
+                    raise TimeoutError("transient")
+                Image.new("RGB", (32, 32), (int(Path(path).stem) * 30, 20, 70)).save(path)
+            with patch.object(data, "INDEX_MD5", expected), patch.object(data, "download", flaky_download):
+                data.prepare(root / "images", 3, 3407, workers=2)
+            provenance = json.loads((root / "images" / "dataset_provenance.json").read_text())
+            self.assertEqual(len(provenance["images"]), 3)
+            self.assertEqual(sum(attempts.values()), 4)
+
 
 if __name__ == "__main__":
     unittest.main()

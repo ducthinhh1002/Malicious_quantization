@@ -7,7 +7,7 @@ import random
 import time
 import urllib.request
 import zipfile
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from PIL import Image
 from wmq_fixture_utils import fixture_lock
@@ -27,22 +27,24 @@ def digest(path, algorithm="sha256"):
     return h.hexdigest()
 
 
-def download(url, path):
+def download(url, path, attempts=6, timeout=45):
     path = Path(path)
     part = path.with_suffix(path.suffix + ".part")
-    for attempt in range(3):
+    last_error = None
+    for attempt in range(attempts):
         try:
             request = urllib.request.Request(url, headers={"User-Agent": "WMQ-research/1.0"})
-            with urllib.request.urlopen(request, timeout=60) as source, part.open("wb") as target:
+            with urllib.request.urlopen(request, timeout=timeout) as source, part.open("wb") as target:
                 while chunk := source.read(1024 * 1024):
                     target.write(chunk)
             part.replace(path)
             return
-        except (OSError, TimeoutError):
+        except (OSError, TimeoutError) as error:
+            last_error = error
             part.unlink(missing_ok=True)
-            if attempt == 2:
-                raise
-            time.sleep(attempt + 1)
+            if attempt + 1 < attempts:
+                time.sleep(min(15, 2 ** attempt))
+    raise OSError(f"Download failed after {attempts} attempts: {url}") from last_error
 
 
 def prepare(output, count, seed, workers=8):
@@ -107,18 +109,37 @@ def prepare(output, count, seed, workers=8):
             tmp_receipt.write_text(json.dumps(entry), encoding="utf-8")
             tmp_receipt.replace(receipt)
             return entry
-        entries = []
-        hashes = set()
         print(f"Preparing {count} natural images with {workers} download workers", flush=True)
-        # map preserves sampled order regardless of network completion order.
-        with ThreadPoolExecutor(max_workers=workers) as pool:
-            for i, entry in enumerate(pool.map(fetch, chosen)):
-                if entry["sha256"] in hashes:
-                    raise ValueError("Duplicate image content in chosen COCO pool; choose another dataset seed")
-                hashes.add(entry["sha256"])
-                entries.append(entry)
-                if (i + 1) % 25 == 0 or i + 1 == count:
-                    print(f"Natural images {i + 1}/{count}", flush=True)
+        results, pending = {}, list(chosen)
+        # Do not abandon thousands of healthy transfers because one connection timed out.
+        # Failed items get fresh connections in later rounds; successful receipts are reusable.
+        for round_index in range(3):
+            failures = []
+            with ThreadPoolExecutor(max_workers=workers) as pool:
+                futures = {pool.submit(fetch, item): item for item in pending}
+                for future in as_completed(futures):
+                    item = futures[future]
+                    try:
+                        entry = future.result()
+                    except (OSError, TimeoutError) as error:
+                        failures.append((item, error))
+                        continue
+                    results[int(item["id"])] = entry
+                    done = len(results)
+                    if done % 25 == 0 or done == count:
+                        print(f"Natural images {done}/{count}", flush=True)
+            if not failures:
+                break
+            pending = [item for item, _ in failures]
+            print(f"Download round {round_index + 1}: retrying {len(pending)} incomplete images", flush=True)
+        if pending and len(results) != count:
+            failed = [f"{int(item['id']):012d}.jpg" for item in pending if int(item["id"]) not in results]
+            raise OSError(f"Could not download {len(failed)} images after 3 rounds; first failures: {failed[:10]}")
+        # Preserve the seeded sample order in provenance even though transfers finish out of order.
+        entries = [results[int(item["id"])] for item in chosen]
+        hashes = [entry["sha256"] for entry in entries]
+        if len(set(hashes)) != len(hashes):
+            raise ValueError("Duplicate image content in chosen COCO pool; choose another dataset seed")
         data = {"dataset": "COCO 2017 test images used ONLY as external calibration data",
                 "count": count, "seed": seed, "index_url": INDEX_URL,
                 "index_md5": INDEX_MD5, "index_sha256": digest(index),

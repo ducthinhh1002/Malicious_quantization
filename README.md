@@ -113,6 +113,9 @@ COCO tải đồng thời 8 ảnh, giữ nguyên danh sách và thứ tự theo 
 tải có receipt SHA256 để chạy lại tiếp tục phần còn thiếu, không tải lại ảnh đã
 xác minh. Cache cũ chưa có receipt vẫn cần tải lại nếu chưa có provenance hoàn chỉnh.
 Đổi số luồng tải bằng `WMQ_DOWNLOAD_WORKERS` (1–32, mặc định 8).
+Mỗi request được thử tối đa 6 lần; các ảnh còn lỗi được thử lại trong tối đa 3
+vòng mà không hủy những download khác đã thành công. Tiến độ được tính theo số
+ảnh thực sự hoàn tất, không phụ thuộc thứ tự lấy mẫu.
 Chưa benchmark toàn bộ suite trên H200 nên chưa có hệ số tăng tốc đo thực tế.
 
 ```bash
