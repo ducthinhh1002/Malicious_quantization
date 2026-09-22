@@ -3,8 +3,8 @@
 ## Cập nhật 2026-09-22 sau pilot
 
 [Revision residual quantization](Residual_Quantization_Revision_VI.md) ghi phân tích
-report thật và nguồn nghiên cứu. Mặc định mới: W4, fixed_ptq, rounding_scale,
-reconstruction, natural_rounding và natural_residual. Vẫn giữ model-only; các nhánh
+report thật và nguồn nghiên cứu. Mặc định mới: W4, fixed_ptq, reconstruction,
+natural_residual và natural_qat_purification. Vẫn giữ model-only; các nhánh
 cũ gọi được tường minh. Natural residual là giả thuyết chưa xác nhận bằng owner test,
 không phải ownership subspace đã biết. Phần sau mô tả objective/protocol cũ làm đối chứng.
 
@@ -29,6 +29,14 @@ L = MSE(D_Q(E_w(x)), x)
     + preserve_weight * MSE(D_Q(z_generated), D_w(z_generated))
 ```
 
+Riêng nhánh QAT purification thay thành:
+
+```
+L_qat = MSE(D_Q(E_w(x)), x) + lambda_lpips * LPIPS
+        + lambda_sem * MSE(LPF_8(D_Q(z_generated)), LPF_8(D_w(z_generated)))
+        + lambda_trust * mean(code_offset^2)
+```
+
 Mỗi bước dùng một ảnh tự nhiên train và một latent sinh train. Encoder, UNet,
 trọng số decoder nguồn, bias và normalization đóng băng. Nhánh thứ nhất học
 rounding; nhánh thứ hai thêm per-channel scale giới hạn [0.8, 1.25] lần scale gốc.
@@ -39,6 +47,13 @@ Gradient perceptual truyền tới quantizer; model-only không có thành phầ
 `--natural-perceptual-weight 0` là ablation natural MSE-only. Trọng số loss bảo
 toàn ảnh sinh mặc định 2. Reconstruction-only model-only vẫn là một nhánh riêng,
 tái tạo ảnh marked chứ không dùng ảnh natural hay LPIPS.
+
+`natural_qat_purification` mở rộng biến quyết định từ floor/ceil sang offset liên tục
+trong đơn vị mã, hard-forward bằng W4 và dùng STE khi backward. Offset bị chặn ở
+`--qat-max-code-shift` (mặc định 2), chịu L2 trust penalty, rồi bị làm tròn khi export.
+Loss bảo toàn output sinh chỉ so phiên bản low-pass 8x để giữ bố cục/nội dung mà không
+ép khớp toàn bộ residual của decoder fingerprint. Owner key/extractor vẫn chỉ xuất hiện
+sau khi tất cả checkpoint đã được chọn và đóng băng.
 
 Dataset được deduplicate theo hash file và chia train/search bằng seed cố định;
 hash/path và phép resize/crop được ghi manifest. Dedup hash không phát hiện ảnh

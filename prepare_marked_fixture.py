@@ -15,6 +15,24 @@ from wmq_fixture_utils import fixture_lock, publish_fixture, verify_sha256
 EXPECTED_DECODER_SHA256 = "36f3a926ba080a0fe29952cd3895661736da68619a71c8166d5c44de3612965a"
 
 
+def fixture_complete(root):
+    """Reject partial copies that have provenance but cannot load as a pipeline."""
+    root = Path(root)
+    required = [root / "fixture_provenance.json", root / "model_index.json",
+                root / "scheduler" / "scheduler_config.json", root / "tokenizer",
+                root / "text_encoder" / "config.json", root / "unet" / "config.json",
+                root / "vae" / "config.json"]
+    if not all(path.exists() for path in required):
+        return False
+    if not any(path.is_file() for path in (root / "tokenizer").rglob("*")):
+        return False
+    for component in ("text_encoder", "unet", "vae"):
+        folder = root / component
+        if not any(p.is_file() and p.suffix in (".safetensors", ".bin") for p in folder.rglob("*")):
+            return False
+    return True
+
+
 def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--output", required=True)
@@ -28,7 +46,7 @@ def main():
             if not args.reuse:
                 raise ValueError("Output already exists")
             marker = out / "fixture_provenance.json"
-            if not marker.is_file() or not (out / "model_index.json").is_file():
+            if not fixture_complete(out):
                 raise ValueError(f"Incomplete fixture at {out}; repair it or choose a new model output directory")
             meta = json.loads(marker.read_text(encoding="utf-8"))
             if (meta.get("sha256") != EXPECTED_DECODER_SHA256 or meta.get("backbone") != args.backbone

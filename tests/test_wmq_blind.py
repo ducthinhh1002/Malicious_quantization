@@ -46,6 +46,20 @@ class BlindTests(unittest.TestCase):
         self.assertEqual((q.qmin, q.qmax), (-4, 3))
         self.assertEqual(codes.min().item(), -4)
 
+    def test_qat_code_offsets_cross_multiple_cells_and_keep_source_frozen(self):
+        weight = torch.tensor([[-1., .2, .4, 1.]])
+        q = RoundingGrid(weight, 4, learn_code_offsets=True)
+        baseline = (q(False) / q.scale).round()
+        with torch.no_grad():
+            q.code_offset[0, 1] = 2.1
+        moved = (q(False) / q.scale).round()
+        self.assertGreaterEqual((moved[0, 1] - baseline[0, 1]).abs().item(), 2)
+        q().sum().backward()
+        self.assertIsNotNone(q.code_offset.grad)
+        self.assertIsNone(q.alpha.grad)
+        self.assertTrue(torch.equal(q.source, weight))
+        self.assertGreater(q.code_change_fraction().item(), 0)
+
     def test_quality_identity_and_pseudo_control(self):
         x = torch.rand(2, 3, 16, 16)
         p, s = pair_metrics(x, x)

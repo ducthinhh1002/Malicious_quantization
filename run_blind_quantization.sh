@@ -160,7 +160,7 @@ if [[ "${WMQ_MODEL_ONLY:-0}" != "1" && "$HAS_NATURAL" == "0" ]]; then
 fi
 attack+=("$@")
 
-echo "[2/4] Running blind Stable Signature quantization (default: W4 controls + residual experiment)..."
+echo "[2/4] Running blind Stable Signature quantization (default: W4 controls + residual/QAT purification)..."
 echo "Result directory: $ATTACK_OUTPUT"
 "${attack[@]}"
 [[ -f "$ATTACK_OUTPUT/report.json" && -f "$ATTACK_OUTPUT/selection_frozen.json" ]] || {

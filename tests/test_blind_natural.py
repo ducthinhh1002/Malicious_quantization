@@ -123,6 +123,35 @@ class NaturalTests(unittest.TestCase):
                 self.assertTrue(torch.equal(value, pristine[name]))
             self.assertTrue(any(q.alpha.grad is not None for q in grids))
 
+    def test_qat_purification_optimizes_bounded_code_offsets(self):
+        class VAE(nn.Module):
+            def __init__(self):
+                super().__init__()
+                self.decoder = nn.Conv2d(3, 3, 1)
+                self.post_quant_conv = nn.Identity()
+            def decode(self, z, **kw):
+                return (self.decoder(z),)
+        torch.manual_seed(23)
+        vae = VAE().requires_grad_(False)
+        z = [torch.rand(1, 3, 16, 16)]
+        refs = [(vae.decode(z[0])[0] / 2 + .5).clamp(0, 1)]
+        natural = [torch.full_like(refs[0], .25)]
+        args = blind.parser().parse_args(["--model", "x", "--prompts", "x", "--output", "x",
+            "--steps", "2", "--eval-every", "1", "--min-psnr", "0", "--min-image-psnr", "0",
+            "--min-ssim", ".001", "--natural-perceptual-weight", "0"])
+        original = {k: v.clone() for k, v in vae.state_dict().items()}
+        with tempfile.TemporaryDirectory() as tmp, redirect_stdout(io.StringIO()):
+            grids, selected, rows = blind.optimize_branch(
+                vae, ["weight"], z, natural, z, refs, args, 4, 1., "natural_qat_purification", [],
+                Path(tmp) / "branch", natural_search=(z, natural), preserve_data=(z, refs))
+        self.assertEqual(selected["objective"], "quantization_constrained_natural_purification")
+        self.assertEqual(selected["optimized_dofs"], ["bounded_multi_cell_code_offsets"])
+        self.assertIn("code_change_fraction_vs_rtn", rows[0])
+        self.assertTrue(any(q.code_offset.grad is not None for q in grids))
+        self.assertTrue(all(q.code_offset.detach().abs().max() <= args.qat_max_code_shift for q in grids))
+        for name, value in vae.state_dict().items():
+            self.assertTrue(torch.equal(value, original[name]))
+
     def test_all_branches_frozen_before_owner_diagnostics(self):
         # Exercise main orchestration and owner evaluation with tiny CPU tensors.
         class VAE(nn.Module):

@@ -6,6 +6,7 @@ import tempfile
 import unittest
 
 from wmq_fixture_utils import verify_sha256, publish_fixture, fixture_lock
+from prepare_marked_fixture import fixture_complete
 from evaluate_blind_watermark import detection_threshold, verify_frozen_run
 
 
@@ -28,6 +29,23 @@ def competing_writer(root, start, results, name):
 
 
 class IntegrityTests(unittest.TestCase):
+    def test_fixture_reuse_requires_all_loadable_components(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "fixture_provenance.json").write_text("{}")
+            (root / "model_index.json").write_text("{}")
+            self.assertFalse(fixture_complete(root))
+            for component, config in (("scheduler", "scheduler_config.json"),
+                                      ("text_encoder", "config.json"), ("unet", "config.json"),
+                                      ("vae", "config.json")):
+                (root / component).mkdir()
+                (root / component / config).write_text("{}")
+            (root / "tokenizer").mkdir()
+            (root / "tokenizer" / "tokenizer_config.json").write_text("{}")
+            for component in ("text_encoder", "unet", "vae"):
+                (root / component / "weights.safetensors").write_bytes(b"test")
+            self.assertTrue(fixture_complete(root))
+
     def test_hash_mismatch_is_rejected(self):
         with tempfile.TemporaryDirectory() as root:
             path = Path(root) / "checkpoint"

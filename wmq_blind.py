@@ -32,6 +32,14 @@ def blur(x):
                     groups=x.shape[1])
 
 
+def semantic_lowpass(x, factor=8):
+    """Content-preserving view that discards small decoder residuals."""
+    if x.ndim != 4 or min(x.shape[-2:]) < factor:
+        raise ValueError("Semantic low-pass requires an NCHW image at least as large as its factor")
+    pooled = F.avg_pool2d(x, factor, factor)
+    return F.interpolate(pooled, size=x.shape[-2:], mode="bilinear", align_corners=False)
+
+
 def pseudo_target(reference, strength):
     # Both inputs and targets retain unknown watermark content. Never call clean.
     image01(reference, "pseudo-target reference")
@@ -124,7 +132,7 @@ class RoundingGrid(nn.Module):
     Forward uses hard integers with a sigmoid straight-through gradient. Export
     uses exactly the same grid; unconstrained full-precision weights never train.
     """
-    def __init__(self, weight, bits, clip=1.0, learn_scale=False):
+    def __init__(self, weight, bits, clip=1.0, learn_scale=False, learn_code_offsets=False):
         super().__init__()
         if bits not in (2, 3, 4, 6, 8) or not 0 < clip <= 1:
             raise ValueError("Invalid bitwidth/clip")
@@ -146,19 +154,37 @@ class RoundingGrid(nn.Module):
         self.register_buffer("base_scale", scale)
         self.log_scale = nn.Parameter(torch.zeros_like(scale), requires_grad=learn_scale)
         frac = value - value.floor()
-        self.alpha = nn.Parameter(torch.logit(frac.clamp(1e-4, 1 - 1e-4)))
+        self.alpha = nn.Parameter(torch.logit(frac.clamp(1e-4, 1 - 1e-4)),
+                                  requires_grad=not learn_code_offsets)
+        # Dimensionless offsets let QAT cross more than the two adjacent cells
+        # available to AdaRound-style alpha. They are bounded and the source
+        # marked weights remain immutable.
+        self.code_offset = nn.Parameter(torch.zeros_like(w), requires_grad=learn_code_offsets)
+        self.learn_code_offsets = learn_code_offsets
 
     @property
     def scale(self):
         return self.base_scale * self.log_scale.clamp(math.log(.8), math.log(1.25)).exp()
 
     def forward(self, differentiable=True):
+        if self.learn_code_offsets:
+            value = (self.source / self.scale + self.code_offset).clamp(self.qmin, self.qmax)
+            hard = value.round()
+            codes = hard + (value - value.detach()) if differentiable else hard
+            return codes * self.scale
         soft = self.alpha.sigmoid()
         hard = (self.alpha >= 0).to(soft.dtype)
         rounding = hard + (soft - soft.detach()) if differentiable else hard
         scale = self.scale
         floor = (self.source / scale).clamp(self.qmin, self.qmax).detach().floor()
         return (floor + rounding).clamp(self.qmin, self.qmax) * scale
+
+    @torch.no_grad()
+    def code_change_fraction(self):
+        """Fraction of exported codes differing from ordinary RTN on this grid."""
+        baseline = (self.source / self.base_scale).round().clamp(self.qmin, self.qmax)
+        current = (self(False) / self.scale).round().clamp(self.qmin, self.qmax)
+        return (current != baseline).float().mean()
 
 def pair_metrics(x, y):
     """PSNR and Wang-style SSIM: 11x11 Gaussian sigma=1.5, valid crop, population covariance."""
@@ -253,12 +279,15 @@ def score(vae, latents, refs, strength, args, folder=None):
         high, ref_high = x - blur(x), ref - blur(ref)
         energy = mse(ref_high)
         ratio = torch.where(energy > 1e-12, mse(high) / energy.clamp_min(1e-12), float("nan"))
-        metrics = torch.stack([p, s, mse(x - pseudo_target(ref, strength)), mse(high - ref_high), ratio], 1).cpu().tolist()
+        semantic_error = mse(semantic_lowpass(x) - semantic_lowpass(ref))
+        metrics = torch.stack([p, s, mse(x - pseudo_target(ref, strength)),
+                               mse(high - ref_high), ratio, semantic_error], 1).cpu().tolist()
         return metrics, x.cpu() if folder is not None else None
     for start, (metrics, pixels) in batches(list(zip(latents, refs)), evaluate, batch_size(getattr(args, "eval_batch_size", 0), device), "score"):
-        for j, (p, s, error, high_error, ratio) in enumerate(metrics):
+        for j, (p, s, error, high_error, ratio, semantic_error) in enumerate(metrics):
             psnr.append(p); ssim.append(s); errors.append(error)
-            texture.append({"highpass_mse": high_error, "highpass_energy_ratio": ratio if math.isfinite(ratio) else None})
+            texture.append({"highpass_mse": high_error, "highpass_energy_ratio": ratio if math.isfinite(ratio) else None,
+                            "semantic_lowpass_mse": semantic_error})
             if folder is not None:
                 array = (pixels[j].permute(1, 2, 0).numpy() * 255).round().astype("uint8")
                 Image.fromarray(array).save(folder / f"{start+j:04d}.png")
@@ -269,6 +298,7 @@ def score(vae, latents, refs, strength, args, folder=None):
             "psnr_p05": torch.quantile(p, .05).item(), "min_psnr": p.min().item(),
             "quality_violation_fraction": ((p < args.min_psnr) | (s < args.min_ssim)).float().mean().item(),
             "target_mse": sum(errors) / len(errors), "feasible": feasible,
+            "semantic_lowpass_mse": sum(t["semantic_lowpass_mse"] for t in texture) / len(texture),
             "per_image_psnr": psnr, "per_image_ssim": ssim, "per_image_texture": texture}
 
 
@@ -358,8 +388,10 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
     """Independent initialization, train-only updates, search-only checkpoint choice."""
     device = next(vae.parameters()).device
     pristine = {k: v.detach().clone() for k, v in vae.decoder.state_dict().items()}
+    qat_branch = method == "natural_qat_purification"
     grids = nn.ModuleList([RoundingGrid(vae.decoder.get_parameter(k), bits, clip,
-                           learn_scale=method in ("rounding_scale", "natural_rounding_scale")) for k in names]).to(device)
+                           learn_scale=method in ("rounding_scale", "natural_rounding_scale"),
+                           learn_code_offsets=qat_branch) for k in names]).to(device)
     rows, updates, best = [], [], None
     best_state = None
     natural = method.startswith("natural_")
@@ -389,6 +421,11 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
                 metrics["generated_reference_mse"] = metrics["target_mse"]
                 metrics.update(natural_reconstruction_metrics(vae, *natural_search, perceptual, perceptual_weight,
                     batch_size(getattr(args, "eval_batch_size", 0), device), residual if residual_branch else None, residual_weight))
+                if qat_branch:
+                    metrics["selection_objective"] += (args.qat_semantic_preserve_weight *
+                                                        metrics["semantic_lowpass_mse"])
+                    changed = sum(g.code_change_fraction().item() * g.source.numel() for g in grids)
+                    metrics["code_change_fraction_vs_rtn"] = changed / sum(g.source.numel() for g in grids)
             metrics.setdefault("selection_objective", metrics["target_mse"])
         finally:
             vae.decoder.load_state_dict(pristine)
@@ -413,7 +450,7 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
     evaluate(0, "fixed_rtn" if method == "fixed_ptq" else "rtn_fallback")
     order_rng = torch.Generator().manual_seed(args.seed)
     params = [p for p in grids.parameters() if p.requires_grad]
-    optimizer = torch.optim.Adam(params, lr=args.lr) if method in ("rounding", "rounding_scale", "reconstruction", "natural_rounding", "natural_rounding_scale", "natural_residual") else None
+    optimizer = torch.optim.Adam(params, lr=args.lr) if method in ("rounding", "rounding_scale", "reconstruction", "natural_rounding", "natural_rounding_scale", "natural_residual", "natural_qat_purification") else None
     ranked = [names.index(r["name"]) for r in profile]
     valid_updates = 0
     backward_attempts = 0
@@ -464,6 +501,7 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
             preserve = F.mse_loss(blur(raw), blur(ref))
             perceptual_loss = raw.new_zeros(())
             residual_loss = raw.new_zeros(())
+            trust_loss = raw.new_zeros(())
             if natural:
                 if residual_branch:
                     residual_loss = residual.loss(raw - ref).mean()
@@ -474,10 +512,16 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
                     preserve_hidden = vae.post_quant_conv(preserve_data[0][j].to(device))
                 generated = functional_call(vae.decoder, weights, (preserve_hidden,)) / 2 + .5
                 preserve_ref = image01(preserve_data[1][j].to(device), "preservation reference")
-                preserve = (residual.preservation(generated - preserve_ref, args.residual_preservation)
-                            if residual_branch else F.mse_loss(generated, preserve_ref))
+                if qat_branch:
+                    preserve = F.mse_loss(semantic_lowpass(generated), semantic_lowpass(preserve_ref))
+                    trust_loss = sum(g.code_offset.square().sum() for g in grids) / sum(g.code_offset.numel() for g in grids)
+                else:
+                    preserve = (residual.preservation(generated - preserve_ref, args.residual_preservation)
+                                if residual_branch else F.mse_loss(generated, preserve_ref))
                 train_evaluations += 1
-            loss = target_loss + perceptual_weight * perceptual_loss + args.preserve_weight * preserve + residual_weight * residual_loss
+            preserve_weight = args.qat_semantic_preserve_weight if qat_branch else args.preserve_weight
+            loss = (target_loss + perceptual_weight * perceptual_loss + preserve_weight * preserve +
+                    residual_weight * residual_loss + args.qat_trust_weight * trust_loss)
             train_evaluations += 1
             applied = bool(torch.isfinite(loss))
             grad_norm = None
@@ -514,12 +558,14 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
                 for grid in grids:
                     grid.alpha.clamp_(-12, 12)
                     grid.log_scale.clamp_(math.log(.8), math.log(1.25))
-            scalars = torch.stack([target_loss.detach(), perceptual_loss.detach(), preserve.detach(), loss.detach(), residual_loss.detach()]).cpu().tolist()
+                    grid.code_offset.clamp_(-args.qat_max_code_shift, args.qat_max_code_shift)
+            scalars = torch.stack([target_loss.detach(), perceptual_loss.detach(), preserve.detach(), loss.detach(),
+                                   residual_loss.detach(), trust_loss.detach()]).cpu().tolist()
             updates.append({"step": step, "applied": applied, "reason": reason,
                             **{k: v if math.isfinite(v) else None for k, v in zip(
-                                ["reconstruction_mse", "perceptual_loss", "preservation_mse", "loss", "residual_loss"], scalars)},
+                                ["reconstruction_mse", "perceptual_loss", "preservation_mse", "loss", "residual_loss", "trust_loss"], scalars)},
                             "grad_norm": grad_norm})
-            del weights, raw, ref, loss, target_loss, preserve, perceptual_loss, residual_loss
+            del weights, raw, ref, loss, target_loss, preserve, perceptual_loss, residual_loss, trust_loss
             if natural:
                 del generated, preserve_hidden
         if method == "sensitivity":
@@ -537,9 +583,9 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
     grids.load_state_dict(best_state)
     selected = {**best, "search_feasible": best["feasible"], "valid_updates": valid_updates,
                 "gradient_updates": valid_updates if optimizer is not None else 0,
-                "objective": "natural_residual_projection" if residual_branch else ("unpaired_natural_reconstruction" if natural else ("reconstruction" if method == "reconstruction" else "blind_smoothing_proxy")),
+                "objective": "quantization_constrained_natural_purification" if qat_branch else ("natural_residual_projection" if residual_branch else ("unpaired_natural_reconstruction" if natural else ("reconstruction" if method == "reconstruction" else "blind_smoothing_proxy"))),
                 "residual_weight": residual_weight,
-                "preservation_mode": args.residual_preservation if residual_branch else "legacy",
+                "preservation_mode": "lowpass_8x" if qat_branch else (args.residual_preservation if residual_branch else "legacy"),
                 "objective_strength": strength,
                 "quality_policy": policy, "perceptual_weight": perceptual_weight,
                 "selected_source": best["source"], "attempted_updates": total,
@@ -549,7 +595,9 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
                 "natural_validation_image_forwards": len(rows) * len(natural_search[0]) if natural else 0,
                 "optimized_dofs": {"fixed_ptq": [], "sensitivity": ["layer_scale"], "rounding": ["rounding"],
                     "rounding_scale": ["rounding", "per_channel_scale"], "reconstruction": ["rounding"],
-                    "natural_rounding": ["rounding"], "natural_residual": ["rounding"], "natural_rounding_scale": ["rounding", "per_channel_scale"]}[method],
+                    "natural_rounding": ["rounding"], "natural_residual": ["rounding"],
+                    "natural_rounding_scale": ["rounding", "per_channel_scale"],
+                    "natural_qat_purification": ["bounded_multi_cell_code_offsets"]}[method],
                 "status": "selected" if best["feasible"] else ("selected_quality_failed" if policy == "report" else "no_feasible_candidate")}
     save_json(folder / "selection.json", selected)
     if not selected["search_feasible"]:
@@ -607,7 +655,7 @@ def parser():
     p.add_argument("--clips", type=float, nargs="+", default=[1.])
     p.add_argument("--methods", nargs="+", choices=["fixed_ptq", "sensitivity",
                    "rounding", "rounding_scale", "reconstruction"],
-                   default=["fixed_ptq", "rounding_scale", "reconstruction"])
+                   default=["fixed_ptq", "reconstruction"])
     p.add_argument("--profile-n", type=int, default=16, help="Train-only samples for measured layer sensitivity")
     p.add_argument("--profile-bootstrap", type=int, default=1000, help="CPU paired resamples for layer priority uncertainty")
     p.add_argument("--device", choices=["cuda", "cpu"], default="cuda", help="CPU is for small diagnostic pipelines")
@@ -618,8 +666,8 @@ def parser():
     p.add_argument("--min-ssim", type=float, default=.9)
     p.add_argument("--preserve-weight", type=float, default=2.)
     p.add_argument("--natural-images", help="Optional directory of unpaired natural non-watermarked images")
-    p.add_argument("--natural-methods", nargs="+", choices=["natural_rounding", "natural_rounding_scale", "natural_residual"],
-                   default=["natural_rounding", "natural_residual"], help="Branches added when natural images are supplied")
+    p.add_argument("--natural-methods", nargs="+", choices=["natural_rounding", "natural_rounding_scale", "natural_residual", "natural_qat_purification"],
+                   default=["natural_residual", "natural_qat_purification"], help="Branches added when natural images are supplied")
     p.add_argument("--residual-patch", type=int, choices=[4, 8, 16], default=8)
     p.add_argument("--residual-rank", type=int, default=8)
     p.add_argument("--residual-patches-per-image", type=int, default=256)
@@ -628,6 +676,12 @@ def parser():
                    help="Residual branch only: protect complement plus 0.1 full RGB MSE, or full RGB control")
     p.add_argument("--natural-perceptual-weight", type=float, default=.1,
                    help="LPIPS coefficient ONLY for natural branches; 0 disables the external perceptual prior")
+    p.add_argument("--qat-semantic-preserve-weight", type=float, default=2.,
+                   help="QAT purification weight for low-frequency generated-image consistency")
+    p.add_argument("--qat-trust-weight", type=float, default=.01,
+                   help="QAT purification L2 penalty on code-space displacement")
+    p.add_argument("--qat-max-code-shift", type=float, default=2.,
+                   help="Maximum continuous shadow displacement in quantization-code units")
     p.add_argument("--quality-policy", choices=["report", "constrained"], default="report",
                    help="report: choose by objective and record quality failures; constrained: prefer feasible candidates; neither stops on a failed gate")
     return p
@@ -642,8 +696,10 @@ def main():
         raise ValueError("Sample counts and steps must be positive")
     if (not 0 <= args.strength <= 1 or not 0 < args.min_ssim <= 1
             or args.lr <= 0 or args.preserve_weight < 0 or args.natural_perceptual_weight < 0 or args.guidance <= 1
+            or args.qat_semantic_preserve_weight < 0 or args.qat_trust_weight < 0 or args.qat_max_code_shift <= 0
             or not all(math.isfinite(v) for v in [args.strength, args.min_ssim, args.lr,
-                args.preserve_weight, args.natural_perceptual_weight, args.guidance, args.min_psnr, args.min_image_psnr, *args.clips])):
+                args.preserve_weight, args.natural_perceptual_weight, args.qat_semantic_preserve_weight,
+                args.qat_trust_weight, args.qat_max_code_shift, args.guidance, args.min_psnr, args.min_image_psnr, *args.clips])):
         raise ValueError("Invalid numeric arguments")
     if any(b not in (2, 3, 4, 6, 8) for b in args.bits) or any(not 0 < c <= 1 for c in args.clips):
         raise ValueError("Invalid grid")
@@ -749,6 +805,9 @@ def main():
                 "watermark_success": "unknown; requires independent owner evaluation",
                 "quality_gate": "PSNR/SSIM only; not equivalent to legacy LPIPS gate",
                 "quality_policy": args.quality_policy,
+                "qat_purification": {"hard_forward": True, "backward": "straight_through_estimator",
+                    "export": "integer W4 codes and fixed per-output-channel scale",
+                    "owner_feedback": False, "preservation": "8x low-pass generated-reference consistency"},
                 "natural_perceptual_prior": "frozen LPIPS AlexNet v0.1; public pretrained features; natural branches only" if natural_manifest and args.natural_perceptual_weight else None}
     plan = []
     for bits in dict.fromkeys(args.bits):

@@ -83,29 +83,36 @@ khác nhánh model-only. Mọi nhánh model-only hoàn tất trước khi nạp 
 để học; chúng không sử dụng dataset hoặc LPIPS trong loss/chọn checkpoint.
 LPIPS owner evaluation vẫn được chạy sau freeze cho mọi nhánh.
 
-Nhánh `natural_rounding` học `MSE tái tạo + 0.1 * LPIPS + 2 * MSE bảo toàn ảnh sinh`.
+Nhánh `natural_qat_purification` học tái tạo ảnh tự nhiên bằng hard-forward W4/STE. Mỗi
+trọng số có một offset trong đơn vị mã lượng tử, mặc định giới hạn ở ±2 mã, nên có thể
+đi xa hơn lựa chọn floor/ceil của `natural_rounding`. Loss bảo toàn chỉ so phần tần số
+thấp của output sinh cùng latent; tránh dùng RGB MSE đầy đủ kéo decoder trở lại residual
+đã fingerprint.
 LPIPS AlexNet pretrained đóng băng; gradient truyền qua nó tới quantizer.
 Chỉnh lambda bằng `--natural-perceptual-weight`; đặt 0 để ablation MSE-only.
 Xem [hướng dẫn LPIPS chính thức](https://github.com/richzhang/PerceptualSimilarity)
-và [COCO](https://cocodataset.org/#download). Chỉ rounding/scale được học, không fine-tune
-tự do trọng số model. Chi phí tăng do thêm hai nhánh và forward bảo toàn ảnh sinh.
+và [COCO](https://cocodataset.org/#download). Chỉ biến quantizer được học, không xuất
+trọng số FP32 fine-tune tự do. Chi phí tăng do thêm hai nhánh và forward bảo toàn ảnh sinh.
 
-**Cập nhật 2026-09-22:** mặc định W4 với 5 nhánh `fixed_ptq`, `rounding_scale`,
-`reconstruction`, `natural_rounding`, `natural_residual`. Nhánh mới dùng basis residual
+**Cập nhật 2026-09-22:** mặc định W4 với 4 nhánh `fixed_ptq`, `reconstruction`,
+`natural_residual`, `natural_qat_purification`. Nhánh residual dùng basis
 patch từ natural TRAIN để tăng trọng số reconstruction theo hướng đã chọn, đồng thời
 giảm phạt bảo toàn trong subspace đó. Basis đóng băng, không sử dụng detector/key.
 Đây là giả thuyết mới; chưa có kết quả xác nhận giảm TPR trên Stable Signature.
 Copy cả **`wmq_residual.py`** lên server. Lệnh vẫn là `bash run_blind_quantization.sh`.
 Xem [phân tích kết quả, phương pháp và ablation](survey/Residual_Quantization_Revision_VI.md).
 `--natural-methods natural_rounding natural_rounding_scale` khôi phục các nhánh
-natural cũ; `--methods` điều khiển riêng model-only. W8 và sensitivity tắt mặc định.
+natural cũ; `--methods` điều khiển riêng model-only. `rounding_scale`, W8 và sensitivity
+tắt mặc định vì run `blind_20260921_154529_369243` không làm giảm TPR.
 
 `natural_residual` có `--residual-weight` (1), `--residual-rank` (8),
 `--residual-patch` (8), `--residual-patches-per-image` (256),
 `--residual-preservation orthogonal|full` (orthogonal). Calibration JSON có captured
 energy và split-half overlap; các chỉ số này không chứng nhận basis là watermark.
 Đặt `--residual-weight 0 --residual-preservation full` để đối chiếu tương đương
-natural_rounding. Không tăng số step hay giảm bit mặc định cùng lúc với objective.
+natural_rounding. QAT purification có `--qat-max-code-shift` (2),
+`--qat-trust-weight` (0.01) và `--qat-semantic-preserve-weight` (2). Không tăng số
+step hay giảm bit mặc định cùng lúc với objective.
 
 Mặc định `--quality-policy report`: chọn theo objective trên search; ngưỡng
 PSNR/SSIM/TPR chỉ được ghi nhận, **không lọc candidate hay dừng vì không đạt ngưỡng**.
@@ -679,10 +686,11 @@ Với `--model` riêng phải cấp `SS_KEY`; với extractor riêng phải cấ
 | `natural_rounding` | Học rounding với MSE + LPIPS trên natural và bảo toàn ảnh sinh |
 | `natural_rounding_scale` | Như natural_rounding, thêm per-channel scale |
 | `natural_residual` | Học rounding với loss projection lên basis residual từ natural TRAIN; bảo toàn phần bù |
+| `natural_qat_purification` | Học offset mã W4 nhiều ô với natural reconstruction; bảo toàn nội dung tần số thấp |
 
-Năm nhánh đầu là **model-only**, ba nhánh cuối là model + natural + LPIPS.
-Mặc định chạy `fixed_ptq`, `rounding_scale`, `reconstruction`, `natural_rounding`,
-`natural_residual`: 5 nhánh W4 thay vì 16 nhánh của pilot cũ. Các phương pháp khác vẫn
+Năm nhánh đầu là **model-only**, bốn nhánh cuối là model + natural + LPIPS.
+Mặc định chạy `fixed_ptq`, `reconstruction`, `natural_residual`,
+`natural_qat_purification`: 4 nhánh W4. Các phương pháp khác vẫn
 chạy được qua `--methods` / `--natural-methods`. Mọi nhánh dùng cùng bits, coverage, prompt/seed và
 ngưỡng chất lượng trong một `comparison_group`. Scale được phép nằm trong
 [0.8, 1.25] lần scale RTN khởi tạo cho các nhánh scale. Không tune bitwidth liên tục,
