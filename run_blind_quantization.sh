@@ -94,7 +94,21 @@ DATA_SEED=3407
 NEGATIVE_N="${WMQ_NEGATIVE_N:-1000}"
 NEGATIVE_IMAGES="${WMQ_NEGATIVE_IMAGES:-}"
 [[ "$NEGATIVE_N" =~ ^[0-9]+$ ]] || { echo "WMQ_NEGATIVE_N must be nonnegative" >&2; exit 2; }
-arguments=("$@")
+PROFILE="${WMQ_PROFILE:-research}"
+case "$PROFILE" in
+  research)
+    profile_defaults=(--steps 1000 --qat-steps 1000 --ft-steps 1000 --eval-every 100
+      --train-batch-size 4 --natural-train-n 4000 --natural-search-n 256 --natural-resolution 256
+      --optimizer adamw --weight-decay 0 --lr-schedule warmup_cosine --warmup-steps 20
+      --ft-lr .0005 --natural-preservation lowpass --preserve-weight 2 --qat-semantic-preserve-weight 2
+      --evaluate-final) ;;
+  pilot) profile_defaults=() ;;
+  *) echo "WMQ_PROFILE must be research or pilot" >&2; exit 2 ;;
+esac
+# Explicit CLI flags come last and override profile defaults, including --no-evaluate-final.
+arguments=("${profile_defaults[@]}" "$@")
+set -- "${arguments[@]}"
+echo "Experiment profile: $PROFILE; explicit CLI flags override its defaults."
 for ((index=0; index<${#arguments[@]}; index++)); do
   argument="${arguments[index]}"
   case "$argument" in

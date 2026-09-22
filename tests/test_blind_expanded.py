@@ -3,6 +3,8 @@ import json
 import subprocess
 import tempfile
 import unittest
+import os
+import sys
 from contextlib import redirect_stdout
 from pathlib import Path
 
@@ -28,6 +30,38 @@ class ToyVAE(nn.Module):
 
 
 class ExpandedTests(unittest.TestCase):
+    def test_launcher_research_profile_and_explicit_overrides(self):
+        # Execute the real shell argument routing without installing/downloading models.
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            stub = root / 'python'
+            log = root / 'calls.jsonl'
+            stub.write_text(f'#!{sys.executable}\n' +
+                'import json, os, sys\n'
+                'with open(os.environ["CALL_LOG"], "a") as f: f.write(json.dumps(sys.argv[1:]) + "\\n")\n'
+                'sys.exit(42 if any(x.endswith("wmq_blind.py") for x in sys.argv) else 0)\n')
+            stub.chmod(0o755)
+            env = dict(os.environ, WMQ_BOOTSTRAP_READY='1', WMQ_PYTHON=str(stub),
+                WMQ_EXPECTED_PREFIX=str(root), WMQ_PROFILE='research', CALL_LOG=str(log),
+                WMQ_ATTACK_OUTPUT_ROOT=str(root / 'runs'), WMQ_HEAVY_ROOT=str(root / 'heavy'),
+                WMQ_NEGATIVE_N='10', WMQ_MODEL_ONLY='0')
+            launcher = Path(__file__).resolve().parents[1] / 'run_blind_quantization.sh'
+            result = subprocess.run(['bash', str(launcher), '--steps', '17', '--train-batch-size', '1',
+                '--natural-train-n', '3', '--natural-search-n', '2'], env=env, capture_output=True, text=True)
+            self.assertEqual(result.returncode, 42, result.stdout + result.stderr)
+            calls = [json.loads(line) for line in log.read_text().splitlines()]
+            command = next(c for c in calls if c and c[0].endswith('wmq_blind.py'))
+            args = parser().parse_args(command[1:])
+            self.assertEqual(args.steps, 17)
+            self.assertEqual(args.qat_steps, 1000)
+            self.assertEqual(args.train_batch_size, 1)
+            self.assertEqual(args.natural_train_n, 3)
+            self.assertEqual(args.optimizer, 'adamw')
+            self.assertTrue(args.evaluate_final)
+            self.assertEqual(args.natural_preservation, 'lowpass')
+            pool = next(c for c in calls if c and c[0].endswith('prepare_natural_images.py'))
+            self.assertEqual(pool[pool.index('--count') + 1], '15')
+
     def test_sequential_blocks_with_real_diffusers_vae(self):
         from diffusers import AutoencoderKL
         vae = AutoencoderKL(in_channels=3, out_channels=3, block_out_channels=(32, 32),

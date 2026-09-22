@@ -1,0 +1,203 @@
+{
+  "candidate": "natural_rounding_w4_c1.0_step80",
+  "source": "natural_rounding",
+  "method": "natural_rounding",
+  "bits": 4,
+  "clip": 1.0,
+  "step": 80,
+  "psnr": 33.465232849121094,
+  "ssim": 0.945275604724884,
+  "psnr_p05": 29.23374366760254,
+  "min_psnr": 28.878629684448242,
+  "quality_violation_fraction": 0.0,
+  "target_mse": 0.004567097898689099,
+  "feasible": true,
+  "semantic_lowpass_mse": 8.427734592260094e-05,
+  "per_image_psnr": [
+    33.090980529785156,
+    37.53602600097656,
+    29.25243377685547,
+    34.20941162109375,
+    30.917083740234375,
+    33.2926139831543,
+    33.340576171875,
+    36.28792190551758,
+    35.22011184692383,
+    35.405120849609375,
+    31.89163589477539,
+    31.310909271240234,
+    32.088932037353516,
+    35.68293380737305,
+    31.947296142578125,
+    32.46531295776367,
+    28.878629684448242,
+    36.91106414794922,
+    37.20069122314453,
+    32.374969482421875
+  ],
+  "per_image_ssim": [
+    0.9234047695799007,
+    0.9893505774127316,
+    0.9343768440543968,
+    0.9563264475571646,
+    0.9109583679778901,
+    0.9516573905031981,
+    0.917746887486348,
+    0.937960530336178,
+    0.9251327067175654,
+    0.9550495555800879,
+    0.9539677018412248,
+    0.9478945919754939,
+    0.9598520366408492,
+    0.9653107346846185,
+    0.9544716794931484,
+    0.961745148203809,
+    0.9213663621182884,
+    0.9815576702788381,
+    0.9499304696122,
+    0.9074495731932714
+  ],
+  "per_image_texture": [
+    {
+      "highpass_mse": 0.0002727003302425146,
+      "highpass_energy_ratio": 0.9071333408355713,
+      "semantic_lowpass_mse": 5.327056715032086e-05
+    },
+    {
+      "highpass_mse": 9.839955600909889e-05,
+      "highpass_energy_ratio": 0.7493021488189697,
+      "semantic_lowpass_mse": 1.987412542803213e-05
+    },
+    {
+      "highpass_mse": 0.0005510866758413613,
+      "highpass_energy_ratio": 0.8677476048469543,
+      "semantic_lowpass_mse": 0.00017408693383913487
+    },
+    {
+      "highpass_mse": 0.00015379319665953517,
+      "highpass_energy_ratio": 0.860080361366272,
+      "semantic_lowpass_mse": 6.378862599376589e-05
+    },
+    {
+      "highpass_mse": 0.0004542684182524681,
+      "highpass_energy_ratio": 0.9177365899085999,
+      "semantic_lowpass_mse": 7.985528645804152e-05
+    },
+    {
+      "highpass_mse": 0.0001908884587464854,
+      "highpass_energy_ratio": 0.7548037767410278,
+      "semantic_lowpass_mse": 0.00013157891226001084
+    },
+    {
+      "highpass_mse": 0.00028381531592458487,
+      "highpass_energy_ratio": 0.8642029762268066,
+      "semantic_lowpass_mse": 5.4934695072006434e-05
+    },
+    {
+      "highpass_mse": 0.0001469589042244479,
+      "highpass_energy_ratio": 0.8505449295043945,
+      "semantic_lowpass_mse": 2.3799468181096017e-05
+    },
+    {
+      "highpass_mse": 0.00015272038581315428,
+      "highpass_energy_ratio": 0.7945748567581177,
+      "semantic_lowpass_mse": 8.621924644103274e-05
+    },
+    {
+      "highpass_mse": 0.00010435459989821538,
+      "highpass_energy_ratio": 0.8084011673927307,
+      "semantic_lowpass_mse": 9.07012727111578e-05
+    },
+    {
+      "highpass_mse": 0.0003189738199580461,
+      "highpass_energy_ratio": 0.8817950487136841,
+      "semantic_lowpass_mse": 9.623280493542552e-05
+    },
+    {
+      "highpass_mse": 0.00030191795667633414,
+      "highpass_energy_ratio": 0.8494897484779358,
+      "semantic_lowpass_mse": 9.697008499642834e-05
+    },
+    {
+      "highpass_mse": 0.0003792731440626085,
+      "highpass_energy_ratio": 0.7097694873809814,
+      "semantic_lowpass_mse": 0.00010719635611167178
+    },
+    {
+      "highpass_mse": 7.445893425028771e-05,
+      "highpass_energy_ratio": 0.8050268888473511,
+      "semantic_lowpass_mse": 0.00010822369949892163
+    },
+    {
+      "highpass_mse": 0.00020427843264769763,
+      "highpass_energy_ratio": 0.8511155843734741,
+      "semantic_lowpass_mse": 0.0002030679606832564
+    },
+    {
+      "highpass_mse": 0.000286141294054687,
+      "highpass_energy_ratio": 0.8981205224990845,
+      "semantic_lowpass_mse": 6.875759572722018e-05
+    },
+    {
+      "highpass_mse": 0.0007836326258257031,
+      "highpass_energy_ratio": 0.9623833894729614,
+      "semantic_lowpass_mse": 8.338331099366769e-05
+    },
+    {
+      "highpass_mse": 8.169947977876291e-05,
+      "highpass_energy_ratio": 0.7783675789833069,
+      "semantic_lowpass_mse": 5.7682424085214734e-05
+    },
+    {
+      "highpass_mse": 9.745850547915325e-05,
+      "highpass_energy_ratio": 0.9493081569671631,
+      "semantic_lowpass_mse": 3.322027259855531e-05
+    },
+    {
+      "highpass_mse": 0.0003623111406341195,
+      "highpass_energy_ratio": 0.8730121850967407,
+      "semantic_lowpass_mse": 5.2703275287058204e-05
+    }
+  ],
+  "generated_reference_mse": 0.0005273719281831291,
+  "natural_validation_mse": 0.004567097898689099,
+  "natural_validation_lpips": 0.07735037598758936,
+  "natural_validation_residual": null,
+  "natural_validation_spectral": null,
+  "selection_objective": 0.012302135497448035,
+  "search_feasible": true,
+  "valid_updates": 100,
+  "reconstruction_blocks": [],
+  "optimizer": "adam",
+  "weight_decay": 0.0,
+  "training_batch_size": 1,
+  "discriminator_valid_updates": 0,
+  "adversarial_weight": 0.0,
+  "spectral_weight": 0.0,
+  "selection_uses_discriminator": false,
+  "paper_reproduction": false,
+  "additional_objectives": [],
+  "gradient_updates": 100,
+  "objective": "unpaired_natural_reconstruction",
+  "residual_weight": 0.0,
+  "preservation_mode": "legacy",
+  "parameter_space": "quantized_decoder_weights",
+  "learning_rate_peak": 0.01,
+  "lr_schedule": "constant",
+  "objective_strength": 0.0,
+  "quality_policy": "report",
+  "perceptual_weight": 0.1,
+  "selected_source": "natural_rounding",
+  "attempted_updates": 100,
+  "train_evaluations": 200,
+  "search_evaluations": 11,
+  "train_image_forwards": 200,
+  "discriminator_image_forwards": 0,
+  "search_image_forwards": 220,
+  "backward_attempts": 100,
+  "natural_validation_image_forwards": 220,
+  "optimized_dofs": [
+    "rounding"
+  ],
+  "status": "selected"
+}

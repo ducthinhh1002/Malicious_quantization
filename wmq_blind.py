@@ -700,18 +700,24 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
             save_csv(folder / "updates.csv", updates)
         if step % args.eval_every == 0 or step == total:
             evaluate(step, method if valid_updates else ("marked_fp32_fallback" if float_branch else "rtn_fallback"))
+    if args.evaluate_final and total:
+        grids.final_state = {k: v.detach().cpu().clone() for k, v in grids.state_dict().items()}
     grids.load_state_dict(best_state)
     selected = {**best, "search_feasible": best["feasible"], "valid_updates": valid_updates,
                 "reconstruction_blocks": list(block_groups),
                 "optimizer": args.optimizer, "weight_decay": args.weight_decay,
                 "training_batch_size": args.train_batch_size, "discriminator_valid_updates": disc_valid_updates,
+                "training_pool_images": len(train_z),
+                "training_examples_seen": total * args.train_batch_size if optimizer is not None else 0,
+                "training_epoch_equivalents": total * args.train_batch_size / len(train_z) if optimizer is not None else 0.,
+                "selected_at_budget_boundary": best['step'] == total and total > 0,
                 "adversarial_weight": args.adversarial_weight if gan_branch else 0., "spectral_weight": spectral_weight,
                 "selection_uses_discriminator": False, "paper_reproduction": False,
                 "additional_objectives": (["patch_logistic_adversarial"] if gan_branch else []) +
                                          (["multiscale_natural_log_spectrum"] if spectral_weight else []) +
                                          (["sequential_block_activation_reconstruction"] if block_branch else []),
                 "gradient_updates": valid_updates if optimizer is not None else 0,
-                "objective": "natural_residual_projection" if residual_branch else ("quantization_constrained_natural_purification" if qat_branch else ("unpaired_natural_reconstruction" if natural else ("reconstruction" if method == "reconstruction" else "blind_smoothing_proxy"))),
+                "objective": "natural_residual_projection" if residual_branch else ("quantization_constrained_natural_purification" if qat_branch else ("unpaired_natural_reconstruction" if natural else ("reconstruction" if method in ("reconstruction", "block_reconstruction") else "blind_smoothing_proxy"))),
                 "residual_weight": residual_weight,
                 "preservation_mode": "lowpass_8x" if args.natural_preservation == "lowpass" and natural else (args.residual_preservation if residual_branch else ("lowpass_8x" if qat_branch or float_branch else "legacy")),
                 "parameter_space": "unrestricted_fp32_decoder" if float_branch else "quantized_decoder_weights",
@@ -848,6 +854,8 @@ def parser():
                    help="Maximum continuous shadow displacement in quantization-code units")
     p.add_argument("--branch-error-policy", choices=["report", "raise"], default="report",
                    help="Record failed branches and evaluate completed ones; setup errors still fail")
+    p.add_argument("--evaluate-final", action=argparse.BooleanOptionalAction, default=False,
+                   help="Also freeze/evaluate the last training state if search selected an earlier state; never choose using owner metrics")
     p.add_argument("--quality-policy", choices=["report", "constrained"], default="report",
                    help="report: choose by objective and record quality failures; constrained: prefer feasible candidates; neither stops on a failed gate")
     return p
@@ -892,6 +900,12 @@ def main():
     prompts = prompts[:n]
     natural_manifest = natural_image_manifest(args.natural_images, args.natural_train_n or args.train_n,
         args.natural_search_n or args.search_n, args.seed, args.natural_resolution) if args.natural_images else None
+    print(f"Training protocol: batch={args.train_batch_size}; rounding steps={args.steps}; "
+          f"QAT steps={args.qat_steps or args.steps}; FP32 steps={args.ft_steps or args.steps}; "
+          f"optimizer={args.optimizer}; FP32 LR={args.ft_lr}; "
+          f"natural train/search={len(natural_manifest['train']) if natural_manifest else 0}/"
+          f"{len(natural_manifest['search']) if natural_manifest else 0}; "
+          f"natural resolution={args.natural_resolution}; preservation={args.natural_preservation}", flush=True)
     out = Path(args.output).resolve()
     output_parent = out.parent.parent if out.parent.name == "output_attack" else out.parent
     image_out = Path(args.image_output).resolve() if args.image_output else output_parent / "output_artifacts" / "images" / out.name
@@ -1018,6 +1032,7 @@ def main():
     manifest["proxy_limitations"] = ["Smoothing may retain fingerprint", "Proxy improvement may erase natural texture",
                                       "Owner metrics are evaluation-only after every branch is frozen"]
     manifest["comparison_note"] = "Compare only within comparison_group; optimization costs reported, not equalized."
+    manifest["endpoint_policy"] = "Evaluate fixed final step in addition to search selection when different" if args.evaluate_final else "Search-selected checkpoint only"
     save_json(out / "manifest.json", manifest)
     @torch.no_grad()
     def cache(indices):
@@ -1061,6 +1076,7 @@ def main():
     profiles = {}
     costs = {}
     branch_failures = []
+    endpoint_plan = []
     declared_plan = list(plan)
     for branch in plan:
         try:
@@ -1134,6 +1150,38 @@ def main():
                                  for p in sorted(artifact_folder.rglob("*")) if p.is_file()},
                 "diagnostic_files_sha256": {p.relative_to(out).as_posix(): sha(p)
                                             for p in sorted(folder.rglob("*")) if p.is_file()}}
+            if args.evaluate_final and selected['step'] != selected['attempted_updates']:
+                # Endpoint existence depends only on the predeclared training schedule.
+                # Both artifacts are frozen before any held-out latent/owner feedback.
+                final_branch = {**branch, 'label': branch['label'].removesuffix('_test') + '_final_test',
+                    'artifact': branch['artifact'] + '_final', 'role': 'endpoint_control',
+                    'shares_training_with': branch['label']}
+                final_selected = {**selected, **branch_rows[-1], 'checkpoint_policy': 'fixed_final_step',
+                    'selected_at_budget_boundary': True,
+                    'search_feasible': branch_rows[-1]['feasible'], 'shares_training_with': branch['label'],
+                    'selected_source': 'fixed_final_step',
+                    'status': 'selected' if branch_rows[-1]['feasible'] else 'selected_quality_failed'}
+                grids.load_state_dict(grids.final_state)
+                materialize(vae.decoder, branch_names, grids)
+                final_artifact = artifact_out / final_branch['artifact']
+                final_artifact.mkdir(parents=True, exist_ok=False)
+                vae.save_pretrained(final_artifact / 'vae', safe_serialization=True)
+                if float_branch:
+                    from safetensors.torch import save_file
+                    save_file({k: v.detach().cpu().contiguous() for k, v in vae.decoder.state_dict().items()},
+                              str(final_artifact / 'decoder_fp32.safetensors'))
+                    save_json(final_artifact / 'finetune.json', {'format': 'decoder_fp32', 'quantized': False,
+                        'checkpoint_policy': 'fixed_final_step', 'shares_training_with': branch['label']})
+                else:
+                    export_quantizer(vae, names, grids, final_artifact)
+                final_folder = out / final_branch['artifact']
+                final_folder.mkdir(parents=True, exist_ok=False)
+                save_json(final_folder / 'selection.json', final_selected)
+                selections[final_branch['label']] = final_selected
+                frozen_branches[final_branch['label']] = {'selected': final_selected,
+                    'files_sha256': {p.relative_to(artifact_out).as_posix(): sha(p) for p in sorted(final_artifact.rglob('*')) if p.is_file()},
+                    'diagnostic_files_sha256': {p.relative_to(out).as_posix(): sha(p) for p in sorted(final_folder.rglob('*')) if p.is_file()}}
+                endpoint_plan.append(final_branch)
             del grids
             vae.decoder.load_state_dict(pristine)
             save_json(out / "search.json", rows)
@@ -1152,6 +1200,11 @@ def main():
             branch_failures.append(failure)
             selections.pop(branch["label"], None)
             frozen_branches.pop(branch["label"], None)
+            for endpoint in list(endpoint_plan):
+                if endpoint['shares_training_with'] == branch['label']:
+                    selections.pop(endpoint['label'], None)
+                    frozen_branches.pop(endpoint['label'], None)
+                    endpoint_plan.remove(endpoint)
             save_json(out / "branch_failures.json", branch_failures)
             print(f"FAILED {branch['label']}: {failure['error']}; continuing other branches", flush=True)
             # A partial artifact is retained for diagnosis but excluded from evaluation.
@@ -1160,11 +1213,11 @@ def main():
                 del grids
             if args.device == "cuda":
                 torch.cuda.empty_cache()
-    plan = [branch for branch in declared_plan if branch["label"] in frozen_branches]
+    plan = [branch for branch in declared_plan if branch["label"] in frozen_branches] + endpoint_plan
     manifest["declared_branches"] = declared_plan
     manifest["branch_failures"] = branch_failures
     manifest["test_branches"] = [branch for branch in manifest["test_branches"]
-                                 if branch["role"] in ("reference", "diagnostic") or branch["label"] in frozen_branches]
+                                 if branch["role"] in ("reference", "diagnostic") or branch["label"] in frozen_branches] + endpoint_plan
     save_json(out / "manifest.json", manifest)
 
     # Freeze ALL branches and the declared protocol before the first test latent.

@@ -223,6 +223,7 @@ class NaturalTests(unittest.TestCase):
                     "--device", "cpu", "--natural-images", str(dataset), "--train-n", "1", "--search-n", "1",
                     "--test-n", "2", "--steps", "1", "--eval-every", "1", "--methods", "rounding",
                     "--gen-batch-size", "2", "--eval-batch-size", "2",
+                    "--evaluate-final",
                     "--bits", "8", "4", "--min-psnr", "121", "--min-image-psnr", "121", "--min-ssim", ".001"]
             with fake_diffusers(fake), patch.object(sys, "argv", argv), \
                     patch.object(blind, "cache_natural", tiny_natural), patch.object(blind, "choose", audited_choose), \
@@ -230,8 +231,14 @@ class NaturalTests(unittest.TestCase):
                     fake_diffusers(SimpleNamespace(LPIPS=lambda **kw: PerceptualStub()), "lpips"):
                 blind.main()
             report = json.loads((out / "report.json").read_text())
-            self.assertEqual(len(report["selections"]), 19)  # 20 planned, one deliberately failed.
-            self.assertEqual(len(report["branch_quality"]), 21)
+            endpoints = [k for k in report['selections'] if k.endswith('_final_test')]
+            self.assertGreater(len(endpoints), 0)
+            self.assertEqual(len(report["selections"]), 19 + len(endpoints))
+            self.assertEqual(len(report["branch_quality"]), 21 + len(endpoints))
+            for label in endpoints:
+                selected = report['selections'][label]
+                self.assertEqual(selected['step'], selected['attempted_updates'])
+                self.assertEqual(selected['checkpoint_policy'], 'fixed_final_step')
             self.assertEqual(report["status"], "branch_failures")
             self.assertEqual(len(report["branch_failures"]), 1)
             self.assertNotIn('natural_spectral_w8_c1.0_test', report['selections'])

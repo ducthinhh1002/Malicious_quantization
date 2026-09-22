@@ -22,11 +22,11 @@ def configuration(profile):
     common = ["--bits", "8", "4", "--quality-policy", "report",
               "--optimizer", "adamw", "--weight-decay", "0", "--lr-schedule", "warmup_cosine",
               "--natural-preservation", "lowpass", "--preserve-weight", "2",
-              "--qat-semantic-preserve-weight", "2", "--warmup-steps", "20"]
+              "--qat-semantic-preserve-weight", "2", "--warmup-steps", "20", "--evaluate-final"]
     if profile == "pilot":
         return common + ["--steps", "200", "--qat-steps", "200", "--ft-steps", "200",
             "--train-batch-size", "1", "--natural-train-n", "256", "--natural-search-n", "64",
-            "--eval-every", "50", "--ft-lr", ".0005"]
+            "--eval-every", "50", "--ft-lr", ".0005", "--natural-resolution", "512"]
     return common + ["--steps", "1000", "--qat-steps", "1000", "--ft-steps", "1000",
         "--train-batch-size", "4", "--natural-train-n", "4000", "--natural-search-n", "256",
         "--natural-resolution", "256", "--eval-every", "100", "--ft-lr", ".0005"]

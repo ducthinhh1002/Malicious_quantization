@@ -1,0 +1,8 @@
+{
+  "architecture": "wmq_objectives.NaturalDiscriminator",
+  "training_split": "natural_train_only",
+  "checkpoint": "final_not_selected_generator_step",
+  "selection_uses_discriminator": false,
+  "valid_updates": 100,
+  "paper_reproduction": false
+}

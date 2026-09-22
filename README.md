@@ -1,5 +1,52 @@
 # Hướng dẫn chạy thí nghiệm malicious quantization cho watermark diffusion
 
+## Cấu hình mặc định sau run 20260922_023602
+
+```bash
+bash run_blind_quantization.sh
+```
+
+Lệnh này mặc định dùng profile `research`: W8/W4, 4.000 ảnh natural train,
+256 ảnh natural validation, 1.000 update/nhánh, batch train 4, ảnh natural 256px,
+AdamW, warmup/cosine và LR fine-tune 5e-4. Các nhánh natural lượng tử hóa dùng
+cùng low-pass preservation để so residual bật/tắt. Ngân sách lớn hơn pilot
+32 ảnh/100 update; đây không phải bảo đảm attack thành công. Flag CLI ghi sau
+vẫn override profile, ví dụ `--train-batch-size 1` khi thiếu VRAM.
+`WMQ_PROFILE=pilot bash run_blind_quantization.sh` giữ cấu hình thử nhỏ cũ.
+
+Mỗi run gồm RTN, reconstruction chung/theo block, natural rounding có/không scale,
+residual bật/tắt, QAT có/không scale, spectral reconstruction, GAN QAT và hai control
+FP32. Các biến thể block/GAN/spectral là implementation thích nghi, **không phải
+tái lập chính xác BRECQ, HiDDeN hoặc UnMarker**. VAE vẫn chạy FP32 với trọng số
+low-bit dequantize; không dùng số liệu này để tuyên bố tốc độ kernel INT4.
+
+Chọn checkpoint theo validation và đóng băng trước test. Nếu chọn checkpoint sớm,
+profile research còn xuất/đánh giá checkpoint ở bước cuối với role `endpoint_control`;
+không chọn lại theo TPR test. Các dòng `_final_test` dùng chung training với nhánh gốc,
+không phải seed độc lập. `--no-evaluate-final` tắt đối chứng này.
+
+Metric kém được ghi lại và tiếp tục. Nhánh runtime lỗi được ghi trong
+`branch_failures.json` rồi tiếp tục nhánh khác; report có `status=branch_failures`,
+không báo thành công giả. Lỗi setup/kiểm tra integrity vẫn có thể dừng run.
+Owner evaluator tự chạy cuối cùng. Pool COCO mặc định gồm thêm 1.000 ảnh negative;
+evaluator loại ảnh train/search theo hash và báo empirical FPR cùng Wilson CI.
+Đây là FPR trên ảnh natural được khai báo không watermark, không thay cho mọi null
+distribution. Đặt `WMQ_NEGATIVE_N=0` để bỏ hoặc `WMQ_NEGATIVE_IMAGES=/path` để dùng pool khác.
+
+Để chạy ba seed liên tiếp và gom kết quả:
+
+```bash
+bash run_blind_suite.sh
+```
+
+Suite dùng seed 3407/4407/5407, W8/W4 và cùng budget theo profile full. Xem
+`output_attack/suite_*/suite_results.csv`, `suite_status.json` và log từng seed.
+Một run lỗi không ngăn các seed còn lại. `bash run_blind_suite.sh --plan-only` ghi
+kế hoạch không tải/chạy model. Các nhánh GAN có thêm discriminator compute, nên
+cùng số update chưa có nghĩa cùng FLOPs; báo cả forward counts và thời gian.
+Thay seed vẫn dùng cùng danh sách prompt: cần prompt/key holdout mới cho final paper.
+Surrogate ownership transfer cần tài sản độc lập; code không thay nó bằng victim key.
+
 ## Blind: giữ model-only và thêm ảnh tự nhiên không ghép cặp
 
 Launcher blind tự chuẩn bị dependencies trước khi kiểm tra GPU:
@@ -39,8 +86,8 @@ Latent/reference được cache trên GPU tối đa 4 GiB, chỉ khi sau khi c�
 ít nhất 50% tổng VRAM và tối thiểu 2 GiB trống; thiếu ngân sách thì giữ CPU.
 Đây là ngân sách data cache, không bảo đảm mọi backward đều tránh OOM.
 
-Training vẫn một ảnh/update (nhánh natural thêm một ảnh sinh cho preservation),
-giữ precision, loss và số bước. Log giữ đủ từng update nhưng flush mỗi 10 bước,
+Training batch đặt bằng `--train-batch-size` (research: 4; pilot: 1).
+Nhánh natural có thể thêm forward ảnh sinh cho preservation. Log giữ đủ từng update nhưng flush mỗi 10 bước,
 cuối nhánh hoặc khi update lỗi. Nếu process bị kill đột ngột có thể mất phần log
 chưa flush; dùng `--log-every 1` nếu cần ghi ngay. Runtime/cache/OOM backoff được
 ghi trong report; batch và cấu hình được ghi manifest. Batching có thể tạo sai
@@ -95,18 +142,18 @@ và [COCO](https://cocodataset.org/#download). Các nhánh quantization chỉ h�
 Đối chứng `natural_full_finetune` học toàn bộ decoder FP32, gồm bias/norm, và được ghi
 riêng dưới role `finetune_control`; không tính là quantization attack.
 
-**Cập nhật sau run 000857:** mặc định 4 nhánh W4 `fixed_ptq`, `reconstruction`,
+**Lịch sử sau run 000857 (đã thay bằng profile ở đầu tài liệu):** từng mặc định 4 nhánh W4 `fixed_ptq`, `reconstruction`,
 `natural_residual`, `natural_residual_qat` và 1 đối chứng `natural_full_finetune` FP32.
 Nhánh residual dùng basis
 patch từ natural TRAIN để tăng trọng số reconstruction theo hướng đã chọn, đồng thời
 giảm phạt bảo toàn trong subspace đó. Basis đóng băng, không sử dụng detector/key.
 Run 000857: residual BA 96,02%, TPR 98%, chỉ thêm 1/99 ảnh thoát detector.
-QAT purification cũ quay về RTN; biến thể residual QAT và FP32 mới chưa có kết quả GPU.
+QAT purification cũ quay về RTN. Các run tháng 9 mới hơn đã có kết quả trong thư mục báo cáo tương ứng.
 Copy cả **`wmq_residual.py`** lên server. Lệnh vẫn là `bash run_blind_quantization.sh`.
 Xem [phân tích kết quả, phương pháp và ablation](survey/Residual_Quantization_Revision_VI.md).
 `--natural-methods natural_rounding natural_rounding_scale` khôi phục các nhánh
-natural cũ; `--methods` điều khiển riêng model-only. `rounding_scale`, W8 và sensitivity
-tắt mặc định vì run `blind_20260921_154529_369243` không làm giảm TPR.
+natural; `--methods` điều khiển riêng model-only. W8 đã bật lại để đối chiếu W4.
+Model-only `rounding_scale` và sensitivity vẫn cần chọn riêng bằng `--methods`.
 
 `natural_residual` có `--residual-weight` (1), `--residual-rank` (8),
 `--residual-patch` (8), `--residual-patches-per-image` (256),
@@ -117,22 +164,23 @@ natural_rounding. QAT purification có `--qat-max-code-shift` (2),
 `--qat-trust-weight` (0.01) và `--qat-semantic-preserve-weight` (2). Không tăng số
 step hay giảm bit mặc định cùng lúc với objective.
 
-QAT dùng `--qat-lr 0.001`, độc lập `--lr 0.01` cho sigmoid rounding; FP32 dùng
-`--ft-lr 0.00001`. Hai nhánh mới có `--warmup-steps 10` và cosine decay xuống 10%
+QAT dùng `--qat-lr 0.001`, độc lập `--lr 0.01` cho sigmoid rounding; FP32 pilot dùng
+`--ft-lr 0.00001`, research dùng 0.0005. Warmup pilot là 10, research là 20 bước; cosine decay xuống 10%
 learning rate đỉnh. `natural_residual_qat` dùng loss/basis/bảo toàn của residual,
 thêm trust penalty code-offset; `--qat-trust-weight 0` là ablation cùng loss.
-FP32 mặc định chỉ natural MSE + LPIPS (`--ft-preserve-weight 0`); không GAN và không
-phải tái lập nguyên paper Duke. Chi tiết: [nghiên cứu và protocol mới](survey/Residual_QAT_Finetune_Revision_VI.md).
+`natural_full_finetune` dùng natural MSE + LPIPS (`--ft-preserve-weight 0`);
+`natural_gan_finetune` thêm discriminator. Cả hai chưa phải tái lập nguyên paper Duke.
+Chi tiết lịch sử: [nghiên cứu và protocol](survey/Residual_QAT_Finetune_Revision_VI.md).
 
-Lệnh mặc định vẫn là `bash run_blind_quantization.sh` (pilot 32 ảnh train/100 update).
-Để có ngân sách natural lớn hơn mà không cần thêm prompt:
+Lệnh mặc định là `bash run_blind_quantization.sh` với profile research ở đầu tài liệu.
+Ví dụ chủ động chọn lại cấu hình nhỏ để đối chiếu run cũ:
 
 ```bash
-bash run_blind_quantization.sh --natural-train-n 256 --natural-search-n 64 \
+WMQ_PROFILE=pilot bash run_blind_quantization.sh --natural-train-n 256 --natural-search-n 64 \
   --steps 200 --qat-steps 1000 --ft-steps 1000 --eval-every 50
 ```
 
-Launcher tự tải 320 ảnh. Đây là run phát triển; prompt/test đã xem kết quả không trở
+Ví dụ này cần 320 ảnh train/search và mặc định thêm 1.000 ảnh negative. Đây là run phát triển; prompt/test đã xem kết quả không trở
 thành holdout mới chỉ vì đổi seed. Với paper, chốt cấu hình rồi dùng prompt/seed mới.
 
 Mặc định `--quality-policy report`: chọn theo objective trên search; ngưỡng
