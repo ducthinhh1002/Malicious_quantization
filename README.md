@@ -11,7 +11,7 @@ bash run_blind_suite.sh
 Mặc định tương đương:
 
 ```bash
-bash run_blind_suite.sh --profile science --seeds 3407 --preservation-weights 2
+bash run_blind_suite.sh --profile science --seeds 3407 --preservation-weights 0.5
 ```
 
 Mặc định mới là một run W4 với đầy đủ đối chứng khoa học, thay cho ba mức
@@ -76,13 +76,14 @@ Các ngưỡng 0.80/0.82/0.85/0.86/0.90/0.95 trong bảng chỉ diễn giải l�
 `quality_policy=report` vốn không loại ứng viên quality failed. Nới ngưỡng riêng lẻ
 không thay đổi model với policy này; SSIM 0.821 vẫn không đạt ngưỡng 0.85.
 
-Để tạo các điểm đánh đổi mới thật sự bằng cách thay trọng số bảo toàn:
+Để chạy một mức bảo toàn 0.5 với ngưỡng SSIM 0.85:
 
 ```bash
-bash run_blind_suite.sh --seeds 3407 --preservation-weights 0.5 2 8 --min-ssim 0.85
+bash run_blind_suite.sh --seeds 3407 --preservation-weights 0.5 --min-ssim 0.85
 ```
 
-Suite khai báo trước ba run với cùng prompt/seed/calibration/bitwidth. Thay đồng thời
+Suite khai báo trước một run. Khi truyền nhiều mức bằng `--preservation-weights`,
+các run dùng cùng prompt/seed/calibration/bitwidth và thay đồng thời
 `preserve_weight` và `qat_semantic_preserve_weight`, dùng low-pass preservation;
 giữ report policy để lưu cả kết quả không đạt. FP32 control giữ cấu hình riêng,
 các lần lặp control không phải bằng chứng độc lập. Có `suite_results.csv` và biểu đồ

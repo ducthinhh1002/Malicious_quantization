@@ -38,7 +38,7 @@ TRANSFER_METHODS = ["--methods", "fixed_ptq", "reconstruction", "--natural-metho
     "--gradient-diagnostics-every", "100"]
 
 
-def configuration(profile, preserve_weight=2):
+def configuration(profile, preserve_weight=.5):
     # All profiles default to W4; other bitwidths require an explicit CLI override.
     # GAN has extra discriminator compute; report it, never call costs equal.
     common = ["--bits", "4", "--quality-constraint", "off", "--finetune-rtn-bits", "--quality-policy", "report",
@@ -153,7 +153,7 @@ def run_suite(root, seeds, profile, extra, execute, runner=run_live, preservatio
             changes = ['--min-ssim', str(min_ssim)] if min_ssim is not None else []
             if budget is not None:
                 changes += ['--budget-ssim', str(budget), '--quality-constraint', 'dual']
-            effective_weight = 2 if weight is None else weight
+            effective_weight = .5 if weight is None else weight
             commands.append({'seed': seed, 'preserve_weight': weight, 'budget_ssim': budget, 'run_id': suffix, 'output': str(output),
                 'command': ['bash', str(script), *configuration(profile, effective_weight), *changes,
                             '--seed', str(seed), '--output', str(output), *extra],
@@ -233,8 +233,8 @@ def main():
     p.add_argument('--profile', choices=['pilot', 'focused', 'science', 'transfer', 'full'], default='science')
     p.add_argument('--quality-budgets', type=float, nargs='+', help='Predeclared SSIM training budgets, e.g. .8 .9 .95')
     p.add_argument('--plan-only', action='store_true')
-    p.add_argument('--preservation-weights', type=float, nargs='+', default=[2.],
-                   help='Predeclare objective-weight sweep (e.g. .5 2 8); same prompts/seeds, not threshold relabeling')
+    p.add_argument('--preservation-weights', type=float, nargs='+', default=[.5],
+                   help='Default .5 (one run per seed); pass several values only to request a sweep')
     p.add_argument('--min-ssim', type=float, default=.8,
                    help='Gate for these NEW runs; default 0.8; report policy still retains failures')
     p.add_argument('extra', nargs=argparse.REMAINDER)

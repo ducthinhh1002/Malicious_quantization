@@ -16,6 +16,8 @@ Cả hai mặc định dùng `science`: W4, 4.000 ảnh natural TRAIN, 256 natur
 32 prompt TRAIN, 20 SEARCH, 100 TEST, 2.000 update mỗi nhánh học, batch 4,
 natural resolution 256. Các seed subspace là 1701/1702/1703; đây là ba phép lấy
 subspace, không phải ba lần tái lập độc lập của toàn bộ thí nghiệm.
+Mặc định chỉ có một mức `preserve_weight=0.5` cho mỗi seed; mức 2 và 8 của sweep
+cũ không tự chạy. Muốn thử mức khác thì truyền `--preservation-weights` tường minh.
 
 | Nhánh | Mục đích |
 |---|---|

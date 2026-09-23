@@ -102,7 +102,7 @@ case "$PROFILE" in
     profile_defaults=(--steps 2000 --qat-steps 2000 --ft-steps 2000 --eval-every 100
       --train-batch-size 4 --natural-train-n 4000 --natural-search-n 256 --natural-resolution 256
       --optimizer adamw --weight-decay 0 --lr-schedule warmup_cosine --warmup-steps 20
-      --ft-lr .0005 --natural-preservation lowpass --preserve-weight 2 --qat-semantic-preserve-weight 2
+      --ft-lr .0005 --natural-preservation lowpass --preserve-weight 0.5 --qat-semantic-preserve-weight 0.5
       --cuda-math tf32 --evaluate-final) ;;
   pilot) profile_defaults=(--steps 100 --cuda-math tf32) ;;
   *) echo "WMQ_PROFILE must be research or pilot" >&2; exit 2 ;;
