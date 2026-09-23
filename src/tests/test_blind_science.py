@@ -84,6 +84,8 @@ class ScienceTests(unittest.TestCase):
             self.assertEqual(parser().parse_args([*options, '--bits', '8']).bits, [8])
         transfer = parser().parse_args(['--model', 'x', '--prompts', 'x', '--output', 'x', *configuration('transfer')])
         self.assertIn('natural_teacher_rounding', transfer.natural_methods)
+        self.assertIn('qk_rotation_ptq', transfer.methods)
+        self.assertEqual(transfer.budget_ssim, .8)
         self.assertEqual(transfer.teacher_checkpoint_policy, 'final')
         self.assertTrue(transfer.evaluate_final)
         self.assertNotIn('natural_random_subspace', transfer.natural_methods)
@@ -95,7 +97,7 @@ class ScienceTests(unittest.TestCase):
         self.assertIn('natural_teacher_rounding', args.natural_methods)
         self.assertEqual(args.teacher_checkpoint_policy, 'selected')
         self.assertEqual(args.finetune_rtn_bits, [4])
-        self.assertEqual(args.quality_constraint, 'dual')
+        self.assertEqual(args.quality_constraint, 'off')
         self.assertIn('fixed_ptq', args.methods)
         self.assertIn('natural_random_subspace', args.natural_methods)
         with tempfile.TemporaryDirectory() as tmp:

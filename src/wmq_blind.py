@@ -36,7 +36,7 @@ NATURAL_METHODS = ("natural_rounding", "natural_rounding_scale", "natural_residu
 
 
 def parse_method_bit_exclusions(values):
-    quantized_methods = {"fixed_ptq", "sensitivity", "rounding", "rounding_scale",
+    quantized_methods = {"fixed_ptq", "qk_rotation_ptq", "sensitivity", "rounding", "rounding_scale",
                          "reconstruction", "block_reconstruction", *NATURAL_METHODS} - set(FLOAT_METHODS)
     exclusions = set()
     for value in values:
@@ -545,12 +545,13 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
         save_csv(folder / "search.csv", rows)
         print({k: v for k, v in row.items() if not k.startswith("per_image")}, flush=True)
 
-    evaluate(0, "marked_fp32_fallback" if float_branch else ("fixed_rtn" if method == "fixed_ptq" else "rtn_fallback"))
+    evaluate(0, "marked_fp32_fallback" if float_branch else
+             ("fixed_rtn" if method in ("fixed_ptq", "qk_rotation_ptq") else "rtn_fallback"))
     order_rng = torch.Generator().manual_seed(args.seed)
     params = [p for p in grids.parameters() if p.requires_grad]
     base_lr = args.ft_lr if float_branch else (args.qat_lr if qat_branch else args.lr)
     optimizer_class = torch.optim.AdamW if args.optimizer == "adamw" else torch.optim.Adam
-    optimizer = optimizer_class(params, lr=base_lr, weight_decay=args.weight_decay) if method not in ("fixed_ptq", "sensitivity") else None
+    optimizer = optimizer_class(params, lr=base_lr, weight_decay=args.weight_decay) if method not in ("fixed_ptq", "qk_rotation_ptq", "sensitivity") else None
     discriminator = None
     if gan_branch:
         # Isolate initialization from branch ordering and the data sampler.
@@ -570,7 +571,7 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
         training_best = score(vae, train_z, train_ref, strength, args)
         train_evaluations += 1
         vae.decoder.load_state_dict(pristine)
-    total = (0 if method == "fixed_ptq" else
+    total = (0 if method in ("fixed_ptq", "qk_rotation_ptq") else
              ((args.ft_steps or args.steps) if float_branch else ((args.qat_steps or args.steps) if qat_branch else args.steps)))
     for step in range(1, total + 1):
         if optimizer is not None and (qat_branch or float_branch or args.lr_schedule == "warmup_cosine"):
@@ -816,7 +817,8 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
                 "discriminator_image_forwards": total * args.train_batch_size * 3 if gan_branch else 0,
                 "search_image_forwards": len(rows) * len(search_z), "backward_attempts": backward_attempts,
                 "natural_validation_image_forwards": len(rows) * len(natural_search[0]) if natural else 0,
-                "optimized_dofs": {"fixed_ptq": [], "sensitivity": ["layer_scale"], "rounding": ["rounding"],
+                "optimized_dofs": {"fixed_ptq": [], "qk_rotation_ptq": ["fixed_orthogonal_qk_basis"],
+                    "sensitivity": ["layer_scale"], "rounding": ["rounding"],
                     "rounding_scale": ["rounding", "per_channel_scale"], "reconstruction": ["rounding"],
                     "block_reconstruction": ["sequential_block_rounding"],
                     "natural_rounding": ["rounding"], "natural_residual": ["rounding"],
@@ -851,7 +853,7 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
 
 
 @torch.no_grad()
-def export_quantizer(vae, names, grids, folder):
+def export_quantizer(vae, names, grids, folder, extra_fp32_names=()):
     """Save auditable integer codes/scales beside the dequantized VAE artifact."""
     from safetensors.torch import save_file
     tensors, spec = {}, {}
@@ -868,8 +870,13 @@ def export_quantizer(vae, names, grids, folder):
         tensors[name + ".codes"] = codes.to(torch.int8).cpu().contiguous()
         tensors[name + ".scale"] = scale.cpu().contiguous()
         spec[name] = {"bits": grid.bits, "zero_point": 0, "qmin": grid.qmin, "qmax": grid.qmax}
+    for name in extra_fp32_names:
+        if name in names:
+            raise ValueError(f"Duplicate quantizer parameter: {name}")
+        tensors[name + ".fp32"] = vae.decoder.get_parameter(name).detach().cpu().contiguous()
     save_file(tensors, str(folder / "quantizer.safetensors"))
     save_json(folder / "quantizer.json", {"scheme": "signed_per_output_channel_zero_point_0_full_range", "layers": spec,
+              "extra_fp32_parameter_names": list(extra_fp32_names),
               "execution": "simulated PTQ; dequantized FP32 weights, not a certified backend kernel"})
 
 
@@ -928,7 +935,7 @@ def parser():
     p.add_argument("--warmup-steps", type=int, default=10, help="QAT/FP32 linear warmup followed by cosine decay")
     p.add_argument("--bits", type=int, nargs="+", default=[4])
     p.add_argument("--clips", type=float, nargs="+", default=[1.])
-    p.add_argument("--methods", nargs="+", choices=["fixed_ptq", "sensitivity",
+    p.add_argument("--methods", nargs="+", choices=["fixed_ptq", "qk_rotation_ptq", "sensitivity",
                    "rounding", "rounding_scale", "reconstruction", "block_reconstruction"],
                    default=["fixed_ptq", "reconstruction", "block_reconstruction"])
     p.add_argument("--profile-n", type=int, default=16, help="Train-only samples for measured layer sensitivity")
@@ -971,7 +978,7 @@ def parser():
                    help="Use SEARCH-selected FP32 teacher or its predeclared final training endpoint; student quality gate is unchanged")
     p.add_argument("--quality-constraint", choices=["off", "dual"], default="off")
     p.add_argument("--budget-psnr", type=float, default=30.)
-    p.add_argument("--budget-ssim", type=float, default=.9)
+    p.add_argument("--budget-ssim", type=float, default=.8)
     p.add_argument("--budget-max-violation", type=float, default=.1)
     p.add_argument("--dual-lr", type=float, default=.01)
     p.add_argument("--gradient-diagnostics-every", type=int, default=0)
@@ -1147,7 +1154,7 @@ def main():
                 "ownership_loss": None, "surrogate_transfer_evaluated": False,
                 "git_commit": commit, "script_sha256": sha(script),
                 "helper_sources_sha256": {name: sha(script.parent / name) for name in
-                    ("wmq_runtime.py", "wmq_diagnostics.py", "wmq_residual.py", "wmq_objectives.py", "wmq_science.py", "wmq_teacher.py")},
+                    ("wmq_runtime.py", "wmq_diagnostics.py", "wmq_residual.py", "wmq_objectives.py", "wmq_science.py", "wmq_teacher.py", "wmq_reparam.py")},
                 "model_files_sha256": {str(p.relative_to(model)): sha(p) for p in sorted(model.rglob("*"))
                       if p.is_file() and p.suffix in (".safetensors", ".bin", ".json")},
                 "prompts": prompts, "seeds": list(range(args.seed, args.seed + n)),
@@ -1304,8 +1311,40 @@ def main():
             branch_started = time.monotonic()
             bits, clip, method = branch["bits"], branch["clip"], branch["method"]
             float_branch = method in FLOAT_METHODS
-            branch_names = [name for name, _ in vae.decoder.named_parameters()] if float_branch else names
             vae.decoder.load_state_dict(pristine)
+            reparameterization = None
+            reparam_bias_names = []
+            if method == 'qk_rotation_ptq':
+                from wmq_reparam import rotate_attention_qk
+                previous_matmul_tf32 = torch.backends.cuda.matmul.allow_tf32
+                previous_cudnn_tf32 = torch.backends.cudnn.allow_tf32
+                try:
+                    torch.backends.cuda.matmul.allow_tf32 = False
+                    torch.backends.cudnn.allow_tf32 = False
+                    with torch.no_grad():
+                        probe = zs[0].to(args.device)
+                        before_rotation = vae.decode(probe, return_dict=False)[0]
+                        rotated = rotate_attention_qk(vae.decoder)
+                        after_rotation = vae.decode(probe, return_dict=False)[0]
+                        max_delta = (after_rotation - before_rotation).abs().max().item()
+                        if max_delta > 1e-3 or not math.isfinite(max_delta):
+                            raise ValueError(f'FP32 Q/K reparameterization changed decoder output: {max_delta}')
+                finally:
+                    torch.backends.cuda.matmul.allow_tf32 = previous_matmul_tf32
+                    torch.backends.cudnn.allow_tf32 = previous_cudnn_tf32
+                rotated_names = {f"{item['module']}.to_{projection}.weight"
+                                 for item in rotated for projection in ('q', 'k')}
+                if not rotated_names <= set(names):
+                    raise ValueError('Q/K rotation touched weights outside the quantized target set')
+                parameter_names = set(dict(vae.decoder.named_parameters()))
+                reparam_bias_names = sorted(f"{item['module']}.to_{projection}.bias"
+                    for item in rotated for projection in ('q', 'k')
+                    if f"{item['module']}.to_{projection}.bias" in parameter_names)
+                reparameterization = {'kind': 'paired_qk_hadamard', 'modules': rotated,
+                    'fp32_probe_max_abs_delta': max_delta, 'owner_feedback': False,
+                    'selection': 'fixed_transform_before_quantization',
+                    'fp32_parameter_names': reparam_bias_names}
+            branch_names = [name for name, _ in vae.decoder.named_parameters()] if float_branch else names
             group = branch["comparison_group"]
             if method == "sensitivity" and group not in profiles:
                 count = min(a, args.profile_n)
@@ -1395,11 +1434,15 @@ def main():
                 heavy_folder=artifact_folder,
                 teacher_targets=teacher_targets if method == 'natural_teacher_rounding' else None)
             rows.extend(branch_rows)
+            if reparameterization is not None:
+                selected['reparameterization'] = reparameterization
+                branch['reparameterization'] = reparameterization
+                save_json(folder / 'selection.json', selected)
             selections[branch["label"]] = selected
             materialize(vae.decoder, branch_names, grids)
             # No bias, norm, or unselected decoder weight may change.
             for name, value in vae.decoder.state_dict().items():
-                if name not in branch_names and not torch.equal(value.cpu(), pristine[name]):
+                if name not in branch_names and name not in reparam_bias_names and not torch.equal(value.cpu(), pristine[name]):
                     raise ValueError(f"Unexpected parameter change: {name}")
             artifact_folder.mkdir(parents=True, exist_ok=True)
             vae.save_pretrained(artifact_folder / "vae", safe_serialization=True)
@@ -1413,7 +1456,7 @@ def main():
                     "adversarial": method == "natural_gan_finetune",
                     "discriminator": "custom patch logistic discriminator, not HiDDeN" if method == "natural_gan_finetune" else None})
             else:
-                export_quantizer(vae, names, grids, artifact_folder)
+                export_quantizer(vae, names, grids, artifact_folder, reparam_bias_names)
             if method in RESIDUAL_METHODS:
                 from safetensors.torch import save_file
                 save_file({"basis": branch_residual.basis.detach().cpu().contiguous()}, str(artifact_folder / "residual_basis.safetensors"))
@@ -1561,6 +1604,8 @@ def main():
             with torch.no_grad():
                 for name in names:
                     vae.decoder.get_parameter(name).copy_(tensors[name + ".codes"].float() * tensors[name + ".scale"])
+                for name in (branch.get('reparameterization') or {}).get('fp32_parameter_names', []):
+                    vae.decoder.get_parameter(name).copy_(tensors[name + '.fp32'])
         quality[branch["label"]] = score(vae, test_z, test_ref, args.strength, args, image_out / branch["label"])
         if not quality[branch["label"]]["feasible"]:
             quality_warning(out, "test_quality", "Branch failed held-out quality gate; results retained",

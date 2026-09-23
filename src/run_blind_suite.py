@@ -22,19 +22,19 @@ def write_json(path, value):
 
 FOCUSED_METHODS = ["--methods", "fixed_ptq", "reconstruction", "--natural-methods",
                    "natural_rounding", "natural_residual", "natural_residual_qat", "natural_full_finetune"]
-SCIENCE_METHODS = ["--methods", "fixed_ptq", "reconstruction", "--natural-methods",
+SCIENCE_METHODS = ["--methods", "fixed_ptq", "qk_rotation_ptq", "reconstruction", "--natural-methods",
     "natural_rounding", "natural_residual", "natural_random_subspace", "natural_frequency_subspace",
     "natural_contrastive_subspace", "natural_full_finetune", "natural_teacher_rounding", "--finetune-rtn-bits", "4",
-    "--quality-constraint", "dual", "--quality-policy", "constrained", "--gradient-diagnostics-every", "100"]
-FULL_METHODS = ["--methods", "fixed_ptq", "reconstruction", "block_reconstruction",
+    "--quality-constraint", "off", "--quality-policy", "constrained", "--gradient-diagnostics-every", "100"]
+FULL_METHODS = ["--methods", "fixed_ptq", "qk_rotation_ptq", "reconstruction", "block_reconstruction",
                 "--natural-methods", "natural_rounding", "natural_rounding_scale", "natural_residual",
                 "natural_qat_purification", "natural_residual_qat", "natural_qat_scale", "natural_gan_qat",
                 "natural_full_finetune", "natural_gan_finetune", "natural_spectral",
                 "natural_random_subspace", "natural_frequency_subspace", "natural_contrastive_subspace", "natural_teacher_rounding",
                 "--finetune-rtn-bits", "4"]
-TRANSFER_METHODS = ["--methods", "fixed_ptq", "reconstruction", "--natural-methods",
+TRANSFER_METHODS = ["--methods", "fixed_ptq", "qk_rotation_ptq", "reconstruction", "--natural-methods",
     "natural_rounding", "natural_residual", "natural_full_finetune", "natural_teacher_rounding",
-    "--finetune-rtn-bits", "4", "--quality-constraint", "dual", "--quality-policy", "constrained",
+    "--finetune-rtn-bits", "4", "--quality-constraint", "off", "--quality-policy", "constrained",
     "--gradient-diagnostics-every", "100", "--teacher-checkpoint-policy", "final"]
 
 
@@ -86,6 +86,8 @@ def collect(run):
             "teacher_checkpoint_policy": (selected.get('teacher_dependency') or {}).get('checkpoint_policy'),
             "teacher_step": (selected.get('teacher_dependency') or {}).get('selected_step'),
             "teacher_search_mse": selected.get('teacher_search_mse'),
+            "reparameterization": (selected.get('reparameterization') or {}).get('kind'),
+            "reparameterization_fp32_max_abs_delta": (selected.get('reparameterization') or {}).get('fp32_probe_max_abs_delta'),
             "teacher_near_identity": ((selected.get('teacher_dependency') or {}).get('target_signal') or {}).get('search', {}).get('near_identity'),
             **{key: row.get(key) for key in fields},
             "quality_violation_fraction": quality.get('quality_violation_fraction'),
@@ -237,7 +239,7 @@ def main():
     p.add_argument('--preservation-weights', type=float, nargs='+', default=[.5],
                    help='Default .5 (one run per seed); pass several values only to request a sweep')
     p.add_argument('--min-ssim', type=float, default=.8,
-                   help='Gate for these NEW runs; default 0.8; report policy still retains failures')
+                   help='Minimum mean SSIM for every branch; default 0.8; per-image dual budget is opt-in')
     p.add_argument('extra', nargs=argparse.REMAINDER)
     args = p.parse_args()
     if len(set(args.seeds)) != len(args.seeds) or min(args.seeds) < 0:

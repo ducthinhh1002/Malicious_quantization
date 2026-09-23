@@ -22,6 +22,7 @@ cũ không tự chạy. Muốn thử mức khác thì truyền `--preservation-w
 | Nhánh | Mục đích |
 |---|---|
 | `fixed_ptq` W4 | RTN không tối ưu |
+| `qk_rotation_ptq` W4 | Đổi cơ sở Q/K giữ nguyên FP32 rồi RTN; model-only, không chọn theo owner |
 | `reconstruction` W4 | Tái tạo đầu ra model đã watermark, model-only |
 | `natural_rounding` W4 | Natural reconstruction + LPIPS, không residual |
 | `natural_residual` W4 | PCA residual |
@@ -32,7 +33,7 @@ cũ không tự chạy. Muốn thử mức khác thì truyền `--preservation-w
 | `natural_finetune_rtn` W4 | RTN trực tiếp checkpoint FP32 vừa chọn bằng SEARCH |
 | `natural_teacher_rounding` W4 | Học rounding của model gốc theo đầu ra teacher FP32 cùng latent generated |
 
-Có 12 đầu ra phương pháp đã chọn; thêm checkpoint cuối nếu khác checkpoint được
+Có 13 đầu ra phương pháp đã chọn; thêm checkpoint cuối nếu khác checkpoint được
 chọn, cùng baseline và pseudo-target diagnostics. Fine-tune → RTN dùng lại quá
 trình học FP32, không train lại. Nó giữ bias/norm đã fine-tune và được ghi nhãn
 threat model rộng hơn quantizer-only. Khi cộng chi phí phải đọc `shares_training_with`.
@@ -113,11 +114,15 @@ Thống kê ổn định split-half của PCA không được gán cho random/DC
 
 ## Chất lượng và cách đọc kết quả
 
-Mặc định `--quality-constraint dual --budget-psnr 30 --budget-ssim .9` thêm penalty
+Mặc định `--quality-constraint off` và SSIM trung bình tối thiểu `.8` cho mọi nhánh;
+PSNR trung bình và PSNR từng ảnh vẫn phải đạt ngưỡng hiện có. Khi bật tường minh
+`--quality-constraint dual --budget-psnr 30 --budget-ssim .8`, hệ thống thêm penalty
 vi phạm trên từng ảnh generated TRAIN. Hệ số tự tăng khi vi phạm, có giới hạn;
 đây là adaptive hinge penalty, không có bảo đảm hội tụ dual hay bảo đảm mọi ảnh
 đều đạt ngưỡng. SSIM được tính có gradient. Bộ chọn SEARCH ưu tiên feasible với
 không quá `--budget-max-violation .1` số ảnh vi phạm, ngoài các gate vốn có.
+Không dùng dual mặc định vì nó sẽ loại điểm `natural_residual` TPR 60/100 ở run
+`131250`: trên SEARCH có 8/20 ảnh dưới SSIM .8 và 11/20 ảnh dưới PSNR 30.
 
 **Không dừng toàn bộ run vì chất lượng thấp.** Nếu không có candidate đạt,
 vẫn xuất fallback và ghi quality failed. Giữ checkpoint cuối cho phân tích nếu

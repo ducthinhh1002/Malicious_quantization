@@ -19,6 +19,10 @@ preservation cũ. [Protocol và lệnh chi tiết](survey/Scientific_Ablations_V
 ghi rõ các nhánh, ngưỡng chất lượng, sweep và đánh giá trên key/checkpoint mới.
 Các mục bên dưới có ghi ngày cũ mô tả cấu hình lịch sử; cấu hình `science` mới
 được ưu tiên khi chạy không truyền flag.
+Mọi nhánh hiện dùng SSIM **trung bình ≥0.80** và các ngưỡng PSNR hiện có.
+`science`/`transfer` không tự bật dual budget theo từng ảnh; nếu bật tường minh,
+`budget_ssim` mặc định cũng là 0.80 với tối đa 10% ảnh vi phạm. Ngưỡng 0.80
+làm kết quả dễ đạt quality gate hơn, không tự làm giảm TPR.
 
 Mặc định research/science hiện là **2.000 update/nhánh**, gồm rounding, QAT
 và fine-tune; tập natural TRAIN vẫn là **4.000 ảnh**, batch 4. Nhánh mới
@@ -39,7 +43,7 @@ Teacher và đối chứng FP32 vẫn cần cho thí nghiệm. Các script legac
 bash run_blind_suite.sh --profile transfer
 ```
 
-Profile này giữ 7 đầu ra đã chọn: fixed W4, reconstruction W4, natural rounding,
+Profile này giữ các đối chứng fixed W4, Q/K rotation W4, reconstruction W4, natural rounding,
 residual W4, FP32 teacher, fine-tune → RTN W4 và teacher → rounding W4; vẫn 2.000
 step và tự evaluate. Student dùng **checkpoint cuối đã định trước** của FP32
 teacher làm mục tiêu, kể cả khi checkpoint FP32 được chọn theo ngưỡng chất lượng
@@ -49,6 +53,10 @@ vẫn báo riêng nếu không đạt. `science` tiếp tục dùng teacher đư
 `teacher_target_diagnostics.json` báo checkpoint và độ khác biệt teacher–model gốc
 trên TRAIN/SEARCH. Đây là lựa chọn chỉ dựa trên ngân sách đã khai báo, không dùng
 owner TEST để chọn teacher.
+`qk_rotation_ptq` là đối chứng model-only mới: quay cùng một cơ sở trực giao
+trên Q/K của attention VAE (kể cả bias), kiểm tra đầu ra FP32 gần như không đổi,
+rồi mới lượng tử hóa W4. Không dùng key, extractor hay ảnh natural để chọn phép
+quay; kết quả của nó cần đo thực nghiệm, không giả định sẽ xóa watermark.
 
 Toàn bộ source chuẩn nằm trong `src/`, gồm launcher, Python module, test, prompt và
 requirements. Có thể chọn trực tiếp folder `src/` để đưa cho LLM khác review. Các

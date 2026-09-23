@@ -135,6 +135,11 @@ def analyze(root, report, manifest, net, key, count, device, image_root, artifac
                 weight = tensors[name] if is_float else tensors[name + ".codes"].float() * tensors[name + ".scale"]
                 errors[name] = weight - pristine[name].to(device)
                 vae.decoder.get_parameter(name).copy_(weight)
+            if not is_float:
+                for name in (branch.get('reparameterization') or {}).get('fp32_parameter_names', []):
+                    bias = tensors[name + '.fp32']
+                    errors[name] = bias - pristine[name].to(device)
+                    vae.decoder.get_parameter(name).copy_(bias)
         del tensors
         for index, (z, ref) in enumerate(zip(latents, references)):
             for row in layer_diagnostics(vae, net, key, z.to(device), ref.to(device), errors, subspace):
