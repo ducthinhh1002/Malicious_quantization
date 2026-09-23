@@ -43,8 +43,8 @@ Teacher và đối chứng FP32 vẫn cần cho thí nghiệm. Các script legac
 bash run_blind_suite.sh --profile transfer
 ```
 
-Profile này giữ các đối chứng fixed W4, Q/K rotation W4, reconstruction W4, natural rounding,
-residual W4, FP32 teacher, fine-tune → RTN W4 và teacher → rounding W4; vẫn 2.000
+Profile này giữ các đối chứng fixed W4, reconstruction W4, natural rounding,
+residual W4, residual → QAT W4, FP32 teacher, fine-tune → RTN W4 và teacher → rounding W4; vẫn 2.000
 step và tự evaluate. Student dùng **checkpoint cuối đã định trước** của FP32
 teacher làm mục tiêu, kể cả khi checkpoint FP32 được chọn theo ngưỡng chất lượng
 là step 0. Chỉ student đạt ngưỡng mới được coi là kết quả hợp lệ; FP32 cuối
@@ -53,7 +53,13 @@ vẫn báo riêng nếu không đạt. `science` tiếp tục dùng teacher đư
 `teacher_target_diagnostics.json` báo checkpoint và độ khác biệt teacher–model gốc
 trên TRAIN/SEARCH. Đây là lựa chọn chỉ dựa trên ngân sách đã khai báo, không dùng
 owner TEST để chọn teacher.
-`qk_rotation_ptq` là đối chứng model-only mới: quay cùng một cơ sở trực giao
+`natural_residual_qat_warm` khởi tạo mã W4 từ checkpoint `natural_residual` đã
+chọn trên SEARCH, rồi học thêm code offset với cùng loss residual. Step 0 của
+nhánh mới phải tái tạo chính xác mã W4 ban đầu; cả hai checkpoint được báo riêng,
+không chọn bằng owner TEST. Đây là phép thử thêm, chưa được chứng minh tốt hơn.
+`qk_rotation_ptq` được giữ trong profile `science` và lệnh tường minh, không còn
+trong `transfer` vì run `152415` cho TPR/bit accuracy gần hệt fixed PTQ.
+Nó là đối chứng model-only: quay cùng một cơ sở trực giao
 trên Q/K của attention VAE (kể cả bias), kiểm tra đầu ra FP32 gần như không đổi,
 rồi mới lượng tử hóa W4. Không dùng key, extractor hay ảnh natural để chọn phép
 quay; kết quả của nó cần đo thực nghiệm, không giả định sẽ xóa watermark.

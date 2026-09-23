@@ -10,7 +10,7 @@ from contextlib import redirect_stdout
 import torch
 from torch import nn
 from torch.func import functional_call
-from wmq_blind import RoundingGrid, pair_metrics, pseudo_target, choose, materialize, parse_method_bit_exclusions
+from wmq_blind import RoundingGrid, pair_metrics, pseudo_target, choose, materialize, parse_method_bit_exclusions, initialize_warm_codes
 
 
 class BlindTests(unittest.TestCase):
@@ -68,6 +68,18 @@ class BlindTests(unittest.TestCase):
         self.assertIsNone(q.alpha.grad)
         self.assertTrue(torch.equal(q.source, weight))
         self.assertGreater(q.code_change_fraction().item(), 0)
+
+    def test_warm_qat_starts_at_frozen_rounding_codes(self):
+        weight = torch.tensor([[-1., .2, .4, 1.]])
+        rounded = RoundingGrid(weight, 4)
+        rounded.alpha.data.fill_(12)
+        codes = (rounded(False) / rounded.scale).round().to(torch.int8)
+        qat = RoundingGrid(weight, 4, learn_code_offsets=True)
+        source = {'codes': {'weight': codes}, 'provenance': {'owner_feedback': False}}
+        initialize_warm_codes([qat], ['weight'], source, 2.)
+        self.assertTrue(torch.equal((qat(False) / qat.scale).round().to(torch.int8), codes))
+        with self.assertRaisesRegex(ValueError, 'complete frozen residual codes'):
+            initialize_warm_codes([qat], ['weight'], {'codes': {}}, 2.)
 
     def test_quality_identity_and_pseudo_control(self):
         x = torch.rand(2, 3, 16, 16)

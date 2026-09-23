@@ -26,6 +26,7 @@ cũ không tự chạy. Muốn thử mức khác thì truyền `--preservation-w
 | `reconstruction` W4 | Tái tạo đầu ra model đã watermark, model-only |
 | `natural_rounding` W4 | Natural reconstruction + LPIPS, không residual |
 | `natural_residual` W4 | PCA residual |
+| `natural_residual_qat_warm` W4 | Khởi tạo từ mã W4 residual đã chọn rồi học code offset; step 0 tái tạo mã nguồn |
 | `natural_random_subspace` W4 × 3 | Subspace ngẫu nhiên cùng rank |
 | `natural_frequency_subspace` W4 | Các hướng DCT tần số cao, cùng rank |
 | `natural_contrastive_subspace` W4 | Hướng residual cao tương đối với texture tự nhiên |
@@ -33,13 +34,15 @@ cũ không tự chạy. Muốn thử mức khác thì truyền `--preservation-w
 | `natural_finetune_rtn` W4 | RTN trực tiếp checkpoint FP32 vừa chọn bằng SEARCH |
 | `natural_teacher_rounding` W4 | Học rounding của model gốc theo đầu ra teacher FP32 cùng latent generated |
 
-Có 13 đầu ra phương pháp đã chọn; thêm checkpoint cuối nếu khác checkpoint được
+Có 14 đầu ra phương pháp đã chọn; thêm checkpoint cuối nếu khác checkpoint được
 chọn, cùng baseline và pseudo-target diagnostics. Fine-tune → RTN dùng lại quá
 trình học FP32, không train lại. Nó giữ bias/norm đã fine-tune và được ghi nhãn
 threat model rộng hơn quantizer-only. Khi cộng chi phí phải đọc `shares_training_with`.
 
-Các nhánh quantizer học chỉ thay đổi rounding; đối chứng residual có cùng rank,
-optimizer, lịch learning rate, minibatch và số update. Chi phí thực tế vẫn khác:
+Nhánh rounding chỉ đổi hướng làm tròn; nhánh QAT warm dùng code offset nhiều ô
+nhưng vẫn xuất W4, không fine-tune bias/norm. Đối chứng residual có cùng rank,
+optimizer, lịch learning rate và minibatch; QAT warm thêm 2.000 update sau nguồn
+residual nên phải tính cả chi phí nguồn. Chi phí thực tế vẫn khác:
 PCA/calibration, gradient diagnostics và FP32 có overhead riêng. W4 là trọng số
 lượng tử hóa được giải lượng tử để tính FP32, không phải tuyên bố kernel INT4.
 

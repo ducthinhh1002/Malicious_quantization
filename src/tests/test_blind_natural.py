@@ -237,8 +237,8 @@ class NaturalTests(unittest.TestCase):
             report = json.loads((out / "report.json").read_text())
             endpoints = [k for k in report['selections'] if k.endswith('_final_test')]
             self.assertGreater(len(endpoints), 0)
-            self.assertEqual(len(report["selections"]), 32 + len(endpoints))
-            self.assertEqual(len(report["branch_quality"]), 34 + len(endpoints))
+            self.assertEqual(len(report["selections"]), 34 + len(endpoints))
+            self.assertEqual(len(report["branch_quality"]), 36 + len(endpoints))
             for label in endpoints:
                 selected = report['selections'][label]
                 self.assertEqual(selected['step'], selected['attempted_updates'])
@@ -278,6 +278,13 @@ class NaturalTests(unittest.TestCase):
             self.assertEqual(derived["step"], report["selections"]["natural_full_finetune_fp32_test"]["step"])
             self.assertEqual(derived["parameter_space"], "finetune_then_rtn")
             self.assertGreater(report["selections"]["natural_residual_qat_w8_c1.0_test"]["gradient_updates"], 0)
+            warm = report['selections']['natural_residual_qat_warm_w4_c1.0_test']
+            self.assertEqual(warm['warm_start_dependency']['source_branch'],
+                             'natural_residual_w4_c1.0_test')
+            self.assertFalse(warm['warm_start_dependency']['owner_feedback'])
+            warm_initial = json.loads((out / 'branches/natural_residual_qat_warm_w4_c1.0/search.json').read_text())[0]
+            source_selected = report['selections']['natural_residual_w4_c1.0_test']
+            self.assertAlmostEqual(warm_initial['psnr'], source_selected['psnr'], places=4)
             basis_path = artifacts / "branches/natural_residual_w8_c1.0/residual_basis.safetensors"
             self.assertTrue(basis_path.is_file())
             calibration = json.loads((out / "branches/natural_residual_w8_c1.0/residual_calibration.json").read_text())

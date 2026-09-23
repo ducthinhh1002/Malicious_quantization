@@ -26,8 +26,8 @@ from wmq_objectives import spectral_loss, NaturalDiscriminator, discriminator_up
 from wmq_science import QualityBudget, audit_prompt_protocol
 
 FLOAT_METHODS = ("natural_full_finetune", "natural_gan_finetune")
-QAT_METHODS = ("natural_qat_purification", "natural_residual_qat", "natural_qat_scale", "natural_gan_qat")
-RESIDUAL_METHODS = ("natural_residual", "natural_residual_qat", "natural_random_subspace",
+QAT_METHODS = ("natural_qat_purification", "natural_residual_qat", "natural_residual_qat_warm", "natural_qat_scale", "natural_gan_qat")
+RESIDUAL_METHODS = ("natural_residual", "natural_residual_qat", "natural_residual_qat_warm", "natural_random_subspace",
                     "natural_frequency_subspace", "natural_contrastive_subspace")
 NATURAL_METHODS = ("natural_rounding", "natural_rounding_scale", "natural_residual",
                    *QAT_METHODS, *FLOAT_METHODS, "natural_spectral",
@@ -304,6 +304,22 @@ def materialize(decoder, names, grids):
 
 
 @torch.no_grad()
+def initialize_warm_codes(grids, names, warm_start, max_shift):
+    if warm_start is None or set(warm_start['codes']) != set(names):
+        raise ValueError('Warm QAT requires complete frozen residual codes')
+    for name, grid in zip(names, grids):
+        codes = warm_start['codes'][name].to(device=grid.source.device, dtype=grid.source.dtype)
+        if codes.shape != grid.source.shape:
+            raise ValueError(f'Warm QAT code shape mismatch: {name}')
+        offset = codes - grid.source / grid.scale
+        if not torch.isfinite(offset).all() or offset.abs().max() > max_shift + 1e-5:
+            raise ValueError(f'Warm QAT code shift exceeds bound: {name}')
+        grid.code_offset.copy_(offset)
+        if not torch.equal((grid(False) / grid.scale).round(), codes):
+            raise ValueError(f'Warm QAT did not reconstruct source codes: {name}')
+
+
+@torch.no_grad()
 def score(vae, latents, refs, strength, args, folder=None):
     psnr, ssim, errors = [], [], []
     texture = []
@@ -441,7 +457,7 @@ def profile_layers(vae, names, latents, refs, bits, clip, args):
 def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
                     args, bits, clip, method, profile, folder, diagnostics_root=None,
                     natural_search=None, preserve_data=None, perceptual=None, residual=None,
-                    heavy_folder=None, teacher_targets=None):
+                    heavy_folder=None, teacher_targets=None, warm_start=None):
     """Independent initialization, train-only updates, search-only checkpoint choice."""
     device = next(vae.parameters()).device
     block_branch = method == "block_reconstruction"
@@ -463,6 +479,8 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
     grids = nn.ModuleList([FloatWeight(vae.decoder.get_parameter(k)) if float_branch else RoundingGrid(vae.decoder.get_parameter(k), bits, clip,
                            learn_scale=method in ("rounding_scale", "natural_rounding_scale", "natural_qat_scale"),
                            learn_code_offsets=qat_branch) for k in names]).to(device)
+    if method == 'natural_residual_qat_warm':
+        initialize_warm_codes(grids, names, warm_start, args.qat_max_code_shift)
     steering_layers = getattr(args, '_steering_layers', None) if method.startswith('natural_') and not float_branch else None
     if steering_layers is not None:
         unknown = set(steering_layers) - set(names)
@@ -799,6 +817,7 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
                                          (["sequential_block_activation_reconstruction"] if block_branch else []),
                 "gradient_updates": valid_updates if optimizer is not None else 0,
                 "teacher_dependency": teacher_targets['provenance'] if teacher_branch else None,
+                "warm_start_dependency": warm_start['provenance'] if warm_start is not None else None,
                 "teacher_weight": args.teacher_weight if teacher_branch else 0.,
                 "teacher_search_image_forwards": len(rows) * len(search_z) if teacher_branch else 0,
                 "objective": "generated_teacher_distillation_plus_natural_reconstruction" if teacher_branch else ("natural_residual_projection" if residual_branch else ("quantization_constrained_natural_purification" if qat_branch else ("unpaired_natural_reconstruction" if natural else ("reconstruction" if method in ("reconstruction", "block_reconstruction") else "blind_smoothing_proxy")))),
@@ -831,6 +850,7 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
                     "natural_gan_qat": ["bounded_multi_cell_code_offsets"],
                     "natural_gan_finetune": ["all_decoder_parameters_including_bias_and_norm"],
                     "natural_residual_qat": ["bounded_multi_cell_code_offsets"],
+                    "natural_residual_qat_warm": ["bounded_multi_cell_code_offsets_from_residual_rounding"],
                     "natural_full_finetune": ["all_decoder_parameters_including_bias_and_norm"],
                     "natural_qat_purification": ["bounded_multi_cell_code_offsets"]}[method],
                 "status": "selected" if best["feasible"] else ("selected_quality_failed" if policy == "report" else "no_feasible_candidate")}
@@ -1010,6 +1030,8 @@ def main():
         raise ValueError("Purified teacher requires natural_full_finetune in --natural-methods")
     if uses_teacher and args.teacher_source == 'purified' and args.teacher_checkpoint_policy == 'final' and not args.evaluate_final:
         raise ValueError("Final teacher checkpoint requires --evaluate-final")
+    if 'natural_residual_qat_warm' in args.natural_methods and 'natural_residual' not in args.natural_methods:
+        raise ValueError("natural_residual_qat_warm requires natural_residual in --natural-methods")
     QualityBudget(args.budget_psnr, args.budget_ssim, args.dual_lr)
     if (not 0 <= args.budget_max_violation <= 1 or args.gradient_diagnostics_every < 0
             or not math.isfinite(args.subspace_ridge) or args.subspace_ridge <= 0
@@ -1424,6 +1446,21 @@ def main():
                     residual_variants[variant_key] = subspace_variant(residual, residual_info, kind,
                         branch.get("subspace_seed", 0), args.subspace_normalize, args.subspace_ridge)
                 branch_residual, branch_residual_info = residual_variants[variant_key]
+            warm_start = None
+            if method == 'natural_residual_qat_warm':
+                from safetensors.torch import load_file
+                source_label = f'natural_residual_w{bits}_c{clip}_test'
+                if source_label not in frozen_branches:
+                    raise RuntimeError(f'Warm QAT source branch unavailable: {source_label}')
+                source_artifact = f'branches/natural_residual_w{bits}_c{clip}/quantizer.safetensors'
+                expected = frozen_branches[source_label]['files_sha256'][source_artifact]
+                source_path = artifact_out / source_artifact
+                if sha(source_path) != expected:
+                    raise ValueError('Warm QAT source artifact changed after selection')
+                source_tensors = load_file(str(source_path), device='cpu')
+                warm_start = {'codes': {name: source_tensors[name + '.codes'] for name in names},
+                    'provenance': {'source_branch': source_label, 'source_step': selections[source_label]['step'],
+                        'quantizer_sha256': expected, 'owner_feedback': False}}
             grids, selected, branch_rows = optimize_branch(
                 vae, branch_names, train_z, train_ref, search_z, search_ref, args,
                 bits, clip, method, profiles.get(group, []), folder, diagnostics_root=out,
@@ -1432,7 +1469,8 @@ def main():
                 perceptual=perceptual if natural else None,
                 residual=branch_residual,
                 heavy_folder=artifact_folder,
-                teacher_targets=teacher_targets if method == 'natural_teacher_rounding' else None)
+                teacher_targets=teacher_targets if method == 'natural_teacher_rounding' else None,
+                warm_start=warm_start)
             rows.extend(branch_rows)
             if reparameterization is not None:
                 selected['reparameterization'] = reparameterization
