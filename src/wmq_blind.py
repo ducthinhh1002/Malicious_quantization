@@ -23,11 +23,15 @@ from torch.func import functional_call
 from wmq_diagnostics import quality_warning
 from wmq_runtime import batches, batch_size, DataCache, all_finite, EVENTS, BATCH_LIMITS, image01, decoded01
 from wmq_objectives import spectral_loss, NaturalDiscriminator, discriminator_update
+from wmq_science import QualityBudget, audit_prompt_protocol
 
 FLOAT_METHODS = ("natural_full_finetune", "natural_gan_finetune")
 QAT_METHODS = ("natural_qat_purification", "natural_residual_qat", "natural_qat_scale", "natural_gan_qat")
+RESIDUAL_METHODS = ("natural_residual", "natural_residual_qat", "natural_random_subspace",
+                    "natural_frequency_subspace", "natural_contrastive_subspace")
 NATURAL_METHODS = ("natural_rounding", "natural_rounding_scale", "natural_residual",
-                   *QAT_METHODS, *FLOAT_METHODS, "natural_spectral")
+                   *QAT_METHODS, *FLOAT_METHODS, "natural_spectral",
+                   "natural_random_subspace", "natural_frequency_subspace", "natural_contrastive_subspace")
 
 
 def parse_method_bit_exclusions(values):
@@ -335,7 +339,13 @@ def score(vae, latents, refs, strength, args, folder=None):
     p, s = torch.tensor(psnr), torch.tensor(ssim)
     feasible = bool(p.mean() >= args.min_psnr and s.mean() >= args.min_ssim
                     and p.min() >= args.min_image_psnr)
+    if getattr(args, "quality_constraint", "off") == "dual":
+        budget_violation = ((p < args.budget_psnr) | (s < args.budget_ssim)).float().mean().item()
+        feasible = feasible and budget_violation <= args.budget_max_violation + 1e-7
+    else:
+        budget_violation = None
     return {"psnr": p.mean().item(), "ssim": s.mean().item(),
+            "budget_violation_fraction": budget_violation,
             "psnr_p05": torch.quantile(p, .05).item(), "min_psnr": p.min().item(),
             "quality_violation_fraction": ((p < args.min_psnr) | (s < args.min_ssim)).float().mean().item(),
             "target_mse": sum(errors) / len(errors), "feasible": feasible,
@@ -463,7 +473,7 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
     rows, updates, best = [], [], None
     best_state = None
     natural = method.startswith("natural_")
-    residual_branch = method in ("natural_residual", "natural_residual_qat")
+    residual_branch = method in RESIDUAL_METHODS
     if residual_branch and residual is None:
         raise ValueError("Residual branch requires a frozen TRAIN-only basis")
     residual_weight = args.residual_weight if residual_branch else 0.
@@ -478,6 +488,7 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
     diagnostics_root = folder if diagnostics_root is None else diagnostics_root
     thresholds = {"min_psnr": args.min_psnr, "min_ssim": args.min_ssim,
                   "min_image_psnr": args.min_image_psnr}
+    budget = QualityBudget(args.budget_psnr, args.budget_ssim, args.dual_lr) if args.quality_constraint == "dual" and natural else None
 
     def evaluate(step, source):
         nonlocal best, best_state
@@ -634,7 +645,7 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
                     residual_loss = residual.loss(raw - ref).mean()
                 if perceptual is not None:
                     perceptual_loss = perceptual(raw.clamp(0, 1) * 2 - 1, ref * 2 - 1).mean()
-                if float_branch and args.ft_preserve_weight == 0:
+                if float_branch and args.ft_preserve_weight == 0 and budget is None:
                     generated = preserve_hidden = None
                     preserve = raw.new_zeros(())
                 else:
@@ -657,6 +668,24 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
             loss = (target_loss + perceptual_weight * perceptual_loss + preserve_weight * preserve +
                     residual_weight * residual_loss + args.qat_trust_weight * trust_loss +
                     spectral_weight * spectrum + (args.adversarial_weight * adversarial if gan_branch else 0.))
+            budget_penalty = raw.new_zeros(())
+            budget_violations = raw.new_zeros(2)
+            if budget is not None:
+                _, preservation_ssim = pair_metrics(generated.clamp(0, 1), preserve_ref)
+                budget_penalty, budget_violations = budget.terms(generated, preserve_ref, preservation_ssim)
+                loss = loss + budget_penalty
+            gradient_diagnostics = {}
+            if args.gradient_diagnostics_every and step % args.gradient_diagnostics_every == 0:
+                # Diagnostics of attacker losses only, never owner gradients.
+                pieces = {"reconstruction": target_loss + perceptual_weight * perceptual_loss,
+                          "residual": residual_weight * residual_loss,
+                          "preservation": preserve_weight * preserve + budget_penalty}
+                for label, component in pieces.items():
+                    if component.requires_grad:
+                        grads = torch.autograd.grad(component, active_params, retain_graph=True, allow_unused=True)
+                        squares = [g.detach().double().square().sum() for g in grads if g is not None]
+                        diagnostic_norm = math.sqrt(float(torch.stack(squares).sum())) if squares else 0.
+                        gradient_diagnostics[label + "_gradient_norm"] = diagnostic_norm if math.isfinite(diagnostic_norm) else None
             train_evaluations += 1
             train_image_forwards += len(indices)
             applied = bool(torch.isfinite(loss))
@@ -691,6 +720,8 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
                 lr_backoff *= .5
                 for group in optimizer.param_groups:
                     group["lr"] *= .5
+            elif budget is not None:
+                budget.update(budget_violations)
             with torch.no_grad():
                 for grid in grids:
                     if float_branch:
@@ -705,6 +736,10 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
                                    residual_loss.detach(), trust_loss.detach(), spectrum.detach(), adversarial.detach(),
                                    grad_norm if grad_norm is not None else raw.new_tensor(float("nan"))]).cpu().tolist()
             updates.append({"step": step, "applied": applied, "reason": reason,
+                            **gradient_diagnostics,
+                            "budget_penalty": float(budget_penalty.detach()) if torch.isfinite(budget_penalty) else None,
+                            "dual_mse": budget.multipliers[0] if budget else None,
+                            "dual_ssim": budget.multipliers[1] if budget else None,
                             "block": block_name,
                             "discriminator_loss": disc_loss, "discriminator_applied": disc_applied,
                             **{k: v if math.isfinite(v) else None for k, v in zip(
@@ -747,6 +782,9 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
                 "gradient_updates": valid_updates if optimizer is not None else 0,
                 "objective": "natural_residual_projection" if residual_branch else ("quantization_constrained_natural_purification" if qat_branch else ("unpaired_natural_reconstruction" if natural else ("reconstruction" if method in ("reconstruction", "block_reconstruction") else "blind_smoothing_proxy"))),
                 "residual_weight": residual_weight,
+                "quality_constraint": args.quality_constraint,
+                "budget_psnr": args.budget_psnr, "budget_ssim": args.budget_ssim,
+                "residual_loss_scale": residual.loss_scale if residual_branch else None,
                 "preservation_mode": "lowpass_8x" if args.natural_preservation == "lowpass" and natural else (args.residual_preservation if residual_branch else ("lowpass_8x" if qat_branch or float_branch else "legacy")),
                 "parameter_space": "unrestricted_fp32_decoder" if float_branch else "quantized_decoder_weights",
                 "learning_rate_peak": base_lr, "lr_schedule": "warmup_cosine" if qat_branch or float_branch else args.lr_schedule,
@@ -762,6 +800,8 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
                     "rounding_scale": ["rounding", "per_channel_scale"], "reconstruction": ["rounding"],
                     "block_reconstruction": ["sequential_block_rounding"],
                     "natural_rounding": ["rounding"], "natural_residual": ["rounding"],
+                    "natural_random_subspace": ["rounding"], "natural_frequency_subspace": ["rounding"],
+                    "natural_contrastive_subspace": ["rounding"],
                     "natural_rounding_scale": ["rounding", "per_channel_scale"],
                     "natural_spectral": ["rounding"],
                     "natural_qat_scale": ["bounded_multi_cell_code_offsets", "per_channel_scale"],
@@ -812,10 +852,32 @@ def export_quantizer(vae, names, grids, folder):
               "execution": "simulated PTQ; dequantized FP32 weights, not a certified backend kernel"})
 
 
+def export_finetune_rtn(vae, names, bits, clip, folder):
+    """Quantize selected weights of an already fine-tuned decoder; keep its learned bias/norm."""
+    from safetensors.torch import save_file
+    before = {k: v.detach().cpu().clone() for k, v in vae.decoder.state_dict().items()}
+    folder.mkdir(parents=True, exist_ok=False)
+    try:
+        grids = nn.ModuleList([RoundingGrid(vae.decoder.get_parameter(k), bits, clip) for k in names])
+        materialize(vae.decoder, names, grids)
+        export_quantizer(vae, names, grids, folder)
+        # Full state is needed: nonquantized bias/norm also changed during FT.
+        save_file({k: v.detach().cpu().contiguous() for k, v in vae.decoder.state_dict().items()},
+                  str(folder / "decoder_fp32.safetensors"))
+        vae.save_pretrained(folder / "vae", safe_serialization=True)
+        save_json(folder / "finetune.json", {"format": "finetune_then_rtn", "bits": bits,
+            "quantized_names": names, "remaining_parameters": "fine-tuned FP32 bias/norm or excluded weights",
+            "threat_model": "unrestricted_finetune_then_quantize_not_quantizer_only"})
+    finally:
+        vae.decoder.load_state_dict(before)
+
+
 def parser():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--model", required=True, help="Local Diffusers pipeline already containing the marked VAE")
     p.add_argument("--prompts", required=True, help="UTF-8 text file; one unique prompt per line")
+    p.add_argument("--evaluation-stage", choices=["development", "final"], default="development")
+    p.add_argument("--development-manifests", nargs="*", default=[])
     p.add_argument("--output", required=True, help="New directory, never overwrite an experiment")
     p.add_argument("--image-output", help="Separate NEW image directory; default output_artifacts/images/<run>")
     p.add_argument("--artifact-output", help="Separate NEW checkpoint directory; default output_artifacts/checkpoints/<run>")
@@ -865,7 +927,7 @@ def parser():
     p.add_argument("--natural-train-n", type=int, help="Natural TRAIN count independent of prompt count; default --train-n")
     p.add_argument("--natural-search-n", type=int, help="Natural SEARCH count independent of prompt count; default --search-n")
     p.add_argument("--natural-methods", nargs="+", choices=NATURAL_METHODS,
-                   default=list(NATURAL_METHODS), help="Natural controls and exploratory objectives; FP32 controls outside bitwidth grid")
+                   default=list(NATURAL_METHODS[:10]), help="Natural controls and exploratory objectives; FP32 controls outside bitwidth grid")
     p.add_argument("--exclude-method-bits", nargs="+", default=[], metavar="METHOD:BITS",
                    help="Do not declare matching quantized branches, independent of clip (for example natural_residual:8)")
     p.add_argument("--natural-resolution", type=int, choices=[256, 512], default=512)
@@ -878,6 +940,16 @@ def parser():
     p.add_argument("--residual-rank", type=int, default=8)
     p.add_argument("--residual-patches-per-image", type=int, default=256)
     p.add_argument("--residual-weight", type=float, default=1., help="Extra projected natural reconstruction loss; 0 for ablation")
+    p.add_argument("--subspace-seeds", type=int, nargs="+", default=[1701, 1702, 1703])
+    p.add_argument("--subspace-normalize", action=argparse.BooleanOptionalAction, default=True)
+    p.add_argument("--subspace-ridge", type=float, default=.01)
+    p.add_argument("--finetune-rtn-bits", type=int, nargs="*", default=[], help="Derive RTN controls from the same selected FP32 decoder; outside quantizer-only threat model")
+    p.add_argument("--quality-constraint", choices=["off", "dual"], default="off")
+    p.add_argument("--budget-psnr", type=float, default=30.)
+    p.add_argument("--budget-ssim", type=float, default=.9)
+    p.add_argument("--budget-max-violation", type=float, default=.1)
+    p.add_argument("--dual-lr", type=float, default=.01)
+    p.add_argument("--gradient-diagnostics-every", type=int, default=0)
     p.add_argument("--residual-preservation", choices=["full", "orthogonal"], default="orthogonal",
                    help="Residual branch only: protect complement plus 0.1 full RGB MSE, or full RGB control")
     p.add_argument("--natural-perceptual-weight", type=float, default=.1,
@@ -899,6 +971,15 @@ def parser():
 
 def main():
     args = parser().parse_args()
+    QualityBudget(args.budget_psnr, args.budget_ssim, args.dual_lr)
+    if (not 0 <= args.budget_max_violation <= 1 or args.gradient_diagnostics_every < 0
+            or not math.isfinite(args.subspace_ridge) or args.subspace_ridge <= 0
+            or any(s < 0 for s in args.subspace_seeds) or len(set(args.subspace_seeds)) != len(args.subspace_seeds)
+            or any(b not in (2, 3, 4, 6, 8) for b in args.finetune_rtn_bits)
+            or len(set(args.finetune_rtn_bits)) != len(args.finetune_rtn_bits)):
+        raise ValueError("Invalid scientific ablation configuration")
+    if args.finetune_rtn_bits and (not args.natural_images or "natural_full_finetune" not in args.natural_methods):
+        raise ValueError("--finetune-rtn-bits requires natural images and natural_full_finetune")
     EVENTS.clear()
     BATCH_LIMITS.clear()
     if args.train_batch_size < 1 or any(not math.isfinite(v) or v < 0 for v in
@@ -936,6 +1017,9 @@ def main():
     if len(prompts) < n or len(set(prompts[:n])) != n:
         raise ValueError(f"Need {n} distinct prompts for disjoint train/search/test splits")
     prompts = prompts[:n]
+    protocol_audit = audit_prompt_protocol(prompts, args.train_n + args.search_n, args.evaluation_stage, args.development_manifests)
+    if args.evaluation_stage == "final" and args.owner_informed_steering_plan:
+        raise ValueError("Owner-informed steering cannot be declared blind final evaluation")
     natural_manifest = natural_image_manifest(args.natural_images, args.natural_train_n or args.train_n,
         args.natural_search_n or args.search_n, args.seed, args.natural_resolution) if args.natural_images else None
     print(f"Training protocol: batch={args.train_batch_size}; rounding steps={args.steps}; "
@@ -1031,7 +1115,7 @@ def main():
                 "ownership_loss": None, "surrogate_transfer_evaluated": False,
                 "git_commit": commit, "script_sha256": sha(script),
                 "helper_sources_sha256": {name: sha(script.parent / name) for name in
-                    ("wmq_runtime.py", "wmq_diagnostics.py", "wmq_residual.py", "wmq_objectives.py")},
+                    ("wmq_runtime.py", "wmq_diagnostics.py", "wmq_residual.py", "wmq_objectives.py", "wmq_science.py")},
                 "model_files_sha256": {str(p.relative_to(model)): sha(p) for p in sorted(model.rglob("*"))
                       if p.is_file() and p.suffix in (".safetensors", ".bin", ".json")},
                 "prompts": prompts, "seeds": list(range(args.seed, args.seed + n)),
@@ -1077,6 +1161,21 @@ def main():
                      "threat_model": "marked_model_plus_unpaired_natural_images_unrestricted_finetune",
                      "artifact": f"branches/{method}_fp32"})
     manifest["reference_label"] = "marked_reference_test"
+    manifest["evaluation_protocol"] = protocol_audit
+    manifest["derived_control_protocol"] = {"finetune_rtn_bits": args.finetune_rtn_bits,
+        "source": "search-selected natural_full_finetune", "additional_training": False,
+        "owner_feedback": False, "clip": 1., "scope": args.scope}
+    # Random seeds change only the null basis, never prompts/minibatch ordering.
+    expanded_plan = []
+    for branch in plan:
+        if branch["method"] == "natural_random_subspace":
+            for seed in args.subspace_seeds:
+                expanded_plan.append({**branch, "subspace_seed": seed,
+                    "label": branch["label"].removesuffix("_test") + f"_rseed{seed}_test",
+                    "artifact": branch["artifact"] + f"_rseed{seed}"})
+        else:
+            expanded_plan.append(branch)
+    plan = expanded_plan
     manifest["image_root"] = image_location
     manifest["artifact_root"] = artifact_location
     manifest["test_branches"] = [{"label": "marked_reference_test", "role": "reference",
@@ -1139,6 +1238,7 @@ def main():
     search_z, search_ref = zs[a:b], refs[a:b]
     natural_train, natural_search, perceptual = None, None, None
     residual, residual_info = None, None
+    residual_variants = {}
     # Complete model-only controls first. Within each threat model, run lower bitwidth
     # first so an interrupted diagnostic run reaches the stronger compression setting.
     plan.sort(key=lambda branch: (branch["method"].startswith("natural_"), branch["bits"]))
@@ -1185,17 +1285,27 @@ def main():
                     import lpips
                     perceptual = lpips.LPIPS(net="alex", version="0.1").to(args.device).eval().requires_grad_(False)
             train_z, train_ref = natural_train if natural else (zs[:a], refs[:a])
-            if method in ("natural_residual", "natural_residual_qat") and residual is None:
+            if method in RESIDUAL_METHODS and residual is None:
                 from wmq_residual import fit_residual_subspace
                 residual, residual_info = fit_residual_subspace(vae, *natural_train, args.residual_patch,
                     args.residual_rank, args.residual_patches_per_image, args.seed)
+            branch_residual, branch_residual_info = None, None
+            if method in RESIDUAL_METHODS:
+                from wmq_residual import subspace_variant
+                kind = {"natural_random_subspace": "random", "natural_frequency_subspace": "frequency",
+                        "natural_contrastive_subspace": "contrastive"}.get(method, "pca")
+                variant_key = (kind, branch.get("subspace_seed", 0))
+                if variant_key not in residual_variants:
+                    residual_variants[variant_key] = subspace_variant(residual, residual_info, kind,
+                        branch.get("subspace_seed", 0), args.subspace_normalize, args.subspace_ridge)
+                branch_residual, branch_residual_info = residual_variants[variant_key]
             grids, selected, branch_rows = optimize_branch(
                 vae, branch_names, train_z, train_ref, search_z, search_ref, args,
                 bits, clip, method, profiles.get(group, []), folder, diagnostics_root=out,
                 natural_search=natural_search if natural else None,
                 preserve_data=(zs[:a], refs[:a]) if natural else None,
                 perceptual=perceptual if natural else None,
-                residual=residual if method in ("natural_residual", "natural_residual_qat") else None,
+                residual=branch_residual,
                 heavy_folder=artifact_folder)
             rows.extend(branch_rows)
             selections[branch["label"]] = selected
@@ -1217,16 +1327,50 @@ def main():
                     "discriminator": "custom patch logistic discriminator, not HiDDeN" if method == "natural_gan_finetune" else None})
             else:
                 export_quantizer(vae, names, grids, artifact_folder)
-            if method in ("natural_residual", "natural_residual_qat"):
+            if method in RESIDUAL_METHODS:
                 from safetensors.torch import save_file
-                save_file({"basis": residual.basis.detach().cpu().contiguous()}, str(artifact_folder / "residual_basis.safetensors"))
-                save_json(folder / "residual_calibration.json", residual_info)
+                save_file({"basis": branch_residual.basis.detach().cpu().contiguous()}, str(artifact_folder / "residual_basis.safetensors"))
+                save_json(folder / "residual_calibration.json", branch_residual_info)
             frozen_branches[branch["label"]] = {
                 "selected": selected,
                 "files_sha256": {p.relative_to(artifact_out).as_posix(): sha(p)
                                  for p in sorted(artifact_folder.rglob("*")) if p.is_file()},
                 "diagnostic_files_sha256": {p.relative_to(out).as_posix(): sha(p)
                                             for p in sorted(folder.rglob("*")) if p.is_file()}}
+            if method == "natural_full_finetune":
+                for derived_bits in args.finetune_rtn_bits:
+                    derived_started = time.monotonic()
+                    derived_id = f"natural_finetune_rtn_w{derived_bits}_c1.0"
+                    derived_branch = {"label": derived_id + "_test", "method": "natural_finetune_rtn",
+                        "bits": derived_bits, "clip": 1., "artifact": "branches/" + derived_id,
+                        "artifact_format": "decoder_fp32", "parameter_space": "finetune_then_rtn",
+                        "role": "finetune_control", "shares_training_with": branch["label"],
+                        "comparison_group": f"finetune_then_w{derived_bits}_{args.scope}",
+                        "threat_model": "marked_model_plus_unpaired_natural_images_unrestricted_finetune"}
+                    destination = artifact_out / derived_branch["artifact"]
+                    export_finetune_rtn(vae, names, derived_bits, 1., destination)
+                    from safetensors.torch import load_file
+                    vae.decoder.load_state_dict(load_file(str(destination / "decoder_fp32.safetensors"), device=args.device))
+                    derived_quality = score(vae, search_z, search_ref, 0., args)
+                    derived_quality.update(natural_reconstruction_metrics(vae, *natural_search, perceptual,
+                        args.natural_perceptual_weight, args.eval_batch_size))
+                    derived_selected = {**selected, **derived_quality, "method": "natural_finetune_rtn",
+                        "candidate": derived_id + f"_step{selected['step']}",
+                        "bits": derived_bits, "parameter_space": "finetune_then_rtn",
+                        "search_feasible": derived_quality["feasible"], "shares_training_with": branch["label"],
+                        "selected_source": "RTN_of_search_selected_FP32", "additional_training_updates": 0,
+                        "status": "selected" if derived_quality["feasible"] else "selected_quality_failed"}
+                    derived_folder = out / derived_branch["artifact"]
+                    derived_folder.mkdir(parents=True, exist_ok=False)
+                    save_json(derived_folder / "selection.json", derived_selected)
+                    selections[derived_branch["label"]] = derived_selected
+                    frozen_branches[derived_branch["label"]] = {"selected": derived_selected,
+                        "files_sha256": {p.relative_to(artifact_out).as_posix(): sha(p) for p in sorted(destination.rglob("*")) if p.is_file()},
+                        "diagnostic_files_sha256": {p.relative_to(out).as_posix(): sha(p) for p in sorted(derived_folder.rglob("*")) if p.is_file()}}
+                    costs[derived_branch["label"]] = {"shares_training_with": branch["label"],
+                        "post_training_export_and_validation_seconds": time.monotonic() - derived_started}
+                    endpoint_plan.append(derived_branch)
+                    materialize(vae.decoder, branch_names, grids)
             if args.evaluate_final and selected['step'] != selected['attempted_updates']:
                 # Endpoint existence depends only on the predeclared training schedule.
                 # Both artifacts are frozen before any held-out latent/owner feedback.

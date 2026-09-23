@@ -224,6 +224,9 @@ class NaturalTests(unittest.TestCase):
                     "--test-n", "2", "--steps", "1", "--eval-every", "1", "--methods", "rounding",
                     "--gen-batch-size", "2", "--eval-batch-size", "2",
                     "--evaluate-final",
+                    "--natural-methods", *blind.NATURAL_METHODS,
+                    "--finetune-rtn-bits", "4", "--quality-constraint", "dual",
+                    "--gradient-diagnostics-every", "1",
                     "--bits", "8", "4", "--min-psnr", "121", "--min-image-psnr", "121", "--min-ssim", ".001"]
             with fake_diffusers(fake), patch.object(sys, "argv", argv), \
                     patch.object(blind, "cache_natural", tiny_natural), patch.object(blind, "choose", audited_choose), \
@@ -233,8 +236,8 @@ class NaturalTests(unittest.TestCase):
             report = json.loads((out / "report.json").read_text())
             endpoints = [k for k in report['selections'] if k.endswith('_final_test')]
             self.assertGreater(len(endpoints), 0)
-            self.assertEqual(len(report["selections"]), 19 + len(endpoints))
-            self.assertEqual(len(report["branch_quality"]), 21 + len(endpoints))
+            self.assertEqual(len(report["selections"]), 30 + len(endpoints))
+            self.assertEqual(len(report["branch_quality"]), 32 + len(endpoints))
             for label in endpoints:
                 selected = report['selections'][label]
                 self.assertEqual(selected['step'], selected['attempted_updates'])
@@ -255,6 +258,10 @@ class NaturalTests(unittest.TestCase):
             self.assertTrue((fp32 / "decoder_fp32.safetensors").is_file())
             self.assertFalse((fp32 / "quantizer.safetensors").exists())
             self.assertGreater(report["selections"]["natural_full_finetune_fp32_test"]["gradient_updates"], 0)
+            derived = report["selections"]["natural_finetune_rtn_w4_c1.0_test"]
+            self.assertEqual(derived["additional_training_updates"], 0)
+            self.assertEqual(derived["step"], report["selections"]["natural_full_finetune_fp32_test"]["step"])
+            self.assertEqual(derived["parameter_space"], "finetune_then_rtn")
             self.assertGreater(report["selections"]["natural_residual_qat_w8_c1.0_test"]["gradient_updates"], 0)
             basis_path = artifacts / "branches/natural_residual_w8_c1.0/residual_basis.safetensors"
             self.assertTrue(basis_path.is_file())
@@ -274,6 +281,15 @@ class NaturalTests(unittest.TestCase):
                 owner.main()
             result = json.loads((out / "owner_evaluation.json").read_text())
             self.assertLessEqual(result["theoretical_fpr_at_threshold"], .001)
+            self.assertTrue((out / "joint_quality_evasion.csv").is_file())
+            import csv
+            with (out / "joint_quality_evasion.csv").open(newline='') as stream:
+                joint_table = list(csv.DictReader(stream))
+            self.assertEqual(sum(r['primary_budget'] == 'True' for r in joint_table),
+                             len({r['method'] for r in joint_table}))
+            joint_rows = [r for r in result['rows'] if r.get('joint_success_rate') is not None]
+            self.assertTrue(joint_rows)
+            self.assertTrue(all(r['joint_success_rate'] == 0. for r in joint_rows))
             self.assertTrue(all(r["tpr"] == 1. and r["bit_accuracy"] == 0. for r in result["rows"]))
             self.assertTrue(any(r["role"] == "diagnostic" for r in result["rows"]))
             # Relocation can override the path without modifying frozen metadata.

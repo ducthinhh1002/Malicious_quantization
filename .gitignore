@@ -6,3 +6,5 @@ __pycache__/
 /output.zip
 /output_image/
 /output_checkpoint/
+/replication.local.json
+/final_prompts.txt

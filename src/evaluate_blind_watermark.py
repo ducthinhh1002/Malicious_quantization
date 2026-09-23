@@ -1,5 +1,6 @@
 """Owner-only evaluation AFTER model-only selection. Never import from attacker."""
 import argparse
+from wmq_science import joint_quality_evasion
 import csv
 import json
 import hashlib
@@ -324,10 +325,14 @@ def main():
                          "highpass_energy_ratio": float(np.mean(ratios)) if ratios else None,
                          "highpass_mse": float(np.mean([r["highpass_mse"] for r in texture])) if texture else None,
                           "per_image_bit_accuracy": accuracies, "per_image_detected": detected,
-                          "per_image_matches": match_counts})
+                          "per_image_matches": match_counts, "per_image_lpips": perceptual})
     reference_row = next(row for row in rows if row["method"] == reference_label)
     clean_detected = np.array(reference_row["per_image_detected"], dtype=bool)
     reference_valid = reference_row["tpr"] >= args.min_reference_tpr
+    joint_rows = []
+    protocol = manifest.get("args", {})
+    joint_psnr = protocol.get("budget_psnr", 30.) if protocol.get("quality_constraint") == "dual" else protocol.get("min_psnr", 25.)
+    joint_ssim = protocol.get("budget_ssim", .9) if protocol.get("quality_constraint") == "dual" else protocol.get("min_ssim", .9)
     for row in rows:
         row["reference_valid"] = reference_valid
         row.update(paired_bit_statistics(reference_row["per_image_matches"], row["per_image_matches"], len(key)))
@@ -341,6 +346,21 @@ def main():
         row["tpr_drop_ci95_low_pp"], row["tpr_drop_ci95_high_pp"] = 100 * low, 100 * high
         row["bit_accuracy_retained_percent"] = 100 * row["bit_accuracy"] / reference_row["bit_accuracy"] if reference_row["bit_accuracy"] else None
         row["tpr_retained_percent"] = 100 * row["tpr"] / reference_row["tpr"] if reference_row["tpr"] else None
+        quality = report.get("branch_quality", {}).get(row["method"], {})
+        row.update({"joint_success_count": None, "joint_success_denominator": int(clean_detected.sum()),
+                    "joint_success_rate": None, "quality_pass_count": None, "quality_pass_rate": None,
+                    "joint_min_psnr": joint_psnr, "joint_min_ssim": joint_ssim,
+                    "joint_ci95_low": None, "joint_ci95_high": None})
+        if "per_image_psnr" in quality and "per_image_ssim" in quality:
+            result = joint_quality_evasion(clean_detected, flags, quality["per_image_psnr"],
+                                           quality["per_image_ssim"], joint_psnr, joint_ssim)
+            row.update(result)
+            row["joint_ci95_low"], row["joint_ci95_high"] = wilson_interval(result["joint_success_count"], result["joint_success_denominator"])
+            for quality_threshold in sorted({.8, .9, .95, joint_ssim}):
+                point = joint_quality_evasion(clean_detected, flags, quality["per_image_psnr"], quality["per_image_ssim"], joint_psnr, quality_threshold)
+                lo, hi = wilson_interval(point["joint_success_count"], point["joint_success_denominator"])
+                joint_rows.append({"method": row["method"], "reference_valid": reference_valid,
+                                   "primary_budget": quality_threshold == joint_ssim, **point, "ci95_low": lo, "ci95_high": hi})
     negatives = None
     if args.negative_images:
         natural = manifest.get('natural_dataset') or {}
@@ -381,6 +401,11 @@ def main():
         writer = csv.DictWriter(f, fieldnames=fields, extrasaction="ignore")
         writer.writeheader()
         writer.writerows(rows)
+    if joint_rows:
+        with (root / "joint_quality_evasion.csv").open("x", newline="", encoding="utf-8") as f:
+            writer = csv.DictWriter(f, fieldnames=list(joint_rows[0]))
+            writer.writeheader()
+            writer.writerows(joint_rows)
     print(json.dumps([{k: v for k, v in r.items() if k in fields} for r in rows], indent=2))
     if args.mechanism_samples:
         from wmq_owner_mechanism import analyze

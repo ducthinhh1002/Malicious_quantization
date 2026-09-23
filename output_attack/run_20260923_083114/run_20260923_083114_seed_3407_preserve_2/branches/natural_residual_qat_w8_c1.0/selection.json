@@ -1,0 +1,212 @@
+{
+  "candidate": "natural_residual_qat_w8_c1.0_step1000",
+  "source": "natural_residual_qat",
+  "method": "natural_residual_qat",
+  "bits": 8,
+  "clip": 1.0,
+  "step": 1000,
+  "psnr": 38.4806022644043,
+  "ssim": 0.9822637438774109,
+  "psnr_p05": 33.51029586791992,
+  "min_psnr": 33.22303009033203,
+  "quality_violation_fraction": 0.0,
+  "target_mse": 0.0040609723076840964,
+  "feasible": true,
+  "semantic_lowpass_mse": 1.204852546834445e-05,
+  "per_image_psnr": [
+    37.30018615722656,
+    42.369415283203125,
+    33.525413513183594,
+    38.945037841796875,
+    34.82503128051758,
+    38.027671813964844,
+    38.685546875,
+    42.023338317871094,
+    40.96018981933594,
+    41.93700408935547,
+    36.2452278137207,
+    36.042293548583984,
+    36.504634857177734,
+    41.6024169921875,
+    37.898868560791016,
+    37.50627136230469,
+    33.22303009033203,
+    41.89970397949219,
+    43.446659088134766,
+    36.644126892089844
+  ],
+  "per_image_ssim": [
+    0.9721459425693554,
+    0.9966948171580561,
+    0.9745025624408664,
+    0.9875696615223535,
+    0.9646259577132802,
+    0.9809174804182748,
+    0.9760409410717835,
+    0.9838105380749573,
+    0.9770972822402472,
+    0.9913576204420693,
+    0.9843624920651646,
+    0.981557454393336,
+    0.985591478337586,
+    0.9891857625841491,
+    0.9848783633914417,
+    0.9898791977880231,
+    0.9713561397443012,
+    0.9951311355398438,
+    0.9880746928158378,
+    0.9704945878843122
+  ],
+  "per_image_texture": [
+    {
+      "highpass_mse": 9.236529876943678e-05,
+      "highpass_energy_ratio": 0.8281446099281311,
+      "semantic_lowpass_mse": 9.387291356688365e-06
+    },
+    {
+      "highpass_mse": 2.772685547824949e-05,
+      "highpass_energy_ratio": 0.8045294880867004,
+      "semantic_lowpass_mse": 5.001862518838607e-06
+    },
+    {
+      "highpass_mse": 0.00020510016474872828,
+      "highpass_energy_ratio": 0.8787078261375427,
+      "semantic_lowpass_mse": 2.598132414277643e-05
+    },
+    {
+      "highpass_mse": 4.2595071136020124e-05,
+      "highpass_energy_ratio": 0.8070130348205566,
+      "semantic_lowpass_mse": 1.0259204827889334e-05
+    },
+    {
+      "highpass_mse": 0.00015754277410451323,
+      "highpass_energy_ratio": 0.8580162525177002,
+      "semantic_lowpass_mse": 2.2407108190236613e-05
+    },
+    {
+      "highpass_mse": 7.21611431799829e-05,
+      "highpass_energy_ratio": 0.7522662878036499,
+      "semantic_lowpass_mse": 1.6351455997209996e-05
+    },
+    {
+      "highpass_mse": 7.910414569778368e-05,
+      "highpass_energy_ratio": 0.8087980151176453,
+      "semantic_lowpass_mse": 6.106854470999679e-06
+    },
+    {
+      "highpass_mse": 3.644253592938185e-05,
+      "highpass_energy_ratio": 0.8652815222740173,
+      "semantic_lowpass_mse": 3.305676727904938e-06
+    },
+    {
+      "highpass_mse": 4.951040318701416e-05,
+      "highpass_energy_ratio": 0.8279545307159424,
+      "semantic_lowpass_mse": 4.220709342916962e-06
+    },
+    {
+      "highpass_mse": 2.852551369869616e-05,
+      "highpass_energy_ratio": 0.8476769328117371,
+      "semantic_lowpass_mse": 6.782285254303133e-06
+    },
+    {
+      "highpass_mse": 0.00011045918654417619,
+      "highpass_energy_ratio": 0.8213775753974915,
+      "semantic_lowpass_mse": 1.1076414921262767e-05
+    },
+    {
+      "highpass_mse": 9.380970732308924e-05,
+      "highpass_energy_ratio": 0.8878849744796753,
+      "semantic_lowpass_mse": 3.3060401619877666e-05
+    },
+    {
+      "highpass_mse": 0.000140584132168442,
+      "highpass_energy_ratio": 0.7676287889480591,
+      "semantic_lowpass_mse": 7.364043540292187e-06
+    },
+    {
+      "highpass_mse": 2.296052116435021e-05,
+      "highpass_energy_ratio": 0.8554749488830566,
+      "semantic_lowpass_mse": 1.1784472008002922e-05
+    },
+    {
+      "highpass_mse": 5.8269721193937585e-05,
+      "highpass_energy_ratio": 0.8475987315177917,
+      "semantic_lowpass_mse": 1.895038440125063e-05
+    },
+    {
+      "highpass_mse": 7.904990343376994e-05,
+      "highpass_energy_ratio": 0.8855887651443481,
+      "semantic_lowpass_mse": 1.3174465493648313e-05
+    },
+    {
+      "highpass_mse": 0.0002498556859791279,
+      "highpass_energy_ratio": 0.8753437399864197,
+      "semantic_lowpass_mse": 1.6257994502666406e-05
+    },
+    {
+      "highpass_mse": 2.8678023227257654e-05,
+      "highpass_energy_ratio": 0.8396469354629517,
+      "semantic_lowpass_mse": 4.9963282435783185e-06
+    },
+    {
+      "highpass_mse": 2.2381838789442554e-05,
+      "highpass_energy_ratio": 0.860336422920227,
+      "semantic_lowpass_mse": 3.1010645216156263e-06
+    },
+    {
+      "highpass_mse": 0.00012042511662002653,
+      "highpass_energy_ratio": 0.822335958480835,
+      "semantic_lowpass_mse": 1.1401167284930125e-05
+    }
+  ],
+  "generated_reference_mse": 0.0001782950008418993,
+  "natural_validation_mse": 0.0040609723076840964,
+  "natural_validation_lpips": 0.0766442063904833,
+  "natural_validation_residual": 0.026689781692994075,
+  "natural_validation_spectral": null,
+  "selection_objective": 0.03843927169066319,
+  "code_change_fraction_vs_rtn": 0.023607926443219185,
+  "code_offset_rms": 0.034996248106941276,
+  "code_offset_ge_one_fraction": 0.0,
+  "search_feasible": true,
+  "valid_updates": 1000,
+  "steering_layers": null,
+  "steering_threat_model": null,
+  "reconstruction_blocks": [],
+  "optimizer": "adamw",
+  "weight_decay": 0.0,
+  "training_batch_size": 4,
+  "discriminator_valid_updates": 0,
+  "training_pool_images": 4000,
+  "training_examples_seen": 4000,
+  "training_epoch_equivalents": 1.0,
+  "selected_at_budget_boundary": true,
+  "adversarial_weight": 0.0,
+  "spectral_weight": 0.0,
+  "selection_uses_discriminator": false,
+  "paper_reproduction": false,
+  "additional_objectives": [],
+  "gradient_updates": 1000,
+  "objective": "natural_residual_projection",
+  "residual_weight": 1.0,
+  "preservation_mode": "lowpass_8x",
+  "parameter_space": "quantized_decoder_weights",
+  "learning_rate_peak": 0.001,
+  "lr_schedule": "warmup_cosine",
+  "objective_strength": 0.0,
+  "quality_policy": "report",
+  "perceptual_weight": 0.1,
+  "selected_source": "natural_residual_qat",
+  "attempted_updates": 1000,
+  "train_evaluations": 2000,
+  "search_evaluations": 11,
+  "train_image_forwards": 8000,
+  "discriminator_image_forwards": 0,
+  "search_image_forwards": 220,
+  "backward_attempts": 1000,
+  "natural_validation_image_forwards": 2816,
+  "optimized_dofs": [
+    "bounded_multi_cell_code_offsets"
+  ],
+  "status": "selected"
+}

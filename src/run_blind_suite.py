@@ -11,6 +11,7 @@ from pathlib import Path
 import subprocess
 import sys
 import time
+import itertools
 
 
 def write_json(path, value):
@@ -20,18 +21,23 @@ def write_json(path, value):
 
 
 FOCUSED_METHODS = ["--methods", "fixed_ptq", "reconstruction", "--natural-methods",
-                   "natural_residual", "natural_residual_qat", "natural_full_finetune",
-                   "--exclude-method-bits", "natural_residual:8", "reconstruction:4", "fixed_ptq:4"]
+                   "natural_rounding", "natural_residual", "natural_residual_qat", "natural_full_finetune"]
+SCIENCE_METHODS = ["--methods", "fixed_ptq", "reconstruction", "--natural-methods",
+    "natural_rounding", "natural_residual", "natural_random_subspace", "natural_frequency_subspace",
+    "natural_contrastive_subspace", "natural_full_finetune", "--finetune-rtn-bits", "4",
+    "--quality-constraint", "dual", "--quality-policy", "constrained", "--gradient-diagnostics-every", "100"]
 FULL_METHODS = ["--methods", "fixed_ptq", "reconstruction", "block_reconstruction",
                 "--natural-methods", "natural_rounding", "natural_rounding_scale", "natural_residual",
                 "natural_qat_purification", "natural_residual_qat", "natural_qat_scale", "natural_gan_qat",
-                "natural_full_finetune", "natural_gan_finetune", "natural_spectral"]
+                "natural_full_finetune", "natural_gan_finetune", "natural_spectral",
+                "natural_random_subspace", "natural_frequency_subspace", "natural_contrastive_subspace",
+                "--finetune-rtn-bits", "4"]
 
 
 def configuration(profile, preserve_weight=2):
     # Same batch, step counts and preservation across natural W4/W8 ablations.
     # GAN has extra discriminator compute; report it, never call costs equal.
-    common = ["--bits", "8", "4", "--quality-policy", "report",
+    common = ["--bits", "8", "4", "--quality-constraint", "off", "--finetune-rtn-bits", "--quality-policy", "report",
               "--optimizer", "adamw", "--weight-decay", "0", "--lr-schedule", "warmup_cosine",
               "--natural-preservation", "lowpass", "--preserve-weight", str(preserve_weight),
               "--qat-semantic-preserve-weight", str(preserve_weight), "--warmup-steps", "20", "--cuda-math", "tf32",
@@ -40,7 +46,7 @@ def configuration(profile, preserve_weight=2):
         return common + FOCUSED_METHODS + ["--steps", "200", "--qat-steps", "200", "--ft-steps", "200",
             "--train-batch-size", "1", "--natural-train-n", "256", "--natural-search-n", "64",
             "--eval-every", "50", "--ft-lr", ".0005", "--natural-resolution", "512"]
-    methods = FULL_METHODS if profile == "full" else FOCUSED_METHODS
+    methods = FULL_METHODS if profile == "full" else (SCIENCE_METHODS + ["--bits", "4"] if profile == "science" else FOCUSED_METHODS)
     return common + methods + ["--steps", "1000", "--qat-steps", "1000", "--ft-steps", "1000",
         "--train-batch-size", "4", "--natural-train-n", "4000", "--natural-search-n", "256",
         "--natural-resolution", "256", "--eval-every", "100", "--ft-lr", ".0005"]
@@ -62,9 +68,14 @@ def collect(run):
                   'test_quality_valid', 'search_quality_valid', 'reference_valid',
                   'evasion_on_originally_detected', 'tpr_drop_percentage_points',
                   'tpr_drop_ci95_low_pp', 'tpr_drop_ci95_high_pp')
+        fields += ('joint_success_count', 'joint_success_denominator', 'joint_success_rate',
+                   'quality_pass_rate', 'joint_min_psnr', 'joint_min_ssim', 'joint_ci95_low', 'joint_ci95_high')
         result.append({"run": str(run), "seed": manifest['args']['seed'],
             "preserve_weight": manifest['args'].get('preserve_weight'),
             "min_ssim": manifest['args'].get('min_ssim'),
+            "budget_ssim": manifest['args'].get('budget_ssim'),
+            "budget_psnr": manifest['args'].get('budget_psnr'),
+            "shares_training_with": selected.get('shares_training_with'),
             **{key: row.get(key) for key in fields},
             "quality_violation_fraction": quality.get('quality_violation_fraction'),
             "valid_updates": selected.get('valid_updates'),
@@ -104,7 +115,8 @@ def run_live(command, *, stdout, stderr=subprocess.STDOUT, check=False):
     return subprocess.CompletedProcess(command, code)
 
 
-def run_suite(root, seeds, profile, extra, execute, runner=run_live, preservation_weights=None, min_ssim=None):
+def run_suite(root, seeds, profile, extra, execute, runner=run_live, preservation_weights=None, min_ssim=None,
+              quality_budgets=None):
     root.mkdir(parents=True, exist_ok=False)
     script = Path(__file__).resolve().parent / "run_blind_quantization.sh"
     # Prevent overrides that would redirect a run and invalidate its summary.
@@ -118,13 +130,21 @@ def run_suite(root, seeds, profile, extra, execute, runner=run_live, preservatio
     if preservation_weights is not None and any(x.split('=')[0] in ('--preserve-weight', '--qat-semantic-preserve-weight', '--natural-preservation') for x in extra):
         raise ValueError('CLI overrides conflict with declared preservation sweep')
     commands = []
+    budgets = quality_budgets if quality_budgets is not None else [None]
+    if not budgets or len(set(budgets)) != len(budgets) or any(b is not None and (not math.isfinite(b) or not 0 < b < 1) for b in budgets):
+        raise ValueError("Quality budgets must be distinct SSIM values in (0,1)")
+    if quality_budgets is not None and any(x.split('=')[0] in ('--budget-ssim', '--quality-constraint') for x in extra):
+        raise ValueError("CLI overrides conflict with declared quality budget sweep")
     for seed in seeds:
-        for weight in weights:
+        for weight, budget in itertools.product(weights, budgets):
             suffix = f'seed_{seed}' + (f'_preserve_{weight:g}' if weight is not None else '')
+            suffix += f'_ssim{budget:g}' if budget is not None else ''
             output = root / f'{root.name}_{suffix}'
             changes = ['--min-ssim', str(min_ssim)] if min_ssim is not None else []
+            if budget is not None:
+                changes += ['--budget-ssim', str(budget), '--quality-constraint', 'dual']
             effective_weight = 2 if weight is None else weight
-            commands.append({'seed': seed, 'preserve_weight': weight, 'run_id': suffix, 'output': str(output),
+            commands.append({'seed': seed, 'preserve_weight': weight, 'budget_ssim': budget, 'run_id': suffix, 'output': str(output),
                 'command': ['bash', str(script), *configuration(profile, effective_weight), *changes,
                             '--seed', str(seed), '--output', str(output), *extra],
                 'status': 'pending' if execute else 'planned_not_executed'})
@@ -200,9 +220,10 @@ def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('--root', type=Path)
     p.add_argument('--seeds', type=int, nargs='+', default=[3407])
-    p.add_argument('--profile', choices=['pilot', 'focused', 'full'], default='focused')
+    p.add_argument('--profile', choices=['pilot', 'focused', 'science', 'full'], default='science')
+    p.add_argument('--quality-budgets', type=float, nargs='+', help='Predeclared SSIM training budgets, e.g. .8 .9 .95')
     p.add_argument('--plan-only', action='store_true')
-    p.add_argument('--preservation-weights', type=float, nargs='+', default=[.5, 2., 8.],
+    p.add_argument('--preservation-weights', type=float, nargs='+', default=[2.],
                    help='Predeclare objective-weight sweep (e.g. .5 2 8); same prompts/seeds, not threshold relabeling')
     p.add_argument('--min-ssim', type=float, default=.8,
                    help='Gate for these NEW runs; default 0.8; report policy still retains failures')
@@ -220,7 +241,8 @@ def main():
     else:
         print(f"Starting attack suite; results: {root.resolve()}", flush=True)
     protocol = run_suite(root.resolve(), args.seeds, args.profile, extra, not args.plan_only,
-                         preservation_weights=args.preservation_weights, min_ssim=args.min_ssim)
+                         preservation_weights=args.preservation_weights, min_ssim=args.min_ssim,
+                         quality_budgets=args.quality_budgets)
     if args.plan_only:
         print("PLAN ONLY: no model, attack, or evaluator was run.")
         print(f"Suite plan: {root.resolve()}")

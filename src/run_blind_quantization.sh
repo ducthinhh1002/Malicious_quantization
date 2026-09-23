@@ -96,11 +96,7 @@ NEGATIVE_N="${WMQ_NEGATIVE_N:-1000}"
 NEGATIVE_IMAGES="${WMQ_NEGATIVE_IMAGES:-}"
 [[ "$NEGATIVE_N" =~ ^[0-9]+$ ]] || { echo "WMQ_NEGATIVE_N must be nonnegative" >&2; exit 2; }
 PROFILE="${WMQ_PROFILE:-research}"
-METHOD_SET="${WMQ_METHOD_SET:-focused}"
-EXPLICIT_BRANCH_EXCLUSIONS=0
-for argument in "$@"; do
-  case "$argument" in --exclude-method-bits|--exclude-method-bits=*) EXPLICIT_BRANCH_EXCLUSIONS=1 ;; esac
-done
+METHOD_SET="${WMQ_METHOD_SET:-science}"
 case "$PROFILE" in
   research)
     profile_defaults=(--steps 1000 --qat-steps 1000 --ft-steps 1000 --eval-every 100
@@ -116,12 +112,20 @@ case "$METHOD_SET" in
     # Evidence-led default: fixed baselines, the useful model-only reconstruction,
     # residual quantizers, and one unrestricted decoder upper-bound control.
     profile_defaults+=(--methods fixed_ptq reconstruction
-      --natural-methods natural_residual natural_residual_qat natural_full_finetune)
-    if [[ "$EXPLICIT_BRANCH_EXCLUSIONS" == "0" ]]; then
-      profile_defaults+=(--exclude-method-bits natural_residual:8 reconstruction:4 fixed_ptq:4)
-    fi ;;
-  full) ;;
-  *) echo "WMQ_METHOD_SET must be focused or full" >&2; exit 2 ;;
+      --natural-methods natural_rounding natural_residual natural_residual_qat natural_full_finetune) ;;
+  science)
+    profile_defaults+=(--bits 4 --methods fixed_ptq reconstruction
+      --natural-methods natural_rounding natural_residual natural_random_subspace natural_frequency_subspace
+        natural_contrastive_subspace natural_full_finetune
+      --quality-constraint dual --quality-policy constrained --gradient-diagnostics-every 100)
+    if [[ "${WMQ_MODEL_ONLY:-0}" != "1" ]]; then profile_defaults+=(--finetune-rtn-bits 4); fi ;;
+  full)
+    profile_defaults+=(--natural-methods natural_rounding natural_rounding_scale natural_residual
+      natural_qat_purification natural_residual_qat natural_qat_scale natural_gan_qat
+      natural_full_finetune natural_gan_finetune natural_spectral natural_random_subspace
+      natural_frequency_subspace natural_contrastive_subspace)
+    if [[ "${WMQ_MODEL_ONLY:-0}" != "1" ]]; then profile_defaults+=(--finetune-rtn-bits 4); fi ;;
+  *) echo "WMQ_METHOD_SET must be science, focused or full" >&2; exit 2 ;;
 esac
 # Explicit CLI flags come last and override profile defaults, including --no-evaluate-final.
 arguments=("${profile_defaults[@]}" "$@")

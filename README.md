@@ -11,9 +11,14 @@ bash run_blind_suite.sh
 Mặc định tương đương:
 
 ```bash
-bash run_blind_suite.sh --seeds 3407 \
-  --preservation-weights 0.5 2 8 --min-ssim 0.8
+bash run_blind_suite.sh --profile science --seeds 3407 --preservation-weights 2
 ```
+
+Mặc định mới là một run W4 với đầy đủ đối chứng khoa học, thay cho ba mức
+preservation cũ. [Protocol và lệnh chi tiết](survey/Scientific_Ablations_VI.md)
+ghi rõ các nhánh, ngưỡng chất lượng, sweep và đánh giá trên key/checkpoint mới.
+Các mục bên dưới có ghi ngày cũ mô tả cấu hình lịch sử; cấu hình `science` mới
+được ưu tiên khi chạy không truyền flag.
 
 Toàn bộ source chuẩn nằm trong `src/`, gồm launcher, Python module, test, prompt và
 requirements. Có thể chọn trực tiếp folder `src/` để đưa cho LLM khác review. Các

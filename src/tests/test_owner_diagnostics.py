@@ -51,6 +51,15 @@ class DiagnosticsTests(unittest.TestCase):
         self.assertTrue(torch.equal(original, vae.decoder.weight))
         self.assertFalse(vae.decoder.weight.requires_grad)
         self.assertIsNone(vae.decoder.weight.grad)
+        from wmq_residual import ResidualSubspace, remove_dc
+        basis = torch.linalg.qr(remove_dc(torch.randn(2, 12), 2).T)[0].T
+        rows = layer_diagnostics(vae, Extractor(), key, torch.rand(1, 3, 12, 12),
+            torch.full((1, 3, 12, 12), .3), {'weight': torch.ones_like(original) * .01},
+            ResidualSubspace(basis, 2))
+        for metric in ('owner_gradient_subspace_fraction', 'quality_gradient_subspace_fraction'):
+            self.assertGreaterEqual(rows[0][metric], 0.)
+            self.assertLessEqual(rows[0][metric], 1. + 1e-6)
+        self.assertTrue(torch.equal(original, vae.decoder.weight))
 
     @unittest.skipUnless(torch.cuda.is_available(), 'CUDA required')
     def test_cuda_endpoint_derivative_matches_finite_difference(self):

@@ -27,7 +27,7 @@ def geometry(error, grad):
     return dot, (dot / (en * gn) if en > 0 and gn > 0 else None), gn
 
 
-def layer_diagnostics(vae, net, key, latent, reference, errors):
+def layer_diagnostics(vae, net, key, latent, reference, errors, subspace=None):
     """Gradient at quantized endpoint. No optimizer and no parameter writes."""
     names = list(errors)
     parameters = [vae.decoder.get_parameter(name) for name in names]
@@ -40,6 +40,15 @@ def layer_diagnostics(vae, net, key, latent, reference, errors):
         std = x.new_tensor([.229, .224, .225])[None, :, None, None]
         own = ownership_score(net((x - mean) / std), key)
         quality = F.mse_loss(x, reference)
+        projection = {"owner_gradient_subspace_fraction": None, "quality_gradient_subspace_fraction": None}
+        if subspace is not None:
+            from wmq_residual import patches
+            for label, objective in (("owner", own), ("quality", quality)):
+                gradient = torch.autograd.grad(objective, x, retain_graph=True)[0]
+                p = patches(gradient, subspace.size)
+                denominator = p.double().square().sum()
+                numerator = (p @ subspace.basis.T).double().square().sum()
+                projection[label + "_gradient_subspace_fraction"] = float(numerator / denominator) if denominator > 0 else None
         go = torch.autograd.grad(own, parameters, retain_graph=True)
         gq = torch.autograd.grad(quality, parameters)
         rows = []
@@ -48,7 +57,7 @@ def layer_diagnostics(vae, net, key, latent, reference, errors):
                 raise ValueError("Nonfinite diagnostic gradient")
             od, oc, on = geometry(errors[name], a)
             qd, qc, qn = geometry(errors[name], b)
-            rows.append({"layer": name, "error_l2": errors[name].double().norm().item(),
+            rows.append({"layer": name, **projection, "error_l2": errors[name].double().norm().item(),
                          "owner_error_dot": od, "owner_error_cosine": oc,
                          "owner_gradient_l2": on, "quality_error_dot": qd,
                          "quality_error_cosine": qc, "quality_gradient_l2": qn,
@@ -115,6 +124,11 @@ def analyze(root, report, manifest, net, key, count, device, image_root, artifac
         is_float = branch.get("artifact_format") == "decoder_fp32"
         tensors = load_file(str(artifacts / branch["artifact"] /
                                 ("decoder_fp32.safetensors" if is_float else "quantizer.safetensors")), device=device)
+        subspace = None
+        basis_file = artifacts / branch["artifact"] / "residual_basis.safetensors"
+        if basis_file.exists():
+            from wmq_residual import ResidualSubspace
+            subspace = ResidualSubspace(load_file(str(basis_file), device=device)["basis"], cfg["residual_patch"])
         errors = {}
         with torch.no_grad():
             for name in ([n for n, _ in vae.decoder.named_parameters()] if is_float else manifest["target_names"]):
@@ -123,8 +137,8 @@ def analyze(root, report, manifest, net, key, count, device, image_root, artifac
                 vae.decoder.get_parameter(name).copy_(weight)
         del tensors
         for index, (z, ref) in enumerate(zip(latents, references)):
-            for row in layer_diagnostics(vae, net, key, z.to(device), ref.to(device), errors):
-                rows.append({"method": branch["label"], "parameter_space": "fp32" if is_float else "quantized",
+            for row in layer_diagnostics(vae, net, key, z.to(device), ref.to(device), errors, subspace):
+                rows.append({"method": branch["label"], "parameter_space": branch.get("parameter_space", "fp32" if is_float else "quantized"),
                              "test_index": index,
                              "seed": manifest["seeds"][start + index], **row})
         print(f"Owner mechanism: {branch['label']}, {count} test samples", flush=True)

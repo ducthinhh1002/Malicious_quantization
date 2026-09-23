@@ -1,0 +1,144 @@
+# Đối chứng và protocol mới
+
+## Chạy mặc định
+
+```bash
+bash run_blind_quantization.sh
+```
+
+Hoặc chạy qua bộ tổng hợp:
+
+```bash
+bash run_blind_suite.sh
+```
+
+Cả hai mặc định dùng `science`: W4, 4.000 ảnh natural TRAIN, 256 natural SEARCH,
+32 prompt TRAIN, 20 SEARCH, 100 TEST, 1.000 update mỗi nhánh học, batch 4,
+natural resolution 256. Các seed subspace là 1701/1702/1703; đây là ba phép lấy
+subspace, không phải ba lần tái lập độc lập của toàn bộ thí nghiệm.
+
+| Nhánh | Mục đích |
+|---|---|
+| `fixed_ptq` W4 | RTN không tối ưu |
+| `reconstruction` W4 | Tái tạo đầu ra model đã watermark, model-only |
+| `natural_rounding` W4 | Natural reconstruction + LPIPS, không residual |
+| `natural_residual` W4 | PCA residual |
+| `natural_random_subspace` W4 × 3 | Subspace ngẫu nhiên cùng rank |
+| `natural_frequency_subspace` W4 | Các hướng DCT tần số cao, cùng rank |
+| `natural_contrastive_subspace` W4 | Hướng residual cao tương đối với texture tự nhiên |
+| `natural_full_finetune` FP32 | Đối chứng thay đổi tự do decoder |
+| `natural_finetune_rtn` W4 | RTN trực tiếp checkpoint FP32 vừa chọn bằng SEARCH |
+
+Có 11 đầu ra phương pháp đã chọn; thêm checkpoint cuối nếu khác checkpoint được
+chọn, cùng baseline và pseudo-target diagnostics. Fine-tune → RTN dùng lại quá
+trình học FP32, không train lại. Nó giữ bias/norm đã fine-tune và được ghi nhãn
+threat model rộng hơn quantizer-only. Khi cộng chi phí phải đọc `shares_training_with`.
+
+Các nhánh quantizer học chỉ thay đổi rounding; đối chứng residual có cùng rank,
+optimizer, lịch learning rate, minibatch và số update. Chi phí thực tế vẫn khác:
+PCA/calibration, gradient diagnostics và FP32 có overhead riêng. W4 là trọng số
+lượng tử hóa được giải lượng tử để tính FP32, không phải tuyên bố kernel INT4.
+
+Các phương pháp cũ vẫn có trong `--profile full` hoặc `WMQ_METHOD_SET=full`.
+`focused` giữ W8/W4 residual/QAT và đối chứng reconstruction. Để chạy riêng
+model-only: `WMQ_MODEL_ONLY=1 bash run_blind_quantization.sh`.
+
+## Phần phương pháp mới cần kiểm chứng
+
+Từ ảnh natural TRAIN và VAE đã watermark, tính residual `D(E(x))-x` và patch
+texture của `x`, loại DC từng kênh. Nhánh contrastive giải bài toán trị riêng tổng
+quát giữa second moment residual và second moment texture có ridge. Sau đó
+trực chuẩn hóa các hướng để tạo projector. Không dùng key hoặc extractor.
+
+Đây là giả thuyết giảm nhiễu texture trong mục tiêu, **chưa chứng minh tìm ra
+ownership subspace**. VAE reconstruction error cũng xuất hiện trong residual.
+PCA, random, DCT và contrastive được chuẩn hóa loss để có cùng năng lượng
+projection baseline trên TRAIN; không dùng SEARCH/TEST để tính hệ số. Cờ
+`--no-subspace-normalize` cho phép ablation tắt chuẩn hóa. DCT chọn các atom
+tần số cao cố định, không phải một control khớp hoàn toàn phổ PCA.
+
+`residual_calibration.json` lưu loại basis, seed, rank, hệ số loss và thống kê.
+Thống kê ổn định split-half của PCA không được gán cho random/DCT/contrastive.
+
+## Chất lượng và cách đọc kết quả
+
+Mặc định `--quality-constraint dual --budget-psnr 30 --budget-ssim .9` thêm penalty
+vi phạm trên từng ảnh generated TRAIN. Hệ số tự tăng khi vi phạm, có giới hạn;
+đây là adaptive hinge penalty, không có bảo đảm hội tụ dual hay bảo đảm mọi ảnh
+đều đạt ngưỡng. SSIM được tính có gradient. Bộ chọn SEARCH ưu tiên feasible với
+không quá `--budget-max-violation .1` số ảnh vi phạm, ngoài các gate vốn có.
+
+**Không dừng toàn bộ run vì chất lượng thấp.** Nếu không có candidate đạt,
+vẫn xuất fallback và ghi quality failed. Giữ checkpoint cuối cho phân tích nếu
+bật `--evaluate-final`. Lỗi dữ liệu, checkpoint hoặc tính toàn vẹn vẫn phải báo lỗi.
+
+`watermark_retention.csv` thêm `joint_success_rate`: số ảnh vừa né detector vừa
+đạt PSNR/SSIM, chia cho **tất cả ảnh reference vốn được phát hiện**. Không bỏ
+ảnh xấu khỏi mẫu số. Có khoảng Wilson 95% và `joint_quality_evasion.csv` cho
+các ngưỡng SSIM .8/.9/.95 cùng ngưỡng chính. Double-tail vẫn hiệu chỉnh ngưỡng
+bit nguyên theo tổng FPR; ngưỡng chất lượng độc lập với ngưỡng detector.
+
+`updates.json` có gradient norm của reconstruction, residual và preservation
+mỗi 100 update; hệ số penalty và penalty loss được lưu. Đây là gradient loss
+của attacker, không phải owner gradient. Owner mechanism analysis bổ sung tỷ
+lệ năng lượng image gradient nằm trong subspace sau khi selection đã freeze.
+Các số này là phân tích endpoint, không phải bằng chứng nhân quả. Mặc định
+owner mechanism vẫn dùng 4 ảnh; tăng bằng `WMQ_MECHANISM_SAMPLES=16` nếu cần.
+
+Sweep ngân sách chất lượng (thực sự thay loss lúc train, không chỉ đổi nhãn):
+
+```bash
+bash run_blind_suite.sh --profile science --seeds 3407 \
+  --quality-budgets .8 .9 .95
+```
+
+Tái lập development nhiều seed:
+
+```bash
+bash run_blind_suite.sh --profile science --seeds 3407 4407 5407
+```
+
+Gắn `--plan-only` để chỉ xuất kế hoạch. Báo cáo toàn bộ seed/budget; không chọn
+winner trên TEST rồi coi cùng TEST là holdout mới. Một seed hoặc 100 ảnh không
+đủ để kết luận ưu thế thống kê chắc chắn.
+
+## Final trên prompt, key và checkpoint mới
+
+Sau khi chốt phương pháp bằng development, tạo prompt chưa trùng với tất cả
+manifest development đã dùng:
+
+```bash
+python src/prepare_final_prompts.py \
+  --development-manifests output_attack/DEV_RUN/manifest.json \
+  --output final_prompts.txt
+```
+
+Pool là các prompt tự biên soạn tổ hợp, không đại diện mọi phân phối thực tế;
+kiểm tra chống trùng dùng văn bản chuẩn hóa, không chứng minh khác biệt ngữ nghĩa.
+Khai báo **tất cả** run development liên quan. Chuẩn bị config dựa trên
+`src/replication.example.json`, điền đường dẫn Linux thực và key của từng model.
+Các checkpoint phải thực sự đã được nhúng key mới; thay chuỗi key trong config
+không tạo được model watermark mới. Không có checkpoint/key mới thì chưa thể
+tuyên bố cross-key replication. Giữ config chứa key ở local.
+
+```bash
+python src/run_blind_replication.py --config replication.local.json \
+  --output output_attack/final_plan --plan-only
+python src/run_blind_replication.py --config replication.local.json \
+  --output output_attack/final_replication
+```
+
+Orchestrator từ chối dùng lại key/VAE development, kiểm tra extractor hash,
+đóng băng plan và chạy đủ asset × seed. Attack nhận model, prompt và manifest;
+key/extractor dành cho owner evaluation cuối run. Source/prompt/VAE bị đổi sau
+khi freeze sẽ bị phát hiện trước run tiếp theo. Không dùng owner-informed
+steering plan trong final. JSON kết quả ở `output_attack`; ảnh/checkpoint/cache
+tiếp tục nằm trong `output_artifacts`. Config mẫu không chứa tài sản chạy thật.
+
+## Kết luận khoa học được phép
+
+Code mới cung cấp các đối chứng cần thiết; nó chưa chứng minh attack mạnh hơn.
+Chỉ kết luận residual có giá trị riêng nếu tốt hơn reconstruction/random/DCT
+ở cùng chất lượng và ngân sách qua nhiều seed. Nếu fine-tune → RTN tốt hơn,
+phải ghi nhận lợi thế của không gian trọng số rộng hơn. Novelty còn cần đối
+chiếu literature và kết quả cross-key/checkpoint thực, không chỉ tên phương pháp.

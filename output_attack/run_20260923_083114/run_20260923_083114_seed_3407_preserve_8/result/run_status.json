@@ -1,0 +1,47 @@
+{
+  "phase": "owner_evaluation_complete",
+  "declared_branches": [
+    "fixed_ptq_w8_c1.0_test",
+    "reconstruction_w8_c1.0_test",
+    "natural_residual_w4_c1.0_test",
+    "natural_residual_qat_w4_c1.0_test",
+    "natural_residual_qat_w8_c1.0_test",
+    "natural_full_finetune_fp32_test"
+  ],
+  "completed_branches": [
+    "fixed_ptq_w8_c1.0_test",
+    "reconstruction_w8_c1.0_test",
+    "natural_residual_w4_c1.0_test",
+    "natural_residual_qat_w4_c1.0_test",
+    "natural_residual_qat_w8_c1.0_test",
+    "natural_full_finetune_fp32_test"
+  ],
+  "failed_branches": [],
+  "current_branch": null,
+  "branch_compute": {
+    "fixed_ptq_w8_c1.0_test": {
+      "search_and_export_seconds_including_profile": 2.1942125763744116,
+      "profile_image_forwards": 0
+    },
+    "reconstruction_w8_c1.0_test": {
+      "search_and_export_seconds_including_profile": 237.25968749448657,
+      "profile_image_forwards": 0
+    },
+    "natural_residual_w4_c1.0_test": {
+      "search_and_export_seconds_including_profile": 461.6938738487661,
+      "profile_image_forwards": 0
+    },
+    "natural_residual_qat_w4_c1.0_test": {
+      "search_and_export_seconds_including_profile": 319.974834760651,
+      "profile_image_forwards": 0
+    },
+    "natural_residual_qat_w8_c1.0_test": {
+      "search_and_export_seconds_including_profile": 319.9105328992009,
+      "profile_image_forwards": 0
+    },
+    "natural_full_finetune_fp32_test": {
+      "search_and_export_seconds_including_profile": 105.71732672303915,
+      "profile_image_forwards": 0
+    }
+  }
+}

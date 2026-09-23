@@ -1,0 +1,1883 @@
+[
+  {
+    "candidate": "natural_residual_qat_w4_c1.0_step0",
+    "source": "rtn_fallback",
+    "method": "natural_residual_qat",
+    "bits": 4,
+    "clip": 1.0,
+    "step": 0,
+    "psnr": 33.35065841674805,
+    "ssim": 0.943604588508606,
+    "psnr_p05": 29.569433212280273,
+    "min_psnr": 28.793678283691406,
+    "quality_violation_fraction": 0.0,
+    "target_mse": 0.004610004772871434,
+    "feasible": true,
+    "semantic_lowpass_mse": 8.52470307108888e-05,
+    "per_image_psnr": [
+      32.79930877685547,
+      37.994503021240234,
+      29.610261917114258,
+      34.05391311645508,
+      30.75762939453125,
+      33.08761978149414,
+      33.256507873535156,
+      35.6290397644043,
+      35.67646408081055,
+      35.11343002319336,
+      31.749717712402344,
+      31.33960723876953,
+      31.27203369140625,
+      35.86460494995117,
+      32.27404022216797,
+      32.23377227783203,
+      28.793678283691406,
+      36.63450622558594,
+      37.01536178588867,
+      31.857223510742188
+    ],
+    "per_image_ssim": [
+      0.9233583216829664,
+      0.9901663892735142,
+      0.9368384757354794,
+      0.9571382078476446,
+      0.9090524317893809,
+      0.9518862072057996,
+      0.9205720910146968,
+      0.934061760295684,
+      0.9301172140542266,
+      0.9563455129441855,
+      0.9509643814668046,
+      0.9291854211173323,
+      0.9575154357080379,
+      0.9615549584937599,
+      0.9482387821278443,
+      0.9615736954310636,
+      0.9200180678834854,
+      0.9793969625281467,
+      0.947641085958821,
+      0.9064669616903831
+    ],
+    "per_image_texture": [
+      {
+        "highpass_mse": 0.0002717244205996394,
+        "highpass_energy_ratio": 0.8871511816978455,
+        "semantic_lowpass_mse": 8.776967297308147e-05
+      },
+      {
+        "highpass_mse": 7.131219899747521e-05,
+        "highpass_energy_ratio": 0.9133891463279724,
+        "semantic_lowpass_mse": 3.3695236197672784e-05
+      },
+      {
+        "highpass_mse": 0.0005361243966035545,
+        "highpass_energy_ratio": 0.8907266855239868,
+        "semantic_lowpass_mse": 0.00014127643953543156
+      },
+      {
+        "highpass_mse": 0.00014952017227187753,
+        "highpass_energy_ratio": 0.8994501829147339,
+        "semantic_lowpass_mse": 6.517647852888331e-05
+      },
+      {
+        "highpass_mse": 0.00046413912787102163,
+        "highpass_energy_ratio": 0.9023115634918213,
+        "semantic_lowpass_mse": 9.965502977138385e-05
+      },
+      {
+        "highpass_mse": 0.00019516839529387653,
+        "highpass_energy_ratio": 0.8685465455055237,
+        "semantic_lowpass_mse": 0.00014950617332942784
+      },
+      {
+        "highpass_mse": 0.000280021398793906,
+        "highpass_energy_ratio": 0.8715887069702148,
+        "semantic_lowpass_mse": 7.165326678659767e-05
+      },
+      {
+        "highpass_mse": 0.0001575643545947969,
+        "highpass_energy_ratio": 0.841360330581665,
+        "semantic_lowpass_mse": 3.825170642812736e-05
+      },
+      {
+        "highpass_mse": 0.00015305679698940367,
+        "highpass_energy_ratio": 0.8739094138145447,
+        "semantic_lowpass_mse": 5.191951277083717e-05
+      },
+      {
+        "highpass_mse": 0.00010330904478905722,
+        "highpass_energy_ratio": 0.8583077192306519,
+        "semantic_lowpass_mse": 9.86920204013586e-05
+      },
+      {
+        "highpass_mse": 0.00034848612267524004,
+        "highpass_energy_ratio": 0.9242236614227295,
+        "semantic_lowpass_mse": 7.50938052078709e-05
+      },
+      {
+        "highpass_mse": 0.0002976765972562134,
+        "highpass_energy_ratio": 0.9174396395683289,
+        "semantic_lowpass_mse": 0.00010445722000440583
+      },
+      {
+        "highpass_mse": 0.0004439199692569673,
+        "highpass_energy_ratio": 0.936504065990448,
+        "semantic_lowpass_mse": 0.00013681288692168891
+      },
+      {
+        "highpass_mse": 7.23385892342776e-05,
+        "highpass_energy_ratio": 0.9047054052352905,
+        "semantic_lowpass_mse": 9.380959090776742e-05
+      },
+      {
+        "highpass_mse": 0.0002063143765553832,
+        "highpass_energy_ratio": 0.8420910239219666,
+        "semantic_lowpass_mse": 0.00013784610200673342
+      },
+      {
+        "highpass_mse": 0.0002755260211415589,
+        "highpass_energy_ratio": 0.9276538491249084,
+        "semantic_lowpass_mse": 8.217728463932872e-05
+      },
+      {
+        "highpass_mse": 0.0007877563475631177,
+        "highpass_energy_ratio": 0.8859155774116516,
+        "semantic_lowpass_mse": 9.575723379384726e-05
+      },
+      {
+        "highpass_mse": 9.367149323225021e-05,
+        "highpass_energy_ratio": 0.886800229549408,
+        "semantic_lowpass_mse": 4.0607788832858205e-05
+      },
+      {
+        "highpass_mse": 0.0001061611546901986,
+        "highpass_energy_ratio": 0.93931645154953,
+        "semantic_lowpass_mse": 2.36816758842906e-05
+      },
+      {
+        "highpass_mse": 0.00038887347909621894,
+        "highpass_energy_ratio": 0.8860797882080078,
+        "semantic_lowpass_mse": 7.710148929618299e-05
+      }
+    ],
+    "generated_reference_mse": 0.0005406524978752714,
+    "natural_validation_mse": 0.004610004772871434,
+    "natural_validation_lpips": 0.08563141724152956,
+    "natural_validation_residual": 0.03147150848292313,
+    "natural_validation_spectral": null,
+    "selection_objective": 0.044815149041369295,
+    "code_change_fraction_vs_rtn": 0.0,
+    "code_offset_rms": 0.0,
+    "code_offset_ge_one_fraction": 0.0
+  },
+  {
+    "candidate": "natural_residual_qat_w4_c1.0_step100",
+    "source": "natural_residual_qat",
+    "method": "natural_residual_qat",
+    "bits": 4,
+    "clip": 1.0,
+    "step": 100,
+    "psnr": 32.21142578125,
+    "ssim": 0.9123870134353638,
+    "psnr_p05": 27.36469078063965,
+    "min_psnr": 26.703474044799805,
+    "quality_violation_fraction": 0.0,
+    "target_mse": 0.003997670727812874,
+    "feasible": true,
+    "semantic_lowpass_mse": 4.136030074732844e-05,
+    "per_image_psnr": [
+      31.175216674804688,
+      36.44789505004883,
+      27.399492263793945,
+      32.76992416381836,
+      28.72199058532715,
+      32.50040054321289,
+      32.14683151245117,
+      34.31735610961914,
+      34.327796936035156,
+      35.225948333740234,
+      30.245349884033203,
+      30.137954711914062,
+      30.834941864013672,
+      35.639835357666016,
+      31.801822662353516,
+      31.214324951171875,
+      26.703474044799805,
+      36.25688552856445,
+      35.80360794067383,
+      30.557451248168945
+    ],
+    "per_image_ssim": [
+      0.868730576707752,
+      0.9854504205261149,
+      0.886795757401651,
+      0.9327982978616033,
+      0.8348435453470046,
+      0.9226399392225632,
+      0.8748392394535585,
+      0.8959651191446825,
+      0.8755721281975677,
+      0.9445328057195659,
+      0.9301619918891909,
+      0.921554078206112,
+      0.9396946434247404,
+      0.955968641808225,
+      0.9323107876526562,
+      0.9464437272918024,
+      0.8567799421631102,
+      0.9754338076792228,
+      0.9203855368380311,
+      0.8468389668517877
+    ],
+    "per_image_texture": [
+      {
+        "highpass_mse": 0.0004384887870401144,
+        "highpass_energy_ratio": 0.7627576589584351,
+        "semantic_lowpass_mse": 3.702318645082414e-05
+      },
+      {
+        "highpass_mse": 0.00011993298539891839,
+        "highpass_energy_ratio": 0.6885547041893005,
+        "semantic_lowpass_mse": 2.478614987921901e-05
+      },
+      {
+        "highpass_mse": 0.0010015801526606083,
+        "highpass_energy_ratio": 0.8419709205627441,
+        "semantic_lowpass_mse": 8.0835037806537e-05
+      },
+      {
+        "highpass_mse": 0.00021874198864679784,
+        "highpass_energy_ratio": 0.7242438793182373,
+        "semantic_lowpass_mse": 5.416900967247784e-05
+      },
+      {
+        "highpass_mse": 0.0007712750229984522,
+        "highpass_energy_ratio": 0.7825552225112915,
+        "semantic_lowpass_mse": 5.759271880378947e-05
+      },
+      {
+        "highpass_mse": 0.00028651522006839514,
+        "highpass_energy_ratio": 0.6112918257713318,
+        "semantic_lowpass_mse": 5.013851841795258e-05
+      },
+      {
+        "highpass_mse": 0.000401180557673797,
+        "highpass_energy_ratio": 0.6937035918235779,
+        "semantic_lowpass_mse": 2.397016760369297e-05
+      },
+      {
+        "highpass_mse": 0.00024123470939230174,
+        "highpass_energy_ratio": 0.7997149229049683,
+        "semantic_lowpass_mse": 1.634277759876568e-05
+      },
+      {
+        "highpass_mse": 0.0002490367623977363,
+        "highpass_energy_ratio": 0.7098568677902222,
+        "semantic_lowpass_mse": 1.616122608538717e-05
+      },
+      {
+        "highpass_mse": 0.000151104322867468,
+        "highpass_energy_ratio": 0.7292924523353577,
+        "semantic_lowpass_mse": 2.7276561013422906e-05
+      },
+      {
+        "highpass_mse": 0.0005144827300682664,
+        "highpass_energy_ratio": 0.7760650515556335,
+        "semantic_lowpass_mse": 4.573868864099495e-05
+      },
+      {
+        "highpass_mse": 0.00042595979175530374,
+        "highpass_energy_ratio": 0.8691465854644775,
+        "semantic_lowpass_mse": 9.190168202621862e-05
+      },
+      {
+        "highpass_mse": 0.0005687164375558496,
+        "highpass_energy_ratio": 0.6652706861495972,
+        "semantic_lowpass_mse": 3.295387432444841e-05
+      },
+      {
+        "highpass_mse": 0.0001039187700371258,
+        "highpass_energy_ratio": 0.7552120685577393,
+        "semantic_lowpass_mse": 5.216462886892259e-05
+      },
+      {
+        "highpass_mse": 0.00030661263735964894,
+        "highpass_energy_ratio": 0.803926408290863,
+        "semantic_lowpass_mse": 5.882352706976235e-05
+      },
+      {
+        "highpass_mse": 0.00039709461270831525,
+        "highpass_energy_ratio": 0.8421224355697632,
+        "semantic_lowpass_mse": 4.856240047956817e-05
+      },
+      {
+        "highpass_mse": 0.0013224116992205381,
+        "highpass_energy_ratio": 0.8516881465911865,
+        "semantic_lowpass_mse": 4.258675471646711e-05
+      },
+      {
+        "highpass_mse": 0.00011630162771325558,
+        "highpass_energy_ratio": 0.7428973317146301,
+        "semantic_lowpass_mse": 2.1166631995583884e-05
+      },
+      {
+        "highpass_mse": 0.00015565892681479454,
+        "highpass_energy_ratio": 0.821506142616272,
+        "semantic_lowpass_mse": 1.3875747754354961e-05
+      },
+      {
+        "highpass_mse": 0.0005624241894111037,
+        "highpass_energy_ratio": 0.7044228911399841,
+        "semantic_lowpass_mse": 3.113672573817894e-05
+      }
+    ],
+    "generated_reference_mse": 0.0007417684821120929,
+    "natural_validation_mse": 0.003997670727812874,
+    "natural_validation_lpips": 0.07312274370633531,
+    "natural_validation_residual": 0.026042739437343698,
+    "natural_validation_spectral": null,
+    "selection_objective": 0.03743540513728476,
+    "code_change_fraction_vs_rtn": 0.007822327315807343,
+    "code_offset_rms": 0.00986269266607844,
+    "code_offset_ge_one_fraction": 0.0
+  },
+  {
+    "candidate": "natural_residual_qat_w4_c1.0_step200",
+    "source": "natural_residual_qat",
+    "method": "natural_residual_qat",
+    "bits": 4,
+    "clip": 1.0,
+    "step": 200,
+    "psnr": 31.33950424194336,
+    "ssim": 0.8886351585388184,
+    "psnr_p05": 26.165117263793945,
+    "min_psnr": 25.608722686767578,
+    "quality_violation_fraction": 0.05000000074505806,
+    "target_mse": 0.003985070249768796,
+    "feasible": true,
+    "semantic_lowpass_mse": 4.3688907044270306e-05,
+    "per_image_psnr": [
+      30.022851943969727,
+      36.215179443359375,
+      26.194400787353516,
+      32.1770133972168,
+      27.41881561279297,
+      31.732486724853516,
+      31.091609954833984,
+      33.235939025878906,
+      33.30767822265625,
+      34.615291595458984,
+      29.295608520507812,
+      29.37410545349121,
+      29.98802375793457,
+      35.28645324707031,
+      30.82674217224121,
+      30.477611541748047,
+      25.608722686767578,
+      35.98487091064453,
+      34.51320266723633,
+      29.423519134521484
+    ],
+    "per_image_ssim": [
+      0.8303358141481129,
+      0.9842337302932372,
+      0.8484688183199368,
+      0.9147244456592437,
+      0.7807377761504372,
+      0.902827138310342,
+      0.8407182621987452,
+      0.8680360929231828,
+      0.8416706616075079,
+      0.932329875895994,
+      0.9131326225705714,
+      0.9016436443618684,
+      0.9267662698732906,
+      0.9475472371119932,
+      0.9163771496195565,
+      0.934374835673538,
+      0.8180911564329053,
+      0.9728534517606194,
+      0.8931308413319292,
+      0.804704831399601
+    ],
+    "per_image_texture": [
+      {
+        "highpass_mse": 0.0005748511757701635,
+        "highpass_energy_ratio": 0.8123030066490173,
+        "semantic_lowpass_mse": 5.007128493161872e-05
+      },
+      {
+        "highpass_mse": 0.0001262585137737915,
+        "highpass_energy_ratio": 0.7167617082595825,
+        "semantic_lowpass_mse": 2.6589979825075716e-05
+      },
+      {
+        "highpass_mse": 0.001355621381662786,
+        "highpass_energy_ratio": 0.882758378982544,
+        "semantic_lowpass_mse": 6.373405631165951e-05
+      },
+      {
+        "highpass_mse": 0.00026922597317025065,
+        "highpass_energy_ratio": 0.7441656589508057,
+        "semantic_lowpass_mse": 4.8704096116125584e-05
+      },
+      {
+        "highpass_mse": 0.001067454693838954,
+        "highpass_energy_ratio": 0.8726766705513,
+        "semantic_lowpass_mse": 5.868153675692156e-05
+      },
+      {
+        "highpass_mse": 0.00035209086490795016,
+        "highpass_energy_ratio": 0.6150997877120972,
+        "semantic_lowpass_mse": 4.976356285624206e-05
+      },
+      {
+        "highpass_mse": 0.0005128249176777899,
+        "highpass_energy_ratio": 0.7272531390190125,
+        "semantic_lowpass_mse": 2.9332979465834796e-05
+      },
+      {
+        "highpass_mse": 0.00030983975739218295,
+        "highpass_energy_ratio": 0.8665429949760437,
+        "semantic_lowpass_mse": 2.1239204215817153e-05
+      },
+      {
+        "highpass_mse": 0.0003122005145996809,
+        "highpass_energy_ratio": 0.7178862690925598,
+        "semantic_lowpass_mse": 2.1718136849813163e-05
+      },
+      {
+        "highpass_mse": 0.00017158685659524053,
+        "highpass_energy_ratio": 0.7612614631652832,
+        "semantic_lowpass_mse": 3.702172398334369e-05
+      },
+      {
+        "highpass_mse": 0.000649962923489511,
+        "highpass_energy_ratio": 0.782665491104126,
+        "semantic_lowpass_mse": 5.020409298595041e-05
+      },
+      {
+        "highpass_mse": 0.0005369411082938313,
+        "highpass_energy_ratio": 0.9119248986244202,
+        "semantic_lowpass_mse": 8.59949504956603e-05
+      },
+      {
+        "highpass_mse": 0.0006965682841837406,
+        "highpass_energy_ratio": 0.6722637414932251,
+        "semantic_lowpass_mse": 3.298045339761302e-05
+      },
+      {
+        "highpass_mse": 0.00012303922267165035,
+        "highpass_energy_ratio": 0.7713353633880615,
+        "semantic_lowpass_mse": 4.096871634828858e-05
+      },
+      {
+        "highpass_mse": 0.0003906642086803913,
+        "highpass_energy_ratio": 0.839287281036377,
+        "semantic_lowpass_mse": 7.183167326729745e-05
+      },
+      {
+        "highpass_mse": 0.0004651526396628469,
+        "highpass_energy_ratio": 0.8837522864341736,
+        "semantic_lowpass_mse": 5.72922253923025e-05
+      },
+      {
+        "highpass_mse": 0.0017196726985275745,
+        "highpass_energy_ratio": 0.9343651533126831,
+        "semantic_lowpass_mse": 5.4632015235256404e-05
+      },
+      {
+        "highpass_mse": 0.00012942317698616534,
+        "highpass_energy_ratio": 0.8006372451782227,
+        "semantic_lowpass_mse": 1.5582041669404134e-05
+      },
+      {
+        "highpass_mse": 0.0002084093284793198,
+        "highpass_energy_ratio": 0.8469315767288208,
+        "semantic_lowpass_mse": 2.3173261070041917e-05
+      },
+      {
+        "highpass_mse": 0.0007383201154880226,
+        "highpass_energy_ratio": 0.7806363701820374,
+        "semantic_lowpass_mse": 3.42621497111395e-05
+      }
+    ],
+    "generated_reference_mse": 0.0009319053417129908,
+    "natural_validation_mse": 0.003985070249768796,
+    "natural_validation_lpips": 0.06847756372735603,
+    "natural_validation_residual": 0.025540005877530803,
+    "natural_validation_spectral": null,
+    "selection_objective": 0.03646021031412374,
+    "code_change_fraction_vs_rtn": 0.010998592711985111,
+    "code_offset_rms": 0.013954227253392319,
+    "code_offset_ge_one_fraction": 0.0
+  },
+  {
+    "candidate": "natural_residual_qat_w4_c1.0_step300",
+    "source": "natural_residual_qat",
+    "method": "natural_residual_qat",
+    "bits": 4,
+    "clip": 1.0,
+    "step": 300,
+    "psnr": 30.834918975830078,
+    "ssim": 0.8723968267440796,
+    "psnr_p05": 25.298254013061523,
+    "min_psnr": 24.995548248291016,
+    "quality_violation_fraction": 0.15000000596046448,
+    "target_mse": 0.003929439385274236,
+    "feasible": true,
+    "semantic_lowpass_mse": 5.095962724226411e-05,
+    "per_image_psnr": [
+      29.489749908447266,
+      35.66326904296875,
+      25.314186096191406,
+      31.715068817138672,
+      26.691009521484375,
+      31.295530319213867,
+      30.628734588623047,
+      32.83953857421875,
+      32.92650604248047,
+      34.3301887512207,
+      28.691484451293945,
+      28.909788131713867,
+      29.965879440307617,
+      34.716880798339844,
+      30.182218551635742,
+      30.118864059448242,
+      24.995548248291016,
+      35.267967224121094,
+      33.8629264831543,
+      29.093021392822266
+    ],
+    "per_image_ssim": [
+      0.8042222185276973,
+      0.9823111751938473,
+      0.8143431871776585,
+      0.9013821286574575,
+      0.7411542042726361,
+      0.8910694112811909,
+      0.8193779757916071,
+      0.8502230208199137,
+      0.8239449828826803,
+      0.9246953960210469,
+      0.8989589410906238,
+      0.8894948362836592,
+      0.9270666132713951,
+      0.939542943116106,
+      0.8986177801814738,
+      0.9261835214549586,
+      0.7890550346035138,
+      0.9705463634573334,
+      0.8709439385183982,
+      0.7848026457043192
+    ],
+    "per_image_texture": [
+      {
+        "highpass_mse": 0.0006453933310694993,
+        "highpass_energy_ratio": 0.764350175857544,
+        "semantic_lowpass_mse": 3.986234514741227e-05
+      },
+      {
+        "highpass_mse": 0.0001403522619511932,
+        "highpass_energy_ratio": 0.722204327583313,
+        "semantic_lowpass_mse": 3.801814455073327e-05
+      },
+      {
+        "highpass_mse": 0.0016225164290517569,
+        "highpass_energy_ratio": 0.8929301500320435,
+        "semantic_lowpass_mse": 8.688147499924526e-05
+      },
+      {
+        "highpass_mse": 0.0003079369489569217,
+        "highpass_energy_ratio": 0.7228956818580627,
+        "semantic_lowpass_mse": 4.08896230510436e-05
+      },
+      {
+        "highpass_mse": 0.0012065486516803503,
+        "highpass_energy_ratio": 0.8337839245796204,
+        "semantic_lowpass_mse": 0.00010656438826117665
+      },
+      {
+        "highpass_mse": 0.0003877502749674022,
+        "highpass_energy_ratio": 0.5954246520996094,
+        "semantic_lowpass_mse": 5.263324055704288e-05
+      },
+      {
+        "highpass_mse": 0.0005617525894194841,
+        "highpass_energy_ratio": 0.675321102142334,
+        "semantic_lowpass_mse": 2.7285415853839368e-05
+      },
+      {
+        "highpass_mse": 0.00033779171644710004,
+        "highpass_energy_ratio": 0.8050548434257507,
+        "semantic_lowpass_mse": 1.5285415429389104e-05
+      },
+      {
+        "highpass_mse": 0.0003344107826706022,
+        "highpass_energy_ratio": 0.6737340688705444,
+        "semantic_lowpass_mse": 2.7221705749980174e-05
+      },
+      {
+        "highpass_mse": 0.00018908557831309736,
+        "highpass_energy_ratio": 0.7820037603378296,
+        "semantic_lowpass_mse": 3.1191269954433665e-05
+      },
+      {
+        "highpass_mse": 0.0007491554133594036,
+        "highpass_energy_ratio": 0.80715411901474,
+        "semantic_lowpass_mse": 5.507755486178212e-05
+      },
+      {
+        "highpass_mse": 0.000601000152528286,
+        "highpass_energy_ratio": 0.9327263236045837,
+        "semantic_lowpass_mse": 8.99441511137411e-05
+      },
+      {
+        "highpass_mse": 0.0006811032071709633,
+        "highpass_energy_ratio": 0.6875789165496826,
+        "semantic_lowpass_mse": 5.4871685279067606e-05
+      },
+      {
+        "highpass_mse": 0.00013906499953009188,
+        "highpass_energy_ratio": 0.7690315246582031,
+        "semantic_lowpass_mse": 4.65471348434221e-05
+      },
+      {
+        "highpass_mse": 0.0004508951387833804,
+        "highpass_energy_ratio": 0.8571160435676575,
+        "semantic_lowpass_mse": 8.553329826099798e-05
+      },
+      {
+        "highpass_mse": 0.0005149563075974584,
+        "highpass_energy_ratio": 0.9103634357452393,
+        "semantic_lowpass_mse": 5.3069099521962926e-05
+      },
+      {
+        "highpass_mse": 0.0019337460398674011,
+        "highpass_energy_ratio": 0.928740382194519,
+        "semantic_lowpass_mse": 5.685994983650744e-05
+      },
+      {
+        "highpass_mse": 0.0001373848645016551,
+        "highpass_energy_ratio": 0.7902090549468994,
+        "semantic_lowpass_mse": 4.787872239830904e-05
+      },
+      {
+        "highpass_mse": 0.0002440509560983628,
+        "highpass_energy_ratio": 0.8459486961364746,
+        "semantic_lowpass_mse": 1.816152871469967e-05
+      },
+      {
+        "highpass_mse": 0.0007860448095016181,
+        "highpass_energy_ratio": 0.7190609574317932,
+        "semantic_lowpass_mse": 4.541639646049589e-05
+      }
+    ],
+    "generated_reference_mse": 0.0010590056466753595,
+    "natural_validation_mse": 0.003929439385274236,
+    "natural_validation_lpips": 0.0668252316172584,
+    "natural_validation_residual": 0.02506587463864207,
+    "natural_validation_spectral": null,
+    "selection_objective": 0.035779756440126674,
+    "code_change_fraction_vs_rtn": 0.013110805302858353,
+    "code_offset_rms": 0.016650617400775707,
+    "code_offset_ge_one_fraction": 0.0
+  },
+  {
+    "candidate": "natural_residual_qat_w4_c1.0_step400",
+    "source": "natural_residual_qat",
+    "method": "natural_residual_qat",
+    "bits": 4,
+    "clip": 1.0,
+    "step": 400,
+    "psnr": 30.56398582458496,
+    "ssim": 0.8628039360046387,
+    "psnr_p05": 24.99334144592285,
+    "min_psnr": 24.627777099609375,
+    "quality_violation_fraction": 0.20000000298023224,
+    "target_mse": 0.003953301070623638,
+    "feasible": true,
+    "semantic_lowpass_mse": 4.545889314613305e-05,
+    "per_image_psnr": [
+      29.174907684326172,
+      35.52095031738281,
+      25.01258087158203,
+      31.387619018554688,
+      26.282394409179688,
+      30.910655975341797,
+      30.224185943603516,
+      32.51677322387695,
+      32.54507064819336,
+      34.08378219604492,
+      28.420923233032227,
+      28.570938110351562,
+      29.792327880859375,
+      34.55663299560547,
+      30.062137603759766,
+      29.875947952270508,
+      24.627777099609375,
+      35.38115310668945,
+      33.525856018066406,
+      28.8071231842041
+    ],
+    "per_image_ssim": [
+      0.790770180524727,
+      0.9812956874489052,
+      0.8024971654441383,
+      0.8913207738772722,
+      0.7190177871895603,
+      0.8822348625621549,
+      0.8035691544435306,
+      0.8398619667456877,
+      0.8085600690866033,
+      0.9192274873474524,
+      0.8932736043699517,
+      0.8811171884699793,
+      0.9236901478404393,
+      0.936142797305342,
+      0.8969966976971017,
+      0.9199207638571003,
+      0.7708945541030279,
+      0.9685734430673345,
+      0.8593796504300965,
+      0.7677351960383848
+    ],
+    "per_image_texture": [
+      {
+        "highpass_mse": 0.0006962214829400182,
+        "highpass_energy_ratio": 0.7992656230926514,
+        "semantic_lowpass_mse": 4.080243525095284e-05
+      },
+      {
+        "highpass_mse": 0.00014401241787709296,
+        "highpass_energy_ratio": 0.7072128653526306,
+        "semantic_lowpass_mse": 3.54073999915272e-05
+      },
+      {
+        "highpass_mse": 0.0017624888569116592,
+        "highpass_energy_ratio": 0.9341298341751099,
+        "semantic_lowpass_mse": 7.059100607875735e-05
+      },
+      {
+        "highpass_mse": 0.0003327965678181499,
+        "highpass_energy_ratio": 0.7171371579170227,
+        "semantic_lowpass_mse": 3.6085031752008945e-05
+      },
+      {
+        "highpass_mse": 0.0013484975788742304,
+        "highpass_energy_ratio": 0.8937822580337524,
+        "semantic_lowpass_mse": 9.335468348581344e-05
+      },
+      {
+        "highpass_mse": 0.0004161044198554009,
+        "highpass_energy_ratio": 0.6180378794670105,
+        "semantic_lowpass_mse": 6.300479435594752e-05
+      },
+      {
+        "highpass_mse": 0.0006210952997207642,
+        "highpass_energy_ratio": 0.7290129065513611,
+        "semantic_lowpass_mse": 2.7375577701604925e-05
+      },
+      {
+        "highpass_mse": 0.0003621308133006096,
+        "highpass_energy_ratio": 0.8354582786560059,
+        "semantic_lowpass_mse": 1.801070902729407e-05
+      },
+      {
+        "highpass_mse": 0.0003677963395603001,
+        "highpass_energy_ratio": 0.7055313587188721,
+        "semantic_lowpass_mse": 2.4242581275757402e-05
+      },
+      {
+        "highpass_mse": 0.00020123283320572227,
+        "highpass_energy_ratio": 0.7919894456863403,
+        "semantic_lowpass_mse": 3.143716821796261e-05
+      },
+      {
+        "highpass_mse": 0.0008003123803064227,
+        "highpass_energy_ratio": 0.822022020816803,
+        "semantic_lowpass_mse": 5.0132133765146136e-05
+      },
+      {
+        "highpass_mse": 0.0006555432919412851,
+        "highpass_energy_ratio": 0.9450096487998962,
+        "semantic_lowpass_mse": 8.768357656663284e-05
+      },
+      {
+        "highpass_mse": 0.0007159884553402662,
+        "highpass_energy_ratio": 0.6939037442207336,
+        "semantic_lowpass_mse": 4.382780025480315e-05
+      },
+      {
+        "highpass_mse": 0.00014929499593563378,
+        "highpass_energy_ratio": 0.7723375558853149,
+        "semantic_lowpass_mse": 3.7442619941430166e-05
+      },
+      {
+        "highpass_mse": 0.0004749574582092464,
+        "highpass_energy_ratio": 0.859024167060852,
+        "semantic_lowpass_mse": 6.175073212943971e-05
+      },
+      {
+        "highpass_mse": 0.0005545878084376454,
+        "highpass_energy_ratio": 0.911044716835022,
+        "semantic_lowpass_mse": 4.752415406983346e-05
+      },
+      {
+        "highpass_mse": 0.002125011757016182,
+        "highpass_energy_ratio": 0.9647979736328125,
+        "semantic_lowpass_mse": 5.277427771943621e-05
+      },
+      {
+        "highpass_mse": 0.0001450584823032841,
+        "highpass_energy_ratio": 0.7862657904624939,
+        "semantic_lowpass_mse": 2.890901487262454e-05
+      },
+      {
+        "highpass_mse": 0.0002654543495737016,
+        "highpass_energy_ratio": 0.8503264784812927,
+        "semantic_lowpass_mse": 1.620206967345439e-05
+      },
+      {
+        "highpass_mse": 0.0008459774544462562,
+        "highpass_energy_ratio": 0.7512141466140747,
+        "semantic_lowpass_mse": 4.262009679223411e-05
+      }
+    ],
+    "generated_reference_mse": 0.0011364000267349184,
+    "natural_validation_mse": 0.003953301070623638,
+    "natural_validation_lpips": 0.0645173247285129,
+    "natural_validation_residual": 0.024902841458469993,
+    "natural_validation_spectral": null,
+    "selection_objective": 0.03539879278823718,
+    "code_change_fraction_vs_rtn": 0.014545031823217869,
+    "code_offset_rms": 0.018490292146297733,
+    "code_offset_ge_one_fraction": 0.0
+  },
+  {
+    "candidate": "natural_residual_qat_w4_c1.0_step500",
+    "source": "natural_residual_qat",
+    "method": "natural_residual_qat",
+    "bits": 4,
+    "clip": 1.0,
+    "step": 500,
+    "psnr": 30.413936614990234,
+    "ssim": 0.856654167175293,
+    "psnr_p05": 24.794031143188477,
+    "min_psnr": 24.393842697143555,
+    "quality_violation_fraction": 0.30000001192092896,
+    "target_mse": 0.003909747715937328,
+    "feasible": true,
+    "semantic_lowpass_mse": 5.270146739349002e-05,
+    "per_image_psnr": [
+      29.035999298095703,
+      35.31917953491211,
+      24.815093994140625,
+      31.19452667236328,
+      26.139554977416992,
+      30.84113311767578,
+      30.140567779541016,
+      32.34431457519531,
+      32.53165817260742,
+      33.99746322631836,
+      28.227344512939453,
+      28.483901977539062,
+      29.633846282958984,
+      34.38717269897461,
+      29.857524871826172,
+      29.701866149902344,
+      24.393842697143555,
+      35.23107147216797,
+      33.32261657714844,
+      28.680028915405273
+    ],
+    "per_image_ssim": [
+      0.7822435153296728,
+      0.9807323421480754,
+      0.7916675743732694,
+      0.8860782385347843,
+      0.7058207480004054,
+      0.8784998258111473,
+      0.7954737162708072,
+      0.8319315434955971,
+      0.8044768041595918,
+      0.9156518101748513,
+      0.8861229533805679,
+      0.8776965800285177,
+      0.9212078585816301,
+      0.9329865635482378,
+      0.8917063229337371,
+      0.9159805351941047,
+      0.7590512575171097,
+      0.9686654366320332,
+      0.8499117221091759,
+      0.7571793257283105
+    ],
+    "per_image_texture": [
+      {
+        "highpass_mse": 0.0007165519054979086,
+        "highpass_energy_ratio": 0.7810571193695068,
+        "semantic_lowpass_mse": 4.057511250721291e-05
+      },
+      {
+        "highpass_mse": 0.0001444471417926252,
+        "highpass_energy_ratio": 0.6935223937034607,
+        "semantic_lowpass_mse": 4.9601640057517216e-05
+      },
+      {
+        "highpass_mse": 0.0018240392673760653,
+        "highpass_energy_ratio": 0.9155001640319824,
+        "semantic_lowpass_mse": 8.532876381650567e-05
+      },
+      {
+        "highpass_mse": 0.00034199166111648083,
+        "highpass_energy_ratio": 0.7110399603843689,
+        "semantic_lowpass_mse": 5.096010136185214e-05
+      },
+      {
+        "highpass_mse": 0.0013752904487773776,
+        "highpass_energy_ratio": 0.8466343283653259,
+        "semantic_lowpass_mse": 0.00011239507875870913
+      },
+      {
+        "highpass_mse": 0.0004266659962013364,
+        "highpass_energy_ratio": 0.5789633393287659,
+        "semantic_lowpass_mse": 5.847258580615744e-05
+      },
+      {
+        "highpass_mse": 0.0006297034560702741,
+        "highpass_energy_ratio": 0.6746016144752502,
+        "semantic_lowpass_mse": 2.6649460778571665e-05
+      },
+      {
+        "highpass_mse": 0.0003722088586073369,
+        "highpass_energy_ratio": 0.802964448928833,
+        "semantic_lowpass_mse": 2.009403397096321e-05
+      },
+      {
+        "highpass_mse": 0.00036557059502229095,
+        "highpass_energy_ratio": 0.6699619293212891,
+        "semantic_lowpass_mse": 2.7271706130704843e-05
+      },
+      {
+        "highpass_mse": 0.00020355591550469398,
+        "highpass_energy_ratio": 0.7718206644058228,
+        "semantic_lowpass_mse": 3.237257624277845e-05
+      },
+      {
+        "highpass_mse": 0.000834004720672965,
+        "highpass_energy_ratio": 0.7940062880516052,
+        "semantic_lowpass_mse": 5.3853942517889664e-05
+      },
+      {
+        "highpass_mse": 0.0006643296219408512,
+        "highpass_energy_ratio": 0.9445719122886658,
+        "semantic_lowpass_mse": 8.930973126552999e-05
+      },
+      {
+        "highpass_mse": 0.000721556309144944,
+        "highpass_energy_ratio": 0.6649600863456726,
+        "semantic_lowpass_mse": 6.492661486845464e-05
+      },
+      {
+        "highpass_mse": 0.00015154296124819666,
+        "highpass_energy_ratio": 0.7660976052284241,
+        "semantic_lowpass_mse": 4.51106607215479e-05
+      },
+      {
+        "highpass_mse": 0.0004918621852993965,
+        "highpass_energy_ratio": 0.8438596725463867,
+        "semantic_lowpass_mse": 7.364733755821362e-05
+      },
+      {
+        "highpass_mse": 0.0005750996060669422,
+        "highpass_energy_ratio": 0.9039691090583801,
+        "semantic_lowpass_mse": 4.938672645948827e-05
+      },
+      {
+        "highpass_mse": 0.0022301250137388706,
+        "highpass_energy_ratio": 0.9549006819725037,
+        "semantic_lowpass_mse": 6.630519055761397e-05
+      },
+      {
+        "highpass_mse": 0.00014327664393931627,
+        "highpass_energy_ratio": 0.7771338224411011,
+        "semantic_lowpass_mse": 4.204161814413965e-05
+      },
+      {
+        "highpass_mse": 0.0002737383474595845,
+        "highpass_energy_ratio": 0.816728949546814,
+        "semantic_lowpass_mse": 1.782096478564199e-05
+      },
+      {
+        "highpass_mse": 0.0008642824250273407,
+        "highpass_energy_ratio": 0.7140989899635315,
+        "semantic_lowpass_mse": 4.790550156030804e-05
+      }
+    ],
+    "generated_reference_mse": 0.0011800167878391222,
+    "natural_validation_mse": 0.003909747715937328,
+    "natural_validation_lpips": 0.06400079068771447,
+    "natural_validation_residual": 0.024734474000752016,
+    "natural_validation_spectral": null,
+    "selection_objective": 0.035149703720247776,
+    "code_change_fraction_vs_rtn": 0.01564803160727024,
+    "code_offset_rms": 0.01991216432228009,
+    "code_offset_ge_one_fraction": 0.0
+  },
+  {
+    "candidate": "natural_residual_qat_w4_c1.0_step600",
+    "source": "natural_residual_qat",
+    "method": "natural_residual_qat",
+    "bits": 4,
+    "clip": 1.0,
+    "step": 600,
+    "psnr": 30.34206199645996,
+    "ssim": 0.8522505760192871,
+    "psnr_p05": 24.669363021850586,
+    "min_psnr": 24.30975341796875,
+    "quality_violation_fraction": 0.3499999940395355,
+    "target_mse": 0.003895302075704876,
+    "feasible": true,
+    "semantic_lowpass_mse": 4.299467263990664e-05,
+    "per_image_psnr": [
+      28.92292022705078,
+      35.20809555053711,
+      24.688289642333984,
+      31.186580657958984,
+      26.035987854003906,
+      30.847068786621094,
+      30.00545310974121,
+      32.25822448730469,
+      32.44136428833008,
+      33.880775451660156,
+      28.077049255371094,
+      28.386201858520508,
+      29.681108474731445,
+      34.35477828979492,
+      29.82729148864746,
+      29.74087905883789,
+      24.30975341796875,
+      35.270729064941406,
+      33.09520721435547,
+      28.623497009277344
+    ],
+    "per_image_ssim": [
+      0.7757969597087445,
+      0.9800268911230697,
+      0.7845220752941806,
+      0.8827394684496208,
+      0.6954379740853461,
+      0.8763348669558846,
+      0.7874690155960765,
+      0.8269962056419031,
+      0.7970564225675537,
+      0.9133518505836627,
+      0.8822110294782622,
+      0.8753708282071038,
+      0.9207679223590928,
+      0.9331706385697025,
+      0.8903018290873062,
+      0.91394286010986,
+      0.7507503892884667,
+      0.9674130818788859,
+      0.8411401937360009,
+      0.7502107463568514
+    ],
+    "per_image_texture": [
+      {
+        "highpass_mse": 0.0007331824162974954,
+        "highpass_energy_ratio": 0.7677813172340393,
+        "semantic_lowpass_mse": 4.2196668800897896e-05
+      },
+      {
+        "highpass_mse": 0.00015042105223983526,
+        "highpass_energy_ratio": 0.7038124799728394,
+        "semantic_lowpass_mse": 4.3229501898167655e-05
+      },
+      {
+        "highpass_mse": 0.0018860892159864306,
+        "highpass_energy_ratio": 0.9115103483200073,
+        "semantic_lowpass_mse": 6.13643424003385e-05
+      },
+      {
+        "highpass_mse": 0.0003508256922941655,
+        "highpass_energy_ratio": 0.7100929617881775,
+        "semantic_lowpass_mse": 4.0540264308219776e-05
+      },
+      {
+        "highpass_mse": 0.001424579182639718,
+        "highpass_energy_ratio": 0.8421122431755066,
+        "semantic_lowpass_mse": 8.015666389837861e-05
+      },
+      {
+        "highpass_mse": 0.0004314729885663837,
+        "highpass_energy_ratio": 0.583722710609436,
+        "semantic_lowpass_mse": 4.7095585614442825e-05
+      },
+      {
+        "highpass_mse": 0.0006490339292213321,
+        "highpass_energy_ratio": 0.6655229330062866,
+        "semantic_lowpass_mse": 2.4410988771705888e-05
+      },
+      {
+        "highpass_mse": 0.000379747711122036,
+        "highpass_energy_ratio": 0.794884204864502,
+        "semantic_lowpass_mse": 1.7735637811711058e-05
+      },
+      {
+        "highpass_mse": 0.0003773809876292944,
+        "highpass_energy_ratio": 0.6760337948799133,
+        "semantic_lowpass_mse": 1.9275370505056344e-05
+      },
+      {
+        "highpass_mse": 0.00020940188551321626,
+        "highpass_energy_ratio": 0.7732253670692444,
+        "semantic_lowpass_mse": 3.128343087155372e-05
+      },
+      {
+        "highpass_mse": 0.0008709274115972221,
+        "highpass_energy_ratio": 0.8074154853820801,
+        "semantic_lowpass_mse": 4.350292147137225e-05
+      },
+      {
+        "highpass_mse": 0.0006900873268023133,
+        "highpass_energy_ratio": 0.9486437439918518,
+        "semantic_lowpass_mse": 8.329341653734446e-05
+      },
+      {
+        "highpass_mse": 0.0007359045557677746,
+        "highpass_energy_ratio": 0.6766158938407898,
+        "semantic_lowpass_mse": 3.739560997928493e-05
+      },
+      {
+        "highpass_mse": 0.0001552885805722326,
+        "highpass_energy_ratio": 0.7629215121269226,
+        "semantic_lowpass_mse": 4.077099583810195e-05
+      },
+      {
+        "highpass_mse": 0.0004966644337400794,
+        "highpass_energy_ratio": 0.8254416584968567,
+        "semantic_lowpass_mse": 7.227182504720986e-05
+      },
+      {
+        "highpass_mse": 0.0005747778341174126,
+        "highpass_energy_ratio": 0.914530336856842,
+        "semantic_lowpass_mse": 4.29016727139242e-05
+      },
+      {
+        "highpass_mse": 0.002279094886034727,
+        "highpass_energy_ratio": 0.9678388237953186,
+        "semantic_lowpass_mse": 5.356385008781217e-05
+      },
+      {
+        "highpass_mse": 0.00014690090029034764,
+        "highpass_energy_ratio": 0.7740359902381897,
+        "semantic_lowpass_mse": 2.946065433206968e-05
+      },
+      {
+        "highpass_mse": 0.00028877065051347017,
+        "highpass_energy_ratio": 0.8288503289222717,
+        "semantic_lowpass_mse": 1.602176962478552e-05
+      },
+      {
+        "highpass_mse": 0.0008841278031468391,
+        "highpass_energy_ratio": 0.7135609984397888,
+        "semantic_lowpass_mse": 3.34222822857555e-05
+      }
+    ],
+    "generated_reference_mse": 0.0012023699498968198,
+    "natural_validation_mse": 0.003895302075704876,
+    "natural_validation_lpips": 0.06305779156537028,
+    "natural_validation_residual": 0.02458732390471141,
+    "natural_validation_spectral": null,
+    "selection_objective": 0.03487439448223313,
+    "code_change_fraction_vs_rtn": 0.016342053189873695,
+    "code_offset_rms": 0.0207935505374796,
+    "code_offset_ge_one_fraction": 0.0
+  },
+  {
+    "candidate": "natural_residual_qat_w4_c1.0_step700",
+    "source": "natural_residual_qat",
+    "method": "natural_residual_qat",
+    "bits": 4,
+    "clip": 1.0,
+    "step": 700,
+    "psnr": 30.255813598632812,
+    "ssim": 0.8469470143318176,
+    "psnr_p05": 24.486379623413086,
+    "min_psnr": 24.182737350463867,
+    "quality_violation_fraction": 0.3499999940395355,
+    "target_mse": 0.003898775428353929,
+    "feasible": true,
+    "semantic_lowpass_mse": 4.507666717472603e-05,
+    "per_image_psnr": [
+      28.840295791625977,
+      35.428367614746094,
+      24.502361297607422,
+      31.07501220703125,
+      25.81456184387207,
+      30.69995880126953,
+      29.8830623626709,
+      32.15684509277344,
+      32.31182861328125,
+      33.769676208496094,
+      27.952255249023438,
+      28.34104347229004,
+      29.627559661865234,
+      34.316768646240234,
+      29.72364044189453,
+      29.634845733642578,
+      24.182737350463867,
+      35.3768196105957,
+      32.97248077392578,
+      28.50617218017578
+    ],
+    "per_image_ssim": [
+      0.7695370142306137,
+      0.9802723840106056,
+      0.7732788248520418,
+      0.8785515168544402,
+      0.6776214937911504,
+      0.8724029137638943,
+      0.7797455878279715,
+      0.8222061684070375,
+      0.7892249899351494,
+      0.9112920886587524,
+      0.8773696807561587,
+      0.8726015985996757,
+      0.9202714274382852,
+      0.9306509212726761,
+      0.8859149148978226,
+      0.9118091327436852,
+      0.7398154880991571,
+      0.9674764098240639,
+      0.8359217844682185,
+      0.7429771198300251
+    ],
+    "per_image_texture": [
+      {
+        "highpass_mse": 0.0007460839115083218,
+        "highpass_energy_ratio": 0.7551411986351013,
+        "semantic_lowpass_mse": 3.639495116658509e-05
+      },
+      {
+        "highpass_mse": 0.00015022643492557108,
+        "highpass_energy_ratio": 0.7050312757492065,
+        "semantic_lowpass_mse": 3.359901165822521e-05
+      },
+      {
+        "highpass_mse": 0.0019452925771474838,
+        "highpass_energy_ratio": 0.8869209289550781,
+        "semantic_lowpass_mse": 6.635012687183917e-05
+      },
+      {
+        "highpass_mse": 0.00036229321267455816,
+        "highpass_energy_ratio": 0.7055752873420715,
+        "semantic_lowpass_mse": 3.94179041904863e-05
+      },
+      {
+        "highpass_mse": 0.0014877363573759794,
+        "highpass_energy_ratio": 0.829125702381134,
+        "semantic_lowpass_mse": 8.452010661130771e-05
+      },
+      {
+        "highpass_mse": 0.0004446740204002708,
+        "highpass_energy_ratio": 0.588395893573761,
+        "semantic_lowpass_mse": 5.538255936698988e-05
+      },
+      {
+        "highpass_mse": 0.0006680120714008808,
+        "highpass_energy_ratio": 0.6570881605148315,
+        "semantic_lowpass_mse": 2.3391045033349656e-05
+      },
+      {
+        "highpass_mse": 0.0003863451420329511,
+        "highpass_energy_ratio": 0.7812460064888,
+        "semantic_lowpass_mse": 1.9429720850894228e-05
+      },
+      {
+        "highpass_mse": 0.0003877946292050183,
+        "highpass_energy_ratio": 0.6625388860702515,
+        "semantic_lowpass_mse": 2.0203589883749373e-05
+      },
+      {
+        "highpass_mse": 0.0002111661888193339,
+        "highpass_energy_ratio": 0.7789653539657593,
+        "semantic_lowpass_mse": 4.137254654779099e-05
+      },
+      {
+        "highpass_mse": 0.0008890590397641063,
+        "highpass_energy_ratio": 0.7863680720329285,
+        "semantic_lowpass_mse": 5.034543573856354e-05
+      },
+      {
+        "highpass_mse": 0.000701273325830698,
+        "highpass_energy_ratio": 0.9442559480667114,
+        "semantic_lowpass_mse": 8.748471736907959e-05
+      },
+      {
+        "highpass_mse": 0.0007405408541671932,
+        "highpass_energy_ratio": 0.6688445210456848,
+        "semantic_lowpass_mse": 4.926425026496872e-05
+      },
+      {
+        "highpass_mse": 0.00015849567716941237,
+        "highpass_energy_ratio": 0.7566125392913818,
+        "semantic_lowpass_mse": 4.122685641050339e-05
+      },
+      {
+        "highpass_mse": 0.0005109815392643213,
+        "highpass_energy_ratio": 0.8262544274330139,
+        "semantic_lowpass_mse": 7.224194268928841e-05
+      },
+      {
+        "highpass_mse": 0.0005918668466620147,
+        "highpass_energy_ratio": 0.9051925539970398,
+        "semantic_lowpass_mse": 4.706255276687443e-05
+      },
+      {
+        "highpass_mse": 0.0023329053074121475,
+        "highpass_energy_ratio": 0.9440361261367798,
+        "semantic_lowpass_mse": 5.450148455565795e-05
+      },
+      {
+        "highpass_mse": 0.0001471690193284303,
+        "highpass_energy_ratio": 0.7839441299438477,
+        "semantic_lowpass_mse": 2.8137748813605867e-05
+      },
+      {
+        "highpass_mse": 0.00029429857386276126,
+        "highpass_energy_ratio": 0.8174372911453247,
+        "semantic_lowpass_mse": 1.815120776882395e-05
+      },
+      {
+        "highpass_mse": 0.0009050134103745222,
+        "highpass_energy_ratio": 0.6998732089996338,
+        "semantic_lowpass_mse": 3.305558493593708e-05
+      }
+    ],
+    "generated_reference_mse": 0.0012368807452730834,
+    "natural_validation_mse": 0.003898775428353929,
+    "natural_validation_lpips": 0.062418980542133795,
+    "natural_validation_residual": 0.024497889957387997,
+    "natural_validation_spectral": null,
+    "selection_objective": 0.03472871677430476,
+    "code_change_fraction_vs_rtn": 0.016777683049440384,
+    "code_offset_rms": 0.02136960109354565,
+    "code_offset_ge_one_fraction": 0.0
+  },
+  {
+    "candidate": "natural_residual_qat_w4_c1.0_step800",
+    "source": "natural_residual_qat",
+    "method": "natural_residual_qat",
+    "bits": 4,
+    "clip": 1.0,
+    "step": 800,
+    "psnr": 30.263402938842773,
+    "ssim": 0.8462005853652954,
+    "psnr_p05": 24.464799880981445,
+    "min_psnr": 24.13245964050293,
+    "quality_violation_fraction": 0.3499999940395355,
+    "target_mse": 0.003876112261536946,
+    "feasible": true,
+    "semantic_lowpass_mse": 4.311963175496203e-05,
+    "per_image_psnr": [
+      28.78045654296875,
+      35.41978454589844,
+      24.48229217529297,
+      31.132661819458008,
+      25.765491485595703,
+      30.742206573486328,
+      29.848203659057617,
+      32.127437591552734,
+      32.31084060668945,
+      33.86081314086914,
+      27.95503807067871,
+      28.357139587402344,
+      29.682220458984375,
+      34.290313720703125,
+      29.806978225708008,
+      29.647729873657227,
+      24.13245964050293,
+      35.47274398803711,
+      32.94775390625,
+      28.505563735961914
+    ],
+    "per_image_ssim": [
+      0.7682680061101377,
+      0.979975780046521,
+      0.7726787345699069,
+      0.8782757982507715,
+      0.6759147480117219,
+      0.8724558017013407,
+      0.778452908840162,
+      0.8213699585884063,
+      0.7888903632008851,
+      0.9111286738402666,
+      0.8772615737899946,
+      0.8723171753496023,
+      0.919209321593153,
+      0.9298849781245401,
+      0.8865568061362673,
+      0.9112974088543913,
+      0.7379280874973011,
+      0.9667360816968388,
+      0.8343388893661479,
+      0.741070136714119
+    ],
+    "per_image_texture": [
+      {
+        "highpass_mse": 0.0007557118660770357,
+        "highpass_energy_ratio": 0.7660049200057983,
+        "semantic_lowpass_mse": 4.438232281245291e-05
+      },
+      {
+        "highpass_mse": 0.00014939613174647093,
+        "highpass_energy_ratio": 0.6963423490524292,
+        "semantic_lowpass_mse": 3.444536923780106e-05
+      },
+      {
+        "highpass_mse": 0.0019678985700011253,
+        "highpass_energy_ratio": 0.9029610753059387,
+        "semantic_lowpass_mse": 6.720403325743973e-05
+      },
+      {
+        "highpass_mse": 0.0003590238047763705,
+        "highpass_energy_ratio": 0.6976063251495361,
+        "semantic_lowpass_mse": 3.951328471885063e-05
+      },
+      {
+        "highpass_mse": 0.0015121037140488625,
+        "highpass_energy_ratio": 0.8404504656791687,
+        "semantic_lowpass_mse": 9.111829422181472e-05
+      },
+      {
+        "highpass_mse": 0.0004427491803653538,
+        "highpass_energy_ratio": 0.5688254833221436,
+        "semantic_lowpass_mse": 5.222160689299926e-05
+      },
+      {
+        "highpass_mse": 0.0006750387838110328,
+        "highpass_energy_ratio": 0.6633864641189575,
+        "semantic_lowpass_mse": 2.455288267810829e-05
+      },
+      {
+        "highpass_mse": 0.00038791081169620156,
+        "highpass_energy_ratio": 0.7746104598045349,
+        "semantic_lowpass_mse": 2.114363815053366e-05
+      },
+      {
+        "highpass_mse": 0.0003876508853863925,
+        "highpass_energy_ratio": 0.658850908279419,
+        "semantic_lowpass_mse": 2.0925050193909556e-05
+      },
+      {
+        "highpass_mse": 0.00021085713524371386,
+        "highpass_energy_ratio": 0.7697117924690247,
+        "semantic_lowpass_mse": 3.297981675132178e-05
+      },
+      {
+        "highpass_mse": 0.0008913231431506574,
+        "highpass_energy_ratio": 0.7809593677520752,
+        "semantic_lowpass_mse": 5.014457201468758e-05
+      },
+      {
+        "highpass_mse": 0.000707177328877151,
+        "highpass_energy_ratio": 0.9480261206626892,
+        "semantic_lowpass_mse": 7.320477743633091e-05
+      },
+      {
+        "highpass_mse": 0.0007408658275380731,
+        "highpass_energy_ratio": 0.6643841862678528,
+        "semantic_lowpass_mse": 3.2388343242928386e-05
+      },
+      {
+        "highpass_mse": 0.00015960249584168196,
+        "highpass_energy_ratio": 0.7524122595787048,
+        "semantic_lowpass_mse": 3.919832670362666e-05
+      },
+      {
+        "highpass_mse": 0.0005059260292910039,
+        "highpass_energy_ratio": 0.813056468963623,
+        "semantic_lowpass_mse": 5.987175609334372e-05
+      },
+      {
+        "highpass_mse": 0.0005884262500330806,
+        "highpass_energy_ratio": 0.9050517678260803,
+        "semantic_lowpass_mse": 4.869131589657627e-05
+      },
+      {
+        "highpass_mse": 0.0023751084227114916,
+        "highpass_energy_ratio": 0.9599923491477966,
+        "semantic_lowpass_mse": 5.563096783589572e-05
+      },
+      {
+        "highpass_mse": 0.00014543822908308357,
+        "highpass_energy_ratio": 0.7827661633491516,
+        "semantic_lowpass_mse": 2.3076570869307034e-05
+      },
+      {
+        "highpass_mse": 0.0002963420993182808,
+        "highpass_energy_ratio": 0.8119306564331055,
+        "semantic_lowpass_mse": 1.8190534319728613e-05
+      },
+      {
+        "highpass_mse": 0.0009089733357541263,
+        "highpass_energy_ratio": 0.7018266320228577,
+        "semantic_lowpass_mse": 3.350917177158408e-05
+      }
+    ],
+    "generated_reference_mse": 0.0012393854107358494,
+    "natural_validation_mse": 0.003876112261536946,
+    "natural_validation_lpips": 0.06222248004633002,
+    "natural_validation_residual": 0.024425283952837162,
+    "natural_validation_spectral": null,
+    "selection_objective": 0.034609883482517034,
+    "code_change_fraction_vs_rtn": 0.0170452743768692,
+    "code_offset_rms": 0.021715852310207524,
+    "code_offset_ge_one_fraction": 0.0
+  },
+  {
+    "candidate": "natural_residual_qat_w4_c1.0_step900",
+    "source": "natural_residual_qat",
+    "method": "natural_residual_qat",
+    "bits": 4,
+    "clip": 1.0,
+    "step": 900,
+    "psnr": 30.240747451782227,
+    "ssim": 0.8461405038833618,
+    "psnr_p05": 24.466394424438477,
+    "min_psnr": 24.141569137573242,
+    "quality_violation_fraction": 0.3499999940395355,
+    "target_mse": 0.0038661035122231624,
+    "feasible": true,
+    "semantic_lowpass_mse": 4.820735730390879e-05,
+    "per_image_psnr": [
+      28.810338973999023,
+      35.39097213745117,
+      24.483489990234375,
+      31.05060577392578,
+      25.771997451782227,
+      30.724668502807617,
+      29.87017059326172,
+      32.15549087524414,
+      32.25703048706055,
+      33.9196662902832,
+      27.927410125732422,
+      28.336769104003906,
+      29.631593704223633,
+      34.24201202392578,
+      29.722881317138672,
+      29.624191284179688,
+      24.141569137573242,
+      35.344276428222656,
+      32.92719650268555,
+      28.482650756835938
+    ],
+    "per_image_ssim": [
+      0.7688466101109706,
+      0.9800404229827232,
+      0.7727765966369277,
+      0.8772681720958678,
+      0.6774484243591278,
+      0.8723476606378842,
+      0.7786263821526763,
+      0.8221484981751396,
+      0.7880966734835463,
+      0.9113417700863123,
+      0.8772677474116295,
+      0.873254638255466,
+      0.9194972571745138,
+      0.929587623130022,
+      0.8827312393228517,
+      0.9104714988306276,
+      0.7382967840118496,
+      0.9674623802034025,
+      0.8339491793535664,
+      0.7413494514841913
+    ],
+    "per_image_texture": [
+      {
+        "highpass_mse": 0.0007494097808375955,
+        "highpass_energy_ratio": 0.750880241394043,
+        "semantic_lowpass_mse": 4.2751282308017835e-05
+      },
+      {
+        "highpass_mse": 0.00015022410661913455,
+        "highpass_energy_ratio": 0.6992889046669006,
+        "semantic_lowpass_mse": 3.567710518836975e-05
+      },
+      {
+        "highpass_mse": 0.0019647206645458937,
+        "highpass_energy_ratio": 0.9005227088928223,
+        "semantic_lowpass_mse": 7.048933184705675e-05
+      },
+      {
+        "highpass_mse": 0.0003600020136218518,
+        "highpass_energy_ratio": 0.6889623999595642,
+        "semantic_lowpass_mse": 4.595148129737936e-05
+      },
+      {
+        "highpass_mse": 0.0014994762605056167,
+        "highpass_energy_ratio": 0.8304771780967712,
+        "semantic_lowpass_mse": 0.00010868964454857633
+      },
+      {
+        "highpass_mse": 0.0004423648933880031,
+        "highpass_energy_ratio": 0.5732505321502686,
+        "semantic_lowpass_mse": 5.4989206546451896e-05
+      },
+      {
+        "highpass_mse": 0.0006694155163131654,
+        "highpass_energy_ratio": 0.6447935104370117,
+        "semantic_lowpass_mse": 2.665315696503967e-05
+      },
+      {
+        "highpass_mse": 0.0003865027683787048,
+        "highpass_energy_ratio": 0.7708383202552795,
+        "semantic_lowpass_mse": 2.0020583178848028e-05
+      },
+      {
+        "highpass_mse": 0.00038842123467475176,
+        "highpass_energy_ratio": 0.6560655832290649,
+        "semantic_lowpass_mse": 2.6489997253520414e-05
+      },
+      {
+        "highpass_mse": 0.00021272999583743513,
+        "highpass_energy_ratio": 0.7817497849464417,
+        "semantic_lowpass_mse": 2.7933978344663046e-05
+      },
+      {
+        "highpass_mse": 0.0008943641441874206,
+        "highpass_energy_ratio": 0.7834457755088806,
+        "semantic_lowpass_mse": 5.47205054317601e-05
+      },
+      {
+        "highpass_mse": 0.0006966365035623312,
+        "highpass_energy_ratio": 0.9456045627593994,
+        "semantic_lowpass_mse": 8.918516687117517e-05
+      },
+      {
+        "highpass_mse": 0.0007450840203091502,
+        "highpass_energy_ratio": 0.65707927942276,
+        "semantic_lowpass_mse": 4.404163337312639e-05
+      },
+      {
+        "highpass_mse": 0.00016021908959373832,
+        "highpass_energy_ratio": 0.7543209195137024,
+        "semantic_lowpass_mse": 4.278688720660284e-05
+      },
+      {
+        "highpass_mse": 0.0005048621096648276,
+        "highpass_energy_ratio": 0.8142462372779846,
+        "semantic_lowpass_mse": 7.668320904485881e-05
+      },
+      {
+        "highpass_mse": 0.0005913244094699621,
+        "highpass_energy_ratio": 0.9111145734786987,
+        "semantic_lowpass_mse": 4.7934867325238883e-05
+      },
+      {
+        "highpass_mse": 0.0023611390497535467,
+        "highpass_energy_ratio": 0.961087167263031,
+        "semantic_lowpass_mse": 5.8200108469463885e-05
+      },
+      {
+        "highpass_mse": 0.00014719093451276422,
+        "highpass_energy_ratio": 0.7875241637229919,
+        "semantic_lowpass_mse": 3.0679675546707585e-05
+      },
+      {
+        "highpass_mse": 0.00029775529401376843,
+        "highpass_energy_ratio": 0.8161813020706177,
+        "semantic_lowpass_mse": 1.8512197129894048e-05
+      },
+      {
+        "highpass_mse": 0.0009067573118954897,
+        "highpass_energy_ratio": 0.6940305233001709,
+        "semantic_lowpass_mse": 4.1757128201425076e-05
+      }
+    ],
+    "generated_reference_mse": 0.00124284022313077,
+    "natural_validation_mse": 0.0038661035122231624,
+    "natural_validation_lpips": 0.062046198450843804,
+    "natural_validation_residual": 0.02439206470216959,
+    "natural_validation_spectral": null,
+    "selection_objective": 0.03455920277408495,
+    "code_change_fraction_vs_rtn": 0.017200008034706116,
+    "code_offset_rms": 0.021923684807884574,
+    "code_offset_ge_one_fraction": 0.0
+  },
+  {
+    "candidate": "natural_residual_qat_w4_c1.0_step1000",
+    "source": "natural_residual_qat",
+    "method": "natural_residual_qat",
+    "bits": 4,
+    "clip": 1.0,
+    "step": 1000,
+    "psnr": 30.211938858032227,
+    "ssim": 0.8446269035339355,
+    "psnr_p05": 24.453102111816406,
+    "min_psnr": 24.0655517578125,
+    "quality_violation_fraction": 0.3499999940395355,
+    "target_mse": 0.0038705771514457865,
+    "feasible": true,
+    "semantic_lowpass_mse": 4.372333896753844e-05,
+    "per_image_psnr": [
+      28.696666717529297,
+      35.41808319091797,
+      24.473499298095703,
+      31.06055450439453,
+      25.720195770263672,
+      30.681447982788086,
+      29.819965362548828,
+      32.057254791259766,
+      32.244380950927734,
+      33.78719711303711,
+      27.891857147216797,
+      28.35910987854004,
+      29.63378143310547,
+      34.300201416015625,
+      29.68853759765625,
+      29.54104232788086,
+      24.0655517578125,
+      35.49330520629883,
+      32.876373291015625,
+      28.42974853515625
+    ],
+    "per_image_ssim": [
+      0.7657225642738106,
+      0.979771959818317,
+      0.7721336515776036,
+      0.8765549358095754,
+      0.6731927251654639,
+      0.8707682725076804,
+      0.7767583315055989,
+      0.8194209682978085,
+      0.7862592998708151,
+      0.9099887077778395,
+      0.8761645155883522,
+      0.8715743514244875,
+      0.9185329404983085,
+      0.9292966518924892,
+      0.8836470431883564,
+      0.9100848861060574,
+      0.7355684812292141,
+      0.9659804936914157,
+      0.8327891034269969,
+      0.7383278164299582
+    ],
+    "per_image_texture": [
+      {
+        "highpass_mse": 0.000766456127166748,
+        "highpass_energy_ratio": 0.7684172987937927,
+        "semantic_lowpass_mse": 5.0384867790853605e-05
+      },
+      {
+        "highpass_mse": 0.00015527654613833874,
+        "highpass_energy_ratio": 0.6989991664886475,
+        "semantic_lowpass_mse": 2.7156280339113437e-05
+      },
+      {
+        "highpass_mse": 0.001973530976101756,
+        "highpass_energy_ratio": 0.9008645415306091,
+        "semantic_lowpass_mse": 6.098728772485629e-05
+      },
+      {
+        "highpass_mse": 0.0003647225385066122,
+        "highpass_energy_ratio": 0.6915196776390076,
+        "semantic_lowpass_mse": 4.01893921662122e-05
+      },
+      {
+        "highpass_mse": 0.0015292929019778967,
+        "highpass_energy_ratio": 0.8446521759033203,
+        "semantic_lowpass_mse": 8.615257684141397e-05
+      },
+      {
+        "highpass_mse": 0.0004476989561226219,
+        "highpass_energy_ratio": 0.5742039084434509,
+        "semantic_lowpass_mse": 5.4798609198769554e-05
+      },
+      {
+        "highpass_mse": 0.000679412332829088,
+        "highpass_energy_ratio": 0.6551047563552856,
+        "semantic_lowpass_mse": 2.612605385365896e-05
+      },
+      {
+        "highpass_mse": 0.00039505198947153986,
+        "highpass_energy_ratio": 0.7941004037857056,
+        "semantic_lowpass_mse": 2.1396652300609276e-05
+      },
+      {
+        "highpass_mse": 0.000393162714317441,
+        "highpass_energy_ratio": 0.6608549952507019,
+        "semantic_lowpass_mse": 2.2041711417841725e-05
+      },
+      {
+        "highpass_mse": 0.00021475215908139944,
+        "highpass_energy_ratio": 0.772657573223114,
+        "semantic_lowpass_mse": 3.672116145025939e-05
+      },
+      {
+        "highpass_mse": 0.0009011378861032426,
+        "highpass_energy_ratio": 0.7836250066757202,
+        "semantic_lowpass_mse": 5.7307926908833906e-05
+      },
+      {
+        "highpass_mse": 0.0007032646681182086,
+        "highpass_energy_ratio": 0.9361571669578552,
+        "semantic_lowpass_mse": 7.042020297376439e-05
+      },
+      {
+        "highpass_mse": 0.0007535208715125918,
+        "highpass_energy_ratio": 0.6590215563774109,
+        "semantic_lowpass_mse": 3.093865598202683e-05
+      },
+      {
+        "highpass_mse": 0.00016070849960669875,
+        "highpass_energy_ratio": 0.7503013610839844,
+        "semantic_lowpass_mse": 3.766134614124894e-05
+      },
+      {
+        "highpass_mse": 0.0005170452641323209,
+        "highpass_energy_ratio": 0.8154703974723816,
+        "semantic_lowpass_mse": 6.749331078026444e-05
+      },
+      {
+        "highpass_mse": 0.000598921615164727,
+        "highpass_energy_ratio": 0.9171596765518188,
+        "semantic_lowpass_mse": 5.407138087321073e-05
+      },
+      {
+        "highpass_mse": 0.002402219921350479,
+        "highpass_energy_ratio": 0.9748671650886536,
+        "semantic_lowpass_mse": 5.38561143912375e-05
+      },
+      {
+        "highpass_mse": 0.00014755861775483936,
+        "highpass_energy_ratio": 0.7776675224304199,
+        "semantic_lowpass_mse": 2.00709964701673e-05
+      },
+      {
+        "highpass_mse": 0.0003005000180564821,
+        "highpass_energy_ratio": 0.8185024857521057,
+        "semantic_lowpass_mse": 2.036567275354173e-05
+      },
+      {
+        "highpass_mse": 0.0009236062760464847,
+        "highpass_energy_ratio": 0.7105398178100586,
+        "semantic_lowpass_mse": 3.6326578992884606e-05
+      }
+    ],
+    "generated_reference_mse": 0.0012543996737804264,
+    "natural_validation_mse": 0.0038705771514457865,
+    "natural_validation_lpips": 0.061926089132612105,
+    "natural_validation_residual": 0.02437295216259372,
+    "natural_validation_spectral": null,
+    "selection_objective": 0.03452358490523579,
+    "code_change_fraction_vs_rtn": 0.017316989600658417,
+    "code_offset_rms": 0.022075402914462024,
+    "code_offset_ge_one_fraction": 0.0
+  }
+]
