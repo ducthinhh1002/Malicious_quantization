@@ -254,8 +254,8 @@ class NaturalTests(unittest.TestCase):
             report = json.loads((out / "report.json").read_text())
             endpoints = [k for k in report['selections'] if k.endswith('_final_test')]
             self.assertGreater(len(endpoints), 0)
-            self.assertEqual(len(report["selections"]), 38 + len(endpoints))
-            self.assertEqual(len(report["branch_quality"]), 40 + len(endpoints))
+            self.assertEqual(len(report["selections"]), 40 + len(endpoints))
+            self.assertEqual(len(report["branch_quality"]), 42 + len(endpoints))
             for label in endpoints:
                 selected = report['selections'][label]
                 self.assertEqual(selected['step'], selected['attempted_updates'])

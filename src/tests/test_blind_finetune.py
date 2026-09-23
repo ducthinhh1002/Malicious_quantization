@@ -8,10 +8,22 @@ from pathlib import Path
 import torch
 from torch import nn
 
-from wmq_blind import materialize, optimize_branch, parser, scheduled_lr, finetune_quantized_weight, RoundingGrid
+from wmq_blind import materialize, optimize_branch, parser, scheduled_lr, finetune_quantized_weight, RoundingGrid, image_quality_penalty
 
 
 class FinetuneTests(unittest.TestCase):
+    def test_quality_hinge_does_not_average_away_bad_images(self):
+        ref = torch.full((2, 3, 16, 16), .5)
+        prediction = ref.clone()
+        prediction[1] = .8
+        prediction.requires_grad_(True)
+        penalty = image_quality_penalty(prediction, ref, 25., .8)
+        self.assertGreater(penalty.item(), 0.)
+        self.assertEqual(image_quality_penalty(ref, ref, 25., .8).item(), 0.)
+        penalty.backward()
+        self.assertEqual(prediction.grad[0].abs().sum().item(), 0.)
+        self.assertGreater(prediction.grad[1].abs().sum().item(), 0.)
+
     def test_joint_forward_matches_export_grid_and_keeps_gradients(self):
         for values in (torch.randn(4, 3, 2, 2), torch.zeros(2, 3),
                        torch.tensor([[-8., -2.5, -.5, .5, 2.5, 7.]])):

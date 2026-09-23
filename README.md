@@ -1,5 +1,15 @@
 # Hướng dẫn chạy thí nghiệm malicious quantization cho watermark diffusion
 
+**Sau review run `20260923_171848`:** profile `transfer` giữ joint fine-tune cũ và
+thêm `natural_joint_quality_finetune` + bản RTN W4. Nhánh mới phạt riêng từng ảnh
+generated TRAIN có PSNR dưới `min_image_psnr` (mặc định 25 dB) hoặc SSIM dưới
+`min_ssim` (0.80), cho cả FP32/W4. Trọng số `--joint-quality-weight` mặc định 0.01;
+SEARCH thêm cùng penalty, không dùng owner TEST. Giữ nguyên quality gate và
+tiếp tục ghi kết quả nếu không đạt. Nhánh này vẫn ngoài threat model quantizer-only.
+Hai warm-QAT không còn trong `transfer` vì chưa cải thiện run này; vẫn có trong
+`science`/lệnh tường minh. Các mô tả transfer cũ bên dưới là cấu hình lịch sử.
+Xem [review và hướng cải tiến](survey/Review_20260923_171848_VI.md).
+
 **Thử nghiệm qua đêm:** `bash run_blind_suite.sh --profile transfer` hiện thêm
 `natural_joint_finetune`: fine-tune decoder bằng cả reconstruction FP32 và W4,
 kèm cycle latent qua encoder cố định. Nhánh xuất riêng FP32 và

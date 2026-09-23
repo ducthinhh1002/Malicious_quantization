@@ -25,7 +25,7 @@ from wmq_runtime import batches, batch_size, DataCache, all_finite, EVENTS, BATC
 from wmq_objectives import spectral_loss, NaturalDiscriminator, discriminator_update
 from wmq_science import QualityBudget, audit_prompt_protocol
 
-FLOAT_METHODS = ("natural_full_finetune", "natural_gan_finetune", "natural_joint_finetune")
+FLOAT_METHODS = ("natural_full_finetune", "natural_gan_finetune", "natural_joint_finetune", "natural_joint_quality_finetune")
 QAT_METHODS = ("natural_qat_purification", "natural_residual_qat", "natural_residual_qat_warm",
                "natural_residual_cycle_qat_warm", "natural_qat_scale", "natural_gan_qat")
 RESIDUAL_METHODS = ("natural_residual", "natural_residual_qat", "natural_residual_qat_warm",
@@ -377,6 +377,15 @@ def choose(rows, policy="constrained"):
     return min(eligible, key=lambda r: (r.get("selection_objective", r["target_mse"]), -r["psnr"], r["candidate"])) if eligible else None
 
 
+def image_quality_penalty(prediction, reference, min_psnr, min_ssim):
+    """Per-image hinge; passing images cannot cancel failing images."""
+    prediction = prediction.clamp(0, 1)
+    mse = (prediction - reference).square().flatten(1).mean(1)
+    _, ssim = pair_metrics(prediction, reference)
+    return ((mse / (10 ** (-min_psnr / 10)) - 1).relu() +
+            ((min_ssim - ssim) / max(1 - min_ssim, 1e-4)).relu()).mean()
+
+
 def finetune_quantized_weight(weight, bits=4):
     """STE forward matches RoundingGrid's initial RTN, including half-up ties.
 
@@ -515,14 +524,15 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
     pristine = {k: v.detach().clone() for k, v in vae.decoder.state_dict().items()}
     qat_branch = method in QAT_METHODS
     float_branch = method in FLOAT_METHODS
-    joint_branch = method == 'natural_joint_finetune'
+    joint_branch = method in ('natural_joint_finetune', 'natural_joint_quality_finetune')
+    quality_weight = args.joint_quality_weight if method == 'natural_joint_quality_finetune' else 0.
     joint_names = set(select_names(vae, args.scope)) if joint_branch else set()
     gan_branch = method in ("natural_gan_qat", "natural_gan_finetune")
     spectral_weight = args.spectral_weight if method == "natural_spectral" else 0.
     grids = nn.ModuleList([FloatWeight(vae.decoder.get_parameter(k)) if float_branch else RoundingGrid(vae.decoder.get_parameter(k), bits, clip,
                            learn_scale=method in ("rounding_scale", "natural_rounding_scale", "natural_qat_scale"),
                            learn_code_offsets=qat_branch) for k in names]).to(device)
-    cycle_weight = args.cycle_weight if method in ('natural_residual_cycle_qat_warm', 'natural_joint_finetune') else 0.
+    cycle_weight = args.cycle_weight if method == 'natural_residual_cycle_qat_warm' or joint_branch else 0.
     if method in ('natural_residual_qat_warm', 'natural_residual_cycle_qat_warm'):
         initialize_warm_codes(grids, names, warm_start, args.qat_max_code_shift)
     steering_layers = getattr(args, '_steering_layers', None) if method.startswith('natural_') and not float_branch else None
@@ -588,6 +598,13 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
                     metrics['joint_w4_ssim'] = quantized_quality['ssim']
                     metrics['fp32_feasible'] = metrics['feasible']
                     metrics['joint_w4_feasible'] = quantized_quality['feasible']
+                    if quality_weight:
+                        def quality_hinge(values):
+                            return sum(max(10 ** ((args.min_image_psnr - p) / 10) - 1, 0) +
+                                       max((args.min_ssim - s) / max(1 - args.min_ssim, 1e-4), 0)
+                                       for p, s in zip(values['per_image_psnr'], values['per_image_ssim'])) / len(values['per_image_psnr'])
+                        metrics['joint_quality_penalty'] = quality_hinge(metrics) + args.joint_quant_weight * quality_hinge(quantized_quality)
+                        metrics['selection_objective'] += quality_weight * metrics['joint_quality_penalty']
                     metrics['feasible'] = metrics['feasible'] and quantized_quality['feasible']
                     metrics['selection_objective'] += args.joint_quant_weight * (
                         quantized_natural['selection_objective'] +
@@ -729,6 +746,7 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
             adversarial = raw.new_zeros(())
             distillation = raw.new_zeros(())
             joint_loss = raw.new_zeros(())
+            quality_loss = raw.new_zeros(())
             disc_loss, disc_applied = None, None
             if discriminator is not None:
                 disc_loss, disc_applied = discriminator_update(discriminator, disc_optimizer, ref, raw.clamp(0, 1))
@@ -751,7 +769,7 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
                     residual_loss = residual.loss(raw - ref).mean()
                 if perceptual is not None:
                     perceptual_loss = perceptual(raw.clamp(0, 1) * 2 - 1, ref * 2 - 1).mean()
-                if float_branch and args.ft_preserve_weight == 0 and budget is None:
+                if float_branch and args.ft_preserve_weight == 0 and budget is None and not quality_weight:
                     generated = preserve_hidden = None
                     preserve = raw.new_zeros(())
                 else:
@@ -770,12 +788,16 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
                     if teacher_branch:
                         teacher_ref = torch.cat([teacher_targets['train'][j] for j in js]).to(device)
                         distillation = F.mse_loss(generated.clamp(0, 1), teacher_ref)
-                    if joint_branch and args.ft_preserve_weight:
+                    if joint_branch and (args.ft_preserve_weight or quality_weight):
                         quant_generated = functional_call(vae.decoder, quant_weights, (preserve_hidden,)) / 2 + .5
                         joint_loss = joint_loss + args.ft_preserve_weight * F.mse_loss(
                             semantic_lowpass(quant_generated), semantic_lowpass(preserve_ref))
                         train_image_forwards += len(js)
                         train_evaluations += 1
+                        if quality_weight:
+                            quality_loss = image_quality_penalty(generated, preserve_ref, args.min_image_psnr, args.min_ssim)
+                            quality_loss = quality_loss + args.joint_quant_weight * image_quality_penalty(
+                                quant_generated, preserve_ref, args.min_image_psnr, args.min_ssim)
                         del quant_generated
                 if qat_branch:
                     trust_loss = sum(g.code_offset.square().sum() for g in grids) / sum(g.code_offset.numel() for g in grids)
@@ -784,7 +806,7 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
             loss = (target_loss + perceptual_weight * perceptual_loss + preserve_weight * preserve +
                     residual_weight * residual_loss + args.qat_trust_weight * trust_loss +
                     spectral_weight * spectrum + (args.adversarial_weight * adversarial if gan_branch else 0.) +
-                    args.teacher_weight * distillation + cycle_weight * cycle_loss + args.joint_quant_weight * joint_loss)
+                    args.teacher_weight * distillation + cycle_weight * cycle_loss + args.joint_quant_weight * joint_loss + quality_weight * quality_loss)
             budget_penalty = raw.new_zeros(())
             budget_violations = raw.new_zeros(2)
             if budget is not None:
@@ -799,6 +821,7 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
                           "residual": residual_weight * residual_loss,
                           "cycle": cycle_weight * cycle_loss,
                           "joint_w4": args.joint_quant_weight * joint_loss,
+                          "image_quality": quality_weight * quality_loss,
                           "preservation": preserve_weight * preserve + budget_penalty}
                 for label, component in pieces.items():
                     if component.requires_grad:
@@ -856,6 +879,7 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
                                    residual_loss.detach(), trust_loss.detach(), spectrum.detach(), adversarial.detach(),
                                    grad_norm if grad_norm is not None else raw.new_tensor(float("nan"))]).cpu().tolist()
             updates.append({"step": step, "applied": applied, "reason": reason,
+                            "image_quality_penalty": float(quality_loss.detach()) if quality_weight and torch.isfinite(quality_loss) else None,
                             "joint_w4_loss": float(joint_loss.detach()) if joint_branch and torch.isfinite(joint_loss) else None,
                             "cycle_loss": float(cycle_loss.detach()) if cycle_weight and torch.isfinite(cycle_loss) else None,
                             **gradient_diagnostics,
@@ -872,6 +896,7 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
             del weights, raw, ref, loss, target_loss, preserve, perceptual_loss, residual_loss, trust_loss, spectrum, adversarial
             del cycle_loss
             del joint_loss
+            del quality_loss
             if joint_branch:
                 del quant_weights, quant_raw
             if natural:
@@ -916,6 +941,8 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
                 "cycle_train_encoder_images": total * args.train_batch_size * (2 if joint_branch else 1) if cycle_weight else 0,
                 "cycle_search_encoder_images": len(rows) * len(natural_search[0]) * (2 if joint_branch else 1) if cycle_weight else 0,
                 "joint_quant_weight": args.joint_quant_weight if joint_branch else 0.,
+                "joint_quality_weight": quality_weight,
+                "joint_quality_thresholds": {"psnr": args.min_image_psnr, "ssim": args.min_ssim} if quality_weight else None,
                 "joint_quant_bits": 4 if joint_branch else None,
                 "joint_search_generated_images": len(rows) * len(search_z) if joint_branch else 0,
                 "joint_search_natural_images": len(rows) * len(natural_search[0]) if joint_branch else 0,
@@ -956,6 +983,7 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
                     "natural_residual_cycle_qat_warm": ["bounded_multi_cell_code_offsets_from_residual_rounding"],
                     "natural_full_finetune": ["all_decoder_parameters_including_bias_and_norm"],
                     "natural_joint_finetune": ["all_decoder_parameters_including_bias_and_norm"],
+                    "natural_joint_quality_finetune": ["all_decoder_parameters_including_bias_and_norm"],
                     "natural_qat_purification": ["bounded_multi_cell_code_offsets"]}[method],
                 "status": "selected" if best["feasible"] else ("selected_quality_failed" if policy == "report" else "no_feasible_candidate")}
     save_json(folder / "selection.json", selected)
@@ -1098,6 +1126,7 @@ def parser():
     p.add_argument("--finetune-rtn-bits", type=int, nargs="*", default=[], help="Derive RTN controls from the same selected FP32 decoder; outside quantizer-only threat model")
     p.add_argument("--teacher-weight", type=float, default=1., help="Generated TRAIN/SEARCH teacher MSE coefficient")
     p.add_argument("--joint-quant-weight", type=float, default=1., help="W4 loss weight for natural_joint_finetune; 0 disables its training contribution")
+    p.add_argument("--joint-quality-weight", type=float, default=.01, help="Per-image generated quality hinge, only for natural_joint_quality_finetune")
     p.add_argument("--cycle-weight", type=float, default=.01, help="Relative latent cycle penalty for cycle warm-QAT and joint finetune; 0 disables this term")
     p.add_argument("--teacher-source", choices=["purified", "marked"], default="purified", help="SEARCH-selected FP32 control, or original marked decoder for ablation")
     p.add_argument("--teacher-checkpoint-policy", choices=["selected", "final"], default="selected",
@@ -1129,6 +1158,8 @@ def parser():
 
 def main():
     args = parser().parse_args()
+    if not math.isfinite(args.joint_quality_weight) or args.joint_quality_weight < 0:
+        raise ValueError("--joint-quality-weight must be finite and nonnegative")
     if not math.isfinite(args.joint_quant_weight) or args.joint_quant_weight < 0:
         raise ValueError("--joint-quant-weight must be finite and nonnegative")
     if not math.isfinite(args.cycle_weight) or args.cycle_weight < 0:
@@ -1149,7 +1180,7 @@ def main():
             or any(b not in (2, 3, 4, 6, 8) for b in args.finetune_rtn_bits)
             or len(set(args.finetune_rtn_bits)) != len(args.finetune_rtn_bits)):
         raise ValueError("Invalid scientific ablation configuration")
-    if args.finetune_rtn_bits and (not args.natural_images or not set(args.natural_methods).intersection(('natural_full_finetune', 'natural_joint_finetune'))):
+    if args.finetune_rtn_bits and (not args.natural_images or not set(args.natural_methods).intersection(('natural_full_finetune', 'natural_joint_finetune', 'natural_joint_quality_finetune'))):
         raise ValueError("--finetune-rtn-bits requires natural images and a full or joint finetune branch")
     EVENTS.clear()
     BATCH_LIMITS.clear()
@@ -1616,10 +1647,10 @@ def main():
                                  for p in sorted(artifact_folder.rglob("*")) if p.is_file()},
                 "diagnostic_files_sha256": {p.relative_to(out).as_posix(): sha(p)
                                             for p in sorted(folder.rglob("*")) if p.is_file()}}
-            if method in ("natural_full_finetune", "natural_joint_finetune"):
+            if method in ("natural_full_finetune", "natural_joint_finetune", "natural_joint_quality_finetune"):
                 for derived_bits in args.finetune_rtn_bits:
                     derived_started = time.monotonic()
-                    derived_method = 'natural_joint_finetune_rtn' if method == 'natural_joint_finetune' else 'natural_finetune_rtn'
+                    derived_method = method + '_rtn' if method.startswith('natural_joint') else 'natural_finetune_rtn'
                     derived_id = f"{derived_method}_w{derived_bits}_c1.0"
                     derived_branch = {"label": derived_id + "_test", "method": derived_method,
                         "bits": derived_bits, "clip": 1., "artifact": "branches/" + derived_id,
@@ -1634,7 +1665,7 @@ def main():
                     derived_quality = score(vae, search_z, search_ref, 0., args)
                     derived_quality.update(natural_reconstruction_metrics(vae, *natural_search, perceptual,
                         args.natural_perceptual_weight, args.eval_batch_size,
-                        cycle_weight=args.cycle_weight if method == 'natural_joint_finetune' else 0.))
+                        cycle_weight=args.cycle_weight if method.startswith('natural_joint') else 0.))
                     derived_selected = {**selected, **derived_quality, "method": derived_method,
                         "candidate": derived_id + f"_step{selected['step']}",
                         "bits": derived_bits, "parameter_space": "finetune_then_rtn",
