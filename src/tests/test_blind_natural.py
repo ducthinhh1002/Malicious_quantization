@@ -224,6 +224,7 @@ class NaturalTests(unittest.TestCase):
                     "--test-n", "2", "--steps", "1", "--eval-every", "1", "--methods", "rounding",
                     "--gen-batch-size", "2", "--eval-batch-size", "2",
                     "--evaluate-final",
+                    "--teacher-checkpoint-policy", "final",
                     "--natural-methods", *blind.NATURAL_METHODS,
                     "--finetune-rtn-bits", "4", "--quality-constraint", "dual",
                     "--gradient-diagnostics-every", "1",
@@ -259,9 +260,13 @@ class NaturalTests(unittest.TestCase):
             self.assertFalse((fp32 / "quantizer.safetensors").exists())
             self.assertGreater(report["selections"]["natural_full_finetune_fp32_test"]["gradient_updates"], 0)
             student = report['selections']['natural_teacher_rounding_w4_c1.0_test']
-            self.assertEqual(student['teacher_dependency']['label'], 'natural_full_finetune_fp32_test')
+            teacher_label = ('natural_full_finetune_fp32_final_test'
+                             if 'natural_full_finetune_fp32_final_test' in report['selections'] else
+                             'natural_full_finetune_fp32_test')
+            self.assertEqual(student['teacher_dependency']['label'], teacher_label)
             self.assertEqual(student['teacher_dependency']['selected_step'],
-                             report['selections']['natural_full_finetune_fp32_test']['step'])
+                             report['selections'][teacher_label]['step'])
+            self.assertEqual(student['teacher_dependency']['checkpoint_policy'], 'final')
             self.assertEqual(student['teacher_dependency']['additional_image_forwards'], 2)
             diagnostics = json.loads((out / 'teacher_target_diagnostics.json').read_text())
             self.assertEqual(diagnostics['target_signal']['search']['n'], 1)

@@ -967,6 +967,8 @@ def parser():
     p.add_argument("--finetune-rtn-bits", type=int, nargs="*", default=[], help="Derive RTN controls from the same selected FP32 decoder; outside quantizer-only threat model")
     p.add_argument("--teacher-weight", type=float, default=1., help="Generated TRAIN/SEARCH teacher MSE coefficient")
     p.add_argument("--teacher-source", choices=["purified", "marked"], default="purified", help="SEARCH-selected FP32 control, or original marked decoder for ablation")
+    p.add_argument("--teacher-checkpoint-policy", choices=["selected", "final"], default="selected",
+                   help="Use SEARCH-selected FP32 teacher or its predeclared final training endpoint; student quality gate is unchanged")
     p.add_argument("--quality-constraint", choices=["off", "dual"], default="off")
     p.add_argument("--budget-psnr", type=float, default=30.)
     p.add_argument("--budget-ssim", type=float, default=.9)
@@ -999,6 +1001,8 @@ def main():
     uses_teacher = bool(args.natural_images and "natural_teacher_rounding" in args.natural_methods)
     if uses_teacher and args.teacher_source == 'purified' and 'natural_full_finetune' not in args.natural_methods:
         raise ValueError("Purified teacher requires natural_full_finetune in --natural-methods")
+    if uses_teacher and args.teacher_source == 'purified' and args.teacher_checkpoint_policy == 'final' and not args.evaluate_final:
+        raise ValueError("Final teacher checkpoint requires --evaluate-final")
     QualityBudget(args.budget_psnr, args.budget_ssim, args.dual_lr)
     if (not 0 <= args.budget_max_violation <= 1 or args.gradient_diagnostics_every < 0
             or not math.isfinite(args.subspace_ridge) or args.subspace_ridge <= 0
@@ -1191,7 +1195,9 @@ def main():
     manifest["reference_label"] = "marked_reference_test"
     manifest["evaluation_protocol"] = protocol_audit
     manifest['teacher_protocol'] = {'enabled': uses_teacher, 'source': args.teacher_source,
-        'selection': 'natural SEARCH objective and generated SEARCH quality; no owner feedback',
+        'checkpoint_policy': args.teacher_checkpoint_policy,
+        'selection': ('fixed final training endpoint; no owner feedback' if args.teacher_checkpoint_policy == 'final' else
+                      'natural SEARCH objective and generated SEARCH quality; no owner feedback'),
         'student_source': 'original marked decoder; rounding only; original bias/norm frozen',
         'targets': 'generated TRAIN and SEARCH only; no TEST targets during optimization',
         'auxiliary_finetuning_allowed': uses_teacher and args.teacher_source == 'purified',
@@ -1331,12 +1337,21 @@ def main():
                 else:
                     from wmq_teacher import cache_teacher_targets
                     teacher_label = 'natural_full_finetune_fp32_test'
+                    if args.teacher_checkpoint_policy == 'final':
+                        final_label = 'natural_full_finetune_fp32_final_test'
+                        if final_label in frozen_branches:
+                            teacher_label = final_label
+                        elif selections[teacher_label]['step'] != selections[teacher_label]['attempted_updates']:
+                            raise RuntimeError('Final teacher checkpoint missing despite earlier SEARCH selection')
                     if teacher_label not in frozen_branches:
                         raise RuntimeError('Selected purification teacher unavailable; student cannot run')
-                    relative = 'branches/natural_full_finetune_fp32/decoder_fp32.safetensors'
+                    relative = ('branches/natural_full_finetune_fp32_final/decoder_fp32.safetensors'
+                                if teacher_label.endswith('_final_test') else
+                                'branches/natural_full_finetune_fp32/decoder_fp32.safetensors')
                     expected = frozen_branches[teacher_label]['files_sha256'][relative]
                     teacher_images = cache_teacher_targets(vae, artifact_out / relative, expected, zs, args.eval_batch_size)
                     provenance = {'source': 'purified', 'label': teacher_label,
+                        'checkpoint_policy': args.teacher_checkpoint_policy,
                         'selected_step': selections[teacher_label]['step'], 'checkpoint_sha256': expected,
                         'search_feasible': selections[teacher_label]['search_feasible'],
                         'additional_image_forwards': len(zs), 'owner_feedback': False}

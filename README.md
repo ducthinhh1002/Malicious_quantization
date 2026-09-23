@@ -41,9 +41,14 @@ bash run_blind_suite.sh --profile transfer
 
 Profile này giữ 7 đầu ra đã chọn: fixed W4, reconstruction W4, natural rounding,
 residual W4, FP32 teacher, fine-tune → RTN W4 và teacher → rounding W4; vẫn 2.000
-step và tự evaluate. `science` mặc định vẫn giữ đầy đủ random/DCT/contrastive ablation.
-`teacher_target_diagnostics.json` báo target teacher khác model gốc bao nhiêu
-trên TRAIN/SEARCH, để nhận biết teacher được chọn ở step 0 hoặc gần identity.
+step và tự evaluate. Student dùng **checkpoint cuối đã định trước** của FP32
+teacher làm mục tiêu, kể cả khi checkpoint FP32 được chọn theo ngưỡng chất lượng
+là step 0. Chỉ student đạt ngưỡng mới được coi là kết quả hợp lệ; FP32 cuối
+vẫn báo riêng nếu không đạt. `science` tiếp tục dùng teacher được chọn trên SEARCH
+để giữ đối chứng, cùng đầy đủ random/DCT/contrastive ablation.
+`teacher_target_diagnostics.json` báo checkpoint và độ khác biệt teacher–model gốc
+trên TRAIN/SEARCH. Đây là lựa chọn chỉ dựa trên ngân sách đã khai báo, không dùng
+owner TEST để chọn teacher.
 
 Toàn bộ source chuẩn nằm trong `src/`, gồm launcher, Python module, test, prompt và
 requirements. Có thể chọn trực tiếp folder `src/` để đưa cho LLM khác review. Các

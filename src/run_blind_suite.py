@@ -35,7 +35,7 @@ FULL_METHODS = ["--methods", "fixed_ptq", "reconstruction", "block_reconstructio
 TRANSFER_METHODS = ["--methods", "fixed_ptq", "reconstruction", "--natural-methods",
     "natural_rounding", "natural_residual", "natural_full_finetune", "natural_teacher_rounding",
     "--finetune-rtn-bits", "4", "--quality-constraint", "dual", "--quality-policy", "constrained",
-    "--gradient-diagnostics-every", "100"]
+    "--gradient-diagnostics-every", "100", "--teacher-checkpoint-policy", "final"]
 
 
 def configuration(profile, preserve_weight=.5):
@@ -83,6 +83,7 @@ def collect(run):
             "shares_training_with": selected.get('shares_training_with'),
             "teacher_source": (selected.get('teacher_dependency') or {}).get('source'),
             "teacher_label": (selected.get('teacher_dependency') or {}).get('label'),
+            "teacher_checkpoint_policy": (selected.get('teacher_dependency') or {}).get('checkpoint_policy'),
             "teacher_step": (selected.get('teacher_dependency') or {}).get('selected_step'),
             "teacher_search_mse": selected.get('teacher_search_mse'),
             "teacher_near_identity": ((selected.get('teacher_dependency') or {}).get('target_signal') or {}).get('search', {}).get('near_identity'),
