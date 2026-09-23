@@ -1,5 +1,15 @@
 # Hướng dẫn chạy thí nghiệm malicious quantization cho watermark diffusion
 
+**Thử nghiệm qua đêm:** `bash run_blind_suite.sh --profile transfer` hiện thêm
+`natural_joint_finetune`: fine-tune decoder bằng cả reconstruction FP32 và W4,
+kèm cycle latent qua encoder cố định. Nhánh xuất riêng FP32 và
+`natural_joint_finetune_rtn_w4` rồi tự owner-evaluate cùng các đối chứng.
+Vẫn 2.000 update, SSIM trung bình ≥0.80. Đây là unrestricted fine-tune + lượng tử hóa,
+**không thuộc quantizer-only**; chưa có kết quả chứng minh tốt hơn fine-tune thuần.
+Mỗi bước cần thêm lượt decoder/encoder nên chi phí cao hơn. Code chạy tiếp và
+ghi nhận nếu không đạt quality gate. Chi tiết và ablation:
+[Joint FP32/W4 fine-tuning](survey/Joint_Finetune_VI.md).
+
 Nhánh thử nghiệm mới trong `transfer` và `science`: `natural_residual_cycle_qat_warm`.
 Chạy `bash run_blind_suite.sh --profile transfer` để so với warm-QAT cũ cùng W4,
 2.000 bước và ngưỡng SSIM trung bình 0.80. Nhánh này khởi tạo từ cùng residual W4

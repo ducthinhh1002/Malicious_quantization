@@ -24,7 +24,7 @@ FOCUSED_METHODS = ["--methods", "fixed_ptq", "reconstruction", "--natural-method
                    "natural_rounding", "natural_residual", "natural_residual_qat", "natural_full_finetune"]
 SCIENCE_METHODS = ["--methods", "fixed_ptq", "qk_rotation_ptq", "reconstruction", "--natural-methods",
     "natural_rounding", "natural_residual", "natural_residual_qat_warm", "natural_residual_cycle_qat_warm", "natural_random_subspace", "natural_frequency_subspace",
-    "natural_contrastive_subspace", "natural_full_finetune", "natural_teacher_rounding", "--finetune-rtn-bits", "4",
+    "natural_contrastive_subspace", "natural_full_finetune", "natural_joint_finetune", "natural_teacher_rounding", "--finetune-rtn-bits", "4",
     "--quality-constraint", "off", "--quality-policy", "constrained", "--gradient-diagnostics-every", "100"]
 FULL_METHODS = ["--methods", "fixed_ptq", "qk_rotation_ptq", "reconstruction", "block_reconstruction",
                 "--natural-methods", "natural_rounding", "natural_rounding_scale", "natural_residual",
@@ -33,7 +33,7 @@ FULL_METHODS = ["--methods", "fixed_ptq", "qk_rotation_ptq", "reconstruction", "
                 "natural_random_subspace", "natural_frequency_subspace", "natural_contrastive_subspace", "natural_teacher_rounding",
                 "--finetune-rtn-bits", "4"]
 TRANSFER_METHODS = ["--methods", "fixed_ptq", "reconstruction", "--natural-methods",
-    "natural_rounding", "natural_residual", "natural_residual_qat_warm", "natural_residual_cycle_qat_warm", "natural_full_finetune", "natural_teacher_rounding",
+    "natural_rounding", "natural_residual", "natural_residual_qat_warm", "natural_residual_cycle_qat_warm", "natural_full_finetune", "natural_joint_finetune", "natural_teacher_rounding",
     "--finetune-rtn-bits", "4", "--quality-constraint", "off", "--quality-policy", "constrained",
     "--gradient-diagnostics-every", "100", "--teacher-checkpoint-policy", "final"]
 
@@ -89,6 +89,10 @@ def collect(run):
             "warm_start_source": (selected.get('warm_start_dependency') or {}).get('source_branch'),
             "warm_start_step": (selected.get('warm_start_dependency') or {}).get('source_step'),
             "cycle_weight": selected.get('cycle_weight'),
+            "joint_quant_weight": selected.get('joint_quant_weight'),
+            "joint_quant_bits": selected.get('joint_quant_bits'),
+            "joint_w4_psnr": selected.get('joint_w4_psnr'),
+            "joint_w4_ssim": selected.get('joint_w4_ssim'),
             "cycle_train_encoder_images": selected.get('cycle_train_encoder_images'),
             "cycle_search_encoder_images": selected.get('cycle_search_encoder_images'),
             "reparameterization": (selected.get('reparameterization') or {}).get('kind'),

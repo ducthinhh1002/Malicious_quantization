@@ -254,8 +254,8 @@ class NaturalTests(unittest.TestCase):
             report = json.loads((out / "report.json").read_text())
             endpoints = [k for k in report['selections'] if k.endswith('_final_test')]
             self.assertGreater(len(endpoints), 0)
-            self.assertEqual(len(report["selections"]), 36 + len(endpoints))
-            self.assertEqual(len(report["branch_quality"]), 38 + len(endpoints))
+            self.assertEqual(len(report["selections"]), 38 + len(endpoints))
+            self.assertEqual(len(report["branch_quality"]), 40 + len(endpoints))
             for label in endpoints:
                 selected = report['selections'][label]
                 self.assertEqual(selected['step'], selected['attempted_updates'])
@@ -294,6 +294,14 @@ class NaturalTests(unittest.TestCase):
             self.assertEqual(derived["additional_training_updates"], 0)
             self.assertEqual(derived["step"], report["selections"]["natural_full_finetune_fp32_test"]["step"])
             self.assertEqual(derived["parameter_space"], "finetune_then_rtn")
+            joint = report['selections']['natural_joint_finetune_fp32_test']
+            joint_rtn = report['selections']['natural_joint_finetune_rtn_w4_c1.0_test']
+            self.assertEqual(joint['joint_quant_bits'], 4)
+            self.assertEqual(joint_rtn['step'], joint['step'])
+            self.assertAlmostEqual(joint_rtn['psnr'], joint['joint_w4_psnr'], places=5)
+            self.assertAlmostEqual(joint_rtn['ssim'], joint['joint_w4_ssim'], places=5)
+            joint_updates = json.loads((out / 'branches/natural_joint_finetune_fp32/updates.json').read_text())['rows']
+            self.assertGreater(joint_updates[0]['joint_w4_gradient_norm'], 0)
             self.assertGreater(report["selections"]["natural_residual_qat_w8_c1.0_test"]["gradient_updates"], 0)
             warm = report['selections']['natural_residual_qat_warm_w4_c1.0_test']
             self.assertEqual(warm['warm_start_dependency']['source_branch'],

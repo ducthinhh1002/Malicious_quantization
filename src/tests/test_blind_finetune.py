@@ -8,10 +8,20 @@ from pathlib import Path
 import torch
 from torch import nn
 
-from wmq_blind import materialize, optimize_branch, parser, scheduled_lr
+from wmq_blind import materialize, optimize_branch, parser, scheduled_lr, finetune_quantized_weight, RoundingGrid
 
 
 class FinetuneTests(unittest.TestCase):
+    def test_joint_forward_matches_export_grid_and_keeps_gradients(self):
+        for values in (torch.randn(4, 3, 2, 2), torch.zeros(2, 3),
+                       torch.tensor([[-8., -2.5, -.5, .5, 2.5, 7.]])):
+            values.requires_grad_(True)
+            actual = finetune_quantized_weight(values)
+            expected = RoundingGrid(values, 4)(False)
+            self.assertTrue(torch.equal(actual, expected))
+            actual.sum().backward()
+            self.assertTrue(torch.equal(values.grad, torch.ones_like(values)))
+
     def test_fp32_control_learns_bias_and_restores_source(self):
         class VAE(nn.Module):
             def __init__(self):
