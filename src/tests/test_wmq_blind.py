@@ -10,10 +10,19 @@ from contextlib import redirect_stdout
 import torch
 from torch import nn
 from torch.func import functional_call
-from wmq_blind import RoundingGrid, pair_metrics, pseudo_target, choose, materialize
+from wmq_blind import RoundingGrid, pair_metrics, pseudo_target, choose, materialize, parse_method_bit_exclusions
 
 
 class BlindTests(unittest.TestCase):
+    def test_method_bit_exclusions_are_exact_and_validated(self):
+        self.assertEqual(parse_method_bit_exclusions(
+            ["natural_residual:8", "reconstruction:4", "fixed_ptq:4"]),
+            {("natural_residual", 8), ("reconstruction", 4), ("fixed_ptq", 4)})
+        with self.assertRaisesRegex(ValueError, "Invalid"):
+            parse_method_bit_exclusions(["unknown:4"])
+        with self.assertRaisesRegex(ValueError, "Duplicate"):
+            parse_method_bit_exclusions(["fixed_ptq:4", "fixed_ptq:4"])
+
     def test_hard_grid_gradient_and_materialization_agree(self):
         torch.manual_seed(4)
         layer = nn.Conv2d(3, 4, 3, padding=1)

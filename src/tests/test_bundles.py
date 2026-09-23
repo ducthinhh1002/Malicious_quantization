@@ -55,6 +55,9 @@ class BundleTests(unittest.TestCase):
                 for option in ("--natural-preservation", "--preserve-weight",
                                "--qat-semantic-preserve-weight"):
                     self.assertEqual(command.count(option), 1)
+                excluded = command.index("--exclude-method-bits")
+                self.assertEqual(set(command[excluded + 1:excluded + 4]),
+                    {"natural_residual:8", "reconstruction:4", "fixed_ptq:4"})
 
 
 if __name__ == "__main__":

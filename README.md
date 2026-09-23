@@ -178,7 +178,7 @@ ghi trong report; batch và cấu hình được ghi manifest. Batching có th�
 số số học nhỏ so với chạy từng ảnh, không cam kết giống từng bit.
 
 ```bash
-# Mặc định chạy bộ focused gồm 9 branch, cả hai threat model và tự evaluate
+# Mặc định chạy bộ focused gồm 6 branch sau khi bỏ 3 cặp method/bit không hiệu quả
 bash run_blind_quantization.sh
 
 # Toàn bộ 24 branch dùng cho ablation đầy đủ
@@ -861,8 +861,10 @@ Với `--model` riêng phải cấp `SS_KEY`; với extractor riêng phải cấ
 | `natural_full_finetune` | Đối chứng toàn bộ decoder FP32, không bị ràng buộc grid; đánh giá một lần |
 
 Năm nhánh đầu là **model-only**, các nhánh natural là model + natural + LPIPS.
-Mặc định chạy `fixed_ptq`, `reconstruction`, `natural_residual`,
-`natural_residual_qat` và `natural_full_finetune`: 4 nhánh W4 và 1 đối chứng FP32. Các phương pháp khác vẫn
+Mặc định focused khai báo `fixed_ptq`, `reconstruction`, `natural_residual`,
+`natural_residual_qat` và `natural_full_finetune`, nhưng bỏ `natural_residual:8`,
+`reconstruction:4` và `fixed_ptq:4` vì các run hiện tại không cho hiệu ứng attack.
+Nhánh còn lại vẫn gồm đối chứng W8/W4 phù hợp và FP32 upper bound. Các phương pháp khác vẫn
 chạy được qua `--methods` / `--natural-methods`. Mọi nhánh dùng cùng bits, coverage, prompt/seed và
 ngưỡng chất lượng trong một `comparison_group`. Scale được phép nằm trong
 [0.8, 1.25] lần scale RTN khởi tạo cho các nhánh scale. Không tune bitwidth liên tục,

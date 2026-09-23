@@ -20,7 +20,8 @@ def write_json(path, value):
 
 
 FOCUSED_METHODS = ["--methods", "fixed_ptq", "reconstruction", "--natural-methods",
-                   "natural_residual", "natural_residual_qat", "natural_full_finetune"]
+                   "natural_residual", "natural_residual_qat", "natural_full_finetune",
+                   "--exclude-method-bits", "natural_residual:8", "reconstruction:4", "fixed_ptq:4"]
 FULL_METHODS = ["--methods", "fixed_ptq", "reconstruction", "block_reconstruction",
                 "--natural-methods", "natural_rounding", "natural_rounding_scale", "natural_residual",
                 "natural_qat_purification", "natural_residual_qat", "natural_qat_scale", "natural_gan_qat",

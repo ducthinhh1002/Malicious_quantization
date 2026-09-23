@@ -30,6 +30,21 @@ NATURAL_METHODS = ("natural_rounding", "natural_rounding_scale", "natural_residu
                    *QAT_METHODS, *FLOAT_METHODS, "natural_spectral")
 
 
+def parse_method_bit_exclusions(values):
+    quantized_methods = {"fixed_ptq", "sensitivity", "rounding", "rounding_scale",
+                         "reconstruction", "block_reconstruction", *NATURAL_METHODS} - set(FLOAT_METHODS)
+    exclusions = set()
+    for value in values:
+        method, separator, bit_text = value.rpartition(":")
+        if (not separator or method not in quantized_methods or not bit_text.isdigit()
+                or int(bit_text) not in (2, 3, 4, 6, 8)):
+            raise ValueError(f"Invalid --exclude-method-bits value: {value}")
+        exclusions.add((method, int(bit_text)))
+    if len(exclusions) != len(values):
+        raise ValueError("Duplicate --exclude-method-bits values")
+    return exclusions
+
+
 def blur(x):
     """Fixed Gaussian [1,4,6,4,1]/16, reflection padding, no learned prior."""
     k = x.new_tensor([1, 4, 6, 4, 1]) / 16
@@ -851,6 +866,8 @@ def parser():
     p.add_argument("--natural-search-n", type=int, help="Natural SEARCH count independent of prompt count; default --search-n")
     p.add_argument("--natural-methods", nargs="+", choices=NATURAL_METHODS,
                    default=list(NATURAL_METHODS), help="Natural controls and exploratory objectives; FP32 controls outside bitwidth grid")
+    p.add_argument("--exclude-method-bits", nargs="+", default=[], metavar="METHOD:BITS",
+                   help="Do not declare matching quantized branches, independent of clip (for example natural_residual:8)")
     p.add_argument("--natural-resolution", type=int, choices=[256, 512], default=512)
     p.add_argument("--natural-preservation", choices=["legacy", "lowpass"], default="legacy",
                    help="lowpass matches preservation form across natural quantized branches for residual ablations")
@@ -905,6 +922,7 @@ def main():
         raise ValueError("Invalid numeric arguments")
     if any(b not in (2, 3, 4, 6, 8) for b in args.bits) or any(not 0 < c <= 1 for c in args.clips):
         raise ValueError("Invalid grid")
+    excluded_method_bits = parse_method_bit_exclusions(args.exclude_method_bits)
     if (not 1 <= args.residual_rank <= 3 * (args.residual_patch ** 2 - 1) or args.residual_patches_per_image < 1
             or not math.isfinite(args.residual_weight) or args.residual_weight < 0):
         raise ValueError("Invalid residual configuration")
@@ -1042,6 +1060,8 @@ def main():
             for method in dict.fromkeys([*args.methods, *(args.natural_methods if natural_manifest else [])]):
                 if method in FLOAT_METHODS:
                     continue  # No duplicate FP32 control for every bitwidth/clip.
+                if (method, bits) in excluded_method_bits:
+                    continue
                 branch_id = f"{method}_w{bits}_c{clip}"
                 plan.append({"label": branch_id + "_test", "method": method,
                              "comparison_group": f"w{bits}_c{clip}_{args.scope}",
@@ -1064,6 +1084,7 @@ def main():
                                  {"label": "pseudo_target_test", "role": "diagnostic", "method": "direct_smoothing",
                                   "strength": args.strength}, *plan]
     manifest["natural_dataset"] = natural_manifest
+    manifest["excluded_method_bits"] = [f"{method}:{bits}" for method, bits in sorted(excluded_method_bits)]
     if natural_manifest:
         manifest["threat_model"] = "separate_model_only_and_model_plus_unpaired_natural_branches"
     manifest['owner_informed_steering'] = steering_plan
