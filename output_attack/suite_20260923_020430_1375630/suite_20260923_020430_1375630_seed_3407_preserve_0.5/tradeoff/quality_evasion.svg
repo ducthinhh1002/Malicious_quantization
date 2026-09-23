@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1560" viewBox="0 0 1000 1560">
+<rect width="100%" height="100%" fill="white"/>
+<g font-family="sans-serif" font-size="12" fill="#222">
+<text x="30" y="22">Observed checkpoints: SSIM vs evasion among baseline-detected images. Descriptive, not a continuous budget curve.</text>
+<text x="30" y="55">(&#x27;w8_c1.0_all&#x27;, &#x27;marked_model_only&#x27;)</text>
+<path d="M65 85 V260 H455" fill="none" stroke="black"/>
+<text x="28" y="264.0">0%</text>
+<text x="28" y="179.0">50%</text>
+<text x="28" y="94.0">100%</text>
+<text x="53.0" y="281">0.970</text>
+<text x="248.0" y="281">0.985</text>
+<text x="443.0" y="281">1.000</text>
+<text x="240" y="301">SSIM (higher is better)</text>
+<circle cx="455" cy="260" r="4" fill="#aaa"><title>Marked reference: zero additional evasion by definition</title></circle>
+<text x="65" y="322">Orange: non-dominated in this group; gray at (1,0): marked reference.</text>
+<circle cx="451.24" cy="260.00" r="5" fill="#475569"><title>fixed_ptq_w8_c1.0_test</title></circle>
+<text x="457.24" y="256.00">1</text>
+<text x="485" y="97" font-size="10" fill="#475569">1: fixed_ptq_w8_c1.0_test</text>
+<circle cx="451.33" cy="260.00" r="5" fill="#475569"><title>reconstruction_w8_c1.0_test</title></circle>
+<text x="457.33" y="256.00">2</text>
+<text x="485" y="115" font-size="10" fill="#475569">2: reconstruction_w8_c1.0_test</text>
+<circle cx="451.35" cy="260.00" r="5" fill="#c2410c"><title>reconstruction_w8_c1.0_final_test</title></circle>
+<text x="457.35" y="256.00">3</text>
+<text x="485" y="133" font-size="10" fill="#c2410c">3: reconstruction_w8_c1.0_final_test</text>
+<text x="30" y="355">(&#x27;w8_c1.0_all&#x27;, &#x27;marked_model_plus_unpaired_natural_images&#x27;)</text>
+<path d="M65 385 V560 H455" fill="none" stroke="black"/>
+<text x="28" y="564.0">0%</text>
+<text x="28" y="479.0">50%</text>
+<text x="28" y="394.0">100%</text>
+<text x="53.0" y="581">0.949</text>
+<text x="248.0" y="581">0.975</text>
+<text x="443.0" y="581">1.000</text>
+<text x="240" y="601">SSIM (higher is better)</text>
+<circle cx="455" cy="560" r="4" fill="#aaa"><title>Marked reference: zero additional evasion by definition</title></circle>
+<text x="65" y="622">Orange: non-dominated in this group; gray at (1,0): marked reference.</text>
+<circle cx="294.52" cy="560.00" r="5" fill="#475569"><title>natural_residual_w8_c1.0_test</title></circle>
+<text x="300.52" y="556.00">1</text>
+<text x="485" y="397" font-size="10" fill="#475569">1: natural_residual_w8_c1.0_test</text>
+<circle cx="305.97" cy="560.00" r="5" fill="#c2410c"><title>natural_residual_qat_w8_c1.0_test</title></circle>
+<text x="311.97" y="556.00">2</text>
+<text x="485" y="415" font-size="10" fill="#c2410c">2: natural_residual_qat_w8_c1.0_test</text>
+<text x="30" y="655">(&#x27;w4_c1.0_all&#x27;, &#x27;marked_model_only&#x27;)</text>
+<path d="M65 685 V860 H455" fill="none" stroke="black"/>
+<text x="28" y="864.0">0%</text>
+<text x="28" y="779.0">50%</text>
+<text x="28" y="694.0">100%</text>
+<text x="53.0" y="881">0.910</text>
+<text x="248.0" y="881">0.955</text>
+<text x="443.0" y="881">1.000</text>
+<text x="240" y="901">SSIM (higher is better)</text>
+<circle cx="455" cy="860" r="4" fill="#aaa"><title>Marked reference: zero additional evasion by definition</title></circle>
+<text x="65" y="922">Orange: non-dominated in this group; gray at (1,0): marked reference.</text>
+<circle cx="194.36" cy="860.00" r="5" fill="#475569"><title>fixed_ptq_w4_c1.0_test</title></circle>
+<text x="200.36" y="856.00">1</text>
+<text x="485" y="697" font-size="10" fill="#475569">1: fixed_ptq_w4_c1.0_test</text>
+<circle cx="332.72" cy="860.00" r="5" fill="#c2410c"><title>reconstruction_w4_c1.0_test</title></circle>
+<text x="338.72" y="856.00">2</text>
+<text x="485" y="715" font-size="10" fill="#c2410c">2: reconstruction_w4_c1.0_test</text>
+<text x="30" y="955">(&#x27;w4_c1.0_all&#x27;, &#x27;marked_model_plus_unpaired_natural_images&#x27;)</text>
+<path d="M65 985 V1160 H455" fill="none" stroke="black"/>
+<text x="28" y="1164.0">0%</text>
+<text x="28" y="1079.0">50%</text>
+<text x="28" y="994.0">100%</text>
+<text x="53.0" y="1181">0.791</text>
+<text x="248.0" y="1181">0.895</text>
+<text x="443.0" y="1181">1.000</text>
+<text x="240" y="1201">SSIM (higher is better)</text>
+<circle cx="455" cy="1160" r="4" fill="#aaa"><title>Marked reference: zero additional evasion by definition</title></circle>
+<text x="65" y="1222">Orange: non-dominated in this group; gray at (1,0): marked reference.</text>
+<circle cx="120.90" cy="1089.60" r="5" fill="#c2410c"><title>natural_residual_w4_c1.0_test</title></circle>
+<text x="126.90" y="1085.60">1</text>
+<text x="485" y="997" font-size="10" fill="#c2410c">1: natural_residual_w4_c1.0_test</text>
+<circle cx="150.82" cy="1127.37" r="5" fill="#c2410c"><title>natural_residual_qat_w4_c1.0_test</title></circle>
+<text x="156.82" y="1123.37">2</text>
+<text x="485" y="1015" font-size="10" fill="#c2410c">2: natural_residual_qat_w4_c1.0_test</text>
+<text x="30" y="1255">(&#x27;fp32_unrestricted_decoder_control&#x27;, &#x27;marked_model_plus_unpaired_natural_images_unrestricted_finetune&#x27;)</text>
+<path d="M65 1285 V1460 H455" fill="none" stroke="black"/>
+<text x="28" y="1464.0">0%</text>
+<text x="28" y="1379.0">50%</text>
+<text x="28" y="1294.0">100%</text>
+<text x="53.0" y="1481">0.781</text>
+<text x="248.0" y="1481">0.891</text>
+<text x="443.0" y="1481">1.000</text>
+<text x="240" y="1501">SSIM (higher is better)</text>
+<circle cx="455" cy="1460" r="4" fill="#aaa"><title>Marked reference: zero additional evasion by definition</title></circle>
+<text x="65" y="1522">Orange: non-dominated in this group; gray at (1,0): marked reference.</text>
+<circle cx="118.46" cy="1303.74" r="5" fill="#c2410c"><title>natural_full_finetune_fp32_test</title></circle>
+<text x="124.46" y="1299.74">1</text>
+<text x="485" y="1297" font-size="10" fill="#c2410c">1: natural_full_finetune_fp32_test</text>
+</g>
+</svg>

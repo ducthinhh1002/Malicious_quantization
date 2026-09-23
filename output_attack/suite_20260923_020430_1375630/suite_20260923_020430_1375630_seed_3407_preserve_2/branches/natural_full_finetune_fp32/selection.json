@@ -1,0 +1,209 @@
+{
+  "candidate": "natural_full_finetune_w32_c1.0_step1000",
+  "source": "natural_full_finetune",
+  "method": "natural_full_finetune",
+  "bits": 32,
+  "clip": 1.0,
+  "step": 1000,
+  "psnr": 29.13934898376465,
+  "ssim": 0.8237722516059875,
+  "psnr_p05": 23.831369400024414,
+  "min_psnr": 23.43947982788086,
+  "quality_violation_fraction": 0.4000000059604645,
+  "target_mse": 0.003880939674900219,
+  "feasible": true,
+  "semantic_lowpass_mse": 0.00010752356465673074,
+  "per_image_psnr": [
+    28.294376373291016,
+    33.67076110839844,
+    23.85199546813965,
+    29.827089309692383,
+    25.030099868774414,
+    29.679309844970703,
+    29.36830711364746,
+    31.260543823242188,
+    31.324432373046875,
+    32.06687545776367,
+    26.880807876586914,
+    26.845550537109375,
+    28.41343879699707,
+    33.023590087890625,
+    28.4296817779541,
+    27.927013397216797,
+    23.43947982788086,
+    33.756065368652344,
+    32.037841796875,
+    27.65973663330078
+  ],
+  "per_image_ssim": [
+    0.7535777185122938,
+    0.9738085004586241,
+    0.74834195818221,
+    0.8632370384615663,
+    0.6505215431368011,
+    0.8609283815050496,
+    0.7595952206635027,
+    0.7899859145645214,
+    0.7559736100971103,
+    0.8881181459223769,
+    0.8513759353721952,
+    0.8417752127604634,
+    0.8955280549282123,
+    0.9156708617174001,
+    0.856302168816173,
+    0.8848598936320422,
+    0.70742117851656,
+    0.9573952625379091,
+    0.8059616759180209,
+    0.7150664443420489
+  ],
+  "per_image_texture": [
+    {
+      "highpass_mse": 0.0007761785527691245,
+      "highpass_energy_ratio": 0.609743595123291,
+      "semantic_lowpass_mse": 9.011558722704649e-05
+    },
+    {
+      "highpass_mse": 0.00020797725301235914,
+      "highpass_energy_ratio": 0.6534999012947083,
+      "semantic_lowpass_mse": 6.703112012473866e-05
+    },
+    {
+      "highpass_mse": 0.002040186896920204,
+      "highpass_energy_ratio": 0.745586097240448,
+      "semantic_lowpass_mse": 0.00017484398267697543
+    },
+    {
+      "highpass_mse": 0.00041795201832428575,
+      "highpass_energy_ratio": 0.642745316028595,
+      "semantic_lowpass_mse": 0.00010040424240287393
+    },
+    {
+      "highpass_mse": 0.0016046511009335518,
+      "highpass_energy_ratio": 0.7388890385627747,
+      "semantic_lowpass_mse": 0.00025001229369081557
+    },
+    {
+      "highpass_mse": 0.0004970512818545103,
+      "highpass_energy_ratio": 0.5282126665115356,
+      "semantic_lowpass_mse": 0.0001419449399691075
+    },
+    {
+      "highpass_mse": 0.0007046679966151714,
+      "highpass_energy_ratio": 0.5233069658279419,
+      "semantic_lowpass_mse": 4.9952370318351313e-05
+    },
+    {
+      "highpass_mse": 0.00044687112676911056,
+      "highpass_energy_ratio": 0.6468552947044373,
+      "semantic_lowpass_mse": 3.7454279663506895e-05
+    },
+    {
+      "highpass_mse": 0.00044517050264403224,
+      "highpass_energy_ratio": 0.5939216613769531,
+      "semantic_lowpass_mse": 5.729412805521861e-05
+    },
+    {
+      "highpass_mse": 0.0002735632879193872,
+      "highpass_energy_ratio": 0.7417725920677185,
+      "semantic_lowpass_mse": 9.840507846092805e-05
+    },
+    {
+      "highpass_mse": 0.0010432250564917922,
+      "highpass_energy_ratio": 0.6777143478393555,
+      "semantic_lowpass_mse": 0.0001396621228195727
+    },
+    {
+      "highpass_mse": 0.0008627916686236858,
+      "highpass_energy_ratio": 0.8834766149520874,
+      "semantic_lowpass_mse": 0.00021962271421216428
+    },
+    {
+      "highpass_mse": 0.0009280375088565052,
+      "highpass_energy_ratio": 0.533720850944519,
+      "semantic_lowpass_mse": 7.567854481749237e-05
+    },
+    {
+      "highpass_mse": 0.00018992015975527465,
+      "highpass_energy_ratio": 0.7316761612892151,
+      "semantic_lowpass_mse": 8.358074410352856e-05
+    },
+    {
+      "highpass_mse": 0.0005986173637211323,
+      "highpass_energy_ratio": 0.7110143899917603,
+      "semantic_lowpass_mse": 0.0001754943368723616
+    },
+    {
+      "highpass_mse": 0.0008139570127241313,
+      "highpass_energy_ratio": 0.8325821757316589,
+      "semantic_lowpass_mse": 0.00011191682278877124
+    },
+    {
+      "highpass_mse": 0.0026023921091109514,
+      "highpass_energy_ratio": 0.8447441458702087,
+      "semantic_lowpass_mse": 0.00012766486906912178
+    },
+    {
+      "highpass_mse": 0.00019382970640435815,
+      "highpass_energy_ratio": 0.7678936123847961,
+      "semantic_lowpass_mse": 4.422536585479975e-05
+    },
+    {
+      "highpass_mse": 0.00033323647221550345,
+      "highpass_energy_ratio": 0.6824962496757507,
+      "semantic_lowpass_mse": 2.9925835406174883e-05
+    },
+    {
+      "highpass_mse": 0.001005380181595683,
+      "highpass_energy_ratio": 0.5938367247581482,
+      "semantic_lowpass_mse": 7.524191460106522e-05
+    }
+  ],
+  "generated_reference_mse": 0.0015472808503545822,
+  "natural_validation_mse": 0.003880939674900219,
+  "natural_validation_lpips": 0.05885144897183636,
+  "natural_validation_residual": null,
+  "natural_validation_spectral": null,
+  "selection_objective": 0.009766084572083856,
+  "search_feasible": true,
+  "valid_updates": 1000,
+  "steering_layers": null,
+  "steering_threat_model": null,
+  "reconstruction_blocks": [],
+  "optimizer": "adamw",
+  "weight_decay": 0.0,
+  "training_batch_size": 4,
+  "discriminator_valid_updates": 0,
+  "training_pool_images": 4000,
+  "training_examples_seen": 4000,
+  "training_epoch_equivalents": 1.0,
+  "selected_at_budget_boundary": true,
+  "adversarial_weight": 0.0,
+  "spectral_weight": 0.0,
+  "selection_uses_discriminator": false,
+  "paper_reproduction": false,
+  "additional_objectives": [],
+  "gradient_updates": 1000,
+  "objective": "unpaired_natural_reconstruction",
+  "residual_weight": 0.0,
+  "preservation_mode": "lowpass_8x",
+  "parameter_space": "unrestricted_fp32_decoder",
+  "learning_rate_peak": 0.0005,
+  "lr_schedule": "warmup_cosine",
+  "objective_strength": 0.0,
+  "quality_policy": "report",
+  "perceptual_weight": 0.1,
+  "selected_source": "natural_full_finetune",
+  "attempted_updates": 1000,
+  "train_evaluations": 1000,
+  "search_evaluations": 11,
+  "train_image_forwards": 4000,
+  "discriminator_image_forwards": 0,
+  "search_image_forwards": 220,
+  "backward_attempts": 1000,
+  "natural_validation_image_forwards": 2816,
+  "optimized_dofs": [
+    "all_decoder_parameters_including_bias_and_norm"
+  ],
+  "status": "selected"
+}

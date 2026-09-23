@@ -1,0 +1,204 @@
+{
+  "candidate": "reconstruction_w4_c1.0_step1000",
+  "source": "reconstruction",
+  "method": "reconstruction",
+  "bits": 4,
+  "clip": 1.0,
+  "step": 1000,
+  "psnr": 37.536136627197266,
+  "ssim": 0.9748221635818481,
+  "psnr_p05": 33.17042541503906,
+  "min_psnr": 32.41438293457031,
+  "quality_violation_fraction": 0.0,
+  "target_mse": 0.00021176186128286646,
+  "feasible": true,
+  "semantic_lowpass_mse": 1.228688231549313e-05,
+  "per_image_psnr": [
+    36.81831359863281,
+    42.1439323425293,
+    33.2102165222168,
+    38.1988639831543,
+    34.665035247802734,
+    37.68696594238281,
+    37.219329833984375,
+    39.41287612915039,
+    39.6085090637207,
+    40.34458541870117,
+    35.397789001464844,
+    35.958621978759766,
+    35.54281997680664,
+    41.047752380371094,
+    37.0756950378418,
+    36.59218215942383,
+    32.41438293457031,
+    40.742305755615234,
+    40.86869812011719,
+    35.77376937866211
+  ],
+  "per_image_ssim": [
+    0.9637113835479703,
+    0.9956257118722099,
+    0.9692838024455221,
+    0.9811195523774614,
+    0.9577296936223151,
+    0.978455304752426,
+    0.9624368916868158,
+    0.9676114761476269,
+    0.9653757240464665,
+    0.9811159485976396,
+    0.9783976689501764,
+    0.9781665083464117,
+    0.9802982033320493,
+    0.9868517022434414,
+    0.9807534316330441,
+    0.9840119108159359,
+    0.962433002671264,
+    0.9918052944340903,
+    0.975440073089209,
+    0.9558203638745794
+  ],
+  "per_image_texture": [
+    {
+      "highpass_mse": 0.00013349541404750198,
+      "highpass_energy_ratio": 0.8897855877876282,
+      "semantic_lowpass_mse": 1.1539726983755827e-05
+    },
+    {
+      "highpass_mse": 3.3359217923134565e-05,
+      "highpass_energy_ratio": 0.9514732956886292,
+      "semantic_lowpass_mse": 7.152875241445145e-06
+    },
+    {
+      "highpass_mse": 0.00027466437313705683,
+      "highpass_energy_ratio": 0.8795033693313599,
+      "semantic_lowpass_mse": 2.5669040041975677e-05
+    },
+    {
+      "highpass_mse": 7.165421993704513e-05,
+      "highpass_energy_ratio": 0.9349159598350525,
+      "semantic_lowpass_mse": 1.617877569515258e-05
+    },
+    {
+      "highpass_mse": 0.00022082505165599287,
+      "highpass_energy_ratio": 0.901051938533783,
+      "semantic_lowpass_mse": 9.104242053581402e-06
+    },
+    {
+      "highpass_mse": 9.979031165130436e-05,
+      "highpass_energy_ratio": 0.9088112115859985,
+      "semantic_lowpass_mse": 1.3419019524008036e-05
+    },
+    {
+      "highpass_mse": 0.00013464930816553533,
+      "highpass_energy_ratio": 0.8612473011016846,
+      "semantic_lowpass_mse": 7.013145477685612e-06
+    },
+    {
+      "highpass_mse": 8.05252420832403e-05,
+      "highpass_energy_ratio": 0.8686271905899048,
+      "semantic_lowpass_mse": 5.0500543693488e-06
+    },
+    {
+      "highpass_mse": 7.632659253431484e-05,
+      "highpass_energy_ratio": 0.9133945107460022,
+      "semantic_lowpass_mse": 8.761751814745367e-06
+    },
+    {
+      "highpass_mse": 4.8028519813669845e-05,
+      "highpass_energy_ratio": 0.9347808957099915,
+      "semantic_lowpass_mse": 1.2729409718303941e-05
+    },
+    {
+      "highpass_mse": 0.00017095619114115834,
+      "highpass_energy_ratio": 0.9379462599754333,
+      "semantic_lowpass_mse": 1.6791564121376723e-05
+    },
+    {
+      "highpass_mse": 0.0001297935377806425,
+      "highpass_energy_ratio": 0.9539656639099121,
+      "semantic_lowpass_mse": 1.3768614735454321e-05
+    },
+    {
+      "highpass_mse": 0.00020470299932640046,
+      "highpass_energy_ratio": 0.9554443359375,
+      "semantic_lowpass_mse": 1.530107510916423e-05
+    },
+    {
+      "highpass_mse": 3.259830555180088e-05,
+      "highpass_energy_ratio": 0.9787821173667908,
+      "semantic_lowpass_mse": 1.4393345736607444e-05
+    },
+    {
+      "highpass_mse": 0.00010235795343760401,
+      "highpass_energy_ratio": 0.9404985904693604,
+      "semantic_lowpass_mse": 1.321772469964344e-05
+    },
+    {
+      "highpass_mse": 0.00011829333379864693,
+      "highpass_energy_ratio": 0.9574564099311829,
+      "semantic_lowpass_mse": 1.6479076293762773e-05
+    },
+    {
+      "highpass_mse": 0.00038012018194422126,
+      "highpass_energy_ratio": 0.9250829815864563,
+      "semantic_lowpass_mse": 1.7150443454738706e-05
+    },
+    {
+      "highpass_mse": 4.311183874960989e-05,
+      "highpass_energy_ratio": 0.9800330400466919,
+      "semantic_lowpass_mse": 1.2056372725055553e-05
+    },
+    {
+      "highpass_mse": 5.102618524688296e-05,
+      "highpass_energy_ratio": 0.9186213612556458,
+      "semantic_lowpass_mse": 4.3557333810895216e-06
+    },
+    {
+      "highpass_mse": 0.0001872699212981388,
+      "highpass_energy_ratio": 0.8943270444869995,
+      "semantic_lowpass_mse": 5.605655132967513e-06
+    }
+  ],
+  "selection_objective": 0.00021176186128286646,
+  "search_feasible": true,
+  "valid_updates": 1000,
+  "reconstruction_blocks": [],
+  "optimizer": "adamw",
+  "weight_decay": 0.0,
+  "training_batch_size": 4,
+  "discriminator_valid_updates": 0,
+  "training_pool_images": 32,
+  "training_examples_seen": 4000,
+  "training_epoch_equivalents": 125.0,
+  "selected_at_budget_boundary": true,
+  "adversarial_weight": 0.0,
+  "spectral_weight": 0.0,
+  "selection_uses_discriminator": false,
+  "paper_reproduction": false,
+  "additional_objectives": [],
+  "gradient_updates": 1000,
+  "objective": "reconstruction",
+  "residual_weight": 0.0,
+  "preservation_mode": "legacy",
+  "parameter_space": "quantized_decoder_weights",
+  "learning_rate_peak": 0.01,
+  "lr_schedule": "warmup_cosine",
+  "objective_strength": 0.0,
+  "quality_policy": "report",
+  "perceptual_weight": 0.0,
+  "selected_source": "fixed_final_step",
+  "attempted_updates": 1000,
+  "train_evaluations": 1000,
+  "search_evaluations": 11,
+  "train_image_forwards": 4000,
+  "discriminator_image_forwards": 0,
+  "search_image_forwards": 220,
+  "backward_attempts": 1000,
+  "natural_validation_image_forwards": 0,
+  "optimized_dofs": [
+    "rounding"
+  ],
+  "status": "selected",
+  "checkpoint_policy": "fixed_final_step",
+  "shares_training_with": "reconstruction_w4_c1.0_test"
+}

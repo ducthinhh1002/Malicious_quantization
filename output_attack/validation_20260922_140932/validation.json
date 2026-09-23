@@ -1,0 +1,18 @@
+{
+  "reviewed_run": "blind_20260922_023602_632293",
+  "test_suite": {
+    "total": 65,
+    "passed": 62,
+    "skipped": 3,
+    "skip_reason": "CUDA unavailable"
+  },
+  "runtime": "CPU PyTorch 2.7.1; real small Diffusers VAE and synthetic pipeline tests",
+  "full_gpu_experiment_executed_here": false,
+  "files_sha256": {
+    "wmq_blind.py": "60f1d2719951d7c103e3ddde8aa6e80960c59da64e4fb1fbddd2830f083ad41c",
+    "run_blind_quantization.sh": "bb001a6c92b717ba26ea37aadfa3e1db5e66fb7b7a31ec3957388ea8b165eccf",
+    "run_blind_suite.py": "dc30b9ce2c5eb317905fe6f725a16a088cf751c5a0ab554e825b774fe91d1538",
+    "wmq_objectives.py": "6000d7941187619919946162151a08402c74ab104165da48e7cdac3c09de6c23",
+    "evaluate_blind_watermark.py": "84663dce468c007678585bbe8ba66ea96a309df8bc2eb86249346e77801a5d9f"
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "phase": "owner_evaluation_complete",
+  "declared_branches": [
+    "fixed_ptq_w4_c1.0_test",
+    "reconstruction_w4_c1.0_test",
+    "fixed_ptq_w8_c1.0_test",
+    "reconstruction_w8_c1.0_test",
+    "natural_residual_w4_c1.0_test",
+    "natural_residual_qat_w4_c1.0_test",
+    "natural_residual_w8_c1.0_test",
+    "natural_residual_qat_w8_c1.0_test",
+    "natural_full_finetune_fp32_test"
+  ],
+  "completed_branches": [
+    "fixed_ptq_w4_c1.0_test",
+    "reconstruction_w4_c1.0_test",
+    "fixed_ptq_w8_c1.0_test",
+    "reconstruction_w8_c1.0_test",
+    "natural_residual_w4_c1.0_test",
+    "natural_residual_qat_w4_c1.0_test",
+    "natural_residual_w8_c1.0_test",
+    "natural_residual_qat_w8_c1.0_test",
+    "natural_full_finetune_fp32_test"
+  ],
+  "failed_branches": [],
+  "current_branch": null,
+  "branch_compute": {
+    "fixed_ptq_w4_c1.0_test": {
+      "search_and_export_seconds_including_profile": 3.3657131399959326,
+      "profile_image_forwards": 0
+    },
+    "reconstruction_w4_c1.0_test": {
+      "search_and_export_seconds_including_profile": 290.35219366289675,
+      "profile_image_forwards": 0
+    },
+    "fixed_ptq_w8_c1.0_test": {
+      "search_and_export_seconds_including_profile": 3.4519457891583443,
+      "profile_image_forwards": 0
+    },
+    "reconstruction_w8_c1.0_test": {
+      "search_and_export_seconds_including_profile": 290.9731052778661,
+      "profile_image_forwards": 0
+    },
+    "natural_residual_w4_c1.0_test": {
+      "search_and_export_seconds_including_profile": 1012.5191421266645,
+      "profile_image_forwards": 0
+    },
+    "natural_residual_qat_w4_c1.0_test": {
+      "search_and_export_seconds_including_profile": 441.07258953154087,
+      "profile_image_forwards": 0
+    },
+    "natural_residual_w8_c1.0_test": {
+      "search_and_export_seconds_including_profile": 356.44736979342997,
+      "profile_image_forwards": 0
+    },
+    "natural_residual_qat_w8_c1.0_test": {
+      "search_and_export_seconds_including_profile": 333.73662819340825,
+      "profile_image_forwards": 0
+    },
+    "natural_full_finetune_fp32_test": {
+      "search_and_export_seconds_including_profile": 149.9451983422041,
+      "profile_image_forwards": 0
+    }
+  }
+}

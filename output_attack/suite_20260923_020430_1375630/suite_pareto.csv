@@ -1,0 +1,7 @@
+method,role,comparison_group,threat_model,ssim,psnr,lpips,absolute_evasion,conditional_evasion,reference_valid,baseline_detected,original_quality_valid
+seed_3407_preserve_0.5: reconstruction_w8_c1.0_final_test,endpoint_control,w8_c1.0_all_seed3407,marked_model_only,0.9997164011001587,56.81459426879883,0.00018113782280124724,0.010000000000000009,0.0,True,99,True
+seed_3407_preserve_0.5: natural_residual_qat_w8_c1.0_test,candidate,w8_c1.0_all_seed3407,marked_model_plus_unpaired_natural_images,0.980519711971283,38.08076477050781,0.014729543009307235,0.010000000000000009,0.0,True,99,True
+seed_3407_preserve_0.5: reconstruction_w4_c1.0_test,candidate,w4_c1.0_all_seed3407,marked_model_only,0.9716426730155945,37.123329162597656,0.010711822849698365,0.010000000000000009,0.0,True,99,True
+seed_3407_preserve_0.5: natural_residual_w4_c1.0_test,candidate,w4_c1.0_all_seed3407,marked_model_plus_unpaired_natural_images,0.8206989169120789,29.41080093383789,0.042735070725902914,0.42000000000000004,0.41414141414141414,True,99,True
+seed_3407_preserve_0.5: natural_residual_qat_w4_c1.0_test,candidate,w4_c1.0_all_seed3407,marked_model_plus_unpaired_natural_images,0.8367560505867004,29.84127426147461,0.04081506014801562,0.19999999999999996,0.1919191919191919,True,99,True
+seed_3407_preserve_0.5: natural_full_finetune_fp32_test,finetune_control,fp32_unrestricted_decoder_control_seed3407,marked_model_plus_unpaired_natural_images_unrestricted_finetune,0.8111283779144287,28.846982955932617,0.04913893556222319,0.92,0.9191919191919192,True,99,True

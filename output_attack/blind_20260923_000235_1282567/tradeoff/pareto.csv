@@ -1,0 +1,7 @@
+method,role,comparison_group,threat_model,ssim,psnr,lpips,absolute_evasion,conditional_evasion,reference_valid,baseline_detected,original_quality_valid
+fixed_ptq_w8_c1.0_test,candidate,w8_c1.0_all,marked_model_only,0.9997078776359558,56.706695556640625,0.00019757633192057255,0.010000000000000009,0.0,True,99,True
+natural_residual_qat_w8_c1.0_test,candidate,w8_c1.0_all,marked_model_plus_unpaired_natural_images,0.9807575941085815,38.262882232666016,0.014605761945713312,0.010000000000000009,0.0,True,99,True
+reconstruction_w4_c1.0_final_test,endpoint_control,w4_c1.0_all,marked_model_only,0.9721394181251526,37.15449905395508,0.01003762240987271,0.010000000000000009,0.0,True,99,True
+natural_residual_w4_c1.0_test,candidate,w4_c1.0_all,marked_model_plus_unpaired_natural_images,0.8209212422370911,29.47327423095703,0.043267123382538554,0.37,0.36363636363636365,True,99,False
+natural_residual_qat_w4_c1.0_test,candidate,w4_c1.0_all,marked_model_plus_unpaired_natural_images,0.8387230038642883,29.951562881469727,0.039826676873490216,0.17000000000000004,0.16161616161616163,True,99,False
+natural_full_finetune_fp32_test,finetune_control,fp32_unrestricted_decoder_control,marked_model_plus_unpaired_natural_images_unrestricted_finetune,0.8150022625923157,28.88941192626953,0.048370263446122407,0.9299999999999999,0.9292929292929293,True,99,False
