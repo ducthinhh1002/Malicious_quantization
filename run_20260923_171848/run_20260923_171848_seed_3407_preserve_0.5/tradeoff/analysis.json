@@ -1,0 +1,22 @@
+{
+  "source_run": "/home/jovyan/thinhnd39/quantization/output_attack/run_20260923_171848/run_20260923_171848_seed_3407_preserve_0.5",
+  "quality_policy": "constrained",
+  "analysis_code_sha256": "5f0ba90755cf045570dd18512793e30e38081911ace532a7f1d112a5870869f3",
+  "source_sha256": {
+    "manifest.json": "1072cf2fc5c295a8799d0c992c38c7f773dbe143d6610a8650584770363933e6",
+    "report.json": "b69b19e18265679d3e011033e5fa2241de145b4a6860ac8a53b0b22b3170ed56",
+    "owner_evaluation.json": "25eebf4bb768c23991b2a25cd5643dc7ac82ec3d04b11a15f7c38730c15a5d5d"
+  },
+  "reference_valid": true,
+  "thresholds": [
+    0.8,
+    0.82,
+    0.85,
+    0.86,
+    0.9,
+    0.95
+  ],
+  "interpretation": "Observed owner-evaluated checkpoints only. Search checkpoints lacking owner metrics are NOT curve points. No global winner, no checkpoint reselection. FP32, bitwidths and threat models have separate frontiers.",
+  "gate_note": "report policy retains failed-quality candidates; changing an SSIM label alone does not improve the attack.",
+  "verification": "Derived from saved reports; does not independently rerun images/checkpoints."
+}

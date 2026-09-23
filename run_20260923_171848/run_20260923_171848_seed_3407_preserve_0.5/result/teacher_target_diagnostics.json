@@ -1,0 +1,29 @@
+{
+  "source": "purified",
+  "label": "natural_full_finetune_fp32_test",
+  "checkpoint_policy": "final",
+  "selected_step": 2000,
+  "checkpoint_sha256": "5c79cd5b04832c88a680ace9012b6f1239a1d85fe5b9d31d8aceb820eebdd3dd",
+  "search_feasible": true,
+  "additional_image_forwards": 52,
+  "owner_feedback": false,
+  "target_signal": {
+    "train": {
+      "n": 32,
+      "reference_mse": 0.0016560110266254924,
+      "max_abs_difference": 0.6391826868057251,
+      "near_identity": false,
+      "identity_tolerance": 1e-06,
+      "watermark_status": "not_measured"
+    },
+    "search": {
+      "n": 20,
+      "reference_mse": 0.0015459172573173419,
+      "max_abs_difference": 0.6121888160705566,
+      "near_identity": false,
+      "identity_tolerance": 1e-06,
+      "watermark_status": "not_measured"
+    }
+  },
+  "target_cache_seconds": 1.7032943833619356
+}

@@ -1,0 +1,73 @@
+{
+  "phase": "owner_evaluation_complete",
+  "declared_branches": [
+    "fixed_ptq_w4_c1.0_test",
+    "reconstruction_w4_c1.0_test",
+    "natural_full_finetune_fp32_test",
+    "natural_rounding_w4_c1.0_test",
+    "natural_teacher_rounding_w4_c1.0_test",
+    "natural_residual_w4_c1.0_test",
+    "natural_joint_finetune_fp32_test",
+    "natural_residual_qat_warm_w4_c1.0_test",
+    "natural_residual_cycle_qat_warm_w4_c1.0_test"
+  ],
+  "completed_branches": [
+    "fixed_ptq_w4_c1.0_test",
+    "reconstruction_w4_c1.0_test",
+    "natural_full_finetune_fp32_test",
+    "natural_rounding_w4_c1.0_test",
+    "natural_teacher_rounding_w4_c1.0_test",
+    "natural_residual_w4_c1.0_test",
+    "natural_joint_finetune_fp32_test",
+    "natural_residual_qat_warm_w4_c1.0_test",
+    "natural_residual_cycle_qat_warm_w4_c1.0_test"
+  ],
+  "failed_branches": [],
+  "current_branch": null,
+  "branch_compute": {
+    "fixed_ptq_w4_c1.0_test": {
+      "search_and_export_seconds_including_profile": 2.1203778013587,
+      "profile_image_forwards": 0
+    },
+    "reconstruction_w4_c1.0_test": {
+      "search_and_export_seconds_including_profile": 473.7739701215178,
+      "profile_image_forwards": 0
+    },
+    "natural_finetune_rtn_w4_c1.0_test": {
+      "shares_training_with": "natural_full_finetune_fp32_test",
+      "post_training_export_and_validation_seconds": 3.1608004551380873
+    },
+    "natural_full_finetune_fp32_test": {
+      "search_and_export_seconds_including_profile": 299.32106039486825,
+      "profile_image_forwards": 0
+    },
+    "natural_rounding_w4_c1.0_test": {
+      "search_and_export_seconds_including_profile": 630.5833418555558,
+      "profile_image_forwards": 0
+    },
+    "natural_teacher_rounding_w4_c1.0_test": {
+      "search_and_export_seconds_including_profile": 696.0940615572035,
+      "profile_image_forwards": 0
+    },
+    "natural_residual_w4_c1.0_test": {
+      "search_and_export_seconds_including_profile": 713.7182621583343,
+      "profile_image_forwards": 0
+    },
+    "natural_joint_finetune_rtn_w4_c1.0_test": {
+      "shares_training_with": "natural_joint_finetune_fp32_test",
+      "post_training_export_and_validation_seconds": 3.8156870789825916
+    },
+    "natural_joint_finetune_fp32_test": {
+      "search_and_export_seconds_including_profile": 479.70601517148316,
+      "profile_image_forwards": 0
+    },
+    "natural_residual_qat_warm_w4_c1.0_test": {
+      "search_and_export_seconds_including_profile": 640.8169806692749,
+      "profile_image_forwards": 0
+    },
+    "natural_residual_cycle_qat_warm_w4_c1.0_test": {
+      "search_and_export_seconds_including_profile": 689.2023018877953,
+      "profile_image_forwards": 0
+    }
+  }
+}

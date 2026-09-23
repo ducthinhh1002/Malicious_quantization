@@ -1,0 +1,259 @@
+{
+  "candidate": "natural_teacher_rounding_w4_c1.0_step2000",
+  "source": "natural_teacher_rounding",
+  "method": "natural_teacher_rounding",
+  "bits": 4,
+  "clip": 1.0,
+  "step": 2000,
+  "psnr": 30.0209903717041,
+  "ssim": 0.8468345403671265,
+  "budget_violation_fraction": null,
+  "psnr_p05": 24.753925323486328,
+  "min_psnr": 24.301563262939453,
+  "quality_violation_fraction": 0.3499999940395355,
+  "target_mse": 0.0037542312322216276,
+  "feasible": true,
+  "semantic_lowpass_mse": 9.297477954532951e-05,
+  "per_image_psnr": [
+    29.04511260986328,
+    34.95507049560547,
+    24.777734756469727,
+    30.670562744140625,
+    25.804574966430664,
+    30.546361923217773,
+    30.010604858398438,
+    32.008506774902344,
+    32.03324890136719,
+    33.05866241455078,
+    28.008806228637695,
+    27.930021286010742,
+    29.40210723876953,
+    33.70555114746094,
+    29.292461395263672,
+    29.028146743774414,
+    24.301563262939453,
+    34.684165954589844,
+    32.73678207397461,
+    28.419784545898438
+  ],
+  "per_image_ssim": [
+    0.781700867999794,
+    0.9782913181682557,
+    0.7917299500088589,
+    0.8788717612117848,
+    0.6897790043940941,
+    0.8764116449122797,
+    0.7817061745003082,
+    0.8173613148090617,
+    0.7825868043407505,
+    0.9057704375336642,
+    0.8795209530113962,
+    0.8698065878012804,
+    0.9098139173570513,
+    0.9257076926085345,
+    0.8800787783814835,
+    0.9054445925211752,
+    0.7431865319400588,
+    0.9638912939624769,
+    0.836346206279593,
+    0.7386860366295731
+  ],
+  "per_image_texture": [
+    {
+      "highpass_mse": 0.0006801945855841041,
+      "highpass_energy_ratio": 0.543567955493927,
+      "semantic_lowpass_mse": 7.933107553981245e-05
+    },
+    {
+      "highpass_mse": 0.0001649429032113403,
+      "highpass_energy_ratio": 0.6575549840927124,
+      "semantic_lowpass_mse": 4.1803723433986306e-05
+    },
+    {
+      "highpass_mse": 0.0017130253836512566,
+      "highpass_energy_ratio": 0.730269193649292,
+      "semantic_lowpass_mse": 0.00021543115144595504
+    },
+    {
+      "highpass_mse": 0.0003635212779045105,
+      "highpass_energy_ratio": 0.6046862602233887,
+      "semantic_lowpass_mse": 7.507986447308213e-05
+    },
+    {
+      "highpass_mse": 0.0014223236357793212,
+      "highpass_energy_ratio": 0.6957590579986572,
+      "semantic_lowpass_mse": 0.00021083097090013325
+    },
+    {
+      "highpass_mse": 0.0004402183403726667,
+      "highpass_energy_ratio": 0.4938996732234955,
+      "semantic_lowpass_mse": 9.762744593899697e-05
+    },
+    {
+      "highpass_mse": 0.0006321624387055635,
+      "highpass_energy_ratio": 0.4655199646949768,
+      "semantic_lowpass_mse": 4.2630555981304497e-05
+    },
+    {
+      "highpass_mse": 0.0003818223485723138,
+      "highpass_energy_ratio": 0.5450228452682495,
+      "semantic_lowpass_mse": 3.789652691921219e-05
+    },
+    {
+      "highpass_mse": 0.0003912071115337312,
+      "highpass_energy_ratio": 0.5171422362327576,
+      "semantic_lowpass_mse": 4.944924148730934e-05
+    },
+    {
+      "highpass_mse": 0.0002296749735251069,
+      "highpass_energy_ratio": 0.6933463215827942,
+      "semantic_lowpass_mse": 7.75465159676969e-05
+    },
+    {
+      "highpass_mse": 0.0008473595953546464,
+      "highpass_energy_ratio": 0.6833298206329346,
+      "semantic_lowpass_mse": 0.0001010078121908009
+    },
+    {
+      "highpass_mse": 0.0007014807197265327,
+      "highpass_energy_ratio": 0.83836829662323,
+      "semantic_lowpass_mse": 0.00019993967725895345
+    },
+    {
+      "highpass_mse": 0.0007729604840278625,
+      "highpass_energy_ratio": 0.4887431263923645,
+      "semantic_lowpass_mse": 4.463580989977345e-05
+    },
+    {
+      "highpass_mse": 0.00016721691645216197,
+      "highpass_energy_ratio": 0.728635847568512,
+      "semantic_lowpass_mse": 7.763847679598257e-05
+    },
+    {
+      "highpass_mse": 0.0005056109512224793,
+      "highpass_energy_ratio": 0.6862086653709412,
+      "semantic_lowpass_mse": 0.0001730424555717036
+    },
+    {
+      "highpass_mse": 0.0006634566816501319,
+      "highpass_energy_ratio": 0.8531923294067383,
+      "semantic_lowpass_mse": 7.919402560219169e-05
+    },
+    {
+      "highpass_mse": 0.0022212257608771324,
+      "highpass_energy_ratio": 0.7848194241523743,
+      "semantic_lowpass_mse": 0.00010173872578889132
+    },
+    {
+      "highpass_mse": 0.0001634018699405715,
+      "highpass_energy_ratio": 0.7282544374465942,
+      "semantic_lowpass_mse": 3.730525349965319e-05
+    },
+    {
+      "highpass_mse": 0.0002890215255320072,
+      "highpass_energy_ratio": 0.6578419804573059,
+      "semantic_lowpass_mse": 4.147644358454272e-05
+    },
+    {
+      "highpass_mse": 0.0008770442800596356,
+      "highpass_energy_ratio": 0.5329166054725647,
+      "semantic_lowpass_mse": 7.588983862660825e-05
+    }
+  ],
+  "generated_reference_mse": 0.0012613511964445934,
+  "natural_validation_mse": 0.0037542312322216276,
+  "natural_validation_lpips": 0.05668112485363963,
+  "natural_validation_residual": null,
+  "natural_validation_spectral": null,
+  "natural_validation_cycle": null,
+  "selection_objective": 0.009785354210168863,
+  "teacher_search_mse": 0.00031652310281060636,
+  "search_feasible": true,
+  "valid_updates": 2000,
+  "steering_layers": null,
+  "steering_threat_model": null,
+  "reconstruction_blocks": [],
+  "optimizer": "adamw",
+  "weight_decay": 0.0,
+  "training_batch_size": 4,
+  "discriminator_valid_updates": 0,
+  "training_pool_images": 4000,
+  "training_examples_seen": 8000,
+  "training_epoch_equivalents": 2.0,
+  "selected_at_budget_boundary": true,
+  "adversarial_weight": 0.0,
+  "spectral_weight": 0.0,
+  "selection_uses_discriminator": false,
+  "paper_reproduction": false,
+  "additional_objectives": [],
+  "gradient_updates": 2000,
+  "teacher_dependency": {
+    "source": "purified",
+    "label": "natural_full_finetune_fp32_test",
+    "checkpoint_policy": "final",
+    "selected_step": 2000,
+    "checkpoint_sha256": "5c79cd5b04832c88a680ace9012b6f1239a1d85fe5b9d31d8aceb820eebdd3dd",
+    "search_feasible": true,
+    "additional_image_forwards": 52,
+    "owner_feedback": false,
+    "target_signal": {
+      "train": {
+        "n": 32,
+        "reference_mse": 0.0016560110266254924,
+        "max_abs_difference": 0.6391826868057251,
+        "near_identity": false,
+        "identity_tolerance": 1e-06,
+        "watermark_status": "not_measured"
+      },
+      "search": {
+        "n": 20,
+        "reference_mse": 0.0015459172573173419,
+        "max_abs_difference": 0.6121888160705566,
+        "near_identity": false,
+        "identity_tolerance": 1e-06,
+        "watermark_status": "not_measured"
+      }
+    },
+    "target_cache_seconds": 1.7032943833619356
+  },
+  "warm_start_dependency": null,
+  "cycle_weight": 0.0,
+  "cycle_normalization": null,
+  "cycle_train_encoder_images": 0,
+  "cycle_search_encoder_images": 0,
+  "joint_quant_weight": 0.0,
+  "joint_quant_bits": null,
+  "joint_search_generated_images": 0,
+  "joint_search_natural_images": 0,
+  "joint_selection": null,
+  "teacher_weight": 1.0,
+  "teacher_search_image_forwards": 420,
+  "objective": "generated_teacher_distillation_plus_natural_reconstruction",
+  "residual_weight": 0.0,
+  "quality_constraint": "off",
+  "budget_psnr": 30.0,
+  "budget_ssim": 0.8,
+  "residual_loss_scale": null,
+  "preservation_mode": "lowpass_8x",
+  "parameter_space": "quantized_decoder_weights",
+  "learning_rate_peak": 0.01,
+  "lr_schedule": "warmup_cosine",
+  "objective_strength": 0.0,
+  "quality_policy": "constrained",
+  "perceptual_weight": 0.1,
+  "selected_source": "fixed_final_step",
+  "attempted_updates": 2000,
+  "train_evaluations": 4000,
+  "search_evaluations": 21,
+  "train_image_forwards": 16000,
+  "discriminator_image_forwards": 0,
+  "search_image_forwards": 420,
+  "backward_attempts": 2000,
+  "natural_validation_image_forwards": 5376,
+  "optimized_dofs": [
+    "rounding"
+  ],
+  "status": "selected",
+  "checkpoint_policy": "fixed_final_step",
+  "shares_training_with": "natural_teacher_rounding_w4_c1.0_test"
+}

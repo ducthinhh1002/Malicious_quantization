@@ -1,0 +1,204 @@
+{
+  "generated_by_wmq_bundle": true,
+  "kind": "result_review_bundle",
+  "source_run": "/home/jovyan/thinhnd39/quantization/output_attack/run_20260923_171848/run_20260923_171848_seed_3407_preserve_0.5",
+  "files": [
+    {
+      "path": "branches/fixed_ptq_w4_c1.0/selection.json",
+      "sha256": "2d80f67933fa3afbb98171acc4380f9b16cb7e28d65459317aed36e52338393c",
+      "bytes": 6466
+    },
+    {
+      "path": "branches/natural_finetune_rtn_w4_c1.0/selection.json",
+      "sha256": "898cdde100acc133822ec8e806feab19818962ab4afd36e89376f04a905a41bc",
+      "bytes": 7002
+    },
+    {
+      "path": "branches/natural_full_finetune_fp32/selection.json",
+      "sha256": "b4f956d460ffac8aac21ea6aa2d04bd07e68856595cdd0d7ca95b86ccd712e69",
+      "bytes": 6902
+    },
+    {
+      "path": "branches/natural_joint_finetune_fp32/selection.json",
+      "sha256": "1aa53d9428ecb0b016478baff7cbb97fb87b09795a9fc9891a969f5fb6d6e520",
+      "bytes": 7305
+    },
+    {
+      "path": "branches/natural_joint_finetune_rtn_w4_c1.0/selection.json",
+      "sha256": "02d9154ade9714f9c6db9c78cae48b79ded1adc834e23c55135c08525a4c6490",
+      "bytes": 7399
+    },
+    {
+      "path": "branches/natural_residual_cycle_qat_warm_w4_c1.0/residual_calibration.json",
+      "sha256": "76786ae040635d18fed1a60f984d9b6ce2e4fc1d884b91e1b777393ae899b115",
+      "bytes": 1867
+    },
+    {
+      "path": "branches/natural_residual_cycle_qat_warm_w4_c1.0/selection.json",
+      "sha256": "2821f1a2bb2efb47f5e0c44176fe59428a560ff476d1c03e1346495b694e3283",
+      "bytes": 7442
+    },
+    {
+      "path": "branches/natural_residual_cycle_qat_warm_w4_c1.0_final/selection.json",
+      "sha256": "b47700a8a211ceafa57f268b3e483b07240c5f5892eacda73c4b3938315e126c",
+      "bytes": 7527
+    },
+    {
+      "path": "branches/natural_residual_qat_warm_w4_c1.0/residual_calibration.json",
+      "sha256": "76786ae040635d18fed1a60f984d9b6ce2e4fc1d884b91e1b777393ae899b115",
+      "bytes": 1867
+    },
+    {
+      "path": "branches/natural_residual_qat_warm_w4_c1.0/selection.json",
+      "sha256": "b8df4d3345527ae6279e59da8b53ca36a1bc67b51afc80fc6225fe95542d7c4c",
+      "bytes": 7293
+    },
+    {
+      "path": "branches/natural_residual_qat_warm_w4_c1.0_final/selection.json",
+      "sha256": "4de104bef615d14bc9de7bd9b182bf5ce736c6eb35dbf69dc381efd6f1494694",
+      "bytes": 7393
+    },
+    {
+      "path": "branches/natural_residual_w4_c1.0/residual_calibration.json",
+      "sha256": "76786ae040635d18fed1a60f984d9b6ce2e4fc1d884b91e1b777393ae899b115",
+      "bytes": 1867
+    },
+    {
+      "path": "branches/natural_residual_w4_c1.0/selection.json",
+      "sha256": "ef1569e4841518933a5dec2e86dedc9212645d1f1b35ddb55cee03f5b180bc9d",
+      "bytes": 6857
+    },
+    {
+      "path": "branches/natural_rounding_w4_c1.0/selection.json",
+      "sha256": "3b675eaf039420c0da24afc03195cbc17b89b955b9ba9ad56ed0f6227292642c",
+      "bytes": 6836
+    },
+    {
+      "path": "branches/natural_rounding_w4_c1.0_final/selection.json",
+      "sha256": "c46d5f1389abdf4fe4a59c042509bcf1f85de76fc4384351b3076b7d53a24a7e",
+      "bytes": 6942
+    },
+    {
+      "path": "branches/natural_teacher_rounding_w4_c1.0/selection.json",
+      "sha256": "bf9de30c350db58b8d8e713c0be3074eb67e9f706a5a979e50e1fc2bf11f511d",
+      "bytes": 7855
+    },
+    {
+      "path": "branches/natural_teacher_rounding_w4_c1.0_final/selection.json",
+      "sha256": "abac31ee9ec83e03af8ebe0ec35a24fdb3e2e96e3ec991d3d8fc389b9f0e0256",
+      "bytes": 7957
+    },
+    {
+      "path": "branches/reconstruction_w4_c1.0/selection.json",
+      "sha256": "d84060a64cae779a4a2f11bfef7a8a079797dd8984ae4c9722a1b1f6fe0a8d20",
+      "bytes": 6524
+    },
+    {
+      "path": "joint_quality_evasion.csv",
+      "sha256": "9595054c5e5b7aa2f32c8710edf816078c50cc3a64959434e0bc393b8a1aa7ba",
+      "bytes": 6082
+    },
+    {
+      "path": "manifest.json",
+      "sha256": "1072cf2fc5c295a8799d0c992c38c7f773dbe143d6610a8650584770363933e6",
+      "bytes": 2689531
+    },
+    {
+      "path": "mechanism_analysis.csv",
+      "sha256": "bdae885bfb9711e64958ada7d9d1e8089d4655e0f954e48fe4ed8497f64f7e68",
+      "bytes": 955685
+    },
+    {
+      "path": "mechanism_analysis.json",
+      "sha256": "fb221687a73d134de0570c912b65c17de8567d6ca2bdc3ceda84cdea9c7187e7",
+      "bytes": 2421040
+    },
+    {
+      "path": "owner_evaluation.json",
+      "sha256": "25eebf4bb768c23991b2a25cd5643dc7ac82ec3d04b11a15f7c38730c15a5d5d",
+      "bytes": 405119
+    },
+    {
+      "path": "quality_summary.csv",
+      "sha256": "dc0f350da12175213b4ea3a13c04bd3a947864e682f7df230c21945bafad38fc",
+      "bytes": 3641
+    },
+    {
+      "path": "quality_warnings.jsonl",
+      "sha256": "0ad6fa9df683aa65da6053cc1afa498050bb471ff5ab71b4e2daac4ec0255de2",
+      "bytes": 23365
+    },
+    {
+      "path": "report.json",
+      "sha256": "b69b19e18265679d3e011033e5fa2241de145b4a6860ac8a53b0b22b3170ed56",
+      "bytes": 726511
+    },
+    {
+      "path": "run_status.json",
+      "sha256": "40a3ba96ab6004587a0493610dddc82457dce96139f1a7826bfdcee598244e59",
+      "bytes": 2677
+    },
+    {
+      "path": "search.csv",
+      "sha256": "7f1cef66aefae19676c2bc968c430afd36006a8f572153397009f31c9220d9a6",
+      "bytes": 60988
+    },
+    {
+      "path": "search.json",
+      "sha256": "a1bbb0cbd0bcb984ec3c6117edd9f95c1f0e7939b7b677f9c45e0b28f42e2246",
+      "bytes": 917941
+    },
+    {
+      "path": "selection_frozen.json",
+      "sha256": "3c12eb1070fdc53fb9d8e4bd4db71eea6fdfd4cfb3ecd538a18e41868077628d",
+      "bytes": 147665
+    },
+    {
+      "path": "teacher_target_diagnostics.json",
+      "sha256": "014f248db1788c5af4c13e8d076749b16c38feac2e448a759c35c743a48299e3",
+      "bytes": 855
+    },
+    {
+      "path": "tradeoff/analysis.json",
+      "sha256": "0906a44d06aad48df4470f93419915714b7a9a8b1f6127a08d08bc4e12a19707",
+      "bytes": 1125
+    },
+    {
+      "path": "tradeoff/layer_diagnostics.csv",
+      "sha256": "9d20d5f35eb2e8c8e25cc28ee529a1a211089394c5e02eb31795063fda4c0c89",
+      "bytes": 111822
+    },
+    {
+      "path": "tradeoff/owner_informed_steering_plan.json",
+      "sha256": "ff4d9f38dd46c79f649426a16dab906be67b010973426dc5fbb73e1462bec799",
+      "bytes": 893
+    },
+    {
+      "path": "tradeoff/pareto.csv",
+      "sha256": "20b282410be38aa164e2ff426389ff7b282244170d33d45d277a6aa8e5aa7731",
+      "bytes": 1365
+    },
+    {
+      "path": "tradeoff/points.csv",
+      "sha256": "d6c0f53ac40cbf89934c99bc77adac7c549b7855999e58b149ccfc4fd144c82f",
+      "bytes": 3513
+    },
+    {
+      "path": "tradeoff/quality_evasion.svg",
+      "sha256": "c3e4f29a5b5459f2092f42bb2a14847ff15062085d7c281a89d83258c0d0ef13",
+      "bytes": 6753
+    },
+    {
+      "path": "tradeoff/quality_thresholds.csv",
+      "sha256": "c6613c4e430ad5aac5652d7ce1fc2262d2fb23a087bfe73b718ea117c6ea002a",
+      "bytes": 29483
+    },
+    {
+      "path": "watermark_retention.csv",
+      "sha256": "00c6b9abdac30ac0e34b98ba98122b3e9a4e9e0743f08b27d2353cafb11873ed",
+      "bytes": 10758
+    }
+  ],
+  "included": "Top-level reports/tables, tradeoff analysis, and compact per-branch selections.",
+  "excluded": "Large checkpoints, images, and per-update branch logs remain at their canonical paths."
+}

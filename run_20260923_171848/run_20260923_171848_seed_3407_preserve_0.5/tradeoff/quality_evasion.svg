@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1260" viewBox="0 0 1000 1260">
+<rect width="100%" height="100%" fill="white"/>
+<g font-family="sans-serif" font-size="12" fill="#222">
+<text x="30" y="22">Observed checkpoints: SSIM vs evasion among baseline-detected images. Descriptive, not a continuous budget curve.</text>
+<text x="30" y="55">(&#x27;w4_c1.0_all&#x27;, &#x27;marked_model_only&#x27;)</text>
+<path d="M65 85 V260 H455" fill="none" stroke="black"/>
+<text x="28" y="264.0">0%</text>
+<text x="28" y="179.0">50%</text>
+<text x="28" y="94.0">100%</text>
+<text x="53.0" y="281">0.910</text>
+<text x="248.0" y="281">0.955</text>
+<text x="443.0" y="281">1.000</text>
+<text x="240" y="301">SSIM (higher is better)</text>
+<circle cx="455" cy="260" r="4" fill="#aaa"><title>Marked reference: zero additional evasion by definition</title></circle>
+<text x="65" y="322">Orange: non-dominated in this group; gray at (1,0): marked reference.</text>
+<circle cx="194.36" cy="260.00" r="5" fill="#475569"><title>fixed_ptq_w4_c1.0_test</title></circle>
+<text x="200.36" y="256.00">1</text>
+<text x="485" y="97" font-size="10" fill="#475569">1: fixed_ptq_w4_c1.0_test</text>
+<circle cx="338.09" cy="260.00" r="5" fill="#c2410c"><title>reconstruction_w4_c1.0_test</title></circle>
+<text x="344.09" y="256.00">2</text>
+<text x="485" y="115" font-size="10" fill="#c2410c">2: reconstruction_w4_c1.0_test</text>
+<text x="30" y="355">(&#x27;w4_c1.0_all&#x27;, &#x27;marked_model_plus_unpaired_natural_images&#x27;)</text>
+<path d="M65 385 V560 H455" fill="none" stroke="black"/>
+<text x="28" y="564.0">0%</text>
+<text x="28" y="479.0">50%</text>
+<text x="28" y="394.0">100%</text>
+<text x="53.0" y="581">0.785</text>
+<text x="248.0" y="581">0.892</text>
+<text x="443.0" y="581">1.000</text>
+<text x="240" y="601">SSIM (higher is better)</text>
+<circle cx="455" cy="560" r="4" fill="#aaa"><title>Marked reference: zero additional evasion by definition</title></circle>
+<text x="65" y="622">Orange: non-dominated in this group; gray at (1,0): marked reference.</text>
+<circle cx="209.12" cy="527.37" r="5" fill="#475569"><title>natural_rounding_w4_c1.0_test</title></circle>
+<text x="215.12" y="523.37">1</text>
+<text x="485" y="397" font-size="10" fill="#475569">1: natural_rounding_w4_c1.0_test</text>
+<circle cx="119.94" cy="460.40" r="5" fill="#475569"><title>natural_residual_w4_c1.0_test</title></circle>
+<text x="125.94" y="456.40">2</text>
+<text x="485" y="415" font-size="10" fill="#475569">2: natural_residual_w4_c1.0_test</text>
+<circle cx="119.99" cy="458.69" r="5" fill="#c2410c"><title>natural_residual_qat_warm_w4_c1.0_test</title></circle>
+<text x="125.99" y="454.69">3</text>
+<text x="485" y="433" font-size="10" fill="#c2410c">3: natural_residual_qat_warm_w4_c1.0_test</text>
+<circle cx="119.77" cy="460.40" r="5" fill="#475569"><title>natural_residual_cycle_qat_warm_w4_c1.0_test</title></circle>
+<text x="125.77" y="456.40">4</text>
+<text x="485" y="451" font-size="10" fill="#475569">4: natural_residual_cycle_qat_warm_w4_c1.0_test</text>
+<circle cx="163.28" cy="493.03" r="5" fill="#c2410c"><title>natural_teacher_rounding_w4_c1.0_test</title></circle>
+<text x="169.28" y="489.03">5</text>
+<text x="485" y="469" font-size="10" fill="#c2410c">5: natural_teacher_rounding_w4_c1.0_test</text>
+<circle cx="209.30" cy="517.07" r="5" fill="#c2410c"><title>natural_rounding_w4_c1.0_final_test</title></circle>
+<text x="215.30" y="513.07">6</text>
+<text x="485" y="487" font-size="10" fill="#c2410c">6: natural_rounding_w4_c1.0_final_test</text>
+<circle cx="162.93" cy="493.03" r="5" fill="#475569"><title>natural_teacher_rounding_w4_c1.0_final_test</title></circle>
+<text x="168.93" y="489.03">7</text>
+<text x="485" y="505" font-size="10" fill="#475569">7: natural_teacher_rounding_w4_c1.0_final_test</text>
+<circle cx="119.73" cy="460.40" r="5" fill="#475569"><title>natural_residual_qat_warm_w4_c1.0_final_test</title></circle>
+<text x="125.73" y="456.40">8</text>
+<text x="485" y="523" font-size="10" fill="#475569">8: natural_residual_qat_warm_w4_c1.0_final_test</text>
+<circle cx="119.34" cy="462.12" r="5" fill="#475569"><title>natural_residual_cycle_qat_warm_w4_c1.0_final_test</title></circle>
+<text x="125.34" y="458.12">9</text>
+<text x="485" y="541" font-size="10" fill="#475569">9: natural_residual_cycle_qat_warm_w4_c1.0_final_test</text>
+<text x="30" y="655">(&#x27;fp32_unrestricted_decoder_control&#x27;, &#x27;marked_model_plus_unpaired_natural_images_unrestricted_finetune&#x27;)</text>
+<path d="M65 685 V860 H455" fill="none" stroke="black"/>
+<text x="28" y="864.0">0%</text>
+<text x="28" y="779.0">50%</text>
+<text x="28" y="694.0">100%</text>
+<text x="53.0" y="881">0.780</text>
+<text x="248.0" y="881">0.890</text>
+<text x="443.0" y="881">1.000</text>
+<text x="240" y="901">SSIM (higher is better)</text>
+<circle cx="455" cy="860" r="4" fill="#aaa"><title>Marked reference: zero additional evasion by definition</title></circle>
+<text x="65" y="922">Orange: non-dominated in this group; gray at (1,0): marked reference.</text>
+<circle cx="121.31" cy="690.00" r="5" fill="#c2410c"><title>natural_full_finetune_fp32_test</title></circle>
+<text x="127.31" y="686.00">1</text>
+<text x="485" y="697" font-size="10" fill="#c2410c">1: natural_full_finetune_fp32_test</text>
+<circle cx="118.23" cy="690.00" r="5" fill="#475569"><title>natural_joint_finetune_fp32_test</title></circle>
+<text x="124.23" y="686.00">2</text>
+<text x="485" y="715" font-size="10" fill="#475569">2: natural_joint_finetune_fp32_test</text>
+<text x="30" y="955">(&#x27;finetune_then_w4_all&#x27;, &#x27;marked_model_plus_unpaired_natural_images_unrestricted_finetune&#x27;)</text>
+<path d="M65 985 V1160 H455" fill="none" stroke="black"/>
+<text x="28" y="1164.0">0%</text>
+<text x="28" y="1079.0">50%</text>
+<text x="28" y="994.0">100%</text>
+<text x="53.0" y="1181">0.776</text>
+<text x="248.0" y="1181">0.888</text>
+<text x="443.0" y="1181">1.000</text>
+<text x="240" y="1201">SSIM (higher is better)</text>
+<circle cx="455" cy="1160" r="4" fill="#aaa"><title>Marked reference: zero additional evasion by definition</title></circle>
+<text x="65" y="1222">Orange: non-dominated in this group; gray at (1,0): marked reference.</text>
+<circle cx="117.30" cy="993.43" r="5" fill="#475569"><title>natural_finetune_rtn_w4_c1.0_test</title></circle>
+<text x="123.30" y="989.43">1</text>
+<text x="485" y="997" font-size="10" fill="#475569">1: natural_finetune_rtn_w4_c1.0_test</text>
+<circle cx="118.87" cy="990.00" r="5" fill="#c2410c"><title>natural_joint_finetune_rtn_w4_c1.0_test</title></circle>
+<text x="124.87" y="986.00">2</text>
+<text x="485" y="1015" font-size="10" fill="#c2410c">2: natural_joint_finetune_rtn_w4_c1.0_test</text>
+</g>
+</svg>
