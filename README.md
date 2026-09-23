@@ -28,6 +28,23 @@ rồi học rounding trên trọng số fingerprint gốc. Teacher được dùn
 `bash run_blind_quantization.sh` sẽ tự bao gồm nhánh này và owner evaluation.
 Profile `pilot` vẫn có ngân sách nhỏ để kiểm tra nhanh.
 
+Tất cả profile mặc định chỉ chạy **W4** cho các nhánh lượng tử hóa. W8 vẫn có
+trong code dự phòng nhưng phải bật tường minh bằng `--bits 8` (suite: sau `--`).
+Teacher và đối chứng FP32 vẫn cần cho thí nghiệm. Các script legacy cũng mặc
+định W4; `WMQ_SEARCH_BITS` chỉ dùng để chủ động thay bitwidth trong legacy grid.
+
+Để kiểm tra teacher → quantizer trước khi chạy bộ ablation lớn:
+
+```bash
+bash run_blind_suite.sh --profile transfer
+```
+
+Profile này giữ 7 đầu ra đã chọn: fixed W4, reconstruction W4, natural rounding,
+residual W4, FP32 teacher, fine-tune → RTN W4 và teacher → rounding W4; vẫn 2.000
+step và tự evaluate. `science` mặc định vẫn giữ đầy đủ random/DCT/contrastive ablation.
+`teacher_target_diagnostics.json` báo target teacher khác model gốc bao nhiêu
+trên TRAIN/SEARCH, để nhận biết teacher được chọn ở step 0 hoặc gần identity.
+
 Toàn bộ source chuẩn nằm trong `src/`, gồm launcher, Python module, test, prompt và
 requirements. Có thể chọn trực tiếp folder `src/` để đưa cho LLM khác review. Các
 file `run_*.sh` và `requirements-*.txt` ở root chỉ là symlink tương thích với lệnh
@@ -101,7 +118,7 @@ không phải chuẩn chất lượng phổ quát hay lý do đổi nhãn kết 
 bash run_blind_quantization.sh
 ```
 
-Lệnh này mặc định dùng profile `research`: W8/W4, 4.000 ảnh natural train,
+Lệnh này mặc định dùng profile `research`: W4, 4.000 ảnh natural train,
 256 ảnh natural validation, 1.000 update/nhánh, batch train 4, ảnh natural 256px,
 AdamW, warmup/cosine và LR fine-tune 5e-4. Các nhánh natural lượng tử hóa dùng
 cùng low-pass preservation để so residual bật/tắt. Ngân sách lớn hơn pilot
@@ -135,7 +152,7 @@ bash run_blind_suite.sh
 ```
 
 Suite mặc định dùng seed 3407, preservation weight 0.5/2/8, ngưỡng SSIM 0.8,
-W8/W4 và cùng budget theo profile `focused`. Xem
+W4 và cùng budget theo profile `focused`. Xem
 `output_attack/run_*/suite_results.csv`, `suite_status.json` và log từng seed.
 Một run lỗi không ngăn các seed còn lại. `bash run_blind_suite.sh --plan-only` tạo
 folder `plan_*`, ghi `execution_mode=plan_only`, `suite_status=not_executed`
@@ -266,7 +283,7 @@ QAT purification cũ quay về RTN. Các run tháng 9 mới hơn đã có kết 
 Copy cả **`wmq_residual.py`** lên server. Lệnh vẫn là `bash run_blind_quantization.sh`.
 Xem [phân tích kết quả, phương pháp và ablation](survey/Residual_Quantization_Revision_VI.md).
 `--natural-methods natural_rounding natural_rounding_scale` khôi phục các nhánh
-natural; `--methods` điều khiển riêng model-only. W8 đã bật lại để đối chiếu W4.
+natural; `--methods` điều khiển riêng model-only. W8 chỉ chạy khi bật tường minh.
 Model-only `rounding_scale` và sensitivity vẫn cần chọn riêng bằng `--methods`.
 
 `natural_residual` có `--residual-weight` (1), `--residual-rank` (8),
@@ -574,9 +591,9 @@ Mặc định script sử dụng:
 | `JOINT_GROUP_GRAD` | 1 trên GPU ≥80 GiB | Cập nhật đồng thời mọi semantic group |
 | `USE_ATTENTION_SLICING` | 0 trên GPU ≥80 GiB | Không chia attention thành lát nhỏ |
 
-Ở `RUN_PROTOCOL=legacy_grid`, grid search thử 50 recipe cho mỗi watermark:
+Ở `RUN_PROTOCOL=legacy_grid`, grid search mặc định thử 10 recipe cho mỗi watermark:
 
-- Bit-width: 8, 6, 4, 3 và 2 bit.
+- Bit-width: 4 bit; các bitwidth khác chỉ chạy nếu đặt `WMQ_SEARCH_BITS` tường minh.
 - Clipping: 1.0 và 0.75.
 - Phạm vi: toàn carrier hoặc từng nhóm layer.
 
@@ -847,7 +864,8 @@ Backbone revision mặc định vẫn là `main`; dùng `prepare_marked_fixture.
 Mặc định: **W4, clip 1.0, toàn bộ weights decoder**, 32 train / 20 search / 100 test,
 100 bước tối ưu, đánh giá search mỗi 10 bước. `prompt.txt` có 160 prompt viết tay;
 đây chưa phải benchmark COCO/DrawBench. Các split có prompt và seed riêng.
-Truyền `--bits 4 3` để stress-test W3, hoặc `--bits 8 4` để đối chiếu W8 như pilot cũ.
+Mặc định chỉ W4. Có thể truyền `--bits 4 3` để chủ động stress-test W3;
+W8 được giữ trong code dự phòng và chỉ chạy khi truyền `--bits 8` tường minh.
 
 Extractor official được pin SHA256
 `77cd0a2040b9391233bbcd79c1adf00816b196089cbb844da40035f854637a04`
@@ -874,10 +892,9 @@ Với `--model` riêng phải cấp `SS_KEY`; với extractor riêng phải cấ
 | `natural_full_finetune` | Đối chứng toàn bộ decoder FP32, không bị ràng buộc grid; đánh giá một lần |
 
 Năm nhánh đầu là **model-only**, các nhánh natural là model + natural + LPIPS.
-Mặc định focused khai báo `fixed_ptq`, `reconstruction`, `natural_residual`,
-`natural_residual_qat` và `natural_full_finetune`, nhưng bỏ `natural_residual:8`,
-`reconstruction:4` và `fixed_ptq:4` vì các run hiện tại không cho hiệu ứng attack.
-Nhánh còn lại vẫn gồm đối chứng W8/W4 phù hợp và FP32 upper bound. Các phương pháp khác vẫn
+Mặc định focused khai báo `fixed_ptq`, `reconstruction`, `natural_rounding`,
+`natural_residual`, `natural_residual_qat` và `natural_full_finetune`.
+Các nhánh lượng tử hóa chỉ chạy W4; giữ FP32 upper bound. Các phương pháp khác vẫn
 chạy được qua `--methods` / `--natural-methods`. Mọi nhánh dùng cùng bits, coverage, prompt/seed và
 ngưỡng chất lượng trong một `comparison_group`. Scale được phép nằm trong
 [0.8, 1.25] lần scale RTN khởi tạo cho các nhánh scale. Không tune bitwidth liên tục,

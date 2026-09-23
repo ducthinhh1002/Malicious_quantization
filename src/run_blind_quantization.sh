@@ -188,7 +188,7 @@ attack+=(--prompts "$SCRIPT_DIR/prompt.txt")
 if [[ "$HAS_OUTPUT" == "0" ]]; then attack+=(--output "$DEFAULT_OUTPUT"); fi
 if [[ "$HAS_IMAGE_OUTPUT" == "0" ]]; then attack+=(--image-output "$IMAGE_OUTPUT_ROOT/$(basename -- "$ATTACK_OUTPUT")"); fi
 if [[ "$HAS_ARTIFACT_OUTPUT" == "0" ]]; then attack+=(--artifact-output "$ARTIFACT_OUTPUT"); fi
-if [[ "$HAS_BITS" == "0" ]]; then attack+=(--bits 8 4); fi
+if [[ "$HAS_BITS" == "0" ]]; then attack+=(--bits 4); fi
 if [[ "${WMQ_MODEL_ONLY:-0}" == "1" && "$HAS_NATURAL" == "1" ]]; then
   echo "WMQ_MODEL_ONLY=1 conflicts with --natural-images" >&2; exit 2
 fi

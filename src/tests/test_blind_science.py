@@ -78,6 +78,15 @@ class ScienceTests(unittest.TestCase):
             self.assertTrue(torch.equal(v, original[k]))
 
     def test_science_configuration_and_final_prompt_audit(self):
+        for profile in ('pilot', 'focused', 'science', 'transfer', 'full'):
+            options = ['--model', 'x', '--prompts', 'x', '--output', 'x', *configuration(profile)]
+            self.assertEqual(parser().parse_args(options).bits, [4])
+            self.assertEqual(parser().parse_args([*options, '--bits', '8']).bits, [8])
+        transfer = parser().parse_args(['--model', 'x', '--prompts', 'x', '--output', 'x', *configuration('transfer')])
+        self.assertIn('natural_teacher_rounding', transfer.natural_methods)
+        self.assertNotIn('natural_random_subspace', transfer.natural_methods)
+        self.assertEqual(transfer.finetune_rtn_bits, [4])
+        self.assertEqual(transfer.steps, 2000)
         args = parser().parse_args(['--model', 'x', '--prompts', 'x', '--output', 'x', *configuration('science')])
         self.assertEqual(args.bits, [4])
         self.assertEqual((args.steps, args.qat_steps, args.ft_steps), (2000, 2000, 2000))

@@ -725,7 +725,11 @@ def apply_recipe(module, component, recipe):
 def candidate_recipes(component):
     groups = ["mid", "up_early", "up_late", "io"] if component == "vae" else ["down", "mid", "up", "io"]
     recipes = []
-    for bits in (8, 6, 4, 3, 2):
+    # W4 only by default; retain other precisions for explicit research overrides.
+    bitwidths = tuple(dict.fromkeys(int(b) for b in os.environ.get("WMQ_SEARCH_BITS", "4").replace(",", " ").split()))
+    if not bitwidths or any(b not in (8, 6, 4, 3, 2) for b in bitwidths):
+        fail("WMQ_SEARCH_BITS must list supported bitwidths: 2, 3, 4, 6, 8")
+    for bits in bitwidths:
         for clip in (1.0, 0.75):
             recipes.append({"bits": bits, "clip": clip, "groups": ["all"]})
             for group in groups:

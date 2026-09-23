@@ -1274,10 +1274,11 @@ def main():
     natural_train, natural_search, perceptual = None, None, None
     residual, residual_info = None, None
     residual_variants = {}
-    # Complete model-only controls first. Within each threat model, run lower bitwidth
-    # first so an interrupted diagnostic run reaches the stronger compression setting.
+    # Controls first, then teacher/student, then residual ablations. Owner evaluation
+    # still waits for every branch to freeze; no TEST-driven scheduling.
     plan.sort(key=lambda branch: (0 if not branch['method'].startswith('natural_') else
-        (1 if uses_teacher and args.teacher_source == 'purified' and branch['method'] == 'natural_full_finetune' else 2), branch['bits']))
+        (1 if uses_teacher and args.teacher_source == 'purified' and branch['method'] == 'natural_full_finetune' else
+         2 if branch['method'] in ('natural_rounding', 'natural_teacher_rounding') else 3), branch['bits']))
     teacher_targets = None
     rows, selections, frozen_branches = [], {}, {}
     profiles = {}
@@ -1339,8 +1340,19 @@ def main():
                         'selected_step': selections[teacher_label]['step'], 'checkpoint_sha256': expected,
                         'search_feasible': selections[teacher_label]['search_feasible'],
                         'additional_image_forwards': len(zs), 'owner_feedback': False}
+                from wmq_teacher import target_signal
+                provenance['target_signal'] = {
+                    'train': target_signal(teacher_images[:a], refs[:a]),
+                    'search': target_signal(teacher_images[a:b], refs[a:b])}
+                if provenance['target_signal']['search']['near_identity']:
+                    quality_warning(out, 'teacher_target', 'Teacher SEARCH targets are numerically near the marked reference',
+                        metrics=provenance['target_signal']['search'], action='continue_with_diagnostic')
                 teacher_images = data_cache.promote(teacher_images, 'teacher_train_search_targets') if args.teacher_source == 'purified' else teacher_images
                 provenance['target_cache_seconds'] = time.monotonic() - teacher_cache_started
+                save_json(out / 'teacher_target_diagnostics.json', provenance)
+                print(f"Teacher source={args.teacher_source}; selected_step={provenance.get('selected_step')}; "
+                      f"SEARCH reference MSE={provenance['target_signal']['search']['reference_mse']:.6g}; "
+                      f"near_identity={provenance['target_signal']['search']['near_identity']}", flush=True)
                 teacher_targets = {'train': teacher_images[:a], 'search': teacher_images[a:b], 'provenance': provenance}
             if method == 'natural_teacher_rounding':
                 branch['teacher_dependency'] = teacher_targets['provenance']

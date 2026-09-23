@@ -32,12 +32,16 @@ FULL_METHODS = ["--methods", "fixed_ptq", "reconstruction", "block_reconstructio
                 "natural_full_finetune", "natural_gan_finetune", "natural_spectral",
                 "natural_random_subspace", "natural_frequency_subspace", "natural_contrastive_subspace", "natural_teacher_rounding",
                 "--finetune-rtn-bits", "4"]
+TRANSFER_METHODS = ["--methods", "fixed_ptq", "reconstruction", "--natural-methods",
+    "natural_rounding", "natural_residual", "natural_full_finetune", "natural_teacher_rounding",
+    "--finetune-rtn-bits", "4", "--quality-constraint", "dual", "--quality-policy", "constrained",
+    "--gradient-diagnostics-every", "100"]
 
 
 def configuration(profile, preserve_weight=2):
-    # Same batch, step counts and preservation across natural W4/W8 ablations.
+    # All profiles default to W4; other bitwidths require an explicit CLI override.
     # GAN has extra discriminator compute; report it, never call costs equal.
-    common = ["--bits", "8", "4", "--quality-constraint", "off", "--finetune-rtn-bits", "--quality-policy", "report",
+    common = ["--bits", "4", "--quality-constraint", "off", "--finetune-rtn-bits", "--quality-policy", "report",
               "--optimizer", "adamw", "--weight-decay", "0", "--lr-schedule", "warmup_cosine",
               "--natural-preservation", "lowpass", "--preserve-weight", str(preserve_weight),
               "--qat-semantic-preserve-weight", str(preserve_weight), "--warmup-steps", "20", "--cuda-math", "tf32",
@@ -46,7 +50,8 @@ def configuration(profile, preserve_weight=2):
         return common + FOCUSED_METHODS + ["--steps", "200", "--qat-steps", "200", "--ft-steps", "200",
             "--train-batch-size", "1", "--natural-train-n", "256", "--natural-search-n", "64",
             "--eval-every", "50", "--ft-lr", ".0005", "--natural-resolution", "512"]
-    methods = FULL_METHODS if profile == "full" else (SCIENCE_METHODS + ["--bits", "4"] if profile == "science" else FOCUSED_METHODS)
+    methods = {'full': FULL_METHODS, 'science': SCIENCE_METHODS,
+               'transfer': TRANSFER_METHODS, 'focused': FOCUSED_METHODS}[profile]
     return common + methods + ["--steps", "2000", "--qat-steps", "2000", "--ft-steps", "2000",
         "--train-batch-size", "4", "--natural-train-n", "4000", "--natural-search-n", "256",
         "--natural-resolution", "256", "--eval-every", "100", "--ft-lr", ".0005"]
@@ -80,6 +85,7 @@ def collect(run):
             "teacher_label": (selected.get('teacher_dependency') or {}).get('label'),
             "teacher_step": (selected.get('teacher_dependency') or {}).get('selected_step'),
             "teacher_search_mse": selected.get('teacher_search_mse'),
+            "teacher_near_identity": ((selected.get('teacher_dependency') or {}).get('target_signal') or {}).get('search', {}).get('near_identity'),
             **{key: row.get(key) for key in fields},
             "quality_violation_fraction": quality.get('quality_violation_fraction'),
             "valid_updates": selected.get('valid_updates'),
@@ -224,7 +230,7 @@ def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('--root', type=Path)
     p.add_argument('--seeds', type=int, nargs='+', default=[3407])
-    p.add_argument('--profile', choices=['pilot', 'focused', 'science', 'full'], default='science')
+    p.add_argument('--profile', choices=['pilot', 'focused', 'science', 'transfer', 'full'], default='science')
     p.add_argument('--quality-budgets', type=float, nargs='+', help='Predeclared SSIM training budgets, e.g. .8 .9 .95')
     p.add_argument('--plan-only', action='store_true')
     p.add_argument('--preservation-weights', type=float, nargs='+', default=[2.],

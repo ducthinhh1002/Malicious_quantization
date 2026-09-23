@@ -11,7 +11,7 @@ from safetensors.torch import save_file
 
 from wmq_blind import parser, optimize_branch, materialize, RoundingGrid
 from wmq_runtime import decoded01
-from wmq_teacher import cache_teacher_targets, teacher_mse
+from wmq_teacher import cache_teacher_targets, teacher_mse, target_signal
 
 
 class TinyVAE(nn.Module):
@@ -25,6 +25,18 @@ class TinyVAE(nn.Module):
 
 
 class TeacherTests(unittest.TestCase):
+    def test_target_signal_distinguishes_identity_without_owner_metrics(self):
+        refs = [torch.full((1, 3, 16, 16), .5)]
+        identity = target_signal(refs, refs)
+        self.assertTrue(identity['near_identity'])
+        self.assertEqual(identity['reference_mse'], 0.)
+        changed = target_signal([refs[0] + .1], refs)
+        self.assertFalse(changed['near_identity'])
+        self.assertAlmostEqual(changed['reference_mse'], .01, places=6)
+        self.assertEqual(changed['watermark_status'], 'not_measured')
+        with self.assertRaises(ValueError):
+            target_signal([refs[0][:, :, :8]], refs)
+
     def test_cache_uses_teacher_bias_restores_marked_source_and_checks_hash(self):
         torch.manual_seed(21)
         vae = TinyVAE().requires_grad_(False)

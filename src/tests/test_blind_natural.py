@@ -263,6 +263,9 @@ class NaturalTests(unittest.TestCase):
             self.assertEqual(student['teacher_dependency']['selected_step'],
                              report['selections']['natural_full_finetune_fp32_test']['step'])
             self.assertEqual(student['teacher_dependency']['additional_image_forwards'], 2)
+            diagnostics = json.loads((out / 'teacher_target_diagnostics.json').read_text())
+            self.assertEqual(diagnostics['target_signal']['search']['n'], 1)
+            self.assertEqual(student['teacher_dependency']['target_signal'], diagnostics['target_signal'])
             self.assertEqual(student['optimized_dofs'], ['rounding'])
             self.assertGreaterEqual(student['teacher_search_mse'], 0.)
             derived = report["selections"]["natural_finetune_rtn_w4_c1.0_test"]

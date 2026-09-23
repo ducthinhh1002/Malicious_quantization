@@ -41,7 +41,9 @@ PCA/calibration, gradient diagnostics và FP32 có overhead riêng. W4 là trọ
 lượng tử hóa được giải lượng tử để tính FP32, không phải tuyên bố kernel INT4.
 
 Các phương pháp cũ vẫn có trong `--profile full` hoặc `WMQ_METHOD_SET=full`.
-`focused` giữ W8/W4 residual/QAT và đối chứng reconstruction. Để chạy riêng
+Tất cả profile (`pilot`, `focused`, `science`, `full`) mặc định chỉ lượng tử hóa W4;
+W8 vẫn được hỗ trợ khi truyền `--bits 8` tường minh. Teacher/đối chứng FP32 vẫn giữ.
+`focused` giữ W4 residual/QAT và đối chứng reconstruction. Để chạy riêng
 model-only: `WMQ_MODEL_ONLY=1 bash run_blind_quantization.sh`.
 
 ## Teacher → quantizer

@@ -8,6 +8,25 @@ from wmq_runtime import batches, decoded01, batch_size as resolve_batch_size
 
 
 @torch.no_grad()
+def target_signal(targets, references, tolerance=1e-6):
+    """Measure teacher change on TRAIN/SEARCH, without a watermark detector."""
+    if not targets or len(targets) != len(references):
+        raise ValueError('Unaligned teacher/reference images')
+    means, maximum = [], 0.
+    for target, reference in zip(targets, references):
+        if target.shape != reference.shape:
+            raise ValueError('Teacher/reference shapes differ')
+        delta = target.detach().cpu().float() - reference.detach().cpu().float()
+        if not torch.isfinite(delta).all():
+            raise ValueError('Nonfinite teacher target difference')
+        means.append(delta.square().mean().item())
+        maximum = max(maximum, delta.abs().max().item())
+    return {'n': len(means), 'reference_mse': sum(means) / len(means),
+            'max_abs_difference': maximum, 'near_identity': maximum <= tolerance,
+            'identity_tolerance': tolerance, 'watermark_status': 'not_measured'}
+
+
+@torch.no_grad()
 def cache_teacher_targets(vae, checkpoint, expected_sha256, latents, batch_size):
     from safetensors.torch import load_file
     path = Path(checkpoint)
