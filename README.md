@@ -20,6 +20,14 @@ ghi rõ các nhánh, ngưỡng chất lượng, sweep và đánh giá trên key/
 Các mục bên dưới có ghi ngày cũ mô tả cấu hình lịch sử; cấu hình `science` mới
 được ưu tiên khi chạy không truyền flag.
 
+Mặc định research/science hiện là **2.000 update/nhánh**, gồm rounding, QAT
+và fine-tune; tập natural TRAIN vẫn là **4.000 ảnh**, batch 4. Nhánh mới
+`natural_teacher_rounding` dùng checkpoint FP32 đã chọn bằng SEARCH làm teacher,
+rồi học rounding trên trọng số fingerprint gốc. Teacher được dùng chung với
+đối chứng FP32, không train thêm một lần. Chạy `bash run_blind_suite.sh` hoặc
+`bash run_blind_quantization.sh` sẽ tự bao gồm nhánh này và owner evaluation.
+Profile `pilot` vẫn có ngân sách nhỏ để kiểm tra nhanh.
+
 Toàn bộ source chuẩn nằm trong `src/`, gồm launcher, Python module, test, prompt và
 requirements. Có thể chọn trực tiếp folder `src/` để đưa cho LLM khác review. Các
 file `run_*.sh` và `requirements-*.txt` ở root chỉ là symlink tương thích với lệnh

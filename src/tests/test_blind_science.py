@@ -80,6 +80,8 @@ class ScienceTests(unittest.TestCase):
     def test_science_configuration_and_final_prompt_audit(self):
         args = parser().parse_args(['--model', 'x', '--prompts', 'x', '--output', 'x', *configuration('science')])
         self.assertEqual(args.bits, [4])
+        self.assertEqual((args.steps, args.qat_steps, args.ft_steps), (2000, 2000, 2000))
+        self.assertIn('natural_teacher_rounding', args.natural_methods)
         self.assertEqual(args.finetune_rtn_bits, [4])
         self.assertEqual(args.quality_constraint, 'dual')
         self.assertIn('fixed_ptq', args.methods)

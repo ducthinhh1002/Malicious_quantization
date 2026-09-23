@@ -99,12 +99,12 @@ PROFILE="${WMQ_PROFILE:-research}"
 METHOD_SET="${WMQ_METHOD_SET:-science}"
 case "$PROFILE" in
   research)
-    profile_defaults=(--steps 1000 --qat-steps 1000 --ft-steps 1000 --eval-every 100
+    profile_defaults=(--steps 2000 --qat-steps 2000 --ft-steps 2000 --eval-every 100
       --train-batch-size 4 --natural-train-n 4000 --natural-search-n 256 --natural-resolution 256
       --optimizer adamw --weight-decay 0 --lr-schedule warmup_cosine --warmup-steps 20
       --ft-lr .0005 --natural-preservation lowpass --preserve-weight 2 --qat-semantic-preserve-weight 2
       --cuda-math tf32 --evaluate-final) ;;
-  pilot) profile_defaults=(--cuda-math tf32) ;;
+  pilot) profile_defaults=(--steps 100 --cuda-math tf32) ;;
   *) echo "WMQ_PROFILE must be research or pilot" >&2; exit 2 ;;
 esac
 case "$METHOD_SET" in
@@ -116,14 +116,14 @@ case "$METHOD_SET" in
   science)
     profile_defaults+=(--bits 4 --methods fixed_ptq reconstruction
       --natural-methods natural_rounding natural_residual natural_random_subspace natural_frequency_subspace
-        natural_contrastive_subspace natural_full_finetune
+        natural_contrastive_subspace natural_full_finetune natural_teacher_rounding
       --quality-constraint dual --quality-policy constrained --gradient-diagnostics-every 100)
     if [[ "${WMQ_MODEL_ONLY:-0}" != "1" ]]; then profile_defaults+=(--finetune-rtn-bits 4); fi ;;
   full)
     profile_defaults+=(--natural-methods natural_rounding natural_rounding_scale natural_residual
       natural_qat_purification natural_residual_qat natural_qat_scale natural_gan_qat
       natural_full_finetune natural_gan_finetune natural_spectral natural_random_subspace
-      natural_frequency_subspace natural_contrastive_subspace)
+      natural_frequency_subspace natural_contrastive_subspace natural_teacher_rounding)
     if [[ "${WMQ_MODEL_ONLY:-0}" != "1" ]]; then profile_defaults+=(--finetune-rtn-bits 4); fi ;;
   *) echo "WMQ_METHOD_SET must be science, focused or full" >&2; exit 2 ;;
 esac

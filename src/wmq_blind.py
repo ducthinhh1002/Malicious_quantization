@@ -31,7 +31,8 @@ RESIDUAL_METHODS = ("natural_residual", "natural_residual_qat", "natural_random_
                     "natural_frequency_subspace", "natural_contrastive_subspace")
 NATURAL_METHODS = ("natural_rounding", "natural_rounding_scale", "natural_residual",
                    *QAT_METHODS, *FLOAT_METHODS, "natural_spectral",
-                   "natural_random_subspace", "natural_frequency_subspace", "natural_contrastive_subspace")
+                   "natural_random_subspace", "natural_frequency_subspace", "natural_contrastive_subspace",
+                   "natural_teacher_rounding")
 
 
 def parse_method_bit_exclusions(values):
@@ -440,7 +441,7 @@ def profile_layers(vae, names, latents, refs, bits, clip, args):
 def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
                     args, bits, clip, method, profile, folder, diagnostics_root=None,
                     natural_search=None, preserve_data=None, perceptual=None, residual=None,
-                    heavy_folder=None):
+                    heavy_folder=None, teacher_targets=None):
     """Independent initialization, train-only updates, search-only checkpoint choice."""
     device = next(vae.parameters()).device
     block_branch = method == "block_reconstruction"
@@ -473,6 +474,11 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
     rows, updates, best = [], [], None
     best_state = None
     natural = method.startswith("natural_")
+    teacher_branch = method == "natural_teacher_rounding"
+    if teacher_branch and (teacher_targets is None or preserve_data is None
+            or len(teacher_targets['train']) != len(preserve_data[0])
+            or len(teacher_targets['search']) != len(search_z)):
+        raise ValueError("Teacher branch requires aligned frozen TRAIN/SEARCH targets")
     residual_branch = method in RESIDUAL_METHODS
     if residual_branch and residual is None:
         raise ValueError("Residual branch requires a frozen TRAIN-only basis")
@@ -507,6 +513,10 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
                                                         metrics["semantic_lowpass_mse"])
                 if float_branch:
                     metrics["selection_objective"] += args.ft_preserve_weight * metrics["semantic_lowpass_mse"]
+                if teacher_branch:
+                    from wmq_teacher import teacher_mse
+                    metrics['teacher_search_mse'] = teacher_mse(vae, search_z, teacher_targets['search'], args.eval_batch_size)
+                    metrics['selection_objective'] += args.teacher_weight * metrics['teacher_search_mse']
                 if qat_branch:
                     count = sum(g.source.numel() for g in grids)
                     stats = torch.stack([torch.stack([g.code_change_fraction() * g.source.numel(),
@@ -635,6 +645,7 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
             trust_loss = raw.new_zeros(())
             spectrum = spectral_loss(raw, ref).mean() if spectral_weight else raw.new_zeros(())
             adversarial = raw.new_zeros(())
+            distillation = raw.new_zeros(())
             disc_loss, disc_applied = None, None
             if discriminator is not None:
                 disc_loss, disc_applied = discriminator_update(discriminator, disc_optimizer, ref, raw.clamp(0, 1))
@@ -661,13 +672,17 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
                                     if residual_branch else F.mse_loss(generated, preserve_ref))
                     train_evaluations += 1
                     train_image_forwards += len(js)
+                    if teacher_branch:
+                        teacher_ref = torch.cat([teacher_targets['train'][j] for j in js]).to(device)
+                        distillation = F.mse_loss(generated.clamp(0, 1), teacher_ref)
                 if qat_branch:
                     trust_loss = sum(g.code_offset.square().sum() for g in grids) / sum(g.code_offset.numel() for g in grids)
             preserve_weight = (args.preserve_weight if natural and not float_branch and args.natural_preservation == "lowpass" else args.ft_preserve_weight if float_branch else
                                (args.qat_semantic_preserve_weight if qat_branch and not residual_branch else args.preserve_weight))
             loss = (target_loss + perceptual_weight * perceptual_loss + preserve_weight * preserve +
                     residual_weight * residual_loss + args.qat_trust_weight * trust_loss +
-                    spectral_weight * spectrum + (args.adversarial_weight * adversarial if gan_branch else 0.))
+                    spectral_weight * spectrum + (args.adversarial_weight * adversarial if gan_branch else 0.) +
+                    args.teacher_weight * distillation)
             budget_penalty = raw.new_zeros(())
             budget_violations = raw.new_zeros(2)
             if budget is not None:
@@ -678,6 +693,7 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
             if args.gradient_diagnostics_every and step % args.gradient_diagnostics_every == 0:
                 # Diagnostics of attacker losses only, never owner gradients.
                 pieces = {"reconstruction": target_loss + perceptual_weight * perceptual_loss,
+                          "teacher": args.teacher_weight * distillation,
                           "residual": residual_weight * residual_loss,
                           "preservation": preserve_weight * preserve + budget_penalty}
                 for label, component in pieces.items():
@@ -737,6 +753,7 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
                                    grad_norm if grad_norm is not None else raw.new_tensor(float("nan"))]).cpu().tolist()
             updates.append({"step": step, "applied": applied, "reason": reason,
                             **gradient_diagnostics,
+                            "teacher_mse": float(distillation.detach()) if teacher_branch and torch.isfinite(distillation) else None,
                             "budget_penalty": float(budget_penalty.detach()) if torch.isfinite(budget_penalty) else None,
                             "dual_mse": budget.multipliers[0] if budget else None,
                             "dual_ssim": budget.multipliers[1] if budget else None,
@@ -780,7 +797,10 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
                                          (["multiscale_natural_log_spectrum"] if spectral_weight else []) +
                                          (["sequential_block_activation_reconstruction"] if block_branch else []),
                 "gradient_updates": valid_updates if optimizer is not None else 0,
-                "objective": "natural_residual_projection" if residual_branch else ("quantization_constrained_natural_purification" if qat_branch else ("unpaired_natural_reconstruction" if natural else ("reconstruction" if method in ("reconstruction", "block_reconstruction") else "blind_smoothing_proxy"))),
+                "teacher_dependency": teacher_targets['provenance'] if teacher_branch else None,
+                "teacher_weight": args.teacher_weight if teacher_branch else 0.,
+                "teacher_search_image_forwards": len(rows) * len(search_z) if teacher_branch else 0,
+                "objective": "generated_teacher_distillation_plus_natural_reconstruction" if teacher_branch else ("natural_residual_projection" if residual_branch else ("quantization_constrained_natural_purification" if qat_branch else ("unpaired_natural_reconstruction" if natural else ("reconstruction" if method in ("reconstruction", "block_reconstruction") else "blind_smoothing_proxy")))),
                 "residual_weight": residual_weight,
                 "quality_constraint": args.quality_constraint,
                 "budget_psnr": args.budget_psnr, "budget_ssim": args.budget_ssim,
@@ -800,6 +820,7 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
                     "rounding_scale": ["rounding", "per_channel_scale"], "reconstruction": ["rounding"],
                     "block_reconstruction": ["sequential_block_rounding"],
                     "natural_rounding": ["rounding"], "natural_residual": ["rounding"],
+                    "natural_teacher_rounding": ["rounding"],
                     "natural_random_subspace": ["rounding"], "natural_frequency_subspace": ["rounding"],
                     "natural_contrastive_subspace": ["rounding"],
                     "natural_rounding_scale": ["rounding", "per_channel_scale"],
@@ -893,7 +914,7 @@ def parser():
     p.add_argument("--train-n", type=int, default=32)
     p.add_argument("--search-n", type=int, default=20)
     p.add_argument("--test-n", type=int, default=100)
-    p.add_argument("--steps", type=int, default=100, help="Update/proposal budget per optimized branch and grid cell")
+    p.add_argument("--steps", type=int, default=2000, help="Update/proposal budget per optimized branch and grid cell")
     p.add_argument("--qat-steps", type=int, help="Independent QAT update budget; default --steps")
     p.add_argument("--ft-steps", type=int, help="Independent FP32 update budget; default --steps")
     p.add_argument("--eval-every", type=int, default=10)
@@ -944,6 +965,8 @@ def parser():
     p.add_argument("--subspace-normalize", action=argparse.BooleanOptionalAction, default=True)
     p.add_argument("--subspace-ridge", type=float, default=.01)
     p.add_argument("--finetune-rtn-bits", type=int, nargs="*", default=[], help="Derive RTN controls from the same selected FP32 decoder; outside quantizer-only threat model")
+    p.add_argument("--teacher-weight", type=float, default=1., help="Generated TRAIN/SEARCH teacher MSE coefficient")
+    p.add_argument("--teacher-source", choices=["purified", "marked"], default="purified", help="SEARCH-selected FP32 control, or original marked decoder for ablation")
     p.add_argument("--quality-constraint", choices=["off", "dual"], default="off")
     p.add_argument("--budget-psnr", type=float, default=30.)
     p.add_argument("--budget-ssim", type=float, default=.9)
@@ -971,6 +994,11 @@ def parser():
 
 def main():
     args = parser().parse_args()
+    if not math.isfinite(args.teacher_weight) or args.teacher_weight <= 0:
+        raise ValueError("--teacher-weight must be finite and positive")
+    uses_teacher = bool(args.natural_images and "natural_teacher_rounding" in args.natural_methods)
+    if uses_teacher and args.teacher_source == 'purified' and 'natural_full_finetune' not in args.natural_methods:
+        raise ValueError("Purified teacher requires natural_full_finetune in --natural-methods")
     QualityBudget(args.budget_psnr, args.budget_ssim, args.dual_lr)
     if (not 0 <= args.budget_max_violation <= 1 or args.gradient_diagnostics_every < 0
             or not math.isfinite(args.subspace_ridge) or args.subspace_ridge <= 0
@@ -1115,7 +1143,7 @@ def main():
                 "ownership_loss": None, "surrogate_transfer_evaluated": False,
                 "git_commit": commit, "script_sha256": sha(script),
                 "helper_sources_sha256": {name: sha(script.parent / name) for name in
-                    ("wmq_runtime.py", "wmq_diagnostics.py", "wmq_residual.py", "wmq_objectives.py", "wmq_science.py")},
+                    ("wmq_runtime.py", "wmq_diagnostics.py", "wmq_residual.py", "wmq_objectives.py", "wmq_science.py", "wmq_teacher.py")},
                 "model_files_sha256": {str(p.relative_to(model)): sha(p) for p in sorted(model.rglob("*"))
                       if p.is_file() and p.suffix in (".safetensors", ".bin", ".json")},
                 "prompts": prompts, "seeds": list(range(args.seed, args.seed + n)),
@@ -1162,6 +1190,13 @@ def main():
                      "artifact": f"branches/{method}_fp32"})
     manifest["reference_label"] = "marked_reference_test"
     manifest["evaluation_protocol"] = protocol_audit
+    manifest['teacher_protocol'] = {'enabled': uses_teacher, 'source': args.teacher_source,
+        'selection': 'natural SEARCH objective and generated SEARCH quality; no owner feedback',
+        'student_source': 'original marked decoder; rounding only; original bias/norm frozen',
+        'targets': 'generated TRAIN and SEARCH only; no TEST targets during optimization',
+        'auxiliary_finetuning_allowed': uses_teacher and args.teacher_source == 'purified',
+        'teacher_watermark_status': 'unknown until owner evaluation after all selections freeze',
+        'compute': 'teacher training is shared with FP32 control; include teacher cost once'}
     manifest["derived_control_protocol"] = {"finetune_rtn_bits": args.finetune_rtn_bits,
         "source": "search-selected natural_full_finetune", "additional_training": False,
         "owner_feedback": False, "clip": 1., "scope": args.scope}
@@ -1241,7 +1276,9 @@ def main():
     residual_variants = {}
     # Complete model-only controls first. Within each threat model, run lower bitwidth
     # first so an interrupted diagnostic run reaches the stronger compression setting.
-    plan.sort(key=lambda branch: (branch["method"].startswith("natural_"), branch["bits"]))
+    plan.sort(key=lambda branch: (0 if not branch['method'].startswith('natural_') else
+        (1 if uses_teacher and args.teacher_source == 'purified' and branch['method'] == 'natural_full_finetune' else 2), branch['bits']))
+    teacher_targets = None
     rows, selections, frozen_branches = [], {}, {}
     profiles = {}
     costs = {}
@@ -1285,6 +1322,28 @@ def main():
                     import lpips
                     perceptual = lpips.LPIPS(net="alex", version="0.1").to(args.device).eval().requires_grad_(False)
             train_z, train_ref = natural_train if natural else (zs[:a], refs[:a])
+            if method == 'natural_teacher_rounding' and teacher_targets is None:
+                teacher_cache_started = time.monotonic()
+                if args.teacher_source == 'marked':
+                    teacher_images = refs
+                    provenance = {'source': 'marked', 'label': 'marked_reference', 'additional_image_forwards': 0}
+                else:
+                    from wmq_teacher import cache_teacher_targets
+                    teacher_label = 'natural_full_finetune_fp32_test'
+                    if teacher_label not in frozen_branches:
+                        raise RuntimeError('Selected purification teacher unavailable; student cannot run')
+                    relative = 'branches/natural_full_finetune_fp32/decoder_fp32.safetensors'
+                    expected = frozen_branches[teacher_label]['files_sha256'][relative]
+                    teacher_images = cache_teacher_targets(vae, artifact_out / relative, expected, zs, args.eval_batch_size)
+                    provenance = {'source': 'purified', 'label': teacher_label,
+                        'selected_step': selections[teacher_label]['step'], 'checkpoint_sha256': expected,
+                        'search_feasible': selections[teacher_label]['search_feasible'],
+                        'additional_image_forwards': len(zs), 'owner_feedback': False}
+                teacher_images = data_cache.promote(teacher_images, 'teacher_train_search_targets') if args.teacher_source == 'purified' else teacher_images
+                provenance['target_cache_seconds'] = time.monotonic() - teacher_cache_started
+                teacher_targets = {'train': teacher_images[:a], 'search': teacher_images[a:b], 'provenance': provenance}
+            if method == 'natural_teacher_rounding':
+                branch['teacher_dependency'] = teacher_targets['provenance']
             if method in RESIDUAL_METHODS and residual is None:
                 from wmq_residual import fit_residual_subspace
                 residual, residual_info = fit_residual_subspace(vae, *natural_train, args.residual_patch,
@@ -1306,7 +1365,8 @@ def main():
                 preserve_data=(zs[:a], refs[:a]) if natural else None,
                 perceptual=perceptual if natural else None,
                 residual=branch_residual,
-                heavy_folder=artifact_folder)
+                heavy_folder=artifact_folder,
+                teacher_targets=teacher_targets if method == 'natural_teacher_rounding' else None)
             rows.extend(branch_rows)
             selections[branch["label"]] = selected
             materialize(vae.decoder, branch_names, grids)

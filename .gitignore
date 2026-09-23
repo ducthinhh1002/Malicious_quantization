@@ -8,3 +8,4 @@ __pycache__/
 /output_checkpoint/
 /replication.local.json
 /final_prompts.txt
+/output_attack

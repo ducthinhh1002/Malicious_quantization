@@ -13,7 +13,7 @@ bash run_blind_suite.sh
 ```
 
 Cả hai mặc định dùng `science`: W4, 4.000 ảnh natural TRAIN, 256 natural SEARCH,
-32 prompt TRAIN, 20 SEARCH, 100 TEST, 1.000 update mỗi nhánh học, batch 4,
+32 prompt TRAIN, 20 SEARCH, 100 TEST, 2.000 update mỗi nhánh học, batch 4,
 natural resolution 256. Các seed subspace là 1701/1702/1703; đây là ba phép lấy
 subspace, không phải ba lần tái lập độc lập của toàn bộ thí nghiệm.
 
@@ -28,8 +28,9 @@ subspace, không phải ba lần tái lập độc lập của toàn bộ thí n
 | `natural_contrastive_subspace` W4 | Hướng residual cao tương đối với texture tự nhiên |
 | `natural_full_finetune` FP32 | Đối chứng thay đổi tự do decoder |
 | `natural_finetune_rtn` W4 | RTN trực tiếp checkpoint FP32 vừa chọn bằng SEARCH |
+| `natural_teacher_rounding` W4 | Học rounding của model gốc theo đầu ra teacher FP32 cùng latent generated |
 
-Có 11 đầu ra phương pháp đã chọn; thêm checkpoint cuối nếu khác checkpoint được
+Có 12 đầu ra phương pháp đã chọn; thêm checkpoint cuối nếu khác checkpoint được
 chọn, cùng baseline và pseudo-target diagnostics. Fine-tune → RTN dùng lại quá
 trình học FP32, không train lại. Nó giữ bias/norm đã fine-tune và được ghi nhãn
 threat model rộng hơn quantizer-only. Khi cộng chi phí phải đọc `shares_training_with`.
@@ -42,6 +43,52 @@ lượng tử hóa được giải lượng tử để tính FP32, không phải
 Các phương pháp cũ vẫn có trong `--profile full` hoặc `WMQ_METHOD_SET=full`.
 `focused` giữ W8/W4 residual/QAT và đối chứng reconstruction. Để chạy riêng
 model-only: `WMQ_MODEL_ONLY=1 bash run_blind_quantization.sh`.
+
+## Teacher → quantizer
+
+Nhánh `natural_full_finetune` chạy trước các natural student khi bật teacher.
+Teacher lấy đúng `decoder_fp32.safetensors` của checkpoint được chọn bằng SEARCH,
+không lấy checkpoint cuối nếu hai checkpoint khác nhau. Hash được kiểm tra trước
+khi cache target; decoder marked gốc được khôi phục sau khi cache, kể cả khi có lỗi.
+Không giữ hai VAE cùng lúc trên GPU. Target generated TRAIN/SEARCH được cache một
+lần và đưa lên GPU nếu còn đủ VRAM theo giới hạn cache hiện có.
+
+Student khởi tạo lại từ theta_w gốc, chỉ học floor/ceil rounding ở cùng W4,
+giữ bias/norm gốc. Objective gồm natural reconstruction + LPIPS, generated
+teacher MSE với `--teacher-weight 1`, preservation và quality penalty hiện có.
+SEARCH xếp hạng theo objective tương ứng, giữ gate chất lượng so với marked
+reference. Không dùng TEST target, key, extractor hay BA để train/chọn teacher
+hoặc student. Teacher chưa được mặc định coi là sạch watermark.
+
+Nếu teacher lỗi, student được ghi branch failure; không lặng lẽ thay bằng một
+model khác. Nếu teacher không đạt chất lượng nhưng vẫn xuất được theo chính
+sách continue, student vẫn chạy và lưu trạng thái `search_feasible` của teacher.
+Nếu teacher được chọn ở step 0 thì target có thể trùng model marked gốc.
+
+`selection.json` lưu `teacher_dependency` (label, step, hash, quality, cache cost),
+`teacher_search_mse` và số forward thêm. `updates.json/csv` lưu `teacher_mse`.
+`suite_results.csv` có teacher source/label/step và MSE. Tổng chi phí phương pháp
+là teacher + student; teacher dùng chung với FP32 control nên chỉ cộng một lần.
+Đây là protocol cho phép fine-tune model phụ trung gian, nhưng artifact student
+chỉ thay quantizer. Không gọi nó là threat model cấm mọi fine-tuning trung gian.
+
+Ablation dùng model marked làm teacher, giữ nguyên loss và budget:
+
+```bash
+bash run_blind_suite.sh -- --teacher-source marked
+```
+
+Để chạy trực tiếp bộ nhánh nhỏ tập trung vào đối chứng teacher:
+
+```bash
+bash run_blind_quantization.sh --methods fixed_ptq reconstruction \
+  --natural-methods natural_rounding natural_full_finetune natural_teacher_rounding
+```
+
+Nhánh fine-tune → RTN vẫn được tạo mặc định. Dataset vẫn 4.000 ảnh natural,
+2.000 step × batch 4 tương đương 8.000 lượt natural TRAIN mỗi nhánh học, chưa
+tính forward generated preservation/distillation và validation. Bản thân teacher
+distillation không bảo đảm BA giảm; cần đọc kết quả owner cuối run.
 
 ## Phần phương pháp mới cần kiểm chứng
 

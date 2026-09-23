@@ -24,13 +24,13 @@ FOCUSED_METHODS = ["--methods", "fixed_ptq", "reconstruction", "--natural-method
                    "natural_rounding", "natural_residual", "natural_residual_qat", "natural_full_finetune"]
 SCIENCE_METHODS = ["--methods", "fixed_ptq", "reconstruction", "--natural-methods",
     "natural_rounding", "natural_residual", "natural_random_subspace", "natural_frequency_subspace",
-    "natural_contrastive_subspace", "natural_full_finetune", "--finetune-rtn-bits", "4",
+    "natural_contrastive_subspace", "natural_full_finetune", "natural_teacher_rounding", "--finetune-rtn-bits", "4",
     "--quality-constraint", "dual", "--quality-policy", "constrained", "--gradient-diagnostics-every", "100"]
 FULL_METHODS = ["--methods", "fixed_ptq", "reconstruction", "block_reconstruction",
                 "--natural-methods", "natural_rounding", "natural_rounding_scale", "natural_residual",
                 "natural_qat_purification", "natural_residual_qat", "natural_qat_scale", "natural_gan_qat",
                 "natural_full_finetune", "natural_gan_finetune", "natural_spectral",
-                "natural_random_subspace", "natural_frequency_subspace", "natural_contrastive_subspace",
+                "natural_random_subspace", "natural_frequency_subspace", "natural_contrastive_subspace", "natural_teacher_rounding",
                 "--finetune-rtn-bits", "4"]
 
 
@@ -47,7 +47,7 @@ def configuration(profile, preserve_weight=2):
             "--train-batch-size", "1", "--natural-train-n", "256", "--natural-search-n", "64",
             "--eval-every", "50", "--ft-lr", ".0005", "--natural-resolution", "512"]
     methods = FULL_METHODS if profile == "full" else (SCIENCE_METHODS + ["--bits", "4"] if profile == "science" else FOCUSED_METHODS)
-    return common + methods + ["--steps", "1000", "--qat-steps", "1000", "--ft-steps", "1000",
+    return common + methods + ["--steps", "2000", "--qat-steps", "2000", "--ft-steps", "2000",
         "--train-batch-size", "4", "--natural-train-n", "4000", "--natural-search-n", "256",
         "--natural-resolution", "256", "--eval-every", "100", "--ft-lr", ".0005"]
 
@@ -76,6 +76,10 @@ def collect(run):
             "budget_ssim": manifest['args'].get('budget_ssim'),
             "budget_psnr": manifest['args'].get('budget_psnr'),
             "shares_training_with": selected.get('shares_training_with'),
+            "teacher_source": (selected.get('teacher_dependency') or {}).get('source'),
+            "teacher_label": (selected.get('teacher_dependency') or {}).get('label'),
+            "teacher_step": (selected.get('teacher_dependency') or {}).get('selected_step'),
+            "teacher_search_mse": selected.get('teacher_search_mse'),
             **{key: row.get(key) for key in fields},
             "quality_violation_fraction": quality.get('quality_violation_fraction'),
             "valid_updates": selected.get('valid_updates'),

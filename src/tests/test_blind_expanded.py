@@ -53,7 +53,7 @@ class ExpandedTests(unittest.TestCase):
             command = next(c for c in calls if c and c[0].endswith('wmq_blind.py'))
             args = parser().parse_args(command[1:])
             self.assertEqual(args.steps, 17)
-            self.assertEqual(args.qat_steps, 1000)
+            self.assertEqual(args.qat_steps, 2000)
             self.assertEqual(args.train_batch_size, 1)
             self.assertEqual(args.natural_train_n, 3)
             self.assertEqual(args.optimizer, 'adamw')
