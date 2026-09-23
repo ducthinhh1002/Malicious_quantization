@@ -28,7 +28,7 @@ class OneCommandTests(unittest.TestCase):
         self.assertIn('prepare_natural_images.py', source)
         self.assertIn('attack+=(--natural-images "$NATURAL_POOL")', source)
         self.assertIn('${WMQ_MODEL_ONLY:-0}', source)
-        self.assertIn('${WMQ_HEAVY_ROOT:-$SCRIPT_DIR/output_artifacts}', source)
+        self.assertIn('${WMQ_HEAVY_ROOT:-$PROJECT_ROOT/output_artifacts}', source)
         self.assertNotIn('RUN_ROOT=', source)
         self.assertNotIn('$SCRIPT_DIR/wmq_runs', source)
         self.assertIn('$HEAVY_ROOT/models', source)

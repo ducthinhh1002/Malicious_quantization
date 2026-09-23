@@ -386,6 +386,8 @@ def main():
         from wmq_owner_mechanism import analyze
         analyze(root, report, manifest, net, key, min(n, args.mechanism_samples),
                 device, args.image_root, args.artifact_root, extractor_digest, reference_valid)
+    from wmq_tradeoff import build_report
+    print(f"Quality/evasion analysis: {build_report(root)}", flush=True)
 
 
 if __name__ == "__main__":

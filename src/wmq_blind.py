@@ -437,6 +437,14 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
     grids = nn.ModuleList([FloatWeight(vae.decoder.get_parameter(k)) if float_branch else RoundingGrid(vae.decoder.get_parameter(k), bits, clip,
                            learn_scale=method in ("rounding_scale", "natural_rounding_scale", "natural_qat_scale"),
                            learn_code_offsets=qat_branch) for k in names]).to(device)
+    steering_layers = getattr(args, '_steering_layers', None) if method.startswith('natural_') and not float_branch else None
+    if steering_layers is not None:
+        unknown = set(steering_layers) - set(names)
+        if unknown or not steering_layers:
+            raise ValueError(f'Invalid steering layer names: {sorted(unknown)}')
+        for name, grid in zip(names, grids):
+            if name not in steering_layers:
+                grid.requires_grad_(False)  # Still quantized at the same bitwidth; frozen at RTN.
     rows, updates, best = [], [], None
     best_state = None
     natural = method.startswith("natural_")
@@ -707,6 +715,8 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
         grids.final_state = {k: v.detach().cpu().clone() for k, v in grids.state_dict().items()}
     grids.load_state_dict(best_state)
     selected = {**best, "search_feasible": best["feasible"], "valid_updates": valid_updates,
+                "steering_layers": steering_layers,
+                "steering_threat_model": 'owner_informed_development_not_blind' if steering_layers is not None else None,
                 "reconstruction_blocks": list(block_groups),
                 "optimizer": args.optimizer, "weight_decay": args.weight_decay,
                 "training_batch_size": args.train_batch_size, "discriminator_valid_updates": disc_valid_updates,
@@ -829,6 +839,8 @@ def parser():
     p.add_argument("--cuda-math", choices=["strict", "tf32"], default="strict",
                    help="tf32 accelerates FP32 convolutions/matmuls on supported CUDA GPUs; recorded in manifest")
     p.add_argument("--scope", choices=["all", "late"], default="all")
+    p.add_argument('--owner-informed-steering-plan',
+                   help='Explicit DEVELOPMENT-only layer mask from owner diagnostics; changes threat model, never claimed blind')
     p.add_argument("--strength", type=float, default=.25, help="Fixed blind smoothing hypothesis; 0 = reconstruction control")
     p.add_argument("--min-psnr", type=float, default=25.)
     p.add_argument("--min-image-psnr", type=float, default=22.)
@@ -978,6 +990,17 @@ def main():
     print(f"Inference batch={args.gen_batch_size}; evaluation batch={args.eval_batch_size}; data cache={args.data_cache}", flush=True)
     vae = pipe.vae.eval().requires_grad_(False)
     names = select_names(vae, args.scope)
+    steering_plan = None
+    if args.owner_informed_steering_plan:
+        plan_path = Path(args.owner_informed_steering_plan)
+        steering_plan = json.loads(plan_path.read_text())
+        layers = steering_plan.get('layers')
+        if (steering_plan.get('source_split') != 'victim_test' or steering_plan.get('uses_owner_information') is not True
+                or not isinstance(layers, list) or not layers or any(not isinstance(n, str) for n in layers)
+                or len(set(layers)) != len(layers) or set(layers) - set(names)):
+            raise ValueError('Invalid owner-informed development steering plan or layer names')
+        args._steering_layers = layers
+        steering_plan = {**steering_plan, 'plan_sha256': sha(plan_path)}
     pristine = {k: v.detach().cpu().clone() for k, v in vae.decoder.state_dict().items()}
     script = Path(__file__).resolve()
     try:
@@ -1043,6 +1066,16 @@ def main():
     manifest["natural_dataset"] = natural_manifest
     if natural_manifest:
         manifest["threat_model"] = "separate_model_only_and_model_plus_unpaired_natural_branches"
+    manifest['owner_informed_steering'] = steering_plan
+    if steering_plan is not None:
+        if natural_manifest is None:
+            raise ValueError('Owner-informed steering requires natural branches')
+        manifest['threat_model'] = 'includes_owner_informed_DEVELOPMENT_not_blind'
+        manifest['method'] = 'owner_informed_layer_mask_development_ladder'
+        for branch in plan:
+            if branch['method'].startswith('natural_') and branch['method'] not in FLOAT_METHODS:
+                branch['threat_model'] = 'owner_informed_development_not_blind'
+                branch['comparison_group'] += '_owner_informed'
     manifest["sensitivity_kind"] = "visual_proxy_only_not_ownership_sensitivity"
     manifest["proxy_limitations"] = ["Smoothing may retain fingerprint", "Proxy improvement may erase natural texture",
                                       "Owner metrics are evaluation-only after every branch is frozen"]

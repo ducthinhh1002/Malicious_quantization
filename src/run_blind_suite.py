@@ -1,9 +1,12 @@
 """Run predeclared blind experiments, retain failures, aggregate without test selection."""
 import argparse
+import codecs
 import csv
 import datetime
 import json
+import math
 import os
+import signal
 from pathlib import Path
 import subprocess
 import sys
@@ -59,6 +62,8 @@ def collect(run):
                   'evasion_on_originally_detected', 'tpr_drop_percentage_points',
                   'tpr_drop_ci95_low_pp', 'tpr_drop_ci95_high_pp')
         result.append({"run": str(run), "seed": manifest['args']['seed'],
+            "preserve_weight": manifest['args'].get('preserve_weight'),
+            "min_ssim": manifest['args'].get('min_ssim'),
             **{key: row.get(key) for key in fields},
             "quality_violation_fraction": quality.get('quality_violation_fraction'),
             "valid_updates": selected.get('valid_updates'),
@@ -68,15 +73,61 @@ def collect(run):
     return result
 
 
-def run_suite(root, seeds, profile, extra, execute, runner=subprocess.run):
+def run_live(command, *, stdout, stderr=subprocess.STDOUT, check=False):
+    """Mirror child output to terminal while retaining the exact per-run log."""
+    decoder = codecs.getincrementaldecoder("utf-8")(errors="replace")
+    with subprocess.Popen(command, stdout=subprocess.PIPE, stderr=stderr, start_new_session=True) as process:
+        try:
+            while True:
+                chunk = process.stdout.read1(8192)
+                rendered = decoder.decode(chunk, final=not chunk)
+                if rendered:
+                    stdout.write(rendered); stdout.flush()
+                    sys.stdout.write(rendered); sys.stdout.flush()
+                if not chunk:
+                    break
+            code = process.wait()
+        except BaseException:
+            try:
+                os.killpg(process.pid, signal.SIGTERM)
+            except ProcessLookupError:
+                pass
+            try:
+                process.wait(timeout=10)
+            except subprocess.TimeoutExpired:
+                os.killpg(process.pid, signal.SIGKILL)
+                process.wait()
+            raise
+    if check and code:
+        raise subprocess.CalledProcessError(code, command)
+    return subprocess.CompletedProcess(command, code)
+
+
+def run_suite(root, seeds, profile, extra, execute, runner=run_live, preservation_weights=None, min_ssim=None):
     root.mkdir(parents=True, exist_ok=False)
     script = Path(__file__).resolve().parent / "run_blind_quantization.sh"
     # Prevent overrides that would redirect a run and invalidate its summary.
     if any(x.split('=')[0] in ('--output', '--seed', '--image-output', '--artifact-output') for x in extra):
         raise ValueError("Suite owns output/seed/artifact paths; use --root and --seeds")
-    commands = [{"seed": seed, "output": str(root / f"{root.name}_seed_{seed}"),
-        "command": ["bash", str(script), *configuration(profile), "--seed", str(seed),
-                    "--output", str(root / f"{root.name}_seed_{seed}"), *extra], "status": "pending"} for seed in seeds]
+    weights = preservation_weights if preservation_weights is not None else [None]
+    if not weights or any(w is not None and (not math.isfinite(w) or w < 0) for w in weights) or len(set(weights)) != len(weights):
+        raise ValueError('Preservation weights must be distinct, finite and nonnegative')
+    if min_ssim is not None and (not math.isfinite(min_ssim) or not 0 < min_ssim <= 1):
+        raise ValueError('min-ssim must be in (0,1]')
+    if preservation_weights is not None and any(x.split('=')[0] in ('--preserve-weight', '--qat-semantic-preserve-weight', '--natural-preservation') for x in extra):
+        raise ValueError('CLI overrides conflict with declared preservation sweep')
+    commands = []
+    for seed in seeds:
+        for weight in weights:
+            suffix = f'seed_{seed}' + (f'_preserve_{weight:g}' if weight is not None else '')
+            output = root / f'{root.name}_{suffix}'
+            changes = ['--min-ssim', str(min_ssim)] if min_ssim is not None else []
+            if weight is not None:
+                changes += ['--natural-preservation', 'lowpass', '--preserve-weight', str(weight),
+                            '--qat-semantic-preserve-weight', str(weight)]
+            commands.append({'seed': seed, 'preserve_weight': weight, 'run_id': suffix, 'output': str(output),
+                'command': ['bash', str(script), *configuration(profile), *changes, '--seed', str(seed),
+                            '--output', str(output), *extra], 'status': 'pending'})
     protocol = {"profile": profile, "runs": commands,
         "execution": "simulated low-bit weights, FP32 VAE; no native INT4 speed claims",
         "owner_feedback_for_selection": False,
@@ -84,21 +135,38 @@ def run_suite(root, seeds, profile, extra, execute, runner=subprocess.run):
         "paper_reproductions": False,
         "interpretation": "All runs reported; no best seed/method selected using owner test metrics. Repeated prompts across seeds are not independent prompt samples."}
     write_json(root / "suite_plan.json", protocol)
-    rows = []
+    rows, plot_points = [], []
     for item in commands:
         if not execute:
             continue
         item['status'] = 'running'
         write_json(root / "suite_status.json", protocol)
-        log = root / f"seed_{item['seed']}.log"
+        log = root / f"{item['run_id']}.log"
         print(f"Running seed {item['seed']}; log: {log}", flush=True)
         start = time.monotonic()
         try:
-            with log.open('w') as stream:
+            with log.open('w', encoding='utf-8', newline='') as stream:
                 process = runner(item['command'], stdout=stream, stderr=subprocess.STDOUT, check=False)
             item['returncode'] = process.returncode
             item['status'] = 'completed' if process.returncode == 0 else 'failed'
             rows.extend(collect(Path(item['output'])))
+            run = Path(item['output'])
+            if (run / 'owner_evaluation.json').exists():
+                from wmq_tradeoff import quality_views, plot_svg, table, frontier
+                points, _ = quality_views(json.loads((run/'owner_evaluation.json').read_text()),
+                    json.loads((run/'report.json').read_text()), json.loads((run/'manifest.json').read_text()), [])
+                for point in points:
+                    point['method'] = item['run_id'] + ': ' + point['method']
+                    if point['comparison_group']:
+                        point['comparison_group'] += f"_seed{item['seed']}"
+                plot_points.extend(points)
+                plot_svg(root/'quality_evasion.svg', plot_points)
+                table(root/'suite_tradeoff_points.csv', plot_points)
+                groups = {}
+                for point in plot_points:
+                    if point['comparison_group'] and point['conditional_evasion'] is not None:
+                        groups.setdefault((point['comparison_group'], point['threat_model']), []).append(point)
+                table(root/'suite_pareto.csv', [p for group in groups.values() for p in frontier(group)])
             report_path = Path(item['output']) / 'report.json'
             if report_path.exists():
                 failures = json.loads(report_path.read_text()).get('branch_failures', [])
@@ -123,17 +191,23 @@ def run_suite(root, seeds, profile, extra, execute, runner=subprocess.run):
 def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('--root', type=Path)
-    p.add_argument('--seeds', type=int, nargs='+', default=[3407, 4407, 5407])
+    p.add_argument('--seeds', type=int, nargs='+', default=[3407])
     p.add_argument('--profile', choices=['pilot', 'focused', 'full'], default='focused')
     p.add_argument('--plan-only', action='store_true')
+    p.add_argument('--preservation-weights', type=float, nargs='+', default=[.5, 2., 8.],
+                   help='Predeclare objective-weight sweep (e.g. .5 2 8); same prompts/seeds, not threshold relabeling')
+    p.add_argument('--min-ssim', type=float, default=.8,
+                   help='Gate for these NEW runs; default 0.8; report policy still retains failures')
     p.add_argument('extra', nargs=argparse.REMAINDER)
     args = p.parse_args()
     if len(set(args.seeds)) != len(args.seeds) or min(args.seeds) < 0:
         p.error('Seeds must be distinct and nonnegative')
-    root = args.root or Path(__file__).resolve().parent / 'output_attack' / (
+    project_root = Path(__file__).resolve().parent.parent
+    root = args.root or project_root / 'output_attack' / (
         'suite_' + datetime.datetime.now().strftime('%Y%m%d_%H%M%S') + f'_{os.getpid()}')
     extra = args.extra[1:] if args.extra[:1] == ['--'] else args.extra
-    protocol = run_suite(root.resolve(), args.seeds, args.profile, extra, not args.plan_only)
+    protocol = run_suite(root.resolve(), args.seeds, args.profile, extra, not args.plan_only,
+                         preservation_weights=args.preservation_weights, min_ssim=args.min_ssim)
     print(f"Suite plan/status/results: {root.resolve()}")
     return int(any(x['status'] in ('failed', 'incomplete', 'completed_with_branch_failures') for x in protocol['runs']))
 

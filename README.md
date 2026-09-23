@@ -1,5 +1,87 @@
 # Hướng dẫn chạy thí nghiệm malicious quantization cho watermark diffusion
 
+## Lệnh mặc định và thư mục review
+
+Chỉ cần chạy:
+
+```bash
+bash run_blind_suite.sh
+```
+
+Mặc định tương đương:
+
+```bash
+bash run_blind_suite.sh --seeds 3407 \
+  --preservation-weights 0.5 2 8 --min-ssim 0.8
+```
+
+Toàn bộ source chuẩn nằm trong `src/`, gồm launcher, Python module, test, prompt và
+requirements. Có thể chọn trực tiếp folder `src/` để đưa cho LLM khác review. Các
+file `run_*.sh` và `requirements-*.txt` ở root chỉ là symlink tương thích với lệnh
+cũ, không chứa bản sao code.
+
+Sau owner evaluation, mỗi run có thêm `result/`: các report JSON/CSV/JSONL ở cấp
+run, toàn bộ `tradeoff/`, cùng selection/calibration gọn của từng branch. Checkpoint,
+PNG và log update lớn vẫn ở vị trí chuẩn để tránh nhân đôi hàng chục GB. Không di
+chuyển report gốc vì cơ chế freeze/integrity dùng đúng path và hash đó.
+
+## Quality–evasion analysis và sweep (2026-09-23)
+
+Owner evaluation tự tạo `tradeoff/points.csv`, `quality_thresholds.csv`, `pareto.csv`
+và `quality_evasion.svg`. Tất cả checkpoint đã owner-evaluate đều được giữ, kể cả
+quality failed; không tạo TPR giả cho các checkpoint chỉ có trong `search.json`.
+Frontier tách bitwidth, comparison group và threat model; FP32 không được so như W4.
+Trục evasion chính là tỷ lệ thoát detector **trong các ảnh reference đã được phát hiện**.
+Bảng vẫn có evasion tuyệt đối và tỷ lệ đồng thời thoát detector + đạt ngưỡng từng ảnh.
+Đây là các điểm đo và frontier mô tả, chưa phải đường cong liên tục đã được xác minh.
+
+Với run đã có báo cáo, không cần chạy GPU lại:
+
+```bash
+python src/wmq_tradeoff.py --run output_attack/TEN_RUN
+```
+
+Nếu `tradeoff/` đã tồn tại, dùng `--output /path/to/new_analysis` để tránh ghi đè.
+Các ngưỡng 0.80/0.82/0.85/0.86/0.90/0.95 trong bảng chỉ diễn giải lại cùng output.
+`quality_policy=report` vốn không loại ứng viên quality failed. Nới ngưỡng riêng lẻ
+không thay đổi model với policy này; SSIM 0.821 vẫn không đạt ngưỡng 0.85.
+
+Để tạo các điểm đánh đổi mới thật sự bằng cách thay trọng số bảo toàn:
+
+```bash
+bash run_blind_suite.sh --seeds 3407 --preservation-weights 0.5 2 8 --min-ssim 0.85
+```
+
+Suite khai báo trước ba run với cùng prompt/seed/calibration/bitwidth. Thay đồng thời
+`preserve_weight` và `qat_semantic_preserve_weight`, dùng low-pass preservation;
+giữ report policy để lưu cả kết quả không đạt. FP32 control giữ cấu hình riêng,
+các lần lặp control không phải bằng chứng độc lập. Có `suite_results.csv` và biểu đồ
+`quality_evasion.svg` tổng hợp, tách theo seed. Thêm `--plan-only` để xem kế hoạch.
+Không chọn winner bằng kết quả test rồi báo cùng tập đó là holdout chưa thấy.
+
+`mechanism_analysis.json` được tổng hợp thành `tradeoff/layer_diagnostics.csv`.
+Điểm rank dựa trên dấu/độ lớn tích vô hướng owner-error và quality-error, có floor
+cho mẫu số; không dùng cosine nhỏ để suy ra tuyệt đối rằng layer không quan trọng.
+Chỉ bốn ảnh, gradient tại endpoint và MSE quality không đủ chứng minh causal attribution
+hoặc dự báo trực tiếp SSIM. Nếu có đủ layer với owner dot âm ổn định, báo cáo xuất
+`owner_informed_steering_plan.json` cho thí nghiệm development riêng:
+
+```bash
+bash run_blind_quantization.sh --bits 4 \
+  --owner-informed-steering-plan output_attack/TEN_RUN/tradeoff/owner_informed_steering_plan.json
+```
+
+Các layer còn lại **vẫn được lượng tử hóa**, nhưng quantizer của chúng đóng băng ở
+khởi tạo; chỉ layer trong plan được tối ưu ở các nhánh natural quantized. Benign PTQ
+và FP32 control giữ vai trò đối chứng. Manifest/selection ghi rõ
+`owner_informed_development_not_blind`: dữ liệu ranking đến từ victim test trước đó,
+không phải surrogate độc lập. Không tự áp dụng plan vào run blind mặc định. Cần final
+holdout mới để đánh giá; đây không phải implementation đầy đủ OS-MQ.
+
+Table 1 của [Stable Signature is Unstable](https://arxiv.org/html/2405.07145v1)
+báo SSIM 0.86 cho E-aware/E-agnostic. Đó là kết quả trong protocol của paper,
+không phải chuẩn chất lượng phổ quát hay lý do đổi nhãn kết quả hiện tại thành thành công.
+
 ## Cấu hình mặc định sau run 20260922_023602
 
 ```bash
@@ -33,13 +115,14 @@ evaluator loại ảnh train/search theo hash và báo empirical FPR cùng Wilso
 Đây là FPR trên ảnh natural được khai báo không watermark, không thay cho mọi null
 distribution. Đặt `WMQ_NEGATIVE_N=0` để bỏ hoặc `WMQ_NEGATIVE_IMAGES=/path` để dùng pool khác.
 
-Để chạy ba seed liên tiếp và gom kết quả:
+Để chạy ba mức preservation weight với cùng seed và gom kết quả:
 
 ```bash
 bash run_blind_suite.sh
 ```
 
-Suite dùng seed 3407/4407/5407, W8/W4 và cùng budget theo profile full. Xem
+Suite mặc định dùng seed 3407, preservation weight 0.5/2/8, ngưỡng SSIM 0.8,
+W8/W4 và cùng budget theo profile `focused`. Xem
 `output_attack/suite_*/suite_results.csv`, `suite_status.json` và log từng seed.
 Một run lỗi không ngăn các seed còn lại. `bash run_blind_suite.sh --plan-only` ghi
 kế hoạch không tải/chạy model. Các nhánh GAN có thêm discriminator compute, nên
@@ -878,7 +961,7 @@ với public fixture mặc định. Lệnh bên dưới chỉ dùng khi cần đ
 run đã có:
 
 ```bash
-python evaluate_blind_watermark.py \
+python src/evaluate_blind_watermark.py \
   --run "$PWD/output_attack/blind_w4_seed3407" \
   --extractor /path/to/dec_48b_whit.torchscript.pt \
   --expected-extractor-sha256 77cd0a2040b9391233bbcd79c1adf00816b196089cbb844da40035f854637a04 \
