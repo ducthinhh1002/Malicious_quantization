@@ -115,7 +115,7 @@ case "$METHOD_SET" in
       --natural-methods natural_rounding natural_residual natural_residual_qat natural_full_finetune) ;;
   science)
     profile_defaults+=(--bits 4 --methods fixed_ptq qk_rotation_ptq reconstruction
-      --natural-methods natural_rounding natural_residual natural_residual_qat_warm natural_random_subspace natural_frequency_subspace
+      --natural-methods natural_rounding natural_residual natural_residual_qat_warm natural_residual_cycle_qat_warm natural_random_subspace natural_frequency_subspace
         natural_contrastive_subspace natural_full_finetune natural_teacher_rounding
       --quality-constraint off --quality-policy constrained --gradient-diagnostics-every 100)
     if [[ "${WMQ_MODEL_ONLY:-0}" != "1" ]]; then profile_defaults+=(--finetune-rtn-bits 4); fi ;;

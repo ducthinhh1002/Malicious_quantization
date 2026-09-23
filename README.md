@@ -1,5 +1,18 @@
 # Hướng dẫn chạy thí nghiệm malicious quantization cho watermark diffusion
 
+Nhánh thử nghiệm mới trong `transfer` và `science`: `natural_residual_cycle_qat_warm`.
+Chạy `bash run_blind_suite.sh --profile transfer` để so với warm-QAT cũ cùng W4,
+2.000 bước và ngưỡng SSIM trung bình 0.80. Nhánh này khởi tạo từ cùng residual W4
+đã chọn trên SEARCH, thêm loss encode(decode(z)) khớp latent tự nhiên ban đầu.
+Encoder cố định, gradient truyền qua encoder về quantizer; không dùng key/extractor.
+Loss được chia cho năng lượng latent từng ảnh (chặn dưới 1e-4), trọng số mặc định
+`--cycle-weight 0.01`; đặt 0 để làm ablation. Xem `natural_validation_cycle` trong
+search và `cycle_loss` trong updates, cùng số lượt encoder trong selection report.
+Đây là giả thuyết bảo toàn nội dung, chưa chứng minh làm yếu watermark hay có novelty.
+Nó tăng thời gian/bộ nhớ do thêm encoder backward. So hiệu quả với warm-QAT ở cùng
+chất lượng, báo cả chi phí nhánh residual dùng để khởi tạo. Không chọn bằng owner TEST.
+Xem phân tích tại [Cycle warm-QAT](survey/Cycle_Warm_QAT_VI.md).
+
 ## Lệnh mặc định và thư mục review
 
 Chỉ cần chạy:

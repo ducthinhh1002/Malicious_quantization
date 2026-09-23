@@ -26,8 +26,10 @@ from wmq_objectives import spectral_loss, NaturalDiscriminator, discriminator_up
 from wmq_science import QualityBudget, audit_prompt_protocol
 
 FLOAT_METHODS = ("natural_full_finetune", "natural_gan_finetune")
-QAT_METHODS = ("natural_qat_purification", "natural_residual_qat", "natural_residual_qat_warm", "natural_qat_scale", "natural_gan_qat")
-RESIDUAL_METHODS = ("natural_residual", "natural_residual_qat", "natural_residual_qat_warm", "natural_random_subspace",
+QAT_METHODS = ("natural_qat_purification", "natural_residual_qat", "natural_residual_qat_warm",
+               "natural_residual_cycle_qat_warm", "natural_qat_scale", "natural_gan_qat")
+RESIDUAL_METHODS = ("natural_residual", "natural_residual_qat", "natural_residual_qat_warm",
+                    "natural_residual_cycle_qat_warm", "natural_random_subspace",
                     "natural_frequency_subspace", "natural_contrastive_subspace")
 NATURAL_METHODS = ("natural_rounding", "natural_rounding_scale", "natural_residual",
                    *QAT_METHODS, *FLOAT_METHODS, "natural_spectral",
@@ -375,14 +377,28 @@ def choose(rows, policy="constrained"):
     return min(eligible, key=lambda r: (r.get("selection_objective", r["target_mse"]), -r["psnr"], r["candidate"])) if eligible else None
 
 
+def latent_cycle_error(vae, image, target):
+    """Per-image relative latent error; frozen encoder retains input gradients.
+
+    Targets are raw posterior modes, without the diffusion scaling factor.
+    Normalize by detached target energy, identically on TRAIN and SEARCH.
+    """
+    target = target.detach()
+    encoded = vae.encode(image.clamp(0, 1) * 2 - 1).latent_dist.mode()
+    if encoded.shape != target.shape:
+        raise ValueError("Cycle latent shape mismatch")
+    return ((encoded - target).square().flatten(1).mean(1) /
+            target.square().flatten(1).mean(1).clamp_min(1e-4))
+
+
 @torch.no_grad()
 def natural_reconstruction_metrics(vae, latents, images, perceptual=None, perceptual_weight=0., eval_batch_size=1,
-                                   residual=None, residual_weight=0., spectral_weight=0.):
+                                   residual=None, residual_weight=0., spectral_weight=0., cycle_weight=0.):
     """Natural validation ranks reconstruction only; generated pairs supply quality gates."""
     if not latents or len(latents) != len(images):
         raise ValueError("Need nonempty paired natural latents and images")
     device = next(vae.parameters()).device
-    errors, perceptual_errors, residual_errors, spectral_errors = [], [], [], []
+    errors, perceptual_errors, residual_errors, spectral_errors, cycle_errors = [], [], [], [], []
     def evaluate(chunk):
         z = torch.cat([p[0] for p in chunk]).to(device, torch.float32)
         x = torch.cat([p[1] for p in chunk]).to(device)
@@ -394,12 +410,17 @@ def natural_reconstruction_metrics(vae, latents, images, perceptual=None, percep
         lp = perceptual(prediction.clamp(0, 1) * 2 - 1, x * 2 - 1).reshape(len(chunk), -1).mean(1) if perceptual is not None else torch.zeros_like(error)
         rp = residual.loss(prediction.clamp(0, 1) - x) if residual is not None else torch.zeros_like(error)
         sp = spectral_loss(prediction.clamp(0, 1), x) if spectral_weight else torch.zeros_like(error)
-        return torch.stack([error, lp, rp, sp], 1).cpu().tolist()
+        if cycle_weight:
+            cp = latent_cycle_error(vae, prediction, z)
+        else:
+            cp = torch.zeros_like(error)
+        return torch.stack([error, lp, rp, sp, cp], 1).cpu().tolist()
     for _, metrics in batches(list(zip(latents, images)), evaluate, eval_batch_size, "natural_validation"):
-        for error, lp, rp, sp in metrics:
+        for error, lp, rp, sp, cp in metrics:
             errors.append(error)
             residual_errors.append(rp)
             spectral_errors.append(sp)
+            cycle_errors.append(cp)
             if perceptual is not None:
                 perceptual_errors.append(lp)
     mse = sum(errors) / len(errors)
@@ -408,10 +429,12 @@ def natural_reconstruction_metrics(vae, latents, images, perceptual=None, percep
         raise ValueError("Nonfinite natural validation perceptual loss")
     residual_value = sum(residual_errors) / len(residual_errors)
     spectral_value = sum(spectral_errors) / len(spectral_errors)
+    cycle_value = sum(cycle_errors) / len(cycle_errors)
     return {"natural_validation_mse": mse, "natural_validation_lpips": lpips_value if perceptual is not None else None,
             "natural_validation_residual": residual_value if residual is not None else None,
             "natural_validation_spectral": spectral_value if spectral_weight else None,
-            "target_mse": mse, "selection_objective": mse + perceptual_weight * lpips_value + residual_weight * residual_value + spectral_weight * spectral_value}
+            "natural_validation_cycle": cycle_value if cycle_weight else None,
+            "target_mse": mse, "selection_objective": mse + perceptual_weight * lpips_value + residual_weight * residual_value + spectral_weight * spectral_value + cycle_weight * cycle_value}
 
 
 @torch.no_grad()
@@ -479,7 +502,8 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
     grids = nn.ModuleList([FloatWeight(vae.decoder.get_parameter(k)) if float_branch else RoundingGrid(vae.decoder.get_parameter(k), bits, clip,
                            learn_scale=method in ("rounding_scale", "natural_rounding_scale", "natural_qat_scale"),
                            learn_code_offsets=qat_branch) for k in names]).to(device)
-    if method == 'natural_residual_qat_warm':
+    cycle_weight = args.cycle_weight if method == 'natural_residual_cycle_qat_warm' else 0.
+    if method in ('natural_residual_qat_warm', 'natural_residual_cycle_qat_warm'):
         initialize_warm_codes(grids, names, warm_start, args.qat_max_code_shift)
     steering_layers = getattr(args, '_steering_layers', None) if method.startswith('natural_') and not float_branch else None
     if steering_layers is not None:
@@ -523,7 +547,7 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
                 # Gate on generated pairs, rank on disjoint natural validation reconstruction.
                 metrics["generated_reference_mse"] = metrics["target_mse"]
                 metrics.update(natural_reconstruction_metrics(vae, *natural_search, perceptual, perceptual_weight,
-                    batch_size(getattr(args, "eval_batch_size", 0), device), residual if residual_branch else None, residual_weight, spectral_weight))
+                    batch_size(getattr(args, "eval_batch_size", 0), device), residual if residual_branch else None, residual_weight, spectral_weight, cycle_weight))
                 if args.natural_preservation == "lowpass" and not float_branch:
                     metrics["selection_objective"] += (args.preserve_weight * metrics["semantic_lowpass_mse"])
                 elif qat_branch and not residual_branch:
@@ -661,6 +685,8 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
             preserve = raw.new_zeros(()) if natural or block_branch else F.mse_loss(blur(raw), blur(ref))
             perceptual_loss = raw.new_zeros(())
             residual_loss = raw.new_zeros(())
+            cycle_loss = (latent_cycle_error(vae, raw, torch.cat([train_z[i] for i in indices]).to(device)).mean()
+                          if cycle_weight else raw.new_zeros(()))
             trust_loss = raw.new_zeros(())
             spectrum = spectral_loss(raw, ref).mean() if spectral_weight else raw.new_zeros(())
             adversarial = raw.new_zeros(())
@@ -701,7 +727,7 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
             loss = (target_loss + perceptual_weight * perceptual_loss + preserve_weight * preserve +
                     residual_weight * residual_loss + args.qat_trust_weight * trust_loss +
                     spectral_weight * spectrum + (args.adversarial_weight * adversarial if gan_branch else 0.) +
-                    args.teacher_weight * distillation)
+                    args.teacher_weight * distillation + cycle_weight * cycle_loss)
             budget_penalty = raw.new_zeros(())
             budget_violations = raw.new_zeros(2)
             if budget is not None:
@@ -714,6 +740,7 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
                 pieces = {"reconstruction": target_loss + perceptual_weight * perceptual_loss,
                           "teacher": args.teacher_weight * distillation,
                           "residual": residual_weight * residual_loss,
+                          "cycle": cycle_weight * cycle_loss,
                           "preservation": preserve_weight * preserve + budget_penalty}
                 for label, component in pieces.items():
                     if component.requires_grad:
@@ -771,6 +798,7 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
                                    residual_loss.detach(), trust_loss.detach(), spectrum.detach(), adversarial.detach(),
                                    grad_norm if grad_norm is not None else raw.new_tensor(float("nan"))]).cpu().tolist()
             updates.append({"step": step, "applied": applied, "reason": reason,
+                            "cycle_loss": float(cycle_loss.detach()) if cycle_weight and torch.isfinite(cycle_loss) else None,
                             **gradient_diagnostics,
                             "teacher_mse": float(distillation.detach()) if teacher_branch and torch.isfinite(distillation) else None,
                             "budget_penalty": float(budget_penalty.detach()) if torch.isfinite(budget_penalty) else None,
@@ -783,6 +811,7 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
                                  "spectral_loss", "adversarial_loss", "grad_norm"], scalars)},
                             "learning_rate": optimizer.param_groups[0]["lr"]})
             del weights, raw, ref, loss, target_loss, preserve, perceptual_loss, residual_loss, trust_loss, spectrum, adversarial
+            del cycle_loss
             if natural:
                 del generated, preserve_hidden
         if method == "sensitivity":
@@ -813,11 +842,16 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
                 "adversarial_weight": args.adversarial_weight if gan_branch else 0., "spectral_weight": spectral_weight,
                 "selection_uses_discriminator": False, "paper_reproduction": False,
                 "additional_objectives": (["patch_logistic_adversarial"] if gan_branch else []) +
+                                         (["frozen_encoder_relative_latent_cycle"] if cycle_weight else []) +
                                          (["multiscale_natural_log_spectrum"] if spectral_weight else []) +
                                          (["sequential_block_activation_reconstruction"] if block_branch else []),
                 "gradient_updates": valid_updates if optimizer is not None else 0,
                 "teacher_dependency": teacher_targets['provenance'] if teacher_branch else None,
                 "warm_start_dependency": warm_start['provenance'] if warm_start is not None else None,
+                "cycle_weight": cycle_weight,
+                "cycle_normalization": "per_image_detached_target_energy_floor_1e-4" if cycle_weight else None,
+                "cycle_train_encoder_images": total * args.train_batch_size if cycle_weight else 0,
+                "cycle_search_encoder_images": len(rows) * len(natural_search[0]) if cycle_weight else 0,
                 "teacher_weight": args.teacher_weight if teacher_branch else 0.,
                 "teacher_search_image_forwards": len(rows) * len(search_z) if teacher_branch else 0,
                 "objective": "generated_teacher_distillation_plus_natural_reconstruction" if teacher_branch else ("natural_residual_projection" if residual_branch else ("quantization_constrained_natural_purification" if qat_branch else ("unpaired_natural_reconstruction" if natural else ("reconstruction" if method in ("reconstruction", "block_reconstruction") else "blind_smoothing_proxy")))),
@@ -851,6 +885,7 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
                     "natural_gan_finetune": ["all_decoder_parameters_including_bias_and_norm"],
                     "natural_residual_qat": ["bounded_multi_cell_code_offsets"],
                     "natural_residual_qat_warm": ["bounded_multi_cell_code_offsets_from_residual_rounding"],
+                    "natural_residual_cycle_qat_warm": ["bounded_multi_cell_code_offsets_from_residual_rounding"],
                     "natural_full_finetune": ["all_decoder_parameters_including_bias_and_norm"],
                     "natural_qat_purification": ["bounded_multi_cell_code_offsets"]}[method],
                 "status": "selected" if best["feasible"] else ("selected_quality_failed" if policy == "report" else "no_feasible_candidate")}
@@ -969,13 +1004,13 @@ def parser():
     p.add_argument("--strength", type=float, default=.25, help="Fixed blind smoothing hypothesis; 0 = reconstruction control")
     p.add_argument("--min-psnr", type=float, default=25.)
     p.add_argument("--min-image-psnr", type=float, default=22.)
-    p.add_argument("--min-ssim", type=float, default=.9)
+    p.add_argument("--min-ssim", type=float, default=.8)
     p.add_argument("--preserve-weight", type=float, default=2.)
     p.add_argument("--natural-images", help="Optional directory of unpaired natural non-watermarked images")
     p.add_argument("--natural-train-n", type=int, help="Natural TRAIN count independent of prompt count; default --train-n")
     p.add_argument("--natural-search-n", type=int, help="Natural SEARCH count independent of prompt count; default --search-n")
     p.add_argument("--natural-methods", nargs="+", choices=NATURAL_METHODS,
-                   default=list(NATURAL_METHODS[:10]), help="Natural controls and exploratory objectives; FP32 controls outside bitwidth grid")
+                   default=[m for m in NATURAL_METHODS if m != 'natural_residual_cycle_qat_warm'][:10], help="Natural controls and exploratory objectives; FP32 controls outside bitwidth grid")
     p.add_argument("--exclude-method-bits", nargs="+", default=[], metavar="METHOD:BITS",
                    help="Do not declare matching quantized branches, independent of clip (for example natural_residual:8)")
     p.add_argument("--natural-resolution", type=int, choices=[256, 512], default=512)
@@ -993,6 +1028,7 @@ def parser():
     p.add_argument("--subspace-ridge", type=float, default=.01)
     p.add_argument("--finetune-rtn-bits", type=int, nargs="*", default=[], help="Derive RTN controls from the same selected FP32 decoder; outside quantizer-only threat model")
     p.add_argument("--teacher-weight", type=float, default=1., help="Generated TRAIN/SEARCH teacher MSE coefficient")
+    p.add_argument("--cycle-weight", type=float, default=.01, help="Relative latent cycle penalty, only for cycle warm-QAT; 0 is the warm-QAT ablation")
     p.add_argument("--teacher-source", choices=["purified", "marked"], default="purified", help="SEARCH-selected FP32 control, or original marked decoder for ablation")
     p.add_argument("--teacher-checkpoint-policy", choices=["selected", "final"], default="selected",
                    help="Use SEARCH-selected FP32 teacher or its predeclared final training endpoint; student quality gate is unchanged")
@@ -1023,6 +1059,8 @@ def parser():
 
 def main():
     args = parser().parse_args()
+    if not math.isfinite(args.cycle_weight) or args.cycle_weight < 0:
+        raise ValueError("--cycle-weight must be finite and nonnegative")
     if not math.isfinite(args.teacher_weight) or args.teacher_weight <= 0:
         raise ValueError("--teacher-weight must be finite and positive")
     uses_teacher = bool(args.natural_images and "natural_teacher_rounding" in args.natural_methods)
@@ -1030,8 +1068,8 @@ def main():
         raise ValueError("Purified teacher requires natural_full_finetune in --natural-methods")
     if uses_teacher and args.teacher_source == 'purified' and args.teacher_checkpoint_policy == 'final' and not args.evaluate_final:
         raise ValueError("Final teacher checkpoint requires --evaluate-final")
-    if 'natural_residual_qat_warm' in args.natural_methods and 'natural_residual' not in args.natural_methods:
-        raise ValueError("natural_residual_qat_warm requires natural_residual in --natural-methods")
+    if set(args.natural_methods).intersection(('natural_residual_qat_warm', 'natural_residual_cycle_qat_warm')) and 'natural_residual' not in args.natural_methods:
+        raise ValueError("Warm QAT requires natural_residual in --natural-methods")
     QualityBudget(args.budget_psnr, args.budget_ssim, args.dual_lr)
     if (not 0 <= args.budget_max_violation <= 1 or args.gradient_diagnostics_every < 0
             or not math.isfinite(args.subspace_ridge) or args.subspace_ridge <= 0
@@ -1313,7 +1351,8 @@ def main():
     # still waits for every branch to freeze; no TEST-driven scheduling.
     plan.sort(key=lambda branch: (0 if not branch['method'].startswith('natural_') else
         (1 if uses_teacher and args.teacher_source == 'purified' and branch['method'] == 'natural_full_finetune' else
-         2 if branch['method'] in ('natural_rounding', 'natural_teacher_rounding') else 3), branch['bits']))
+         2 if branch['method'] in ('natural_rounding', 'natural_teacher_rounding') else
+         4 if branch['method'] in ('natural_residual_qat_warm', 'natural_residual_cycle_qat_warm') else 3), branch['bits']))
     teacher_targets = None
     rows, selections, frozen_branches = [], {}, {}
     profiles = {}
@@ -1447,7 +1486,7 @@ def main():
                         branch.get("subspace_seed", 0), args.subspace_normalize, args.subspace_ridge)
                 branch_residual, branch_residual_info = residual_variants[variant_key]
             warm_start = None
-            if method == 'natural_residual_qat_warm':
+            if method in ('natural_residual_qat_warm', 'natural_residual_cycle_qat_warm'):
                 from safetensors.torch import load_file
                 source_label = f'natural_residual_w{bits}_c{clip}_test'
                 if source_label not in frozen_branches:

@@ -42,6 +42,21 @@ class PerceptualStub(nn.Module):
 
 
 class NaturalTests(unittest.TestCase):
+    def test_cycle_gradient_through_frozen_encoder(self):
+        encoder = nn.Conv2d(3, 3, 1).requires_grad_(False)
+        vae = SimpleNamespace(encode=lambda x: SimpleNamespace(
+            latent_dist=SimpleNamespace(mode=lambda: encoder(x))))
+        image = torch.full((2, 3, 4, 4), .6, requires_grad=True)
+        target = torch.ones_like(image, requires_grad=True)
+        error = blind.latent_cycle_error(vae, image, target)
+        self.assertEqual(error.shape, (2,))
+        error.mean().backward()
+        self.assertGreater(image.grad.abs().sum().item(), 0)
+        self.assertIsNone(target.grad)
+        self.assertTrue(all(p.grad is None for p in encoder.parameters()))
+        with self.assertRaisesRegex(ValueError, "shape mismatch"):
+            blind.latent_cycle_error(vae, image, target[:, :, :2])
+
     def test_report_policy_keeps_failed_candidate_and_ranks_full_objective(self):
         rows = [{"candidate": "good_quality", "target_mse": .1, "selection_objective": .4, "psnr": 35., "feasible": True},
                 {"candidate": "poor_quality", "target_mse": .2, "selection_objective": .3, "psnr": 15., "feasible": False}]
@@ -162,6 +177,8 @@ class NaturalTests(unittest.TestCase):
                 self.config = SimpleNamespace(scaling_factor=1.)
             def decode(self, z, **kw):
                 return (self.decoder(z),)
+            def encode(self, x):
+                return SimpleNamespace(latent_dist=SimpleNamespace(mode=lambda: x))
             @classmethod
             def from_pretrained(cls, *a, **kw):
                 return cls()
@@ -237,8 +254,8 @@ class NaturalTests(unittest.TestCase):
             report = json.loads((out / "report.json").read_text())
             endpoints = [k for k in report['selections'] if k.endswith('_final_test')]
             self.assertGreater(len(endpoints), 0)
-            self.assertEqual(len(report["selections"]), 34 + len(endpoints))
-            self.assertEqual(len(report["branch_quality"]), 36 + len(endpoints))
+            self.assertEqual(len(report["selections"]), 36 + len(endpoints))
+            self.assertEqual(len(report["branch_quality"]), 38 + len(endpoints))
             for label in endpoints:
                 selected = report['selections'][label]
                 self.assertEqual(selected['step'], selected['attempted_updates'])

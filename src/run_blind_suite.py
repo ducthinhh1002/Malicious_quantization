@@ -23,7 +23,7 @@ def write_json(path, value):
 FOCUSED_METHODS = ["--methods", "fixed_ptq", "reconstruction", "--natural-methods",
                    "natural_rounding", "natural_residual", "natural_residual_qat", "natural_full_finetune"]
 SCIENCE_METHODS = ["--methods", "fixed_ptq", "qk_rotation_ptq", "reconstruction", "--natural-methods",
-    "natural_rounding", "natural_residual", "natural_residual_qat_warm", "natural_random_subspace", "natural_frequency_subspace",
+    "natural_rounding", "natural_residual", "natural_residual_qat_warm", "natural_residual_cycle_qat_warm", "natural_random_subspace", "natural_frequency_subspace",
     "natural_contrastive_subspace", "natural_full_finetune", "natural_teacher_rounding", "--finetune-rtn-bits", "4",
     "--quality-constraint", "off", "--quality-policy", "constrained", "--gradient-diagnostics-every", "100"]
 FULL_METHODS = ["--methods", "fixed_ptq", "qk_rotation_ptq", "reconstruction", "block_reconstruction",
@@ -33,7 +33,7 @@ FULL_METHODS = ["--methods", "fixed_ptq", "qk_rotation_ptq", "reconstruction", "
                 "natural_random_subspace", "natural_frequency_subspace", "natural_contrastive_subspace", "natural_teacher_rounding",
                 "--finetune-rtn-bits", "4"]
 TRANSFER_METHODS = ["--methods", "fixed_ptq", "reconstruction", "--natural-methods",
-    "natural_rounding", "natural_residual", "natural_residual_qat_warm", "natural_full_finetune", "natural_teacher_rounding",
+    "natural_rounding", "natural_residual", "natural_residual_qat_warm", "natural_residual_cycle_qat_warm", "natural_full_finetune", "natural_teacher_rounding",
     "--finetune-rtn-bits", "4", "--quality-constraint", "off", "--quality-policy", "constrained",
     "--gradient-diagnostics-every", "100", "--teacher-checkpoint-policy", "final"]
 
@@ -88,6 +88,9 @@ def collect(run):
             "teacher_search_mse": selected.get('teacher_search_mse'),
             "warm_start_source": (selected.get('warm_start_dependency') or {}).get('source_branch'),
             "warm_start_step": (selected.get('warm_start_dependency') or {}).get('source_step'),
+            "cycle_weight": selected.get('cycle_weight'),
+            "cycle_train_encoder_images": selected.get('cycle_train_encoder_images'),
+            "cycle_search_encoder_images": selected.get('cycle_search_encoder_images'),
             "reparameterization": (selected.get('reparameterization') or {}).get('kind'),
             "reparameterization_fp32_max_abs_delta": (selected.get('reparameterization') or {}).get('fp32_probe_max_abs_delta'),
             "teacher_near_identity": ((selected.get('teacher_dependency') or {}).get('target_signal') or {}).get('search', {}).get('near_identity'),

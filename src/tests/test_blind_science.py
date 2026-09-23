@@ -86,6 +86,8 @@ class ScienceTests(unittest.TestCase):
         self.assertIn('natural_teacher_rounding', transfer.natural_methods)
         self.assertNotIn('qk_rotation_ptq', transfer.methods)
         self.assertIn('natural_residual_qat_warm', transfer.natural_methods)
+        self.assertIn('natural_residual_cycle_qat_warm', transfer.natural_methods)
+        self.assertEqual(transfer.cycle_weight, .01)
         self.assertEqual(transfer.budget_ssim, .8)
         self.assertEqual(transfer.teacher_checkpoint_policy, 'final')
         self.assertTrue(transfer.evaluate_final)
