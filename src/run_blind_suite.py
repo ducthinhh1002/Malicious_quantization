@@ -27,13 +27,13 @@ FULL_METHODS = ["--methods", "fixed_ptq", "reconstruction", "block_reconstructio
                 "natural_full_finetune", "natural_gan_finetune", "natural_spectral"]
 
 
-def configuration(profile):
+def configuration(profile, preserve_weight=2):
     # Same batch, step counts and preservation across natural W4/W8 ablations.
     # GAN has extra discriminator compute; report it, never call costs equal.
     common = ["--bits", "8", "4", "--quality-policy", "report",
               "--optimizer", "adamw", "--weight-decay", "0", "--lr-schedule", "warmup_cosine",
-              "--natural-preservation", "lowpass", "--preserve-weight", "2",
-              "--qat-semantic-preserve-weight", "2", "--warmup-steps", "20", "--cuda-math", "tf32",
+              "--natural-preservation", "lowpass", "--preserve-weight", str(preserve_weight),
+              "--qat-semantic-preserve-weight", str(preserve_weight), "--warmup-steps", "20", "--cuda-math", "tf32",
               "--evaluate-final"]
     if profile == "pilot":
         return common + FOCUSED_METHODS + ["--steps", "200", "--qat-steps", "200", "--ft-steps", "200",
@@ -122,13 +122,14 @@ def run_suite(root, seeds, profile, extra, execute, runner=run_live, preservatio
             suffix = f'seed_{seed}' + (f'_preserve_{weight:g}' if weight is not None else '')
             output = root / f'{root.name}_{suffix}'
             changes = ['--min-ssim', str(min_ssim)] if min_ssim is not None else []
-            if weight is not None:
-                changes += ['--natural-preservation', 'lowpass', '--preserve-weight', str(weight),
-                            '--qat-semantic-preserve-weight', str(weight)]
+            effective_weight = 2 if weight is None else weight
             commands.append({'seed': seed, 'preserve_weight': weight, 'run_id': suffix, 'output': str(output),
-                'command': ['bash', str(script), *configuration(profile), *changes, '--seed', str(seed),
-                            '--output', str(output), *extra], 'status': 'pending'})
-    protocol = {"profile": profile, "runs": commands,
+                'command': ['bash', str(script), *configuration(profile, effective_weight), *changes,
+                            '--seed', str(seed), '--output', str(output), *extra],
+                'status': 'pending' if execute else 'planned_not_executed'})
+    protocol = {"profile": profile, "execution_mode": "execute" if execute else "plan_only",
+        "suite_status": "pending" if execute else "not_executed",
+        "results_available": False, "runs": commands,
         "execution": "simulated low-bit weights, FP32 VAE; no native INT4 speed claims",
         "owner_feedback_for_selection": False,
         "surrogate": "not_run_requires_independent_surrogate_assets",
@@ -139,6 +140,7 @@ def run_suite(root, seeds, profile, extra, execute, runner=run_live, preservatio
     for item in commands:
         if not execute:
             continue
+        protocol['suite_status'] = 'running'
         item['status'] = 'running'
         write_json(root / "suite_status.json", protocol)
         log = root / f"{item['run_id']}.log"
@@ -150,6 +152,7 @@ def run_suite(root, seeds, profile, extra, execute, runner=run_live, preservatio
             item['returncode'] = process.returncode
             item['status'] = 'completed' if process.returncode == 0 else 'failed'
             rows.extend(collect(Path(item['output'])))
+            protocol['results_available'] = bool(rows)
             run = Path(item['output'])
             if (run / 'owner_evaluation.json').exists():
                 from wmq_tradeoff import quality_views, plot_svg, table, frontier
@@ -184,6 +187,10 @@ def run_suite(root, seeds, profile, extra, execute, runner=run_live, preservatio
                 writer = csv.DictWriter(stream, fieldnames=list(rows[0]))
                 writer.writeheader(); writer.writerows(rows)
         print(f"Seed {item['seed']}: {item['status']}", flush=True)
+    if execute:
+        statuses = {item['status'] for item in commands}
+        protocol['suite_status'] = ('completed' if statuses <= {'completed'} else
+            'completed_with_issues' if statuses <= {'completed', 'completed_with_branch_failures'} else 'failed')
     write_json(root / "suite_status.json", protocol)
     return protocol
 
@@ -203,12 +210,21 @@ def main():
     if len(set(args.seeds)) != len(args.seeds) or min(args.seeds) < 0:
         p.error('Seeds must be distinct and nonnegative')
     project_root = Path(__file__).resolve().parent.parent
+    prefix = 'plan_' if args.plan_only else 'run_'
     root = args.root or project_root / 'output_attack' / (
-        'suite_' + datetime.datetime.now().strftime('%Y%m%d_%H%M%S') + f'_{os.getpid()}')
+        prefix + datetime.datetime.now().strftime('%Y%m%d_%H%M%S'))
     extra = args.extra[1:] if args.extra[:1] == ['--'] else args.extra
+    if args.plan_only:
+        print(f"Creating plan only (no attack): {root.resolve()}", flush=True)
+    else:
+        print(f"Starting attack suite; results: {root.resolve()}", flush=True)
     protocol = run_suite(root.resolve(), args.seeds, args.profile, extra, not args.plan_only,
                          preservation_weights=args.preservation_weights, min_ssim=args.min_ssim)
-    print(f"Suite plan/status/results: {root.resolve()}")
+    if args.plan_only:
+        print("PLAN ONLY: no model, attack, or evaluator was run.")
+        print(f"Suite plan: {root.resolve()}")
+    else:
+        print(f"Suite status/results: {root.resolve()}")
     return int(any(x['status'] in ('failed', 'incomplete', 'completed_with_branch_failures') for x in protocol['runs']))
 
 

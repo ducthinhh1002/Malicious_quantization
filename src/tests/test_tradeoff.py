@@ -46,7 +46,7 @@ class TradeoffTests(unittest.TestCase):
             self.assertEqual(len({r['output'] for r in result['runs']}), 3)
             for run in result['runs']:
                 command = run['command']
-                # The final occurrences override configuration() defaults.
+                # Each sweep option is emitted exactly once.
                 for flag in ['--preserve-weight', '--qat-semantic-preserve-weight']:
                     indices = [i for i, x in enumerate(command) if x == flag]
                     self.assertEqual(float(command[indices[-1]+1]), run['preserve_weight'])

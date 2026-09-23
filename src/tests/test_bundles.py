@@ -41,12 +41,20 @@ class BundleTests(unittest.TestCase):
                 "--root", str(root), "--plan-only"], check=True, capture_output=True, text=True)
             plan = json.loads((root / "suite_plan.json").read_text())
             self.assertEqual(len(plan["runs"]), 3)
+            self.assertEqual(plan["execution_mode"], "plan_only")
+            self.assertEqual(plan["suite_status"], "not_executed")
+            self.assertFalse(plan["results_available"])
+            self.assertTrue(all(run["status"] == "planned_not_executed" for run in plan["runs"]))
             self.assertEqual({run["seed"] for run in plan["runs"]}, {3407})
             self.assertEqual({run["preserve_weight"] for run in plan["runs"]}, {.5, 2., 8.})
             for run in plan["runs"]:
                 command = run["command"]
                 indices = [i for i, value in enumerate(command) if value == "--min-ssim"]
-                self.assertEqual(float(command[indices[-1] + 1]), .8)
+                self.assertEqual(len(indices), 1)
+                self.assertEqual(float(command[indices[0] + 1]), .8)
+                for option in ("--natural-preservation", "--preserve-weight",
+                               "--qat-semantic-preserve-weight"):
+                    self.assertEqual(command.count(option), 1)
 
 
 if __name__ == "__main__":

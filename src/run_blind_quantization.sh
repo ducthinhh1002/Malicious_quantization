@@ -21,7 +21,7 @@ export TOKENIZERS_PARALLELISM=false USE_TORCH=1 USE_TF=0 USE_FLAX=0
 unset PYTHONPATH PYTHONHOME PYTHONUSERBASE
 if [[ "${WMQ_BOOTSTRAP_READY:-0}" != "1" ]]; then
   mkdir -p "$ATTACK_OUTPUT_ROOT"
-  LOG_PATH="$(mktemp "$ATTACK_OUTPUT_ROOT/blind_run_$(date +%Y%m%d_%H%M%S)_XXXXXX.log")"
+  LOG_PATH="$(mktemp "$ATTACK_OUTPUT_ROOT/run_$(date +%Y%m%d_%H%M%S)_XXXXXX.log")"
   exec > >(tee -a "$LOG_PATH") 2>&1
   echo "Log (environment setup, fixture, attack, evaluation): $LOG_PATH"
   ENV_MODE="${WMQ_ENV_MODE:-auto}"
@@ -77,7 +77,7 @@ print(f"GPU: {torch.cuda.get_device_name(0)}; torch={torch.__version__}; diffuse
 PY
 
 DEFAULT_MODEL="$MODEL_ROOT/marked_sd21"
-DEFAULT_OUTPUT="$ATTACK_OUTPUT_ROOT/blind_$(date +%Y%m%d_%H%M%S)_$$"
+DEFAULT_OUTPUT="$ATTACK_OUTPUT_ROOT/run_$(date +%Y%m%d_%H%M%S)"
 MODEL_PATH="$DEFAULT_MODEL"
 ATTACK_OUTPUT="$DEFAULT_OUTPUT"
 CUSTOM_MODEL=0

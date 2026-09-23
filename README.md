@@ -123,9 +123,10 @@ bash run_blind_suite.sh
 
 Suite mặc định dùng seed 3407, preservation weight 0.5/2/8, ngưỡng SSIM 0.8,
 W8/W4 và cùng budget theo profile `focused`. Xem
-`output_attack/suite_*/suite_results.csv`, `suite_status.json` và log từng seed.
-Một run lỗi không ngăn các seed còn lại. `bash run_blind_suite.sh --plan-only` ghi
-kế hoạch không tải/chạy model. Các nhánh GAN có thêm discriminator compute, nên
+`output_attack/run_*/suite_results.csv`, `suite_status.json` và log từng seed.
+Một run lỗi không ngăn các seed còn lại. `bash run_blind_suite.sh --plan-only` tạo
+folder `plan_*`, ghi `execution_mode=plan_only`, `suite_status=not_executed`
+và không tải/chạy model. Folder này không chứa kết quả thực nghiệm. Các nhánh GAN có thêm discriminator compute, nên
 cùng số update chưa có nghĩa cùng FLOPs; báo cả forward counts và thời gian.
 Thay seed vẫn dùng cùng danh sách prompt: cần prompt/key holdout mới cho final paper.
 Surrogate ownership transfer cần tài sản độc lập; code không thay nó bằng victim key.
@@ -927,7 +928,7 @@ với `skimage.metrics.structural_similarity`. Định nghĩa được ghi vào 
 không gộp kết quả SSIM 5×5 cũ với run mới như cùng một metric. Gaussian 5×5 trong
 pseudo-target/loss làm mờ vẫn giữ nguyên. Xem [tài liệu scikit-image](https://scikit-image.org/docs/stable/api/skimage.metrics.html).
 
-Mỗi lần chạy tạo thư mục mới `output_attack/blind_<thời gian>_<PID>` và file log:
+Mỗi lần chạy tạo thư mục mới `output_attack/run_<YYYYMMDD_HHMMSS>` và file log:
 
 ```text
 output_attack/blind_w4_seed3407/
