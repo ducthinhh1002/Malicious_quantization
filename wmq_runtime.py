@@ -2,6 +2,7 @@
 import torch
 
 EVENTS = []
+BATCH_LIMITS = {}
 GIB = 2 ** 30
 
 
@@ -29,10 +30,10 @@ def batch_size(requested, device, cap=16):
         return requested
     if torch.device(device).type != "cuda":
         return 1
-    free, total = torch.cuda.mem_get_info(device)
-    # Conservative starting point, then OOM backoff. No GPU-name assumptions.
-    available = max(0, free - max(2 * GIB, total * .25))
-    return max(1, min(cap, int(available // (4 * GIB))))
+    # Start optimistically and let batches() halve on a real allocation failure.
+    # A static bytes/item estimate selected batch=1 on a shared H200 even though
+    # VAE-only stages could process much larger batches.
+    return cap
 
 
 def batches(items, fn, size, stage="inference"):
@@ -43,6 +44,7 @@ def batches(items, fn, size, stage="inference"):
     """
     if size < 1:
         raise ValueError("Batch size must be positive")
+    size = min(size, BATCH_LIMITS.get(stage, size))
     start = 0
     while start < len(items):
         chunk = items[start:start + size]
@@ -53,6 +55,7 @@ def batches(items, fn, size, stage="inference"):
             if len(chunk) == 1:
                 raise
             size = max(1, len(chunk) // 2)
+            BATCH_LIMITS[stage] = size
             retry = True
         if retry:
             # Outside except: release failed forward's traceback/activation references.

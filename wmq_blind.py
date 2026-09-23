@@ -21,7 +21,7 @@ from torch import nn
 from torch.nn import functional as F
 from torch.func import functional_call
 from wmq_diagnostics import quality_warning
-from wmq_runtime import batches, batch_size, DataCache, all_finite, EVENTS, image01, decoded01
+from wmq_runtime import batches, batch_size, DataCache, all_finite, EVENTS, BATCH_LIMITS, image01, decoded01
 from wmq_objectives import spectral_loss, NaturalDiscriminator, discriminator_update
 
 FLOAT_METHODS = ("natural_full_finetune", "natural_gan_finetune")
@@ -414,7 +414,8 @@ def profile_layers(vae, names, latents, refs, bits, clip, args):
 
 def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
                     args, bits, clip, method, profile, folder, diagnostics_root=None,
-                    natural_search=None, preserve_data=None, perceptual=None, residual=None):
+                    natural_search=None, preserve_data=None, perceptual=None, residual=None,
+                    heavy_folder=None):
     """Independent initialization, train-only updates, search-only checkpoint choice."""
     device = next(vae.parameters()).device
     block_branch = method == "block_reconstruction"
@@ -748,8 +749,10 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
     save_json(folder / "selection.json", selected)
     if discriminator is not None:
         from safetensors.torch import save_file
+        discriminator_folder = folder if heavy_folder is None else Path(heavy_folder)
+        discriminator_folder.mkdir(parents=True, exist_ok=True)
         save_file({k: v.detach().cpu().contiguous() for k, v in discriminator.state_dict().items()},
-                  str(folder / "discriminator_final.safetensors"))
+                  str(discriminator_folder / "discriminator_final.safetensors"))
         save_json(folder / "discriminator.json", {"architecture": "wmq_objectives.NaturalDiscriminator",
             "training_split": "natural_train_only", "checkpoint": "final_not_selected_generator_step",
             "selection_uses_discriminator": False, "valid_updates": disc_valid_updates,
@@ -791,8 +794,8 @@ def parser():
     p.add_argument("--output", required=True, help="New directory, never overwrite an experiment")
     p.add_argument("--image-output", help="Separate NEW image directory; default output_artifacts/images/<run>")
     p.add_argument("--artifact-output", help="Separate NEW checkpoint directory; default output_artifacts/checkpoints/<run>")
-    p.add_argument("--gen-batch-size", type=int, default=0, help="Inference batch; 0 chooses from free VRAM, capped at 16")
-    p.add_argument("--eval-batch-size", type=int, default=0, help="VAE/metric batch; 0 chooses from free VRAM, capped at 16")
+    p.add_argument("--gen-batch-size", type=int, default=0, help="Inference batch; 0 starts at 8 and halves on CUDA OOM")
+    p.add_argument("--eval-batch-size", type=int, default=0, help="VAE/metric batch; 0 starts at 32 and halves on CUDA OOM")
     p.add_argument("--train-batch-size", type=int, default=1, help="Actual generator batch; reduce on OOM, never silently alter budget")
     p.add_argument("--optimizer", choices=["adam", "adamw"], default="adam")
     p.add_argument("--weight-decay", type=float, default=0.)
@@ -823,6 +826,8 @@ def parser():
     p.add_argument("--profile-n", type=int, default=16, help="Train-only samples for measured layer sensitivity")
     p.add_argument("--profile-bootstrap", type=int, default=1000, help="CPU paired resamples for layer priority uncertainty")
     p.add_argument("--device", choices=["cuda", "cpu"], default="cuda", help="CPU is for small diagnostic pipelines")
+    p.add_argument("--cuda-math", choices=["strict", "tf32"], default="strict",
+                   help="tf32 accelerates FP32 convolutions/matmuls on supported CUDA GPUs; recorded in manifest")
     p.add_argument("--scope", choices=["all", "late"], default="all")
     p.add_argument("--strength", type=float, default=.25, help="Fixed blind smoothing hypothesis; 0 = reconstruction control")
     p.add_argument("--min-psnr", type=float, default=25.)
@@ -866,6 +871,7 @@ def parser():
 def main():
     args = parser().parse_args()
     EVENTS.clear()
+    BATCH_LIMITS.clear()
     if args.train_batch_size < 1 or any(not math.isfinite(v) or v < 0 for v in
             (args.weight_decay, args.spectral_weight, args.adversarial_weight)) or not math.isfinite(args.discriminator_lr) or args.discriminator_lr <= 0:
         raise ValueError("Invalid training batch/objective/discriminator configuration")
@@ -943,9 +949,11 @@ def main():
     torch.manual_seed(args.seed)
     if args.device == "cuda":
         torch.cuda.manual_seed_all(args.seed)
-    # Accuracy audit profile, not a promise of bitwise reproducibility across GPUs.
-    torch.backends.cuda.matmul.allow_tf32 = False
-    torch.backends.cudnn.allow_tf32 = False
+    # Both profiles are explicit and recorded; neither promises cross-GPU bitwise identity.
+    use_tf32 = args.device == "cuda" and args.cuda_math == "tf32"
+    torch.backends.cuda.matmul.allow_tf32 = use_tf32
+    torch.backends.cudnn.allow_tf32 = use_tf32
+    torch.set_float32_matmul_precision("high" if use_tf32 else "highest")
     torch.backends.cudnn.benchmark = False
     if args.device == "cuda":
         torch.cuda.reset_peak_memory_stats()
@@ -960,8 +968,12 @@ def main():
     pipe.scheduler = DDIMScheduler.from_config(pipe.scheduler.config)
     pipe.set_progress_bar_config(disable=True)
     pipe.to(args.device)
-    args.gen_batch_size = batch_size(args.gen_batch_size, args.device)
-    args.eval_batch_size = batch_size(args.eval_batch_size, args.device)
+    memory_before_batches = None
+    if args.device == "cuda":
+        free, total = torch.cuda.mem_get_info(args.device)
+        memory_before_batches = {"free_gib": free / 2 ** 30, "total_gib": total / 2 ** 30}
+    args.gen_batch_size = batch_size(args.gen_batch_size, args.device, cap=8)
+    args.eval_batch_size = batch_size(args.eval_batch_size, args.device, cap=32)
     data_cache = DataCache(args.device, args.data_cache, args.cache_max_gib)
     print(f"Inference batch={args.gen_batch_size}; evaluation batch={args.eval_batch_size}; data cache={args.data_cache}", flush=True)
     vae = pipe.vae.eval().requires_grad_(False)
@@ -985,8 +997,9 @@ def main():
                 "target_names": names, "changed_parameters": sum(vae.decoder.get_parameter(k).numel() for k in names),
                 "torch": torch.__version__, "cuda": torch.version.cuda,
                 "reproducibility": {"python": platform.python_version(), "platform": platform.platform(),
-                    "cudnn": torch.backends.cudnn.version(), "tf32_matmul": False, "tf32_cudnn": False,
+                    "cudnn": torch.backends.cudnn.version(), "tf32_matmul": use_tf32, "tf32_cudnn": use_tf32,
                     "cudnn_benchmark": False, "deterministic_algorithms": torch.are_deterministic_algorithms_enabled(),
+                    "cuda_memory_before_auto_batch": memory_before_batches,
                     "warning": "Seeds and TF32 settings do not guarantee bitwise reproducibility across GPUs or library versions."},
                 "quality_metric_definition": {"ssim": "Gaussian 11x11 sigma=1.5; population covariance; valid crop; RGB channel mean; data_range=1",
                     "ssim_statistics_dtype": "float64", "psnr": "per-image RGB MSE; data_range=1; cap 120dB"},
@@ -1072,16 +1085,22 @@ def main():
     search_z, search_ref = zs[a:b], refs[a:b]
     natural_train, natural_search, perceptual = None, None, None
     residual, residual_info = None, None
-    # Complete every model-only branch before loading external training images/network.
-    plan.sort(key=lambda branch: branch["method"].startswith("natural_"))
+    # Complete model-only controls first. Within each threat model, run lower bitwidth
+    # first so an interrupted diagnostic run reaches the stronger compression setting.
+    plan.sort(key=lambda branch: (branch["method"].startswith("natural_"), branch["bits"]))
     rows, selections, frozen_branches = [], {}, {}
     profiles = {}
     costs = {}
     branch_failures = []
     endpoint_plan = []
     declared_plan = list(plan)
+    run_status = {"phase": "branch_search", "declared_branches": [b["label"] for b in declared_plan],
+                  "completed_branches": [], "failed_branches": [], "current_branch": None}
+    save_json(out / "run_status.json", run_status)
     for branch in plan:
         try:
+            run_status["current_branch"] = branch["label"]
+            save_json(out / "run_status.json", run_status)
             if args.device == "cuda":
                 torch.cuda.synchronize()
             branch_started = time.monotonic()
@@ -1121,7 +1140,9 @@ def main():
                 bits, clip, method, profiles.get(group, []), folder, diagnostics_root=out,
                 natural_search=natural_search if natural else None,
                 preserve_data=(zs[:a], refs[:a]) if natural else None,
-                perceptual=perceptual if natural else None, residual=residual if method in ("natural_residual", "natural_residual_qat") else None)
+                perceptual=perceptual if natural else None,
+                residual=residual if method in ("natural_residual", "natural_residual_qat") else None,
+                heavy_folder=artifact_folder)
             rows.extend(branch_rows)
             selections[branch["label"]] = selected
             materialize(vae.decoder, branch_names, grids)
@@ -1129,7 +1150,7 @@ def main():
             for name, value in vae.decoder.state_dict().items():
                 if name not in branch_names and not torch.equal(value.cpu(), pristine[name]):
                     raise ValueError(f"Unexpected parameter change: {name}")
-            artifact_folder.mkdir(parents=True, exist_ok=False)
+            artifact_folder.mkdir(parents=True, exist_ok=True)
             vae.save_pretrained(artifact_folder / "vae", safe_serialization=True)
             if float_branch:
                 from safetensors.torch import save_file
@@ -1193,6 +1214,10 @@ def main():
                 torch.cuda.synchronize()
             costs[branch["label"]] = {"search_and_export_seconds_including_profile": time.monotonic() - branch_started,
                                      "profile_image_forwards": len(names) * min(a, args.profile_n) if method == "sensitivity" else 0}
+            run_status["completed_branches"].append(branch["label"])
+            run_status["current_branch"] = None
+            run_status["branch_compute"] = costs
+            save_json(out / "run_status.json", run_status)
         except Exception as error:
             if args.branch_error_policy == "raise":
                 raise
@@ -1200,6 +1225,9 @@ def main():
             failure = {"label": branch["label"], "method": branch["method"],
                        "error": f"{type(error).__name__}: {error}", "traceback": traceback.format_exc()}
             branch_failures.append(failure)
+            run_status["failed_branches"].append(failure)
+            run_status["current_branch"] = None
+            save_json(out / "run_status.json", run_status)
             selections.pop(branch["label"], None)
             frozen_branches.pop(branch["label"], None)
             for endpoint in list(endpoint_plan):
@@ -1228,6 +1256,8 @@ def main():
               "search_sha256": sha(out / "search.json"),
               "profile_sha256": {p.name: sha(p) for p in sorted(out.glob("profile_*.json"))}}
     save_json(out / "selection_frozen.json", frozen)
+    run_status.update(phase="held_out_test", current_branch=None)
+    save_json(out / "run_status.json", run_status)
     test_z, test_ref = cache(range(b, n))
     test_z = data_cache.promote(test_z, "test_latents")
     test_ref = data_cache.promote(test_ref, "test_references")
@@ -1261,7 +1291,8 @@ def main():
     save_json(out / "report.json", {"schema_version": 2, "selections": selections,
               "branch_compute": costs, "branch_failures": branch_failures,
               "runtime": {"gen_batch_size": args.gen_batch_size, "eval_batch_size": args.eval_batch_size,
-                          "training_batch_size": args.train_batch_size, "cache": data_cache.stats, "events": list(EVENTS), "log_every": args.log_every},
+                          "training_batch_size": args.train_batch_size, "learned_batch_limits": dict(BATCH_LIMITS),
+                          "cache": data_cache.stats, "events": list(EVENTS), "log_every": args.log_every},
               "branch_quality": quality, "status": "branch_failures" if branch_failures else ("complete" if complete else "quality_failures"),
               "watermark_metrics": None, "watermark_success": "unknown",
               "test_used_for_selection": False, "selection_frozen_sha256": sha(out / "selection_frozen.json"),
@@ -1272,6 +1303,8 @@ def main():
               "elapsed_seconds": time.monotonic() - started,
               "peak_cuda_allocated_gib": torch.cuda.max_memory_allocated() / 2 ** 30 if args.device == "cuda" else None,
               "note": "Failed controls are retained and flagged; no watermark removal or OS-MQ claim."})
+    run_status.update(phase="attack_complete_owner_evaluation_pending")
+    save_json(out / "run_status.json", run_status)
 
 
 if __name__ == "__main__":

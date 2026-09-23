@@ -9,7 +9,7 @@ import numpy as np
 import torch
 from torch import nn
 
-from wmq_runtime import batches, batch_size, DataCache, EVENTS, GIB, all_finite
+from wmq_runtime import batches, batch_size, DataCache, EVENTS, BATCH_LIMITS, GIB, all_finite
 from wmq_blind import score, natural_reconstruction_metrics, optimize_branch, parser
 
 torch.set_num_threads(2)
@@ -26,7 +26,10 @@ class VAE(nn.Module):
 
 class RuntimeTests(unittest.TestCase):
     def test_oom_retry_keeps_order_and_recreates_seeded_samples(self):
+        BATCH_LIMITS.clear()
+        attempts = []
         def generate(chunk):
+            attempts.append(len(chunk))
             draws = [torch.rand(1, generator=torch.Generator().manual_seed(i)) for i in chunk]
             if len(chunk) > 2:
                 raise torch.cuda.OutOfMemoryError("simulated")
@@ -37,14 +40,18 @@ class RuntimeTests(unittest.TestCase):
         expected = [torch.rand(1, generator=torch.Generator().manual_seed(i)).item() for i in range(5)]
         self.assertEqual(result, expected)
         self.assertTrue(EVENTS)
+        attempts.clear()
+        list(batches(list(range(4)), generate, 5))
+        self.assertLessEqual(max(attempts), 2)  # learned cap avoids repeated OOM probes
         with self.assertRaises(torch.cuda.OutOfMemoryError):
             list(batches([1], lambda _: (_ for _ in ()).throw(torch.cuda.OutOfMemoryError()), 1))
 
     def test_batch_sizing_and_cache_respect_free_memory(self):
         with patch("torch.cuda.mem_get_info", return_value=(80 * GIB, 96 * GIB)):
-            self.assertEqual(batch_size(0, "cuda"), 14)
+            self.assertEqual(batch_size(0, "cuda"), 16)
         with patch("torch.cuda.mem_get_info", return_value=(130 * GIB, 140 * GIB)):
             self.assertEqual(batch_size(0, "cuda"), 16)
+        self.assertEqual(batch_size(0, "cuda", cap=32), 32)
         tensors = [torch.zeros(1, 3, 16, 16)]
         with patch("torch.cuda.mem_get_info", return_value=(2 * GIB, 96 * GIB)):
             cache = DataCache("cuda")

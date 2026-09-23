@@ -95,20 +95,30 @@ NEGATIVE_N="${WMQ_NEGATIVE_N:-1000}"
 NEGATIVE_IMAGES="${WMQ_NEGATIVE_IMAGES:-}"
 [[ "$NEGATIVE_N" =~ ^[0-9]+$ ]] || { echo "WMQ_NEGATIVE_N must be nonnegative" >&2; exit 2; }
 PROFILE="${WMQ_PROFILE:-research}"
+METHOD_SET="${WMQ_METHOD_SET:-focused}"
 case "$PROFILE" in
   research)
     profile_defaults=(--steps 1000 --qat-steps 1000 --ft-steps 1000 --eval-every 100
       --train-batch-size 4 --natural-train-n 4000 --natural-search-n 256 --natural-resolution 256
       --optimizer adamw --weight-decay 0 --lr-schedule warmup_cosine --warmup-steps 20
       --ft-lr .0005 --natural-preservation lowpass --preserve-weight 2 --qat-semantic-preserve-weight 2
-      --evaluate-final) ;;
-  pilot) profile_defaults=() ;;
+      --cuda-math tf32 --evaluate-final) ;;
+  pilot) profile_defaults=(--cuda-math tf32) ;;
   *) echo "WMQ_PROFILE must be research or pilot" >&2; exit 2 ;;
+esac
+case "$METHOD_SET" in
+  focused)
+    # Evidence-led default: fixed baselines, the useful model-only reconstruction,
+    # residual quantizers, and one unrestricted decoder upper-bound control.
+    profile_defaults+=(--methods fixed_ptq reconstruction
+      --natural-methods natural_residual natural_residual_qat natural_full_finetune) ;;
+  full) ;;
+  *) echo "WMQ_METHOD_SET must be focused or full" >&2; exit 2 ;;
 esac
 # Explicit CLI flags come last and override profile defaults, including --no-evaluate-final.
 arguments=("${profile_defaults[@]}" "$@")
 set -- "${arguments[@]}"
-echo "Experiment profile: $PROFILE; explicit CLI flags override its defaults."
+echo "Experiment profile: $PROFILE; method set: $METHOD_SET; explicit CLI flags override defaults."
 for ((index=0; index<${#arguments[@]}; index++)); do
   argument="${arguments[index]}"
   case "$argument" in
@@ -233,13 +243,22 @@ fi
 
 "$PY" - "$ATTACK_OUTPUT/owner_evaluation.json" <<'PY'
 import json, sys
-report = json.load(open(sys.argv[1], encoding="utf-8"))
+from pathlib import Path
+owner_path = Path(sys.argv[1])
+report = json.loads(owner_path.read_text(encoding="utf-8"))
 validation = report["reference_validation"]
 print(f"Reference validation: valid={validation['valid']}; "
       f"TPR={report['reference_tpr']:.4f}; detected={report['baseline_detected_count']}")
 if report["baseline_warning"]:
     print("WARNING:", report["baseline_warning"])
     print("Attack rows were retained, but must not be interpreted as successful watermark suppression.")
+status_path = owner_path.parent / "run_status.json"
+if status_path.exists():
+    status = json.loads(status_path.read_text(encoding="utf-8"))
+    status["phase"] = "owner_evaluation_complete"
+    tmp = status_path.with_suffix(".json.tmp")
+    tmp.write_text(json.dumps(status, indent=2, allow_nan=False), encoding="utf-8")
+    tmp.replace(status_path)
 PY
 
 echo "Finished: $ATTACK_OUTPUT"

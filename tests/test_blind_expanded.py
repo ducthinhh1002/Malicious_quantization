@@ -179,6 +179,11 @@ class ExpandedTests(unittest.TestCase):
             self.assertIn('suite_seed_1', calls[0][-1])
         full = configuration('full')
         self.assertEqual(full[full.index('--steps') + 1], full[full.index('--qat-steps') + 1])
+        focused = configuration('focused')
+        self.assertIn('natural_residual_qat', focused)
+        self.assertIn('natural_full_finetune', focused)
+        self.assertNotIn('natural_gan_qat', focused)
+        self.assertIn('natural_gan_qat', full)
 
 
 if __name__ == '__main__':

@@ -79,8 +79,8 @@ Chính sách tự cài này áp dụng cho **`run_blind_quantization.sh`**. Scri
 `run_malicious_quantization_watermarks.sh` vẫn dùng môi trường chuẩn bị sẵn như
 hướng dẫn riêng bên dưới. Hãy copy cả repo lên server để có helper mới.
 
-Luồng blind tự chọn batch inference/evaluation theo VRAM trống (tối đa 16), không
-hardcode tên GPU. CUDA OOM ở inference sẽ giảm batch và thử lại; seed từng ảnh
+Luồng blind tự thử batch lớn (diffusion 8, VAE/metric 32), không hardcode tên GPU.
+CUDA OOM ở inference/evaluation sẽ giảm một nửa batch và thử lại; seed từng ảnh
 được tạo lại khi retry. Batch 1 vẫn OOM thì báo lỗi, không đổi dtype hoặc scope.
 Latent/reference được cache trên GPU tối đa 16 GiB, chỉ khi sau khi cấp phát còn
 ít nhất 50% tổng VRAM và tối thiểu 2 GiB trống; thiếu ngân sách thì giữ CPU.
@@ -94,8 +94,11 @@ ghi trong report; batch và cấu hình được ghi manifest. Batching có th�
 số số học nhỏ so với chạy từng ảnh, không cam kết giống từng bit.
 
 ```bash
-# Mặc định tự tối ưu bộ nhớ, vẫn chạy cả hai hướng và tự evaluate
+# Mặc định chạy bộ focused gồm 9 branch, cả hai threat model và tự evaluate
 bash run_blind_quantization.sh
+
+# Toàn bộ 24 branch dùng cho ablation đầy đủ
+WMQ_METHOD_SET=full bash run_blind_quantization.sh
 
 # Chế độ đối chiếu từng ảnh, không cache GPU
 WMQ_OWNER_BATCH_SIZE=1 bash run_blind_quantization.sh \
@@ -105,6 +108,8 @@ WMQ_OWNER_BATCH_SIZE=1 bash run_blind_quantization.sh \
 Có thể đặt `--gen-batch-size`, `--eval-batch-size`, `--cache-max-gib` và
 `--log-every` riêng. Batch owner evaluator đặt bằng `WMQ_OWNER_BATCH_SIZE`
 (mặc định 0 = auto). Khi copy code lên server cần kèm **`wmq_runtime.py`**.
+Launcher research dùng TF32 để tăng throughput trên GPU hỗ trợ và ghi cấu hình
+vào manifest. Thêm `--cuda-math strict` nếu cần đối chiếu FP32 nghiêm ngặt.
 
 Tối ưu cho GPU nhiều VRAM (bao gồm H200) áp dụng tự động với cùng lệnh chạy.
 Không đổi batch training, số bước, loss hoặc dtype. Các scalar training được gom

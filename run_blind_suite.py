@@ -16,18 +16,28 @@ def write_json(path, value):
     tmp.replace(path)
 
 
+FOCUSED_METHODS = ["--methods", "fixed_ptq", "reconstruction", "--natural-methods",
+                   "natural_residual", "natural_residual_qat", "natural_full_finetune"]
+FULL_METHODS = ["--methods", "fixed_ptq", "reconstruction", "block_reconstruction",
+                "--natural-methods", "natural_rounding", "natural_rounding_scale", "natural_residual",
+                "natural_qat_purification", "natural_residual_qat", "natural_qat_scale", "natural_gan_qat",
+                "natural_full_finetune", "natural_gan_finetune", "natural_spectral"]
+
+
 def configuration(profile):
     # Same batch, step counts and preservation across natural W4/W8 ablations.
     # GAN has extra discriminator compute; report it, never call costs equal.
     common = ["--bits", "8", "4", "--quality-policy", "report",
               "--optimizer", "adamw", "--weight-decay", "0", "--lr-schedule", "warmup_cosine",
               "--natural-preservation", "lowpass", "--preserve-weight", "2",
-              "--qat-semantic-preserve-weight", "2", "--warmup-steps", "20", "--evaluate-final"]
+              "--qat-semantic-preserve-weight", "2", "--warmup-steps", "20", "--cuda-math", "tf32",
+              "--evaluate-final"]
     if profile == "pilot":
-        return common + ["--steps", "200", "--qat-steps", "200", "--ft-steps", "200",
+        return common + FOCUSED_METHODS + ["--steps", "200", "--qat-steps", "200", "--ft-steps", "200",
             "--train-batch-size", "1", "--natural-train-n", "256", "--natural-search-n", "64",
             "--eval-every", "50", "--ft-lr", ".0005", "--natural-resolution", "512"]
-    return common + ["--steps", "1000", "--qat-steps", "1000", "--ft-steps", "1000",
+    methods = FULL_METHODS if profile == "full" else FOCUSED_METHODS
+    return common + methods + ["--steps", "1000", "--qat-steps", "1000", "--ft-steps", "1000",
         "--train-batch-size", "4", "--natural-train-n", "4000", "--natural-search-n", "256",
         "--natural-resolution", "256", "--eval-every", "100", "--ft-lr", ".0005"]
 
@@ -114,7 +124,7 @@ def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('--root', type=Path)
     p.add_argument('--seeds', type=int, nargs='+', default=[3407, 4407, 5407])
-    p.add_argument('--profile', choices=['pilot', 'full'], default='full')
+    p.add_argument('--profile', choices=['pilot', 'focused', 'full'], default='focused')
     p.add_argument('--plan-only', action='store_true')
     p.add_argument('extra', nargs=argparse.REMAINDER)
     args = p.parse_args()
