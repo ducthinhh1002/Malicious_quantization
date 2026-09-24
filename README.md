@@ -1,5 +1,13 @@
 # Hướng dẫn chạy thí nghiệm malicious quantization cho watermark diffusion
 
+`natural_joint_quality_finetune` dùng activation checkpointing cho bốn decoder
+forward và hai encoder-cycle forward trong mỗi update. Batch và số ảnh/step không
+đổi, nhưng backward sẽ tính lại activation nên chậm hơn để giảm peak VRAM. Selection
+ghi `activation_checkpointing=true` và `peak_cuda_allocated_gib`. Nếu một branch OOM,
+launcher loại partial branch, chạy GC + CUDA cache/IPC cleanup rồi vẫn thử held-out
+evaluation cho các checkpoint đã đóng băng. Cleanup không thể giải phóng VRAM của
+process khác; hãy chạy `nvidia-smi` trước khi khởi động suite.
+
 **Sau review run `20260923_171848`:** profile `transfer` giữ joint fine-tune cũ và
 thêm `natural_joint_quality_finetune` + bản RTN W4. Nhánh mới phạt riêng từng ảnh
 generated TRAIN có PSNR dưới `min_image_psnr` (mặc định 25 dB) hoặc SSIM dưới

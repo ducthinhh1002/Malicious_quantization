@@ -302,6 +302,9 @@ class NaturalTests(unittest.TestCase):
             self.assertAlmostEqual(joint_rtn['ssim'], joint['joint_w4_ssim'], places=5)
             joint_updates = json.loads((out / 'branches/natural_joint_finetune_fp32/updates.json').read_text())['rows']
             self.assertGreater(joint_updates[0]['joint_w4_gradient_norm'], 0)
+            quality_joint = report['selections']['natural_joint_quality_finetune_fp32_test']
+            self.assertTrue(quality_joint['activation_checkpointing'])
+            self.assertIsNone(quality_joint['peak_cuda_allocated_gib'])
             self.assertGreater(report["selections"]["natural_residual_qat_w8_c1.0_test"]["gradient_updates"], 0)
             warm = report['selections']['natural_residual_qat_warm_w4_c1.0_test']
             self.assertEqual(warm['warm_start_dependency']['source_branch'],

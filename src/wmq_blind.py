@@ -6,6 +6,7 @@ use a separately declared dataset of unpaired images and the marked encoder.
 """
 import argparse
 import csv
+import gc
 import hashlib
 import json
 import math
@@ -20,6 +21,7 @@ import torch
 from torch import nn
 from torch.nn import functional as F
 from torch.func import functional_call
+from torch.utils.checkpoint import checkpoint
 from wmq_diagnostics import quality_warning
 from wmq_runtime import batches, batch_size, DataCache, all_finite, EVENTS, BATCH_LIMITS, image01, decoded01
 from wmq_objectives import spectral_loss, NaturalDiscriminator, discriminator_update
@@ -287,6 +289,15 @@ def sha(path):
     return h.hexdigest()
 
 
+def release_branch_memory(device):
+    """Drop exception trace cycles and return cached CUDA blocks before continuing."""
+    gc.collect()
+    if str(device).startswith("cuda") and torch.cuda.is_available():
+        torch.cuda.empty_cache()
+        torch.cuda.ipc_collect()
+        torch.cuda.synchronize()
+
+
 def select_names(vae, scope):
     selected = []
     for name, p in vae.decoder.named_parameters():
@@ -404,14 +415,17 @@ def finetune_quantized_weight(weight, bits=4):
     return quantized + (weight - weight.detach())
 
 
-def latent_cycle_error(vae, image, target):
+def latent_cycle_error(vae, image, target, checkpoint_encoder=False):
     """Per-image relative latent error; frozen encoder retains input gradients.
 
     Targets are raw posterior modes, without the diffusion scaling factor.
     Normalize by detached target energy, identically on TRAIN and SEARCH.
     """
     target = target.detach()
-    encoded = vae.encode(image.clamp(0, 1) * 2 - 1).latent_dist.mode()
+    encoder_input = image.clamp(0, 1) * 2 - 1
+    encode = lambda value: vae.encode(value).latent_dist.mode()
+    encoded = (checkpoint(encode, encoder_input, use_reentrant=False)
+               if checkpoint_encoder and torch.is_grad_enabled() else encode(encoder_input))
     if encoded.shape != target.shape:
         raise ValueError("Cycle latent shape mismatch")
     return ((encoded - target).square().flatten(1).mean(1) /
@@ -526,6 +540,7 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
     float_branch = method in FLOAT_METHODS
     joint_branch = method in ('natural_joint_finetune', 'natural_joint_quality_finetune')
     quality_weight = args.joint_quality_weight if method == 'natural_joint_quality_finetune' else 0.
+    low_memory_branch = method == 'natural_joint_quality_finetune'
     joint_names = set(select_names(vae, args.scope)) if joint_branch else set()
     gan_branch = method in ("natural_gan_qat", "natural_gan_finetune")
     spectral_weight = args.spectral_weight if method == "natural_spectral" else 0.
@@ -533,6 +548,21 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
                            learn_scale=method in ("rounding_scale", "natural_rounding_scale", "natural_qat_scale"),
                            learn_code_offsets=qat_branch) for k in names]).to(device)
     cycle_weight = args.cycle_weight if method == 'natural_residual_cycle_qat_warm' or joint_branch else 0.
+    if device.type == 'cuda':
+        torch.cuda.reset_peak_memory_stats(device)
+
+    def decoder_forward(call_weights, inputs):
+        if not low_memory_branch or not torch.is_grad_enabled():
+            return functional_call(vae.decoder, call_weights, (inputs,))
+        keys, values = tuple(call_weights), tuple(call_weights.values())
+        return checkpoint(lambda value, *parameters: functional_call(
+            vae.decoder, dict(zip(keys, parameters)), (value,)), inputs, *values,
+            use_reentrant=False)
+
+    def perceptual_forward(prediction, reference):
+        operation = lambda pred, ref: perceptual(pred.clamp(0, 1) * 2 - 1, ref * 2 - 1).mean()
+        return (checkpoint(operation, prediction, reference, use_reentrant=False)
+                if low_memory_branch and torch.is_grad_enabled() else operation(prediction, reference))
     if method in ('natural_residual_qat_warm', 'natural_residual_cycle_qat_warm'):
         initialize_warm_codes(grids, names, warm_start, args.qat_max_code_shift)
     steering_layers = getattr(args, '_steering_layers', None) if method.startswith('natural_') and not float_branch else None
@@ -729,7 +759,7 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
                 train_evaluations += 1
                 train_image_forwards += len(indices)
             else:
-                raw = functional_call(vae.decoder, weights, (hidden,)) / 2 + .5
+                raw = decoder_forward(weights, hidden) / 2 + .5
             ref = torch.cat([train_ref[i] for i in indices]).to(device)
             image01(ref, "training reference")
             target_loss = F.mse_loss(raw, pseudo_target(ref, strength))
@@ -739,7 +769,7 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
             preserve = raw.new_zeros(()) if natural or block_branch else F.mse_loss(blur(raw), blur(ref))
             perceptual_loss = raw.new_zeros(())
             residual_loss = raw.new_zeros(())
-            cycle_loss = (latent_cycle_error(vae, raw, torch.cat([train_z[i] for i in indices]).to(device)).mean()
+            cycle_loss = (latent_cycle_error(vae, raw, torch.cat([train_z[i] for i in indices]).to(device), low_memory_branch).mean()
                           if cycle_weight else raw.new_zeros(()))
             trust_loss = raw.new_zeros(())
             spectrum = spectral_loss(raw, ref).mean() if spectral_weight else raw.new_zeros(())
@@ -756,19 +786,19 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
                 if joint_branch:
                     quant_weights = {name: finetune_quantized_weight(value) if name in joint_names else value
                                      for name, value in weights.items()}
-                    quant_raw = functional_call(vae.decoder, quant_weights, (hidden,)) / 2 + .5
+                    quant_raw = decoder_forward(quant_weights, hidden) / 2 + .5
                     joint_loss = F.mse_loss(quant_raw, ref)
                     if perceptual is not None:
-                        joint_loss = joint_loss + perceptual_weight * perceptual(quant_raw.clamp(0, 1) * 2 - 1, ref * 2 - 1).mean()
+                        joint_loss = joint_loss + perceptual_weight * perceptual_forward(quant_raw, ref)
                     if cycle_weight:
                         joint_loss = joint_loss + cycle_weight * latent_cycle_error(vae, quant_raw,
-                            torch.cat([train_z[i] for i in indices]).to(device)).mean()
+                            torch.cat([train_z[i] for i in indices]).to(device), low_memory_branch).mean()
                     train_image_forwards += len(indices)
                     train_evaluations += 1
                 if residual_branch:
                     residual_loss = residual.loss(raw - ref).mean()
                 if perceptual is not None:
-                    perceptual_loss = perceptual(raw.clamp(0, 1) * 2 - 1, ref * 2 - 1).mean()
+                    perceptual_loss = perceptual_forward(raw, ref)
                 if float_branch and args.ft_preserve_weight == 0 and budget is None and not quality_weight:
                     generated = preserve_hidden = None
                     preserve = raw.new_zeros(())
@@ -776,7 +806,7 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
                     js = [((step - 1) * args.train_batch_size + j) % len(preserve_data[0]) for j in range(args.train_batch_size)]
                     with torch.no_grad():
                         preserve_hidden = vae.post_quant_conv(torch.cat([preserve_data[0][j] for j in js]).to(device))
-                    generated = functional_call(vae.decoder, weights, (preserve_hidden,)) / 2 + .5
+                    generated = decoder_forward(weights, preserve_hidden) / 2 + .5
                     preserve_ref = image01(torch.cat([preserve_data[1][j] for j in js]).to(device), "preservation reference")
                     if args.natural_preservation == "lowpass" or (qat_branch and not residual_branch) or float_branch:
                         preserve = F.mse_loss(semantic_lowpass(generated), semantic_lowpass(preserve_ref))
@@ -789,7 +819,7 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
                         teacher_ref = torch.cat([teacher_targets['train'][j] for j in js]).to(device)
                         distillation = F.mse_loss(generated.clamp(0, 1), teacher_ref)
                     if joint_branch and (args.ft_preserve_weight or quality_weight):
-                        quant_generated = functional_call(vae.decoder, quant_weights, (preserve_hidden,)) / 2 + .5
+                        quant_generated = decoder_forward(quant_weights, preserve_hidden) / 2 + .5
                         joint_loss = joint_loss + args.ft_preserve_weight * F.mse_loss(
                             semantic_lowpass(quant_generated), semantic_lowpass(preserve_ref))
                         train_image_forwards += len(js)
@@ -947,6 +977,9 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
                 "joint_search_generated_images": len(rows) * len(search_z) if joint_branch else 0,
                 "joint_search_natural_images": len(rows) * len(natural_search[0]) if joint_branch else 0,
                 "joint_selection": "FP32 and W4 SEARCH quality gates; summed natural objectives" if joint_branch else None,
+                "activation_checkpointing": low_memory_branch,
+                "peak_cuda_allocated_gib": (torch.cuda.max_memory_allocated(device) / 2 ** 30
+                                             if device.type == 'cuda' else None),
                 "teacher_weight": args.teacher_weight if teacher_branch else 0.,
                 "teacher_search_image_forwards": len(rows) * len(search_z) if teacher_branch else 0,
                 "objective": "generated_teacher_distillation_plus_natural_reconstruction" if teacher_branch else ("natural_residual_projection" if residual_branch else ("quantization_constrained_natural_purification" if qat_branch else ("unpaired_natural_reconstruction" if natural else ("reconstruction" if method in ("reconstruction", "block_reconstruction") else "blind_smoothing_proxy")))),
@@ -1751,8 +1784,11 @@ def main():
             vae.decoder.load_state_dict(pristine)
             if "grids" in locals():
                 del grids
-            if args.device == "cuda":
-                torch.cuda.empty_cache()
+            # optimize_branch may fail with a live autograd graph. Explicitly clear
+            # every caller reference before held-out generation starts.
+            selected = branch_rows = warm_start = branch_residual = branch_residual_info = None
+            release_branch_memory(args.device)
+    release_branch_memory(args.device)
     plan = [branch for branch in declared_plan if branch["label"] in frozen_branches] + endpoint_plan
     manifest["declared_branches"] = declared_plan
     manifest["branch_failures"] = branch_failures
