@@ -1,1 +1,0 @@
-src/run_blind_suite.sh

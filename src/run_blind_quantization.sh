@@ -2,6 +2,20 @@
 set -Eeuo pipefail
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "$(readlink -f -- "${BASH_SOURCE[0]}")")" && pwd)"
+# One public launcher: no arguments run the declared suite (one seed, one
+# preservation weight). --direct forwards the remaining arguments to the
+# lower-level experiment for custom models and small diagnostic runs.
+if [[ "${1:-}" == "--direct" ]]; then
+  shift
+elif [[ "$#" == "0" || "${1:-}" == "--profile" || "${1:-}" == "--seeds" ||
+        "${1:-}" == "--preservation-weights" || "${1:-}" == "--plan-only" ||
+        "${1:-}" == "--root" || "${1:-}" == "--min-ssim" ||
+        "${1:-}" == "--quality-budgets" || "${1:-}" == "--" ||
+        "${1:-}" == "--help" || "${1:-}" == "-h" ]]; then
+  SUITE_PY="${WMQ_SUITE_PYTHON:-$(type -P python3 || type -P python || true)}"
+  [[ -n "$SUITE_PY" && -x "$SUITE_PY" ]] || { echo 'Python 3 is required to orchestrate the suite.' >&2; exit 1; }
+  exec "$SUITE_PY" "$SCRIPT_DIR/run_blind_suite.py" "$@"
+fi
 PROJECT_ROOT="$(cd -- "$SCRIPT_DIR/.." && pwd)"
 ATTACK_OUTPUT_ROOT="${WMQ_ATTACK_OUTPUT_ROOT:-$PROJECT_ROOT/output_attack}"
 HEAVY_ROOT="${WMQ_HEAVY_ROOT:-$PROJECT_ROOT/output_artifacts}"

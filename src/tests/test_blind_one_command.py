@@ -16,6 +16,9 @@ ROOT = Path(__file__).resolve().parents[1]
 class OneCommandTests(unittest.TestCase):
     def test_public_key_and_w4_owner_evaluation_are_wired_after_attack(self):
         source = (ROOT / "run_blind_quantization.sh").read_text(encoding="utf-8")
+        self.assertIn('run_blind_suite.py', source)
+        self.assertIn('"${1:-}" == "--direct"', source)
+        self.assertFalse((ROOT / "run_blind_suite.sh").exists())
         self.assertIn('prepare_blind_environment.py', source)
         self.assertIn('${WMQ_ENV_MODE:-auto}', source)
         self.assertIn('WMQ_EXPECTED_PREFIX', source)

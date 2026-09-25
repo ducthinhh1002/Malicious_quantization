@@ -1,5 +1,14 @@
 # Hướng dẫn chạy thí nghiệm malicious quantization cho watermark diffusion
 
+**Một launcher duy nhất:** `bash run_blind_quantization.sh` chạy suite mặc định
+`science` với đúng một seed `3407`, một preservation weight `0.5`, tự chuẩn bị
+môi trường/checkpoint/dữ liệu rồi đánh giá owner và tổng hợp CSV. Chọn profile bằng
+`bash run_blind_quantization.sh --profile transfer`; kiểm tra kế hoạch không chạy GPU
+bằng `bash run_blind_quantization.sh --plan-only`. Các flag của `wmq_blind.py`
+đi sau `--` trong suite, ví dụ `-- --train-batch-size 2`. Lệnh tùy chỉnh ở cấp
+thí nghiệm dùng `bash run_blind_quantization.sh --direct --model ...`.
+`run_blind_suite.py` vẫn là orchestrator nội bộ, không cần shell launcher thứ hai.
+
 `natural_joint_quality_finetune` dùng activation checkpointing cho bốn decoder
 forward và hai encoder-cycle forward trong mỗi update. Batch và số ảnh/step không
 đổi, nhưng backward sẽ tính lại activation nên chậm hơn để giảm peak VRAM. Selection
@@ -18,7 +27,7 @@ Hai warm-QAT không còn trong `transfer` vì chưa cải thiện run này; vẫ
 `science`/lệnh tường minh. Các mô tả transfer cũ bên dưới là cấu hình lịch sử.
 Xem [review và hướng cải tiến](survey/Review_20260923_171848_VI.md).
 
-**Thử nghiệm qua đêm:** `bash run_blind_suite.sh --profile transfer` hiện thêm
+**Thử nghiệm qua đêm:** `bash run_blind_quantization.sh --profile transfer` hiện thêm
 `natural_joint_finetune`: fine-tune decoder bằng cả reconstruction FP32 và W4,
 kèm cycle latent qua encoder cố định. Nhánh xuất riêng FP32 và
 `natural_joint_finetune_rtn_w4` rồi tự owner-evaluate cùng các đối chứng.
@@ -29,7 +38,7 @@ ghi nhận nếu không đạt quality gate. Chi tiết và ablation:
 [Joint FP32/W4 fine-tuning](survey/Joint_Finetune_VI.md).
 
 Nhánh thử nghiệm mới trong `transfer` và `science`: `natural_residual_cycle_qat_warm`.
-Chạy `bash run_blind_suite.sh --profile transfer` để so với warm-QAT cũ cùng W4,
+Chạy `bash run_blind_quantization.sh --profile transfer` để so với warm-QAT cũ cùng W4,
 2.000 bước và ngưỡng SSIM trung bình 0.80. Nhánh này khởi tạo từ cùng residual W4
 đã chọn trên SEARCH, thêm loss encode(decode(z)) khớp latent tự nhiên ban đầu.
 Encoder cố định, gradient truyền qua encoder về quantizer; không dùng key/extractor.
@@ -46,13 +55,13 @@ Xem phân tích tại [Cycle warm-QAT](survey/Cycle_Warm_QAT_VI.md).
 Chỉ cần chạy:
 
 ```bash
-bash run_blind_suite.sh
+bash run_blind_quantization.sh
 ```
 
 Mặc định tương đương:
 
 ```bash
-bash run_blind_suite.sh --profile science --seeds 3407 --preservation-weights 0.5
+bash run_blind_quantization.sh --profile science --seeds 3407 --preservation-weights 0.5
 ```
 
 Mặc định mới là một run W4 với đầy đủ đối chứng khoa học, thay cho ba mức
@@ -69,8 +78,8 @@ Mặc định research/science hiện là **2.000 update/nhánh**, gồm roundin
 và fine-tune; tập natural TRAIN vẫn là **4.000 ảnh**, batch 4. Nhánh mới
 `natural_teacher_rounding` dùng checkpoint FP32 đã chọn bằng SEARCH làm teacher,
 rồi học rounding trên trọng số fingerprint gốc. Teacher được dùng chung với
-đối chứng FP32, không train thêm một lần. Chạy `bash run_blind_suite.sh` hoặc
-`bash run_blind_quantization.sh` sẽ tự bao gồm nhánh này và owner evaluation.
+đối chứng FP32, không train thêm một lần. `bash run_blind_quantization.sh`
+tự bao gồm nhánh này và owner evaluation.
 Profile `pilot` vẫn có ngân sách nhỏ để kiểm tra nhanh.
 
 Tất cả profile mặc định chỉ chạy **W4** cho các nhánh lượng tử hóa. W8 vẫn có
@@ -81,7 +90,7 @@ Teacher và đối chứng FP32 vẫn cần cho thí nghiệm. Các script legac
 Để kiểm tra teacher → quantizer trước khi chạy bộ ablation lớn:
 
 ```bash
-bash run_blind_suite.sh --profile transfer
+bash run_blind_quantization.sh --profile transfer
 ```
 
 Profile này giữ các đối chứng fixed W4, reconstruction W4, natural rounding,
@@ -107,8 +116,9 @@ quay; kết quả của nó cần đo thực nghiệm, không giả định sẽ
 
 Toàn bộ source chuẩn nằm trong `src/`, gồm launcher, Python module, test, prompt và
 requirements. Có thể chọn trực tiếp folder `src/` để đưa cho LLM khác review. Các
-file `run_*.sh` và `requirements-*.txt` ở root chỉ là symlink tương thích với lệnh
-cũ, không chứa bản sao code.
+`run_blind_quantization.sh` ở root là wrapper ngắn chuyển nguyên tham số vào
+`src/`; các launcher khác ở root có thể là symlink tương thích. Không có bản sao
+logic chạy thí nghiệm.
 
 Sau owner evaluation, mỗi run có thêm `result/`: các report JSON/CSV/JSONL ở cấp
 run, toàn bộ `tradeoff/`, cùng selection/calibration gọn của từng branch. Checkpoint,
@@ -139,7 +149,7 @@ không thay đổi model với policy này; SSIM 0.821 vẫn không đạt ngư�
 Để chạy một mức bảo toàn 0.5 với ngưỡng SSIM 0.85:
 
 ```bash
-bash run_blind_suite.sh --seeds 3407 --preservation-weights 0.5 --min-ssim 0.85
+bash run_blind_quantization.sh --seeds 3407 --preservation-weights 0.5 --min-ssim 0.85
 ```
 
 Suite khai báo trước một run. Khi truyền nhiều mức bằng `--preservation-weights`,
@@ -158,7 +168,7 @@ hoặc dự báo trực tiếp SSIM. Nếu có đủ layer với owner dot âm �
 `owner_informed_steering_plan.json` cho thí nghiệm development riêng:
 
 ```bash
-bash run_blind_quantization.sh --bits 4 \
+bash run_blind_quantization.sh --direct --bits 4 \
   --owner-informed-steering-plan output_attack/TEN_RUN/tradeoff/owner_informed_steering_plan.json
 ```
 
@@ -185,7 +195,7 @@ AdamW, warmup/cosine và LR fine-tune 5e-4. Các nhánh natural lượng tử h�
 cùng low-pass preservation để so residual bật/tắt. Ngân sách lớn hơn pilot
 32 ảnh/100 update; đây không phải bảo đảm attack thành công. Flag CLI ghi sau
 vẫn override profile, ví dụ `--train-batch-size 1` khi thiếu VRAM.
-`WMQ_PROFILE=pilot bash run_blind_quantization.sh` giữ cấu hình thử nhỏ cũ.
+`bash run_blind_quantization.sh --profile pilot` dùng cấu hình thử nhỏ.
 
 Mỗi run gồm RTN, reconstruction chung/theo block, natural rounding có/không scale,
 residual bật/tắt, QAT có/không scale, spectral reconstruction, GAN QAT và hai control
@@ -206,16 +216,16 @@ evaluator loại ảnh train/search theo hash và báo empirical FPR cùng Wilso
 Đây là FPR trên ảnh natural được khai báo không watermark, không thay cho mọi null
 distribution. Đặt `WMQ_NEGATIVE_N=0` để bỏ hoặc `WMQ_NEGATIVE_IMAGES=/path` để dùng pool khác.
 
-Để chạy ba mức preservation weight với cùng seed và gom kết quả:
+Để chạy một mức preservation weight 0.5 với seed 3407 và gom kết quả:
 
 ```bash
-bash run_blind_suite.sh
+bash run_blind_quantization.sh
 ```
 
-Suite mặc định dùng seed 3407, preservation weight 0.5/2/8, ngưỡng SSIM 0.8,
-W4 và cùng budget theo profile `focused`. Xem
+Suite mặc định dùng một seed 3407, preservation weight 0.5, ngưỡng SSIM 0.8,
+W4 và profile `science`. Truyền nhiều giá trị `--preservation-weights` nếu chủ ý sweep. Xem
 `output_attack/run_*/suite_results.csv`, `suite_status.json` và log từng seed.
-Một run lỗi không ngăn các seed còn lại. `bash run_blind_suite.sh --plan-only` tạo
+Một run lỗi không ngăn các seed còn lại. `bash run_blind_quantization.sh --plan-only` tạo
 folder `plan_*`, ghi `execution_mode=plan_only`, `suite_status=not_executed`
 và không tải/chạy model. Folder này không chứa kết quả thực nghiệm. Các nhánh GAN có thêm discriminator compute, nên
 cùng số update chưa có nghĩa cùng FLOPs; báo cả forward counts và thời gian.
@@ -273,10 +283,10 @@ số số học nhỏ so với chạy từng ảnh, không cam kết giống t�
 bash run_blind_quantization.sh
 
 # Toàn bộ 24 branch dùng cho ablation đầy đủ
-WMQ_METHOD_SET=full bash run_blind_quantization.sh
+WMQ_METHOD_SET=full bash run_blind_quantization.sh --direct
 
 # Chế độ đối chiếu từng ảnh, không cache GPU
-WMQ_OWNER_BATCH_SIZE=1 bash run_blind_quantization.sh \
+WMQ_OWNER_BATCH_SIZE=1 bash run_blind_quantization.sh --direct \
   --gen-batch-size 1 --eval-batch-size 1 --data-cache cpu --log-every 1
 ```
 
@@ -303,10 +313,10 @@ Chưa benchmark toàn bộ suite trên H200 nên chưa có hệ số tăng tốc
 bash run_blind_quantization.sh
 
 # Dùng ảnh natural của bạn thay cho pool COCO tự tải
-bash run_blind_quantization.sh --natural-images /data/natural_images
+bash run_blind_quantization.sh --direct --natural-images /data/natural_images
 
 # Chỉ chạy model-only nghiêm ngặt, không dùng ảnh/mạng perceptual bên ngoài để học
-WMQ_MODEL_ONLY=1 bash run_blind_quantization.sh
+WMQ_MODEL_ONLY=1 bash run_blind_quantization.sh --direct
 ```
 
 Thư mục natural chứa PNG/JPG/JPEG/WebP/BMP không watermark từ nguồn bạn chọn;
@@ -368,7 +378,7 @@ Lệnh mặc định là `bash run_blind_quantization.sh` với profile research
 Ví dụ chủ động chọn lại cấu hình nhỏ để đối chiếu run cũ:
 
 ```bash
-WMQ_PROFILE=pilot bash run_blind_quantization.sh --natural-train-n 256 --natural-search-n 64 \
+WMQ_PROFILE=pilot bash run_blind_quantization.sh --direct --natural-train-n 256 --natural-search-n 64 \
   --steps 200 --qat-steps 1000 --ft-steps 1000 --eval-every 50
 ```
 
@@ -978,7 +988,7 @@ Lệnh mặc định đầy đủ là `bash run_blind_quantization.sh`. Ví dụ
 tùy chỉnh W4 trên model riêng, vì vậy phải cấp key đúng của model đó:
 
 ```bash
-SS_KEY="<48-bit-key-cua-model>" bash run_blind_quantization.sh \
+SS_KEY="<48-bit-key-cua-model>" bash run_blind_quantization.sh --direct \
   --model "$PWD/output_artifacts/models/marked_sd21" --prompts "$PWD/prompt.txt" \
   --output "$PWD/output_attack/blind_w4_seed3407" \
   --bits 4 --clips 1.0 --steps 100 --eval-every 10 --strength 0.25
@@ -987,7 +997,7 @@ SS_KEY="<48-bit-key-cua-model>" bash run_blind_quantization.sh \
 Chạy smoke trước (cần sáu prompt khác nhau):
 
 ```bash
-bash run_blind_quantization.sh --train-n 2 --search-n 2 --test-n 2 \
+bash run_blind_quantization.sh --direct --train-n 2 --search-n 2 --test-n 2 \
   --bits 4 --clips 1.0 --steps 2 --eval-every 1 --profile-n 1
 ```
 
