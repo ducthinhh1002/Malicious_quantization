@@ -1,0 +1,146 @@
+import tempfile
+import importlib.util
+import unittest
+from pathlib import Path
+from types import SimpleNamespace
+
+import numpy as np
+import torch
+from torch import nn
+from torch.utils.checkpoint import checkpoint
+
+from wmq_sleepermark import (attach, detach, switch, snapshot, restore, selected_weights,
+                            noise_target, state_hash, train_branch, METHODS)
+from wmq_fid import feature_fid
+
+torch.set_num_threads(2)
+
+
+class TinyUNet(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.up_blocks = nn.ModuleList([nn.ModuleDict({'attentions': nn.Linear(8, 8)})])
+        self.other = nn.Linear(8, 8)
+        self.checkpointing = False
+
+    def enable_gradient_checkpointing(self):
+        self.checkpointing = True
+
+    def disable_gradient_checkpointing(self):
+        self.checkpointing = False
+
+    def forward(self, x, t=None, encoder_hidden_states=None):
+        layer = self.up_blocks[0]['attentions']
+        y = checkpoint(layer, x, use_reentrant=False) if self.checkpointing else layer(x)
+        return SimpleNamespace(sample=self.other(y))
+
+
+class SleeperMarkTests(unittest.TestCase):
+    def setUp(self):
+        torch.manual_seed(17)
+        self.unet = TinyUNet().requires_grad_(False)
+        self.names = selected_weights(self.unet, 'up_attentions')
+
+    def test_real_weight_change_export_and_exact_restoration(self):
+        original_hash = state_hash(self.unet)
+        original = snapshot(self.unet, self.names)
+        controls = attach(self.unet, self.names)
+        changed = snapshot(self.unet, self.names)
+        self.assertFalse(torch.equal(changed[self.names[0]], original[self.names[0]]))
+        switch(controls, enabled=False)
+        self.assertTrue(torch.equal(snapshot(self.unet, self.names)[self.names[0]], original[self.names[0]]))
+        detach(controls)
+        self.assertEqual(state_hash(self.unet), original_hash)
+        restore(self.unet, changed)
+        self.assertNotEqual(state_hash(self.unet), original_hash)
+
+    def test_all_training_modes_change_only_selected_unet_weights(self):
+        scheduler = SimpleNamespace(config=SimpleNamespace(num_train_timesteps=10, prediction_type='epsilon'),
+                                    add_noise=lambda z, noise, t: z + noise)
+        data = [(torch.randn(1, 8), torch.randn(1, 8)) for _ in range(3)]
+        args = SimpleNamespace(ft_lr=.01, lr=.01, seed=5, steps=3, train_batch_size=1,
+                               preserve_weight=.5, log_every=3)
+        before = state_hash(self.unet)
+        with tempfile.TemporaryDirectory() as tmp:
+            for method in METHODS:
+                result = train_branch(SimpleNamespace(unet=self.unet), scheduler, data,
+                                      self.names, method, args, Path(tmp))
+                self.assertEqual(before, state_hash(self.unet))
+                for label, state in result.items():
+                    self.assertEqual(set(state), set(self.names))
+                    self.assertFalse(torch.equal(state[self.names[0]], self.unet.get_parameter(self.names[0])))
+
+    def test_checkpoint_gradient_matches_without_checkpoint(self):
+        x = torch.randn(2, 8)
+        controls = attach(self.unet, self.names, finetune=True)
+        parameter = controls[0][2].weight
+        for quantized in (False, True):
+            switch(controls, quantized=quantized)
+            grads = []
+            for enabled in (False, True):
+                self.unet.checkpointing = enabled
+                parameter.grad = None
+                self.unet(x).sample.square().sum().backward()
+                grads.append(parameter.grad.clone())
+            torch.testing.assert_close(*grads)
+            self.assertGreater(float(grads[0].abs().sum()), 0)
+        detach(controls)
+
+    def test_noise_targets(self):
+        z, noise, t = torch.randn(2, 3), torch.randn(2, 3), torch.tensor([1, 2])
+        scheduler = SimpleNamespace(config=SimpleNamespace(prediction_type='epsilon'),
+                                    get_velocity=lambda z, n, t: z - n)
+        self.assertIs(noise_target(scheduler, z, noise, t), noise)
+        scheduler.config.prediction_type = 'v_prediction'
+        torch.testing.assert_close(noise_target(scheduler, z, noise, t), z-noise)
+        scheduler.config.prediction_type = 'sample'
+        self.assertIs(noise_target(scheduler, z, noise, t), z)
+        scheduler.config.prediction_type = 'bad'
+        with self.assertRaises(ValueError):
+            noise_target(scheduler, z, noise, t)
+
+    @unittest.skipUnless(importlib.util.find_spec('diffusers'), 'Optional real diffusers CPU integration')
+    def test_diffusers_unet_checkpointed_training(self):
+        from diffusers import UNet2DConditionModel, DDPMScheduler
+        unet = UNet2DConditionModel(sample_size=8, in_channels=4, out_channels=4,
+            down_block_types=('CrossAttnDownBlock2D', 'DownBlock2D'),
+            up_block_types=('UpBlock2D', 'CrossAttnUpBlock2D'), block_out_channels=(16, 32),
+            layers_per_block=1, norm_num_groups=8, cross_attention_dim=8, attention_head_dim=4)
+        unet.requires_grad_(False)
+        names = selected_weights(unet, 'up_attentions')
+        before = state_hash(unet)
+        original = snapshot(unet, names)
+        data = [(torch.randn(1, 4, 8, 8), torch.randn(1, 2, 8))]
+        args = SimpleNamespace(ft_lr=.001, lr=.01, seed=5, steps=2, train_batch_size=1,
+                               preserve_weight=.5, log_every=2)
+        with tempfile.TemporaryDirectory() as tmp:
+            for method in ('natural_rounding', 'natural_joint_finetune'):
+                result = train_branch(SimpleNamespace(unet=unet), DDPMScheduler(num_train_timesteps=10),
+                                      data, names, method, args, Path(tmp))
+                self.assertEqual(before, state_hash(unet))
+                exported = result[method + '_w4']
+                restore(unet, exported)
+                self.assertNotEqual(before, state_hash(unet))
+                restore(unet, original)
+
+    def test_fid_exact_low_rank_and_translation(self):
+        rng = np.random.default_rng(1)
+        a, b = rng.normal(size=(5, 20)), rng.normal(size=(7, 20))
+        self.assertAlmostEqual(feature_fid(a, a), 0, places=10)
+        self.assertAlmostEqual(feature_fid(a, a + .5), 5., places=10)
+        self.assertAlmostEqual(feature_fid(a, b), feature_fid(b, a), places=10)
+        # PSD sandwich form, independently calculated in feature space.
+        ca, cb = np.cov(a, rowvar=False), np.cov(b, rowvar=False)
+        vals, vectors = np.linalg.eigh(ca)
+        root = (vectors * np.sqrt(vals.clip(0))) @ vectors.T
+        cross = np.sqrt(np.linalg.eigvalsh(root @ cb @ root).clip(0)).sum()
+        expected = ((a.mean(0)-b.mean(0))**2).sum() + np.trace(ca+cb) - 2*cross
+        self.assertAlmostEqual(feature_fid(a, b), expected, places=5)
+        with self.assertRaises(ValueError):
+            feature_fid(a[:1], b)
+        with self.assertRaises(ValueError):
+            feature_fid(a * np.nan, b)
+
+
+if __name__ == '__main__':
+    unittest.main()

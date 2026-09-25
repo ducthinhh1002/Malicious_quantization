@@ -74,6 +74,13 @@ export PATH="$(dirname -- "$PY"):$PATH"
 export PYTORCH_CUDA_ALLOC_CONF="${PYTORCH_CUDA_ALLOC_CONF:-expandable_segments:True}"
 echo "Using Python: $PY"
 
+# SleeperMark uses its own UNet engine, after the shared dependency bootstrap.
+if [[ "${1:-}" == "--watermark" ]]; then
+  [[ "${2:-}" == "sleepermark" ]] || { echo 'Supported explicit watermark: sleepermark' >&2; exit 2; }
+  shift 2
+  exec "$PY" "$SCRIPT_DIR/wmq_sleepermark.py" "$@"
+fi
+
 if [[ "${1:-}" == "--help" || "${1:-}" == "-h" ]]; then
   exec "$PY" "$SCRIPT_DIR/wmq_blind.py" "$@"
 fi
@@ -266,6 +273,14 @@ if [[ -n "$NEGATIVE_IMAGES" && "$NEGATIVE_N" != "0" ]]; then
   evaluation+=(--negative-images "$NEGATIVE_IMAGES" --negative-limit "$NEGATIVE_N")
 fi
 "${evaluation[@]}"
+
+if [[ "${WMQ_EVAL_FID:-1}" == "1" ]]; then
+  fid_args=(--run "$ATTACK_OUTPUT" --batch-size "${WMQ_FID_BATCH_SIZE:-16}")
+  if [[ -n "${WMQ_FID_REAL_REFERENCE:-}" ]]; then fid_args+=(--real-reference "$WMQ_FID_REAL_REFERENCE"); fi
+  if ! "$PY" "$SCRIPT_DIR/wmq_fid.py" "${fid_args[@]}"; then
+    echo "WARNING: FID failed; see fid_error.json. Owner results are retained. Retry src/wmq_fid.py separately." >&2
+  fi
+fi
 
 "$PY" - "$ATTACK_OUTPUT/owner_evaluation.json" <<'PY'
 import json, sys

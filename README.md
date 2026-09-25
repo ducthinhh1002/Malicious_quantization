@@ -1,5 +1,50 @@
 # Hướng dẫn chạy thí nghiệm malicious quantization cho watermark diffusion
 
+**Mới: SleeperMark — can thiệp trực tiếp UNet và tự đánh giá watermark/FID:**
+
+```bash
+bash run_blind_quantization.sh --watermark sleepermark
+```
+
+Lệnh tự chuẩn bị môi trường, tải UNet SleeperMark chính thức và backbone SD1.4,
+chạy 5 phương pháp W4 (kèm đối chứng FP32 cho fine-tune), rồi đánh giá prompt có
+trigger và prompt thường. Mặc định seed 3407, 2.000 bước, batch train 1,
+256 ảnh calibration mỗi hướng, 100 prompt test. Scope mặc định là các ma trận
+attention ở UNet up-blocks; `--scope all` mở rộng sang tất cả ma trận UNet và tốn
+thêm bộ nhớ. VAE/text encoder được giữ nguyên và kiểm tra hash.
+
+Thử luồng ngắn trước khi treo máy:
+
+```bash
+bash run_blind_quantization.sh --watermark sleepermark --steps 2 --train-n 2 --test-n 2
+```
+
+Xem [protocol và giới hạn SleeperMark/FID](survey/SleeperMark_UNet_FID.md).
+Các nhánh mới chưa có kết quả attack trên GPU; không suy ra hiệu quả từ việc chạy được.
+
+**FID cho cả Stable Signature:** các lần chạy mới tự ghi `fid.csv`/`fid.json`
+sau owner evaluation. Mặc định là **FID tới output model fingerprint ban đầu**,
+đo độ lệch phân phối; không phải FID tới ảnh thật. Để thêm FID tới tập ảnh thật
+held-out riêng, đặt `WMQ_FID_REAL_REFERENCE=/path/to/real_test_images` cho Stable
+Signature, hoặc `--fid-real-reference /path/to/real_test_images` cho SleeperMark.
+Không dùng ảnh natural TRAIN làm tập tham chiếu để tuyên bố khả năng tổng quát.
+SleeperMark còn ghi `ordinary_fid.csv` cho prompt thường; `fid.csv` là prompt trigger.
+JSON/CSV ở `output_attack`, ảnh/checkpoint/cache ở `output_artifacts`.
+
+FID với 100 ảnh chỉ là chẩn đoán, có cờ `small_sample_warning`; không so trực tiếp
+với FID 30k của paper. SleeperMark chỉ **báo cáo** chất lượng, không loại checkpoint
+vì SSIM. Hướng Stable Signature giữ nguyên quality policy đã cấu hình; thêm FID
+không tự ý thay đổi policy hay chọn checkpoint bằng TEST. Có thể tính lại FID
+cho output cũ nếu vẫn còn ảnh tại đường dẫn trong manifest:
+
+```bash
+conda run -n wmq python src/wmq_fid.py --run output_attack/<run>
+```
+
+`WMQ_EVAL_FID=0` tắt FID ở Stable Signature; `--skip-fid` tắt ở SleeperMark.
+Nếu FID lỗi tải mạng, kết quả owner vẫn được giữ; xem `fid_error.json` và dùng
+lệnh tính lại ở trên. Với ảnh SleeperMark không trigger, thêm `--ordinary`.
+
 **Một launcher duy nhất:** `bash run_blind_quantization.sh` chạy suite mặc định
 `science` với đúng một seed `3407`, một preservation weight `0.5`, tự chuẩn bị
 môi trường/checkpoint/dữ liệu rồi đánh giá owner và tổng hợp CSV. Chọn profile bằng

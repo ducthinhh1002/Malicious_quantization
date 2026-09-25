@@ -47,7 +47,7 @@ def install_dependencies(requirements):
     subprocess.run([sys.executable, "-m", "pip", "check"], check=True)
     # Fresh process is important after replacing packages; this does not download models.
     subprocess.run([sys.executable, "-c", "\n".join([
-        "import torch, torchvision, diffusers, transformers, safetensors, PIL, scipy, numpy, lpips, peft, accelerate, ftfy",
+        "import torch, torchvision, diffusers, transformers, safetensors, PIL, scipy, numpy, lpips, peft, accelerate, ftfy, cleanfid, gdown",
         "from diffusers import StableDiffusionPipeline, AutoencoderKL, DDIMScheduler",
         "from transformers import CLIPTextModel, CLIPTokenizer",
         "torchvision.ops.nms(torch.tensor([[0.,0.,1.,1.]]), torch.tensor([1.]), .5)",
