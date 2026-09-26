@@ -8,6 +8,7 @@ import hashlib
 import json
 import os
 import string
+import time
 from datetime import datetime
 from pathlib import Path
 
@@ -21,7 +22,8 @@ from PIL import Image, ImageOps
 from wmq_blind import RoundingGrid, finetune_quantized_weight, pair_metrics, save_json, save_csv, release_branch_memory
 from prepare_sleepermark import prepare, load_extractor, digest
 
-CFG_METHODS = ('cfg_reconstruction', 'prefix_consistency_qat')
+EQUIV_METHODS = ('equivariance_qat', 'adversarial_equivariance_qat')
+CFG_METHODS = ('cfg_reconstruction', 'prefix_consistency_qat') + EQUIV_METHODS
 METHODS = ('fixed_ptq', 'model_reconstruction', 'natural_rounding', 'natural_finetune', 'natural_joint_finetune') + CFG_METHODS
 
 
@@ -112,7 +114,7 @@ def restore(unet, state):
 @torch.no_grad()
 def encode_text(pipe, prompts):
     ids = pipe.tokenizer(prompts, padding='max_length', truncation=True,
-                         max_length=pipe.tokenizer.model_max_length, return_tensors='pt').input_ids.cuda()
+                         max_length=pipe.tokenizer.model_max_length, return_tensors='pt').input_ids.to(next(pipe.text_encoder.parameters()).device)
     return pipe.text_encoder(ids)[0]
 
 
@@ -135,18 +137,37 @@ def train_branch(pipe, scheduler, dataset, names, method, args, output):
     pipe.unet.enable_gradient_checkpointing()
     rng = torch.Generator(device=device).manual_seed(args.seed)
     order = np.random.default_rng(args.seed)
+    auxiliary_order = np.random.default_rng(args.seed + 7919)
     rows = []
     cfg = method in CFG_METHODS
+    equiv = method in EQUIV_METHODS
     empty = encode_text(pipe, ['']).detach() if cfg else None
+    trajectory = cfg and bool(dataset) and len(dataset[0]) == 4
+    late_indices = ([i for i, item in enumerate(dataset)
+                     if item[3] <= args.late_fraction * scheduler.config.num_train_timesteps] if equiv and trajectory else [])
+    if equiv and (not trajectory or not late_indices):
+        detach(modules)
+        pipe.unet.disable_gradient_checkpointing()
+        pipe.unet.eval()
+        raise ValueError('Spatial QAT requires trajectory calibration with late-timestep records')
     count = 0 if method == 'fixed_ptq' else args.steps
+    started = time.perf_counter()
+    forward_calls = [0]
+    def count_forward(module, inputs):
+        forward_calls[0] += 1
+    counter = pipe.unet.register_forward_pre_hook(count_forward)
     try:
         for step in range(count):
             indices = order.integers(len(dataset), size=args.train_batch_size)
             z = torch.cat([dataset[i][0] for i in indices]).to(device)
             condition = torch.cat([dataset[i][1] for i in indices]).to(device)
-            noise = torch.randn(z.shape, device=z.device, generator=rng)
-            t = torch.randint(scheduler.config.num_train_timesteps, (len(z),), device=z.device, generator=rng)
-            noisy = scheduler.add_noise(z, noise, t)
+            if trajectory:
+                noisy = z
+                t = torch.tensor([dataset[i][3] for i in indices], device=device, dtype=torch.long)
+            else:
+                noise = torch.randn(z.shape, device=z.device, generator=rng)
+                t = torch.randint(scheduler.config.num_train_timesteps, (len(z),), device=z.device, generator=rng)
+                noisy = scheduler.add_noise(z, noise, t)
             switch(modules, enabled=False)
             with torch.no_grad():
                 marked = pipe.unet(noisy, t, encoder_hidden_states=condition).sample.detach()
@@ -164,6 +185,31 @@ def train_branch(pipe, scheduler, dataset, names, method, args, output):
                 ordinary_loss.backward()
                 del pred_u, pred_c
                 losses = [ordinary_loss.detach()]
+                spatial_metrics = {}
+                if equiv and args.spatial_weight > 0 and step / max(count, 1) > .1:
+                    from wmq_sleeper_equivariance import probe_condition, spatial_target, predicted_x0
+                    # Extra late-time batch; ordinary CFG loss above still covers the full trajectory.
+                    late = auxiliary_order.choice(late_indices, size=args.train_batch_size)
+                    late_z = torch.cat([dataset[i][0] for i in late]).to(device)
+                    late_t = torch.tensor([dataset[i][3] for i in late], device=device, dtype=torch.long)
+                    context = torch.cat([dataset[i][1] for i in late]).to(device)
+                    shift = tuple(int(a * b) for a, b in zip(auxiliary_order.choice([-1, 1], size=2),
+                        auxiliary_order.integers(1, args.spatial_shift + 1, size=2)))
+                    switch(modules, enabled=False)
+                    ramp = max(0., min(1., (step / max(count, 1) - .1) / .2))
+                    if method == 'adversarial_equivariance_qat' and step % args.probe_every == 0 and ramp > 0:
+                        context, spatial_metrics = probe_condition(pipe.unet, late_z, late_t, context,
+                            shift, scheduler, args.probe_radius, args.probe_steps, args.probe_tokens, rng)
+                    target_x0, diagnostics = spatial_target(pipe.unet, late_z, late_t, context,
+                        shift, scheduler, args.max_spatial_correction)
+                    spatial_metrics.update(diagnostics)
+                    switch(modules)
+                    prediction = pipe.unet(late_z, late_t, encoder_hidden_states=context).sample
+                    student_x0 = predicted_x0(prediction, late_z, late_t, scheduler)
+                    spatial_loss = args.spatial_weight * ramp * F.mse_loss(student_x0, target_x0)
+                    spatial_loss.backward()
+                    losses.append(spatial_loss.detach())
+                    del student_x0, prediction, target_x0
                 if method == 'prefix_consistency_qat':
                     # Sample from punctuation alphabet, independent of owner assets.
                     prefixes = [''.join(order.choice(list(string.punctuation), size=int(order.integers(1, 9))))
@@ -179,7 +225,11 @@ def train_branch(pipe, scheduler, dataset, names, method, args, output):
                 if (step + 1) % args.log_every == 0 or step + 1 == count:
                     row = {'method': method, 'step': step + 1,
                            'ordinary_cfg_loss': float(losses[0]),
-                           'prefix_loss': float(losses[1]) if len(losses) > 1 else 0.}
+                           'auxiliary_loss': float(losses[1]) if len(losses) > 1 else 0.,
+                           'elapsed_seconds': time.perf_counter() - started,
+                           'logical_unet_forwards': forward_calls[0],
+                           'peak_allocated_gib': torch.cuda.max_memory_allocated() / 2**30 if device.type == 'cuda' else 0.,
+                           **{k: float(v) for k, v in spatial_metrics.items()}}
                     rows.append(row)
                     save_csv(output / f'{method}_training.csv', rows)
                     print(row, flush=True)
@@ -215,6 +265,7 @@ def train_branch(pipe, scheduler, dataset, names, method, args, output):
             result[method + '_fp32'] = snapshot(pipe.unet, names)
         return result
     finally:
+        counter.remove()
         detach(modules)
         pipe.unet.disable_gradient_checkpointing()
         pipe.unet.eval()
@@ -254,12 +305,23 @@ def owner_scores(pipe, extractor, key, folder, fpr, seed):
             'bit_matches': counts}
 
 
-def main():
+def parser():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('--steps', type=int, default=2000)
-    p.add_argument('--methods', nargs='+', choices=METHODS, default=['fixed_ptq', 'cfg_reconstruction', 'prefix_consistency_qat'])
+    p.add_argument('--methods', nargs='+', choices=METHODS,
+                   default=['fixed_ptq', 'cfg_reconstruction', *EQUIV_METHODS])
     p.add_argument('--quant-group-size', type=int, default=64, help='0 reproduces legacy channel quantization')
     p.add_argument('--prefix-weight', type=float, default=.25)
+    p.add_argument('--calibration-mode', choices=['trajectory', 'renoised'], default='trajectory')
+    p.add_argument('--trajectory-points', type=int, default=8)
+    p.add_argument('--late-fraction', type=float, default=.35)
+    p.add_argument('--spatial-shift', type=int, default=4, help='Latent cells; used only during training')
+    p.add_argument('--spatial-weight', type=float, default=1.)
+    p.add_argument('--max-spatial-correction', type=float, default=.05, help='Per-sample RMS cap in x0 latent units')
+    p.add_argument('--probe-radius', type=float, default=.15, help='Relative L2 radius on selected context tokens')
+    p.add_argument('--probe-steps', type=int, default=2)
+    p.add_argument('--probe-every', type=int, default=4)
+    p.add_argument('--probe-tokens', type=int, default=4)
     p.add_argument('--scope', choices=['up_attentions', 'all'], default='up_attentions')
     p.add_argument('--train-n', type=int, default=256)
     p.add_argument('--test-n', type=int, default=100)
@@ -275,6 +337,13 @@ def main():
     p.add_argument('--prompts', type=Path, default=Path(__file__).with_name('prompt.txt'))
     p.add_argument('--fid-real-reference', type=Path)
     p.add_argument('--skip-fid', action='store_true')
+    p.add_argument('--report-min-ssim', type=float, default=.8, help='Report-only triggered-image quality threshold')
+    p.add_argument('--report-min-psnr', type=float, default=25., help='Report-only threshold; never stops training')
+    return p
+
+
+def main():
+    p = parser()
     args = p.parse_args()
     if min(args.steps, args.train_n, args.test_n, args.train_batch_size, args.log_every, args.inference_steps) < 1:
         p.error('Counts must be positive')
@@ -282,8 +351,17 @@ def main():
         p.error('Invalid FPR, learning rate or preservation weight')
     if args.quant_group_size < 0 or not np.isfinite(args.prefix_weight) or args.prefix_weight < 0:
         p.error('Invalid quantization group size or prefix weight')
+    if (min(args.trajectory_points, args.spatial_shift, args.probe_every, args.probe_tokens) < 1
+            or args.probe_steps < 0 or not 0 < args.late_fraction <= 1
+            or not all(np.isfinite(v) and v >= 0 for v in
+                       (args.spatial_weight, args.max_spatial_correction, args.probe_radius))):
+        p.error('Invalid spatial/probe calibration settings')
+    if any(m in EQUIV_METHODS for m in args.methods) and args.calibration_mode != 'trajectory':
+        p.error('Spatial QAT requires --calibration-mode trajectory')
     if len(set(args.methods)) != len(args.methods):
         p.error('Duplicate methods')
+    if not 0 <= args.report_min_ssim <= 1 or not np.isfinite(args.report_min_psnr):
+        p.error('Invalid report quality thresholds')
     if not torch.cuda.is_available():
         raise RuntimeError('SleeperMark experiment requires CUDA')
     from diffusers import StableDiffusionPipeline, UNet2DConditionModel, DDIMScheduler, DDPMScheduler
@@ -318,14 +396,26 @@ def main():
     shuffled = np.random.default_rng(args.seed).permutation(len(prompts))
     test_prompts = [prompts[i] for i in shuffled[:args.test_n]]
     train_prompts = [prompts[i] for i in shuffled[args.test_n:]]
-    model_data, natural_data = [], []
+    model_data, natural_data, trajectory_data = [], [], []
     if any(m in ('model_reconstruction', *CFG_METHODS) for m in args.methods):
         for i in range(args.train_n):
             prompt = train_prompts[i % len(train_prompts)]
-            with torch.no_grad():
-                latent = pipe(prompt, output_type='latent', num_inference_steps=args.inference_steps,
-                              guidance_scale=7.5, generator=torch.Generator(device='cuda').manual_seed(args.seed+i)).images
-                model_data.append((latent.cpu(), encode_text(pipe, [prompt]).cpu(), prompt))
+            from wmq_sleeper_equivariance import TrajectoryCapture
+            capture = (TrajectoryCapture(pipe.unet, args.inference_steps, args.trajectory_points)
+                       if args.calibration_mode == 'trajectory' and any(m in CFG_METHODS for m in args.methods) else None)
+            try:
+                with torch.no_grad():
+                    latent = pipe(prompt, output_type='latent', num_inference_steps=args.inference_steps,
+                                  guidance_scale=7.5, generator=torch.Generator(device='cuda').manual_seed(args.seed+i)).images
+                    condition = encode_text(pipe, [prompt]).cpu()
+                    model_data.append((latent.cpu(), condition, prompt))
+                    if capture is not None:
+                        if len(capture.records) != min(args.trajectory_points, args.inference_steps):
+                            raise RuntimeError('Incomplete inference trajectory capture')
+                        trajectory_data.extend((z, condition, prompt, t) for z, t in capture.records)
+            finally:
+                if capture is not None:
+                    capture.close()
             if (i+1) % 10 == 0:
                 print(f'Model-only latent calibration {i+1}/{args.train_n}', flush=True)
     natural_files = []
@@ -351,12 +441,17 @@ def main():
         'test_used_for_selection': False, 'owner_assets_used_for_training': False,
         'selection': 'Predeclared final step; no owner or test quality selection',
         'quality_policy': 'report_only; SSIM and FID never reject or choose checkpoints',
+        'triggered_quality_thresholds': {'ssim': args.report_min_ssim, 'psnr': args.report_min_psnr},
         'natural_conditioning': 'Empty text; unpaired public images, not paired reconstruction',
-        'cfg_calibration': 'CFG 7.5 plus unconditional reconstruction; forward-noised final latents, not inference trajectory',
+        'cfg_calibration': args.calibration_mode,
+        'trajectory_records': len(trajectory_data),
+        'trajectory_timesteps': sorted(set(record[3] for record in trajectory_data)),
+        'spatial_objective': 'Late-time aligned spatial teacher ensemble; bounded x0 highpass correction, not ownership oracle',
+        'probe_objective': 'Continuous context spatial-defect maximization; no trigger recovery claim',
         'prefix_calibration': 'TRAIN prompts with independently sampled punctuation; no owner trigger used',
         'quantization_group_size': args.quant_group_size,
         'precision': 'FP32 activations; W4 fake quantization only on selected matrices',
-        'training_timesteps': 'Uniform over DDPM training timesteps; native prediction_type target',
+        'training_timesteps': 'CFG: uniform cached trajectory records (or renoised legacy); spatial auxiliary: late records; natural: uniform DDPM',
         'train_prompts': train_prompts, 'test_prompts': test_prompts,
         'natural_train_files': natural_files, 'original_unet_sha256': original_hash,
         'frozen_components': frozen_hashes,
@@ -367,7 +462,9 @@ def main():
         torch.manual_seed(args.seed)
         torch.cuda.reset_peak_memory_stats()
         print(f'Training UNet method: {method}', flush=True)
-        states = train_branch(pipe, scheduler, model_data if method in ('model_reconstruction', *CFG_METHODS) else natural_data,
+        dataset = (trajectory_data if method in CFG_METHODS and args.calibration_mode == 'trajectory' else
+                   model_data if method in ('model_reconstruction', *CFG_METHODS) else natural_data)
+        states = train_branch(pipe, scheduler, dataset,
                               names, method, args, output)
         for label, state in states.items():
             changed = sum(not torch.equal(state[n], original[n]) for n in names)
@@ -408,16 +505,36 @@ def main():
         ordinary_owner = owner_scores(pipe, extractor, key, ordinary, args.fpr, args.seed)
         row['untriggered_detection_rate'] = ordinary_owner['tpr']
         quality = []
+        triggered_quality = []
         for i in range(args.test_n):
             filename = f'{i:06d}.png'
             psnr, ssim = pair_metrics(load_image(ordinary / filename).cuda(),
                                      load_image(images / 'marked_reference_test_ordinary' / filename).cuda())
             quality.append({'index': i, 'psnr': float(psnr[0]), 'ssim': float(ssim[0])})
+            p_trigger, s_trigger = pair_metrics(load_image(images / label / filename).cuda(),
+                load_image(images / 'marked_reference_test' / filename).cuda())
+            matches = row['bit_matches'][i]
+            upper, lower = row['threshold_upper_inclusive'], row['threshold_lower_inclusive']
+            base_matches = (rows[0] if rows else row)['bit_matches'][i]
+            baseline_detected = base_matches >= upper or base_matches <= lower
+            evaded = lower < matches < upper
+            quality_ok = float(p_trigger[0]) >= args.report_min_psnr and float(s_trigger[0]) >= args.report_min_ssim
+            triggered_quality.append({'index': i, 'psnr': float(p_trigger[0]), 'ssim': float(s_trigger[0]),
+                'bit_matches': matches, 'baseline_detected': baseline_detected, 'evaded': evaded,
+                'quality_pass': quality_ok, 'joint_success': baseline_detected and evaded and quality_ok})
         row.update(psnr=float(np.mean([r['psnr'] for r in quality])),
                    ssim=float(np.mean([r['ssim'] for r in quality])))
+        baseline_n = sum(r['baseline_detected'] for r in triggered_quality)
+        row.update(triggered_psnr=float(np.mean([r['psnr'] for r in triggered_quality])),
+                   triggered_ssim=float(np.mean([r['ssim'] for r in triggered_quality])),
+                   triggered_quality_pass_fraction=float(np.mean([r['quality_pass'] for r in triggered_quality])),
+                   evasion_rate=1-row['tpr'], baseline_detected_n=baseline_n,
+                   joint_success_count=sum(r['joint_success'] for r in triggered_quality),
+                   joint_success_rate=sum(r['joint_success'] for r in triggered_quality)/baseline_n if baseline_n else None)
         row['valid_clean_baseline'] = (row['tpr'] if not rows else rows[0]['tpr']) >= .9
         rows.append(row)
         save_json(output / f'{label}_quality.json', quality)
+        save_csv(output / f'{label}_triggered_quality.csv', triggered_quality)
         save_csv(output / 'watermark_retention.csv', rows)
         save_json(output / 'owner_evaluation.json', {'rows': rows, 'detector': 'double', 'total_fpr': args.fpr,
             'extractor_sha256': digest(extractor_path), 'secret_sha256': digest(key_path),

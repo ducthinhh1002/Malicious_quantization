@@ -11,7 +11,7 @@ from torch import nn
 from torch.utils.checkpoint import checkpoint
 
 from wmq_sleepermark import (attach, detach, switch, snapshot, restore, selected_weights,
-                            noise_target, state_hash, train_branch, METHODS)
+                            noise_target, state_hash, train_branch, METHODS, EQUIV_METHODS, parser)
 from wmq_fid import feature_fid
 
 torch.set_num_threads(2)
@@ -65,6 +65,8 @@ class SleeperMarkTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp, patch('wmq_sleepermark.encode_text',
                 side_effect=lambda pipe, prompts: torch.zeros(len(prompts), 1, 8)):
             for method in METHODS:
+                if method in EQUIV_METHODS:
+                    continue  # Spatial branches use a spatial UNet in the integration test below.
                 result = train_branch(SimpleNamespace(unet=self.unet), scheduler, data,
                                       self.names, method, args, Path(tmp))
                 self.assertEqual(before, state_hash(self.unet))
@@ -104,7 +106,7 @@ class SleeperMarkTests(unittest.TestCase):
     @unittest.skipUnless(importlib.util.find_spec('diffusers'), 'Optional real diffusers CPU integration')
     def test_diffusers_unet_checkpointed_training(self):
         from diffusers import UNet2DConditionModel, DDPMScheduler
-        unet = UNet2DConditionModel(sample_size=8, in_channels=4, out_channels=4,
+        unet = UNet2DConditionModel(sample_size=16, in_channels=4, out_channels=4,
             down_block_types=('CrossAttnDownBlock2D', 'DownBlock2D'),
             up_block_types=('UpBlock2D', 'CrossAttnUpBlock2D'), block_out_channels=(16, 32),
             layers_per_block=1, norm_num_groups=8, cross_attention_dim=8, attention_head_dim=4)
@@ -112,13 +114,15 @@ class SleeperMarkTests(unittest.TestCase):
         names = selected_weights(unet, 'up_attentions')
         before = state_hash(unet)
         original = snapshot(unet, names)
-        data = [(torch.randn(1, 4, 8, 8), torch.randn(1, 2, 8))]
-        args = SimpleNamespace(ft_lr=.001, lr=.01, seed=5, steps=2, train_batch_size=1,
-                               preserve_weight=.5, log_every=2)
-        with tempfile.TemporaryDirectory() as tmp:
-            for method in ('natural_rounding', 'natural_joint_finetune'):
+        data = [(torch.randn(1, 4, 16, 16), torch.randn(1, 3, 8), 'ordinary prompt')]
+        args = parser().parse_args(['--steps', '2', '--log-every', '2', '--spatial-shift', '1',
+                                    '--probe-every', '1', '--probe-steps', '1'])
+        with tempfile.TemporaryDirectory() as tmp, patch('wmq_sleepermark.encode_text',
+                side_effect=lambda pipe, prompts: torch.zeros(len(prompts), 3, 8)):
+            for method in ('natural_rounding', 'natural_joint_finetune', 'cfg_reconstruction', *EQUIV_METHODS):
+                dataset = [(*row, 1) for row in data] if method in ('cfg_reconstruction', *EQUIV_METHODS) else data
                 result = train_branch(SimpleNamespace(unet=unet), DDPMScheduler(num_train_timesteps=10),
-                                      data, names, method, args, Path(tmp))
+                                      dataset, names, method, args, Path(tmp))
                 self.assertEqual(before, state_hash(unet))
                 exported = result[method + '_w4']
                 restore(unet, exported)

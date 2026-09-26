@@ -2,7 +2,9 @@
 
 **Cập nhật mặc định:** bỏ `natural_joint_quality_finetune` khỏi profile `transfer` (giữ implementation).
 Thay bằng `natural_residual_qat_warm --warm-qat-mode centered_scale`: học mã W4 và scale từ residual, có phạt chất lượng.
-SleeperMark mặc định: `fixed_ptq`, `cfg_reconstruction`, `prefix_consistency_qat`, group W4=64.
+SleeperMark mặc định: `fixed_ptq`, `cfg_reconstruction`, `equivariance_qat`, `adversarial_equivariance_qat`, group W4=64.
+Calibration lấy latent trên trajectory thật; nhánh mới thử spatial consistency ở timestep thấp và tìm context khó bằng gradient.
+Xem [survey chi tiết, công thức và ablation](survey/SleeperMark_Spatial_QAT_Survey_VI.md).
 Đây là các thử nghiệm mới, **chưa có bằng chứng cải thiện watermark trên GPU**.
 Xem [kết quả SleeperMark và thiết kế mới](survey/Review_SleeperMark_WarmQAT_20260926.md).
 

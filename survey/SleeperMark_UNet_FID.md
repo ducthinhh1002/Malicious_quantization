@@ -1,5 +1,8 @@
 # SleeperMark: UNet W4 và đánh giá chất lượng phân phối
 
+**Cập nhật:** mặc định mới dùng calibration trajectory và hai nhánh spatial QAT.
+Xem [survey và thiết kế mới](SleeperMark_Spatial_QAT_Survey_VI.md); bảng nhánh bên dưới mô tả các nhánh legacy vẫn được giữ lại.
+
 Nguồn chính thức: [repo SleeperMark](https://github.com/taco-group/SleeperMark),
 [CVPR 2025 paper](https://openaccess.thecvf.com/content/CVPR2025/papers/Wang_SleeperMark_Towards_Robust_Watermark_against_Fine-Tuning_Text-to-image_Diffusion_Models_CVPR_2025_paper.pdf),
 [owner evaluation](https://github.com/taco-group/SleeperMark/blob/a78789cbac92ff5a63a2ad13885cf3893a3d9c4f/Stage2/eval.py),
