@@ -1,9 +1,10 @@
 # Hướng dẫn chạy thí nghiệm malicious quantization cho watermark diffusion
 
-**Sau run `20260926_021405`:** [đánh giá kết quả và W4 endpoint mới](survey/Review_20260926_021405_VI.md).
-Profile `transfer` giờ xuất thêm RTN W4 của bước cuối cho nhánh joint quality
-khi SEARCH chọn checkpoint sớm hơn bước cuối. Không thêm bước huấn luyện;
-artifact được đóng băng trước owner evaluation.
+**Cập nhật mặc định:** bỏ `natural_joint_quality_finetune` khỏi profile `transfer` (giữ implementation).
+Thay bằng `natural_residual_qat_warm --warm-qat-mode centered_scale`: học mã W4 và scale từ residual, có phạt chất lượng.
+SleeperMark mặc định: `fixed_ptq`, `cfg_reconstruction`, `prefix_consistency_qat`, group W4=64.
+Đây là các thử nghiệm mới, **chưa có bằng chứng cải thiện watermark trên GPU**.
+Xem [kết quả SleeperMark và thiết kế mới](survey/Review_SleeperMark_WarmQAT_20260926.md).
 
 **Chạy cả hai watermark bằng một lệnh:**
 

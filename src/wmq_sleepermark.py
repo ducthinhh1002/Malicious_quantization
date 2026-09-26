@@ -7,6 +7,7 @@ import argparse
 import hashlib
 import json
 import os
+import string
 from datetime import datetime
 from pathlib import Path
 
@@ -20,7 +21,8 @@ from PIL import Image, ImageOps
 from wmq_blind import RoundingGrid, finetune_quantized_weight, pair_metrics, save_json, save_csv, release_branch_memory
 from prepare_sleepermark import prepare, load_extractor, digest
 
-METHODS = ('fixed_ptq', 'model_reconstruction', 'natural_rounding', 'natural_finetune', 'natural_joint_finetune')
+CFG_METHODS = ('cfg_reconstruction', 'prefix_consistency_qat')
+METHODS = ('fixed_ptq', 'model_reconstruction', 'natural_rounding', 'natural_finetune', 'natural_joint_finetune') + CFG_METHODS
 
 
 def selected_weights(unet, scope):
@@ -51,30 +53,35 @@ def noise_target(scheduler, latent, noise, timestep):
 
 
 class QuantizedWeight(nn.Module):
-    def __init__(self, weight, finetune=False):
+    def __init__(self, weight, finetune=False, group_size=0):
         super().__init__()
         self.enabled = True
         self.quantized = True
         self.finetune = finetune
+        self.group_size = group_size
         if finetune:
             self.weight = nn.Parameter(weight.detach().clone())
         else:
-            self.grid = RoundingGrid(weight, 4, learn_scale=True)
+            from wmq_grouped_quant import GroupedW4
+            self.grid = GroupedW4(weight, group_size) if group_size else RoundingGrid(weight, 4, learn_scale=True)
 
     def forward(self, original):
         if not self.enabled:
             return original
         if self.finetune:
-            return finetune_quantized_weight(self.weight, 4) if self.quantized else self.weight
+            from wmq_grouped_quant import grouped_fake_quant
+            if not self.quantized:
+                return self.weight
+            return grouped_fake_quant(self.weight, self.group_size) if self.group_size else finetune_quantized_weight(self.weight, 4)
         return self.grid(self.training)
 
 
-def attach(unet, names, finetune=False):
+def attach(unet, names, finetune=False, group_size=0):
     modules = []
     for name in names:
         parent, leaf = name.rsplit('.', 1)
         module = unet.get_submodule(parent)
-        adapter = QuantizedWeight(getattr(module, leaf), finetune)
+        adapter = QuantizedWeight(getattr(module, leaf), finetune, group_size)
         parametrize.register_parametrization(module, leaf, adapter)
         modules.append((module, leaf, adapter))
     return modules
@@ -118,7 +125,7 @@ def load_image(path):
 def train_branch(pipe, scheduler, dataset, names, method, args, output):
     device = next(pipe.unet.parameters()).device
     is_finetune = method in ('natural_finetune', 'natural_joint_finetune')
-    modules = attach(pipe.unet, names, is_finetune)
+    modules = attach(pipe.unet, names, is_finetune, getattr(args, "quant_group_size", 0))
     params = [p for _, _, adapter in modules for p in adapter.parameters() if p.requires_grad]
     optimizer = torch.optim.AdamW(params, lr=args.ft_lr if is_finetune else args.lr,
                                  weight_decay=0, foreach=False)
@@ -129,6 +136,8 @@ def train_branch(pipe, scheduler, dataset, names, method, args, output):
     rng = torch.Generator(device=device).manual_seed(args.seed)
     order = np.random.default_rng(args.seed)
     rows = []
+    cfg = method in CFG_METHODS
+    empty = encode_text(pipe, ['']).detach() if cfg else None
     count = 0 if method == 'fixed_ptq' else args.steps
     try:
         for step in range(count):
@@ -141,6 +150,40 @@ def train_branch(pipe, scheduler, dataset, names, method, args, output):
             switch(modules, enabled=False)
             with torch.no_grad():
                 marked = pipe.unet(noisy, t, encoder_hidden_states=condition).sample.detach()
+            if cfg:
+                unconditional = empty.expand(len(z), -1, -1)
+                with torch.no_grad():
+                    ref_u = pipe.unet(noisy, t, encoder_hidden_states=unconditional).sample.detach()
+                    ref_cfg = ref_u + 7.5 * (marked - ref_u)
+                optimizer.zero_grad(set_to_none=True)
+                switch(modules)
+                pred_u = pipe.unet(noisy, t, encoder_hidden_states=unconditional).sample
+                pred_c = pipe.unet(noisy, t, encoder_hidden_states=condition).sample
+                ordinary_loss = F.mse_loss(pred_u + 7.5 * (pred_c - pred_u), ref_cfg) / 7.5**2
+                ordinary_loss = ordinary_loss + F.mse_loss(pred_u, ref_u)
+                ordinary_loss.backward()
+                del pred_u, pred_c
+                losses = [ordinary_loss.detach()]
+                if method == 'prefix_consistency_qat':
+                    # Sample from punctuation alphabet, independent of owner assets.
+                    prefixes = [''.join(order.choice(list(string.punctuation), size=int(order.integers(1, 9))))
+                                + ' ' + dataset[i][2] for i in indices]
+                    prefix_cond = encode_text(pipe, prefixes)
+                    pred = pipe.unet(noisy, t, encoder_hidden_states=prefix_cond).sample
+                    ramp = max(0., min(1., (step / max(count, 1) - .2) / .3))
+                    prefix_loss = args.prefix_weight * ramp * F.mse_loss(pred, marked)
+                    prefix_loss.backward()
+                    losses.append(prefix_loss.detach())
+                torch.nn.utils.clip_grad_norm_(params, 1., error_if_nonfinite=True)
+                optimizer.step()
+                if (step + 1) % args.log_every == 0 or step + 1 == count:
+                    row = {'method': method, 'step': step + 1,
+                           'ordinary_cfg_loss': float(losses[0]),
+                           'prefix_loss': float(losses[1]) if len(losses) > 1 else 0.}
+                    rows.append(row)
+                    save_csv(output / f'{method}_training.csv', rows)
+                    print(row, flush=True)
+                continue
             target = marked if method == 'model_reconstruction' else noise_target(scheduler, z, noise, t)
             optimizer.zero_grad(set_to_none=True)
             losses = []
@@ -214,7 +257,9 @@ def owner_scores(pipe, extractor, key, folder, fpr, seed):
 def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('--steps', type=int, default=2000)
-    p.add_argument('--methods', nargs='+', choices=METHODS, default=list(METHODS))
+    p.add_argument('--methods', nargs='+', choices=METHODS, default=['fixed_ptq', 'cfg_reconstruction', 'prefix_consistency_qat'])
+    p.add_argument('--quant-group-size', type=int, default=64, help='0 reproduces legacy channel quantization')
+    p.add_argument('--prefix-weight', type=float, default=.25)
     p.add_argument('--scope', choices=['up_attentions', 'all'], default='up_attentions')
     p.add_argument('--train-n', type=int, default=256)
     p.add_argument('--test-n', type=int, default=100)
@@ -235,6 +280,8 @@ def main():
         p.error('Counts must be positive')
     if not 0 < args.fpr < 1 or min(args.lr, args.ft_lr) <= 0 or args.preserve_weight < 0:
         p.error('Invalid FPR, learning rate or preservation weight')
+    if args.quant_group_size < 0 or not np.isfinite(args.prefix_weight) or args.prefix_weight < 0:
+        p.error('Invalid quantization group size or prefix weight')
     if len(set(args.methods)) != len(args.methods):
         p.error('Duplicate methods')
     if not torch.cuda.is_available():
@@ -272,13 +319,13 @@ def main():
     test_prompts = [prompts[i] for i in shuffled[:args.test_n]]
     train_prompts = [prompts[i] for i in shuffled[args.test_n:]]
     model_data, natural_data = [], []
-    if 'model_reconstruction' in args.methods:
+    if any(m in ('model_reconstruction', *CFG_METHODS) for m in args.methods):
         for i in range(args.train_n):
             prompt = train_prompts[i % len(train_prompts)]
             with torch.no_grad():
                 latent = pipe(prompt, output_type='latent', num_inference_steps=args.inference_steps,
                               guidance_scale=7.5, generator=torch.Generator(device='cuda').manual_seed(args.seed+i)).images
-                model_data.append((latent.cpu(), encode_text(pipe, [prompt]).cpu()))
+                model_data.append((latent.cpu(), encode_text(pipe, [prompt]).cpu(), prompt))
             if (i+1) % 10 == 0:
                 print(f'Model-only latent calibration {i+1}/{args.train_n}', flush=True)
     natural_files = []
@@ -305,6 +352,9 @@ def main():
         'selection': 'Predeclared final step; no owner or test quality selection',
         'quality_policy': 'report_only; SSIM and FID never reject or choose checkpoints',
         'natural_conditioning': 'Empty text; unpaired public images, not paired reconstruction',
+        'cfg_calibration': 'CFG 7.5 plus unconditional reconstruction; forward-noised final latents, not inference trajectory',
+        'prefix_calibration': 'TRAIN prompts with independently sampled punctuation; no owner trigger used',
+        'quantization_group_size': args.quant_group_size,
         'precision': 'FP32 activations; W4 fake quantization only on selected matrices',
         'training_timesteps': 'Uniform over DDPM training timesteps; native prediction_type target',
         'train_prompts': train_prompts, 'test_prompts': test_prompts,
@@ -317,7 +367,7 @@ def main():
         torch.manual_seed(args.seed)
         torch.cuda.reset_peak_memory_stats()
         print(f'Training UNet method: {method}', flush=True)
-        states = train_branch(pipe, scheduler, model_data if method == 'model_reconstruction' else natural_data,
+        states = train_branch(pipe, scheduler, model_data if method in ('model_reconstruction', *CFG_METHODS) else natural_data,
                               names, method, args, output)
         for label, state in states.items():
             changed = sum(not torch.equal(state[n], original[n]) for n in names)

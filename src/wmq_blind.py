@@ -211,6 +211,15 @@ class RoundingGrid(nn.Module):
         self.code_offset = nn.Parameter(torch.zeros_like(w) if learn_code_offsets else w.new_zeros(()),
                                         requires_grad=learn_code_offsets)
         self.learn_code_offsets = learn_code_offsets
+        self.register_buffer('warm_center', None)
+
+    @torch.no_grad()
+    def center_on_warm_codes(self):
+        if not self.learn_code_offsets:
+            raise ValueError('Warm centering requires code-offset mode')
+        self.warm_center = (self(False) / self.scale).round().detach().clone()
+        self.code_offset.zero_()
+        self.log_scale.requires_grad_(True)
 
     @property
     def scale(self):
@@ -219,7 +228,8 @@ class RoundingGrid(nn.Module):
     def forward(self, differentiable=True):
         scale = self.scale
         if self.learn_code_offsets:
-            value = (self.source / scale + self.code_offset).clamp(self.qmin, self.qmax)
+            origin = self.source / scale if self.warm_center is None else self.warm_center
+            value = (origin + self.code_offset).clamp(self.qmin, self.qmax)
             hard = value.round()
             codes = hard + (value - value.detach()) if differentiable else hard
             return codes * scale
@@ -539,8 +549,10 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
     qat_branch = method in QAT_METHODS
     float_branch = method in FLOAT_METHODS
     joint_branch = method in ('natural_joint_finetune', 'natural_joint_quality_finetune')
-    quality_weight = args.joint_quality_weight if method == 'natural_joint_quality_finetune' else 0.
-    low_memory_branch = method == 'natural_joint_quality_finetune'
+    warm_enhanced = method == 'natural_residual_qat_warm' and args.warm_qat_mode == 'centered_scale'
+    quality_weight = (args.warm_qat_quality_weight if warm_enhanced else
+                      args.joint_quality_weight if method == 'natural_joint_quality_finetune' else 0.)
+    low_memory_branch = method == 'natural_joint_quality_finetune' or warm_enhanced
     joint_names = set(select_names(vae, args.scope)) if joint_branch else set()
     gan_branch = method in ("natural_gan_qat", "natural_gan_finetune")
     spectral_weight = args.spectral_weight if method == "natural_spectral" else 0.
@@ -565,6 +577,9 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
                 if low_memory_branch and torch.is_grad_enabled() else operation(prediction, reference))
     if method in ('natural_residual_qat_warm', 'natural_residual_cycle_qat_warm'):
         initialize_warm_codes(grids, names, warm_start, args.qat_max_code_shift)
+        if warm_enhanced:
+            for grid in grids:
+                grid.center_on_warm_codes()
     steering_layers = getattr(args, '_steering_layers', None) if method.startswith('natural_') and not float_branch else None
     if steering_layers is not None:
         unknown = set(steering_layers) - set(names)
@@ -615,6 +630,12 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
                                                         metrics["semantic_lowpass_mse"])
                 if float_branch:
                     metrics["selection_objective"] += args.ft_preserve_weight * metrics["semantic_lowpass_mse"]
+                if warm_enhanced:
+                    metrics['warm_quality_penalty'] = sum(
+                        max(10 ** ((args.min_image_psnr - p) / 10) - 1, 0) +
+                        max((args.min_ssim - s) / max(1 - args.min_ssim, 1e-4), 0)
+                        for p, s in zip(metrics['per_image_psnr'], metrics['per_image_ssim'])) / len(metrics['per_image_psnr'])
+                    metrics['selection_objective'] += quality_weight * metrics['warm_quality_penalty']
                 if joint_branch:
                     with torch.no_grad():
                         for name in joint_names:
@@ -650,6 +671,10 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
                     changed, trust, multicell = stats.cpu().tolist()
                     metrics.update(code_change_fraction_vs_rtn=changed, code_offset_rms=math.sqrt(trust),
                                    code_offset_ge_one_fraction=multicell)
+                    if warm_enhanced:
+                        metrics['code_change_fraction_vs_warm'] = float(sum(
+                            ((g(False) / g.scale).round() != g.warm_center).sum() for g in grids) / count)
+                        metrics['scale_log_rms'] = float(torch.stack([g.log_scale.detach().square().mean() for g in grids]).mean().sqrt())
             metrics.setdefault("selection_objective", metrics["target_mse"])
         finally:
             vae.decoder.load_state_dict(pristine)
@@ -675,9 +700,14 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
              ("fixed_rtn" if method in ("fixed_ptq", "qk_rotation_ptq") else "rtn_fallback"))
     order_rng = torch.Generator().manual_seed(args.seed)
     params = [p for p in grids.parameters() if p.requires_grad]
-    base_lr = args.ft_lr if float_branch else (args.qat_lr if qat_branch else args.lr)
+    base_lr = args.warm_qat_lr if warm_enhanced else args.ft_lr if float_branch else (args.qat_lr if qat_branch else args.lr)
     optimizer_class = torch.optim.AdamW if args.optimizer == "adamw" else torch.optim.Adam
     optimizer = optimizer_class(params, lr=base_lr, weight_decay=args.weight_decay) if method not in ("fixed_ptq", "qk_rotation_ptq", "sensitivity") else None
+    if warm_enhanced:
+        optimizer = optimizer_class([
+            {'params': [g.code_offset for g in grids], 'lr_multiplier': 1.},
+            {'params': [g.log_scale for g in grids], 'lr_multiplier': .1}],
+            lr=base_lr, weight_decay=args.weight_decay)
     discriminator = None
     if gan_branch:
         # Isolate initialization from branch ordering and the data sampler.
@@ -702,7 +732,7 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
     for step in range(1, total + 1):
         if optimizer is not None and (qat_branch or float_branch or args.lr_schedule == "warmup_cosine"):
             for group in optimizer.param_groups:
-                group["lr"] = scheduled_lr(base_lr, step, total, args.warmup_steps) * lr_backoff
+                group["lr"] = scheduled_lr(base_lr, step, total, args.warmup_steps) * lr_backoff * group.get('lr_multiplier', 1.)
         applied, reason = True, None
         if method == "sensitivity":
             index = ranked[(step - 1) % len(ranked)]
@@ -818,6 +848,8 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
                     if teacher_branch:
                         teacher_ref = torch.cat([teacher_targets['train'][j] for j in js]).to(device)
                         distillation = F.mse_loss(generated.clamp(0, 1), teacher_ref)
+                    if warm_enhanced and quality_weight:
+                        quality_loss = image_quality_penalty(generated, preserve_ref, args.min_image_psnr, args.min_ssim)
                     if joint_branch and (args.ft_preserve_weight or quality_weight):
                         quant_generated = decoder_forward(quant_weights, preserve_hidden) / 2 + .5
                         joint_loss = joint_loss + args.ft_preserve_weight * F.mse_loss(
@@ -831,6 +863,8 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
                         del quant_generated
                 if qat_branch:
                     trust_loss = sum(g.code_offset.square().sum() for g in grids) / sum(g.code_offset.numel() for g in grids)
+                    if warm_enhanced:
+                        trust_loss = trust_loss + sum(g.log_scale.square().mean() for g in grids) / len(grids)
             preserve_weight = (args.preserve_weight if natural and not float_branch and args.natural_preservation == "lowpass" else args.ft_preserve_weight if float_branch else
                                (args.qat_semantic_preserve_weight if qat_branch and not residual_branch else args.preserve_weight))
             loss = (target_loss + perceptual_weight * perceptual_loss + preserve_weight * preserve +
@@ -947,6 +981,9 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
         grids.final_state = {k: v.detach().cpu().clone() for k, v in grids.state_dict().items()}
     grids.load_state_dict(best_state)
     selected = {**best, "search_feasible": best["feasible"], "valid_updates": valid_updates,
+                "warm_qat_mode": args.warm_qat_mode if method == 'natural_residual_qat_warm' else None,
+                "warm_quality_weight": quality_weight if warm_enhanced else None,
+                "warm_trust_origin": 'residual_codes_and_scale' if warm_enhanced else None,
                 "steering_layers": steering_layers,
                 "steering_threat_model": 'owner_informed_development_not_blind' if steering_layers is not None else None,
                 "reconstruction_blocks": list(block_groups),
@@ -971,8 +1008,9 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
                 "cycle_train_encoder_images": total * args.train_batch_size * (2 if joint_branch else 1) if cycle_weight else 0,
                 "cycle_search_encoder_images": len(rows) * len(natural_search[0]) * (2 if joint_branch else 1) if cycle_weight else 0,
                 "joint_quant_weight": args.joint_quant_weight if joint_branch else 0.,
-                "joint_quality_weight": quality_weight,
-                "joint_quality_thresholds": {"psnr": args.min_image_psnr, "ssim": args.min_ssim} if quality_weight else None,
+                "joint_quality_weight": quality_weight if method == "natural_joint_quality_finetune" else 0.,
+                "joint_quality_thresholds": {"psnr": args.min_image_psnr, "ssim": args.min_ssim} if joint_branch and quality_weight else None,
+                "warm_quality_thresholds": {"psnr": args.min_image_psnr, "ssim": args.min_ssim} if warm_enhanced else None,
                 "joint_quant_bits": 4 if joint_branch else None,
                 "joint_search_generated_images": len(rows) * len(search_z) if joint_branch else 0,
                 "joint_search_natural_images": len(rows) * len(natural_search[0]) if joint_branch else 0,
@@ -1012,7 +1050,7 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
                     "natural_gan_qat": ["bounded_multi_cell_code_offsets"],
                     "natural_gan_finetune": ["all_decoder_parameters_including_bias_and_norm"],
                     "natural_residual_qat": ["bounded_multi_cell_code_offsets"],
-                    "natural_residual_qat_warm": ["bounded_multi_cell_code_offsets_from_residual_rounding"],
+                    "natural_residual_qat_warm": (["warm_centered_code_offsets", "per_channel_scale"] if warm_enhanced else ["bounded_multi_cell_code_offsets_from_residual_rounding"]),
                     "natural_residual_cycle_qat_warm": ["bounded_multi_cell_code_offsets_from_residual_rounding"],
                     "natural_full_finetune": ["all_decoder_parameters_including_bias_and_norm"],
                     "natural_joint_finetune": ["all_decoder_parameters_including_bias_and_norm"],
@@ -1115,6 +1153,9 @@ def parser():
     p.add_argument("--seed", type=int, default=3407)
     p.add_argument("--lr", type=float, default=.01)
     p.add_argument("--qat-lr", type=float, default=.001, help="Code-offset LR, independent of sigmoid rounding LR")
+    p.add_argument('--warm-qat-mode', choices=['legacy', 'centered_scale'], default='legacy')
+    p.add_argument('--warm-qat-lr', type=float, default=.01, help='Code-coordinate LR for centered warm-QAT; scale LR is 0.1x')
+    p.add_argument('--warm-qat-quality-weight', type=float, default=.01)
     p.add_argument("--ft-lr", type=float, default=1e-5, help="FP32 decoder control LR in weight units")
     p.add_argument("--ft-preserve-weight", type=float, default=0., help="Optional generated low-pass preservation in FP32 control; 0 is natural reconstruction only")
     p.add_argument("--warmup-steps", type=int, default=10, help="QAT/FP32 linear warmup followed by cosine decay")
@@ -1226,6 +1267,9 @@ def main():
         raise ValueError("Sample counts and steps must be positive")
     if any(v is not None and v < 1 for v in (args.natural_train_n, args.natural_search_n, args.qat_steps, args.ft_steps)):
         raise ValueError("Natural split counts and branch step budgets must be positive")
+    if (not math.isfinite(args.warm_qat_lr) or args.warm_qat_lr <= 0 or
+            not math.isfinite(args.warm_qat_quality_weight) or args.warm_qat_quality_weight < 0):
+        raise ValueError('Invalid warm-QAT learning rate or quality weight')
     if (args.warmup_steps < 0 or min(args.qat_lr, args.ft_lr) <= 0 or args.ft_preserve_weight < 0
             or not all(math.isfinite(v) for v in (args.qat_lr, args.ft_lr, args.ft_preserve_weight))):
         raise ValueError("Invalid QAT/FP32 optimizer configuration")

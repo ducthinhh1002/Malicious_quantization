@@ -1,6 +1,7 @@
 import tempfile
 import importlib.util
 import unittest
+from unittest.mock import patch
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -57,11 +58,12 @@ class SleeperMarkTests(unittest.TestCase):
     def test_all_training_modes_change_only_selected_unet_weights(self):
         scheduler = SimpleNamespace(config=SimpleNamespace(num_train_timesteps=10, prediction_type='epsilon'),
                                     add_noise=lambda z, noise, t: z + noise)
-        data = [(torch.randn(1, 8), torch.randn(1, 8)) for _ in range(3)]
+        data = [(torch.randn(1, 8), torch.randn(1, 1, 8), 'ordinary prompt') for _ in range(3)]
         args = SimpleNamespace(ft_lr=.01, lr=.01, seed=5, steps=3, train_batch_size=1,
-                               preserve_weight=.5, log_every=3)
+                               preserve_weight=.5, log_every=3, prefix_weight=.25, quant_group_size=4)
         before = state_hash(self.unet)
-        with tempfile.TemporaryDirectory() as tmp:
+        with tempfile.TemporaryDirectory() as tmp, patch('wmq_sleepermark.encode_text',
+                side_effect=lambda pipe, prompts: torch.zeros(len(prompts), 1, 8)):
             for method in METHODS:
                 result = train_branch(SimpleNamespace(unet=self.unet), scheduler, data,
                                       self.names, method, args, Path(tmp))

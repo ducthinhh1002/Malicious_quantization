@@ -122,6 +122,19 @@ class ResidualTests(unittest.TestCase):
         for k, value in vae.state_dict().items():
             self.assertTrue(torch.equal(value, original[k]))
 
+        args.warm_qat_mode = 'centered_scale'
+        warm = {'provenance': {'test': True}, 'codes': {'weight': (other_grids[0](False) / other_grids[0].scale).round().detach()}}
+        with tempfile.TemporaryDirectory() as tmp, redirect_stdout(io.StringIO()):
+            enhanced, selection, history = optimize_branch(vae, ['weight'], z, natural, z, refs,
+                args, 4, 1., 'natural_residual_qat_warm', [], Path(tmp) / 'warm',
+                natural_search=(z, natural), preserve_data=(z, refs), residual=metric, warm_start=warm)
+        self.assertGreater(selection['gradient_updates'], 0)
+        self.assertEqual(history[0]['code_change_fraction_vs_warm'], 0.)
+        self.assertIn('warm_quality_penalty', history[-1])
+        self.assertTrue(enhanced[0].log_scale.requires_grad)
+        for k, value in vae.state_dict().items():
+            self.assertTrue(torch.equal(value, original[k]))
+
 
 if __name__ == "__main__":
     unittest.main()
