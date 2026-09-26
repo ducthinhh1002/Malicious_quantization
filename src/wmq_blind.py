@@ -1748,6 +1748,49 @@ def main():
                     'files_sha256': {p.relative_to(artifact_out).as_posix(): sha(p) for p in sorted(final_artifact.rglob('*')) if p.is_file()},
                     'diagnostic_files_sha256': {p.relative_to(out).as_posix(): sha(p) for p in sorted(final_folder.rglob('*')) if p.is_file()}}
                 endpoint_plan.append(final_branch)
+                # Evaluate the W4 endpoint of the quality-constrained joint run too.
+                # This branch is declared by the fixed training budget, not by
+                # owner feedback; it shares all optimizer updates with FP32 final.
+                if method == 'natural_joint_quality_finetune':
+                    for derived_bits in args.finetune_rtn_bits:
+                        endpoint_id = f'{method}_rtn_w{derived_bits}_c1.0_final'
+                        endpoint = {'label': endpoint_id + '_test', 'method': method + '_rtn',
+                            'bits': derived_bits, 'clip': 1., 'artifact': 'branches/' + endpoint_id,
+                            'artifact_format': 'decoder_fp32', 'parameter_space': 'finetune_then_rtn',
+                            'role': 'endpoint_control', 'shares_training_with': final_branch['label'],
+                            'comparison_group': f'finetune_then_w{derived_bits}_{args.scope}',
+                            'threat_model': 'marked_model_plus_unpaired_natural_images_unrestricted_finetune'}
+                        endpoint_artifact = artifact_out / endpoint['artifact']
+                        export_finetune_rtn(vae, names, derived_bits, 1., endpoint_artifact)
+                        from safetensors.torch import load_file
+                        vae.decoder.load_state_dict(load_file(str(endpoint_artifact / 'decoder_fp32.safetensors'),
+                                                              device=args.device))
+                        endpoint_quality = score(vae, search_z, search_ref, 0., args)
+                        endpoint_quality.update(natural_reconstruction_metrics(
+                            vae, *natural_search, perceptual, args.natural_perceptual_weight,
+                            args.eval_batch_size, cycle_weight=args.cycle_weight))
+                        endpoint_selected = {**final_selected, **endpoint_quality,
+                            'candidate': endpoint_id + f"_step{final_selected['step']}",
+                            'method': endpoint['method'], 'bits': derived_bits,
+                            'parameter_space': 'finetune_then_rtn',
+                            'checkpoint_policy': 'fixed_final_step',
+                            'search_feasible': endpoint_quality['feasible'],
+                            'selected_source': 'RTN_of_fixed_final_FP32',
+                            'additional_training_updates': 0,
+                            'shares_training_with': final_branch['label'],
+                            'status': 'selected' if endpoint_quality['feasible'] else 'selected_quality_failed'}
+                        endpoint_folder = out / endpoint['artifact']
+                        endpoint_folder.mkdir(parents=True, exist_ok=False)
+                        save_json(endpoint_folder / 'selection.json', endpoint_selected)
+                        selections[endpoint['label']] = endpoint_selected
+                        frozen_branches[endpoint['label']] = {'selected': endpoint_selected,
+                            'files_sha256': {p.relative_to(artifact_out).as_posix(): sha(p)
+                                             for p in sorted(endpoint_artifact.rglob('*')) if p.is_file()},
+                            'diagnostic_files_sha256': {p.relative_to(out).as_posix(): sha(p)
+                                                        for p in sorted(endpoint_folder.rglob('*')) if p.is_file()}}
+                        endpoint_plan.append(endpoint)
+                        vae.decoder.load_state_dict(load_file(str(final_artifact / 'decoder_fp32.safetensors'),
+                                                              device=args.device))
             del grids
             vae.decoder.load_state_dict(pristine)
             save_json(out / "search.json", rows)

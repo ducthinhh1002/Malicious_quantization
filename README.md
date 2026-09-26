@@ -1,5 +1,10 @@
 # Hướng dẫn chạy thí nghiệm malicious quantization cho watermark diffusion
 
+**Sau run `20260926_021405`:** [đánh giá kết quả và W4 endpoint mới](survey/Review_20260926_021405_VI.md).
+Profile `transfer` giờ xuất thêm RTN W4 của bước cuối cho nhánh joint quality
+khi SEARCH chọn checkpoint sớm hơn bước cuối. Không thêm bước huấn luyện;
+artifact được đóng băng trước owner evaluation.
+
 **Chạy cả hai watermark bằng một lệnh:**
 
 ```bash

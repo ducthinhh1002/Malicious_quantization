@@ -221,7 +221,12 @@ class NaturalTests(unittest.TestCase):
         def one_failed_branch(*args, **kwargs):
             if args[9] == 'natural_spectral' and args[7] == 8:
                 raise RuntimeError('injected branch failure')
-            return original_optimize(*args, **kwargs)
+            grids, selected, rows = original_optimize(*args, **kwargs)
+            if args[9] == 'natural_joint_quality_finetune' and args[7] == 32:
+                # Force SEARCH selection before the final budget to exercise
+                # export, freeze, and owner evaluation of its W4 endpoint.
+                selected['step'] = 0
+            return grids, selected, rows
         fake = SimpleNamespace(StableDiffusionPipeline=Pipeline, AutoencoderKL=VAE,
                                DDIMScheduler=SimpleNamespace(from_config=lambda c: SimpleNamespace(config=c)))
         with tempfile.TemporaryDirectory() as tmp, redirect_stdout(io.StringIO()):
@@ -260,6 +265,12 @@ class NaturalTests(unittest.TestCase):
                 selected = report['selections'][label]
                 self.assertEqual(selected['step'], selected['attempted_updates'])
                 self.assertEqual(selected['checkpoint_policy'], 'fixed_final_step')
+            quality_final = 'natural_joint_quality_finetune_rtn_w4_c1.0_final_test'
+            self.assertTrue(quality_final in report['selections'],
+                            {'quality_labels': [k for k in report['selections'] if 'joint_quality' in k],
+                             'failures': [(f['label'], f['error']) for f in report['branch_failures']]})
+            self.assertEqual(report['selections'][quality_final]['selected_source'], 'RTN_of_fixed_final_FP32')
+            self.assertEqual(report['selections'][quality_final]['additional_training_updates'], 0)
             self.assertEqual(report["status"], "branch_failures")
             self.assertEqual(len(report["branch_failures"]), 1)
             self.assertNotIn('natural_spectral_w8_c1.0_test', report['selections'])
