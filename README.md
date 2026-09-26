@@ -1,5 +1,8 @@
 # Hướng dẫn chạy thí nghiệm malicious quantization cho watermark diffusion
 
+**Sau run Stable Signature `20260926_122550`:** [bảng kết quả và cải tiến toàn bộ nhánh quantization đang chạy](survey/Review_StableSignature_20260926_122550_VI.md).
+Profile `transfer` bật `quant-refinement=balanced`: mở rộng mã/scale cho natural, residual, warm-QAT và teacher; không sửa huấn luyện fine-tune.
+
 **Cập nhật mặc định:** bỏ `natural_joint_quality_finetune` khỏi profile `transfer` (giữ implementation).
 Thay bằng `natural_residual_qat_warm --warm-qat-mode centered_scale`: học mã W4 và scale từ residual, có phạt chất lượng.
 SleeperMark mặc định: `fixed_ptq`, `cfg_reconstruction`, `equivariance_qat`, `adversarial_equivariance_qat`, group W4=64.

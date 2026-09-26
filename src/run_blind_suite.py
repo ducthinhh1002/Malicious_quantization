@@ -36,6 +36,8 @@ TRANSFER_METHODS = ["--methods", "fixed_ptq", "reconstruction", "--natural-metho
     "natural_rounding", "natural_residual", "natural_residual_qat_warm", "natural_full_finetune", "natural_joint_finetune", "natural_teacher_rounding",
     # natural_joint_quality_finetune remains available for explicit experiments.
     "--warm-qat-mode", "centered_scale",
+    "--quant-refinement", "balanced", "--quant-selection-start", ".5",
+    "--residual-basis", "contrastive", "--reconstruction-learn-scale",
     "--finetune-rtn-bits", "4", "--quality-constraint", "off", "--quality-policy", "constrained",
     "--gradient-diagnostics-every", "100", "--teacher-checkpoint-policy", "final"]
 
@@ -83,6 +85,13 @@ def collect(run):
             "budget_ssim": manifest['args'].get('budget_ssim'),
             "budget_psnr": manifest['args'].get('budget_psnr'),
             "shares_training_with": selected.get('shares_training_with'),
+            "selected_step": selected.get('step'),
+            "quant_refinement": selected.get('quant_refinement'),
+            "quant_selection_start": selected.get('quant_selection_start'),
+            "quant_quality_weight": selected.get('quant_quality_weight'),
+            "effective_teacher_weight": selected.get('effective_teacher_weight'),
+            "teacher_signal_train_mse": selected.get('teacher_signal_train_mse'),
+            "residual_basis": manifest['args'].get('residual_basis', 'pca'),
             "teacher_source": (selected.get('teacher_dependency') or {}).get('source'),
             "teacher_label": (selected.get('teacher_dependency') or {}).get('label'),
             "teacher_checkpoint_policy": (selected.get('teacher_dependency') or {}).get('checkpoint_policy'),
