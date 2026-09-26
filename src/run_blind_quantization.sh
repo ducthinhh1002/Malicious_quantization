@@ -2,12 +2,20 @@
 set -Eeuo pipefail
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "$(readlink -f -- "${BASH_SOURCE[0]}")")" && pwd)"
-# One public launcher: no arguments run the declared suite (one seed, one
-# preservation weight). --direct forwards the remaining arguments to the
-# lower-level experiment for custom models and small diagnostic runs.
+# No arguments run both watermark experiments sequentially, freeing the first
+# process's CUDA allocations before starting the second. Explicit flags keep
+# their existing single-watermark behavior. Stop on failure (set -e).
+if [[ "$#" == "0" ]]; then
+  echo '[1/2] Stable Signature: transfer suite, owner evaluation and FID'
+  bash "$SCRIPT_DIR/run_blind_quantization.sh" --profile transfer
+  echo '[2/2] SleeperMark: UNet experiments, owner evaluation and FID'
+  exec bash "$SCRIPT_DIR/run_blind_quantization.sh" --watermark sleepermark
+fi
+
+# --direct forwards to the lower-level Stable Signature experiment.
 if [[ "${1:-}" == "--direct" ]]; then
   shift
-elif [[ "$#" == "0" || "${1:-}" == "--profile" || "${1:-}" == "--seeds" ||
+elif [[ "${1:-}" == "--profile" || "${1:-}" == "--seeds" ||
         "${1:-}" == "--preservation-weights" || "${1:-}" == "--plan-only" ||
         "${1:-}" == "--root" || "${1:-}" == "--min-ssim" ||
         "${1:-}" == "--quality-budgets" || "${1:-}" == "--" ||

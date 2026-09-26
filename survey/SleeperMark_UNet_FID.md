@@ -91,6 +91,7 @@ bash run_blind_quantization.sh --watermark sleepermark --methods fixed_ptq natur
 bash run_blind_quantization.sh --watermark sleepermark --fid-real-reference /data/coco_heldout
 ```
 
-Lệnh không có `--watermark sleepermark` vẫn chạy Stable Signature như trước.
+Lệnh không có tham số chạy tuần tự Stable Signature profile `transfer` rồi SleeperMark.
+`--profile transfer` chạy riêng Stable Signature; `--watermark sleepermark` chạy riêng SleeperMark.
 Không trộn kết quả hai watermark trong cùng một suite và không dùng TPR test để
 điều chỉnh loss rồi báo lại chính tập test đó như đánh giá độc lập.

@@ -1,5 +1,16 @@
 # Hướng dẫn chạy thí nghiệm malicious quantization cho watermark diffusion
 
+**Chạy cả hai watermark bằng một lệnh:**
+
+```bash
+bash run_blind_quantization.sh
+```
+
+Mặc định chạy tuần tự **Stable Signature (profile `transfer`) → SleeperMark**,
+tự chuẩn bị môi trường/checkpoint, đánh giá watermark và tính FID cho cả hai.
+Hai tiến trình không dùng GPU đồng thời. Nếu Stable Signature lỗi, launcher dừng
+và báo lỗi; SleeperMark chưa được chạy.
+
 **Mới: SleeperMark — can thiệp trực tiếp UNet và tự đánh giá watermark/FID:**
 
 ```bash
@@ -45,11 +56,10 @@ conda run -n wmq python src/wmq_fid.py --run output_attack/<run>
 Nếu FID lỗi tải mạng, kết quả owner vẫn được giữ; xem `fid_error.json` và dùng
 lệnh tính lại ở trên. Với ảnh SleeperMark không trigger, thêm `--ordinary`.
 
-**Một launcher duy nhất:** `bash run_blind_quantization.sh` chạy suite mặc định
-`science` với đúng một seed `3407`, một preservation weight `0.5`, tự chuẩn bị
-môi trường/checkpoint/dữ liệu rồi đánh giá owner và tổng hợp CSV. Chọn profile bằng
-`bash run_blind_quantization.sh --profile transfer`; kiểm tra kế hoạch không chạy GPU
-bằng `bash run_blind_quantization.sh --plan-only`. Các flag của `wmq_blind.py`
+**Chạy riêng Stable Signature:** dùng `bash run_blind_quantization.sh --profile transfer`
+với đúng một seed `3407`, một preservation weight `0.5`. Profile `science` vẫn có
+thể chọn tường minh. Kiểm tra kế hoạch Stable Signature không chạy GPU bằng
+`bash run_blind_quantization.sh --profile transfer --plan-only`. Các flag của `wmq_blind.py`
 đi sau `--` trong suite, ví dụ `-- --train-batch-size 2`. Lệnh tùy chỉnh ở cấp
 thí nghiệm dùng `bash run_blind_quantization.sh --direct --model ...`.
 `run_blind_suite.py` vẫn là orchestrator nội bộ, không cần shell launcher thứ hai.
