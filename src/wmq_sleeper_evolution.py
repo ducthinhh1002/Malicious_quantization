@@ -80,8 +80,7 @@ def tail_diagnostics(losses, reference, ratio_limit):
 def train_evolution(pipe, scheduler, dataset, names, method, args, output):
     from wmq_sleepermark import encode_text, snapshot, STRUCTURED_EVOLUTION_METHODS
     from wmq_blind import save_csv, save_json
-    from wmq_sleeper_calibration import augmented_prompts
-    from wmq_sleeper_equivariance import guided_prediction
+    from wmq_sleeper_calibration import augmented_prompts, spatial_reconstruction_loss
     started = time.perf_counter()
     structured = method in STRUCTURED_EVOLUTION_METHODS
     diversity = structured and not args.evolution_ablate_diversity
@@ -138,7 +137,8 @@ def train_evolution(pipe, scheduler, dataset, names, method, args, output):
         enable(False)
         fit_bank, select_bank = bank(fit_indices), bank(select_indices)
         residual_proxy = None
-        proxy_diagnostics = {'mode': 'quality_only' if method == 'quality_genetic_w4' else 'spatial_mse'}
+        proxy_diagnostics = {'mode': 'quality_only' if method == 'quality_genetic_w4' else 'spatial_mse',
+                             'spatial_loss_mode': args.spatial_loss_mode}
         if subspace:
             from wmq_residual_proxy import ResidualProxy
             residual_proxy = ResidualProxy([r[-2]-r[-1] for r in fit_bank if r[-2] is not None],
@@ -160,9 +160,14 @@ def train_evolution(pipe, scheduler, dataset, names, method, args, output):
                     behavior.extend([F.adaptive_avg_pool2d(error, 2).flatten()/scale,
                                      error.square().mean().sqrt().reshape(1)/scale])
                 if target is not None:
-                    guided = guided_prediction(pipe.unet, z, t, augmented, empty)
+                    # Same model, latent and timestep: reuse this candidate's
+                    # unconditional prediction, never the frozen teacher's.
+                    pred_aug = pipe.unet(z, t, encoder_hidden_states=augmented).sample
+                    guided = pred_u+7.5*(pred_aug-pred_u)
                     prediction = predicted_x0(guided, z, t, scheduler)
-                    proxy.append(residual_proxy.loss(prediction-base, target-base) if residual_proxy else F.mse_loss(prediction, target))
+                    proxy.append(residual_proxy.loss(prediction-base, target-base) if residual_proxy else
+                                 spatial_reconstruction_loss(prediction, target, t, scheduler,
+                                                             mode=args.spatial_loss_mode))
             # One device synchronization for losses and all descriptors.
             packed = torch.cat([torch.stack(ordinary), torch.stack(proxy).mean().reshape(1), *behavior]).cpu().numpy()
             per_record = packed[:len(data)]
@@ -207,12 +212,24 @@ def train_evolution(pipe, scheduler, dataset, names, method, args, output):
             v['feasible'] = v['ordinary_loss'] <= limit and v['ordinary_ratio_max'] <= args.evolution_tail_ratio
         feasible = [v for v in validation if v['feasible']]
         winner = min(feasible, key=lambda v: (v['proxy_loss'], v['ordinary_loss'], v['candidate']))
+        anchor = validation[0]
+        selection_diagnostics = {
+            'selected_anchor_rtn': winner['candidate'] == 0,
+            'feasible_shortlist_count': len(feasible),
+            'shortlist_count': len(validation),
+            'proxy_relative_improvement_to_rtn': (anchor['proxy_loss']-winner['proxy_loss'])/max(abs(anchor['proxy_loss']), 1e-12),
+            'ordinary_loss_ratio_to_rtn': winner['ordinary_loss']/max(anchor['ordinary_loss'], 1e-12),
+            'quality_gate_domain': 'calibration_noise_prediction_only',
+            'image_quality_guaranteed': False,
+        }
+        print({'method': method, 'selection_diagnostics': selection_diagnostics}, flush=True)
         apply(records[winner['candidate']]['gene'])
         save_csv(output/(method+'_validation.csv'), validation)
         save_json(output/(method+'_search.json'), {'algorithm': 'random' if method == 'random_quantizer_w4' else 'structured adaptive GA' if structured else 'NSGA-II-style integer GA',
             'structured_operators': structured, 'paired_genes': structured and not args.evolution_ablate_grouping,
             'behavior_selection': diversity, 'adaptive_operators': structured and not args.evolution_ablate_adaptation,
             'proxy_diagnostics': proxy_diagnostics,
+            'selection_diagnostics': selection_diagnostics,
             'groups': groups, 'gene_meaning': ['log_scale/.04', 'rounding_bias/.1'], 'bounds': [-3, 3],
             'records': records, 'fit_pareto_indices': pareto, 'selected': winner,
             'ordinary_loss_limit': limit, 'quality_ratio_to_rtn': args.evolution_quality_ratio,

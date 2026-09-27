@@ -130,8 +130,16 @@ class EvolutionTests(unittest.TestCase):
                 self.assertLessEqual(report['selected']['ordinary_loss'], report['ordinary_loss_limit'])
                 self.assertLessEqual(report['selected']['ordinary_ratio_max'], report['per_record_ratio_limit'])
                 self.assertEqual(report['unique_genomes_evaluated'], 8)
+                # Four bank records x eight forwards; twelve scores x two
+                # records x three forwards. No duplicate unconditional pass.
+                self.assertEqual(report['logical_unet_forwards'], 104)
+                self.assertFalse(report['selection_diagnostics']['image_quality_guaranteed'])
+                self.assertEqual(report['selection_diagnostics']['selected_anchor_rtn'],
+                                 report['selected']['candidate'] == 0)
                 if 'subspace' in method:
                     self.assertEqual(report['proxy_diagnostics']['normalization_source'], 'FIT only')
+                else:
+                    self.assertEqual(report['proxy_diagnostics']['spatial_loss_mode'], 'noise')
                 if method == 'quality_genetic_w4':
                     self.assertTrue(all(r['fitness'][0] == r['fitness'][1] for r in report['records']))
             with patch('wmq_sleeper_evolution.search', side_effect=RuntimeError('injected')):

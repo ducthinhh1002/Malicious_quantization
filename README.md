@@ -22,6 +22,13 @@ Bốn nhánh này dùng cùng ngân sách 156 candidate/nhánh. `random_subspace
 dùng basis ngẫu nhiên nhưng vẫn chạy GA cải tiến; khác với random search cũ.
 Chưa bật vào mặc định. Xem [kết quả cũ, công thức proxy và protocol mới](survey/SleeperMark_Structured_GA_Residual_Proxy_VI.md).
 
+GA spatial-MSE hiện áp dụng `--spatial-loss-mode noise` (mặc định), chuẩn hóa
+loss theo timestep như QAT. Dùng `--spatial-loss-mode x0` để giữ objective GA
+cũ; residual-subspace vẫn dùng chuẩn hóa energy từ FIT. `selection_diagnostics`
+trong `*_search.json` ghi rõ chọn RTN fallback hay candidate mới và mức giảm
+proxy loss. Gate noise loss không bảo đảm chất lượng ảnh hoặc watermark yếu đi.
+Xem [đánh giá GA/random đã hoàn tất](survey/Review_SleeperMark_GA_20260927_VI.md).
+
 **Cấu hình hiện hành, 27/09/2026:** `transfer` không chạy bất kỳ nhánh FP32
 fine-tune nào, không chạy fine-tune → RTN và không tạo purified teacher ngầm.
 Các implementation này vẫn có trong `science`/`full` hoặc lệnh tường minh.
