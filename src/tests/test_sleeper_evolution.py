@@ -114,7 +114,8 @@ class EvolutionTests(unittest.TestCase):
         before = state_hash(unet)
         data = [(torch.randn(1, 4, 16, 16), torch.randn(1, 3, 8), f'prompt{i}', 3) for i in range(4)]
         args = parser().parse_args(['--evolution-population', '4', '--evolution-generations', '1',
-                                   '--evolution-records', '2', '--spatial-shift', '1'])
+                                   '--evolution-records', '2', '--spatial-shift', '1',
+                                   '--evolution-subspace-layout', 'patch3'])
         scheduler = DDPMScheduler(num_train_timesteps=10)
         with tempfile.TemporaryDirectory() as tmp, patch('wmq_sleepermark.encode_text',
                 side_effect=lambda pipe, prompts: torch.zeros(len(prompts), 3, 8)):
@@ -138,6 +139,8 @@ class EvolutionTests(unittest.TestCase):
                                  report['selected']['candidate'] == 0)
                 if 'subspace' in method:
                     self.assertEqual(report['proxy_diagnostics']['normalization_source'], 'FIT only')
+                    self.assertEqual(report['proxy_diagnostics']['feature_dimension'], 36)
+                    self.assertEqual(report['proxy_diagnostics']['layout'], 'patch')
                 else:
                     self.assertEqual(report['proxy_diagnostics']['spatial_loss_mode'], 'noise')
                 if method == 'quality_genetic_w4':

@@ -450,6 +450,8 @@ def parser():
     p.add_argument('--evolution-quality-ratio', type=float, default=1.25, help='SELECT ordinary noise MSE / RTN MSE cap')
     p.add_argument('--evolution-tail-ratio', type=float, default=2., help='Max paired SELECT record noise MSE / RTN MSE; report failed candidates and continue')
     p.add_argument('--evolution-residual-rank', type=int, default=2)
+    p.add_argument('--evolution-subspace-layout', choices=['global', 'patch3'], default='global',
+                   help='Experimental shared 3x3 residual basis; affects learned and random subspace controls equally')
     p.add_argument('--evolution-orthogonal-weight', type=float, default=.25)
     p.add_argument('--evolution-ablate-grouping', action='store_true')
     p.add_argument('--evolution-ablate-diversity', action='store_true')
@@ -647,7 +649,8 @@ def main():
         'training_timesteps': 'Balanced CFG cycles through shuffled timestep strata; late auxiliary has separate strata; legacy samples records uniformly; natural uses DDPM',
         'source_sha256': {file: digest(Path(__file__).with_name(file)) for file in
             ('wmq_sleepermark.py', 'wmq_sleeper_calibration.py', 'wmq_sleeper_equivariance.py', 'wmq_sleeper_rollout.py', 'wmq_sleeper_coherent.py',
-             'wmq_grouped_quant.py', 'wmq_delta_quant.py')},
+             'wmq_grouped_quant.py', 'wmq_delta_quant.py', 'wmq_evolution.py',
+             'wmq_sleeper_evolution.py', 'wmq_residual_proxy.py')},
         'train_prompts': train_prompts, 'test_prompts': test_prompts,
         'natural_train_files': natural_files, 'original_unet_sha256': original_hash,
         'frozen_components': frozen_hashes,

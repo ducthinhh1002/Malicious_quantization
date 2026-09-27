@@ -143,7 +143,8 @@ def train_evolution(pipe, scheduler, dataset, names, method, args, output):
             from wmq_residual_proxy import ResidualProxy
             residual_proxy = ResidualProxy([r[-2]-r[-1] for r in fit_bank if r[-2] is not None],
                 args.evolution_residual_rank, method == 'random_subspace_genetic_w4',
-                args.seed+15485863, args.evolution_orthogonal_weight)
+                args.seed+15485863, args.evolution_orthogonal_weight,
+                patch_size=3 if args.evolution_subspace_layout == 'patch3' else 0)
             proxy_diagnostics = {'mode': 'residual_subspace', **residual_proxy.diagnostics,
                 'orthogonal_weight': args.evolution_orthogonal_weight,
                 'select_capture_fraction': residual_proxy.capture(torch.cat([r[-2]-r[-1] for r in select_bank if r[-2] is not None]))}

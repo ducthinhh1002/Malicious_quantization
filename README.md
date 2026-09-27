@@ -29,6 +29,14 @@ trong `*_search.json` ghi rõ chọn RTN fallback hay candidate mới và mức 
 proxy loss. Gate noise loss không bảo đảm chất lượng ảnh hoặc watermark yếu đi.
 Xem [đánh giá GA/random đã hoàn tất](survey/Review_SleeperMark_GA_20260927_VI.md).
 
+Thử basis residual cục bộ (giữ global mặc định để đối chiếu):
+
+```bash
+bash run_blind_quantization.sh --watermark sleepermark --methods subspace_genetic_w4 random_subspace_genetic_w4 --evolution-subspace-layout patch3
+```
+
+Xem [động cơ, số liệu tổng quát hóa và giới hạn của patch proxy](survey/SleeperMark_Patch_Residual_Proxy_VI.md).
+
 **Cấu hình hiện hành, 27/09/2026:** `transfer` không chạy bất kỳ nhánh FP32
 fine-tune nào, không chạy fine-tune → RTN và không tạo purified teacher ngầm.
 Các implementation này vẫn có trong `science`/`full` hoặc lệnh tường minh.
