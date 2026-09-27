@@ -27,6 +27,7 @@ DELTA_METHODS = ('delta_cfg_equivariance',)
 ROLLOUT_METHODS = ('conditional_rollout_qat',)
 CFG_METHODS = ('cfg_reconstruction', 'prefix_consistency_qat') + EQUIV_METHODS + DELTA_METHODS + ROLLOUT_METHODS
 METHODS = ('fixed_ptq', 'model_reconstruction', 'natural_rounding', 'natural_finetune', 'natural_joint_finetune') + CFG_METHODS
+DEFAULT_METHODS = ('fixed_ptq', 'cfg_reconstruction', 'equivariance_qat', *DELTA_METHODS, *ROLLOUT_METHODS)
 
 
 def selected_weights(unet, scope):
@@ -408,7 +409,7 @@ def parser():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('--steps', type=int, default=2000)
     p.add_argument('--methods', nargs='+', choices=METHODS,
-                   default=['fixed_ptq', 'cfg_reconstruction', 'equivariance_qat', *DELTA_METHODS, *ROLLOUT_METHODS])
+                   default=list(DEFAULT_METHODS))
     p.add_argument('--rollout-horizon', type=int, default=2,
                    help='Conditional rollout branch only: DDIM transitions, gradients truncated between states')
     p.add_argument('--delta-radius', type=float, default=.05)
@@ -435,6 +436,8 @@ def parser():
     p.add_argument('--train-n', type=int, default=256)
     p.add_argument('--test-n', type=int, default=100)
     p.add_argument('--train-batch-size', type=int, default=1)
+    p.add_argument('--calibration-cache', choices=['auto', 'cpu', 'cuda'], default='auto',
+                   help='Cache calibration tensors on GPU when free VRAM safely permits')
     p.add_argument('--seed', type=int, default=3407)
     p.add_argument('--lr', type=float, default=1e-3)
     p.add_argument('--ft-lr', type=float, default=1e-5)
@@ -549,6 +552,11 @@ def main():
             with torch.no_grad():
                 z = pipe.vae.encode(load_image(path).cuda() * 2 - 1).latent_dist.mode() * pipe.vae.config.scaling_factor
                 natural_data.append((z.cpu(), empty))
+    from wmq_sleeper_calibration import cache_datasets_on_device
+    (model_data, natural_data, trajectory_data), cache_stats = cache_datasets_on_device(
+        [model_data, natural_data, trajectory_data], next(pipe.unet.parameters()).device,
+        args.calibration_cache)
+    print(f'Calibration cache: {cache_stats}', flush=True)
     manifest = {'watermark': 'SleeperMark', 'base_model': 'CompVis/stable-diffusion-v1-4',
         'reference_label': 'marked_reference_test', 'image_root': str(images), 'artifact_root': str(artifacts),
         'test_branches': [{'label': 'marked_reference_test', 'role': 'reference'}],
@@ -561,6 +569,7 @@ def main():
         'cfg_calibration': args.calibration_mode,
         'trajectory_records': len(trajectory_data),
         'trajectory_timesteps': sorted(set(record[3] for record in trajectory_data)),
+        'calibration_cache': cache_stats,
         'spatial_objective': 'Late-time aligned spatial teacher ensemble; balanced mode uses CFG prediction and declared loss normalization; not ownership oracle',
         'spatial_context': 'Independent TRAIN punctuation augmentation in balanced mode; no owner tokens or detector feedback',
         'conditional_rollout': 'Only conditional-minus-unconditional spatial defect is corrected; independent teacher/student DDIM paths; detached states between steps; ordinary TRAIN starting latents',

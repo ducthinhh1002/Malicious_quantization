@@ -8,6 +8,13 @@ chưa xong; không có lỗi OOM. Baseline đã hoàn tất cả 100 ảnh trigg
 ordinary: BA **99.5833%**, TPR **100/100**, ordinary detection **0/100**.
 Detector double-tail 48 bit, inclusive ≥36 hoặc ≤12, FPR tổng mục tiêu 0.001.
 
+Kết quả attack đầu tiên đã hoàn tất trong lúc review: `fixed_ptq_w4` đạt BA
+**99.0417%**, TPR **100/100**, ordinary detection **0/100**. Chất lượng ordinary
+PSNR/SSIM **20.338/0.704**, triggered **19.895/0.688**; chỉ 9/100 ảnh triggered
+qua đồng thời ngưỡng PSNR≥25 và SSIM≥0.8; joint success 0/100. So với fixed W4
+run trước (BA 99.333%, ordinary SSIM 0.682, triggered SSIM 0.679), MSE init tăng
+chất lượng một ít và giảm BA một ít, nhưng hoàn toàn chưa tạo evasion.
+
 | Nhánh | Thời gian TRAIN | Peak allocated VRAM | Chẩn đoán cuối TRAIN |
 |---|---:|---:|---|
 | CFG reconstruction W4 | 15.53 phút | 7.33 GiB | Mean-layer code-change 2.205% |
@@ -102,4 +109,23 @@ mới và tốt hơn nữa là key/checkpoint mới, không chọn lại checkpo
 Kiểm tra ban đầu: 24 test CPU pass, gồm UNet Diffusers thật, gradient checkpointing,
 export/restore trọng số, epsilon/v/sample roundtrip, triệt tiêu spatial bias độc
 lập conditioning, hai state teacher/student thực sự khác nhau ở bước hai, không
-lặp lại terminal timestep. Bash syntax pass. Các test không chứng minh attack mạnh.
+lặp lại terminal timestep. Bash syntax pass. CUDA smoke test trên H200 với UNet
+Diffusers nhỏ cũng pass: batch 2, bốn optimizer steps, hai DDIM transitions,
+24 ma trận thay đổi, trọng số gốc khôi phục đúng hash. Peak allocated 0.067 GiB
+là của model test nhỏ, **không phải** ước tính VRAM cho SD1.4 đầy đủ. Các test
+không chứng minh attack mạnh.
+
+Code cải tiến được kiểm tra trong worktree riêng trên server; job full cũ tiếp
+tục chạy đúng commit ban đầu. Chưa khởi chạy một sweep full thứ hai song song.
+
+Sau đó `conditional_rollout_qat` được khởi chạy song song trong tmux riêng. Hai
+process quan sát lúc calibration dùng tổng khoảng 11.6 GiB, GPU đạt 100%, còn
+trống khoảng 131.6 GiB. Điều này xác nhận không bị giới hạn VRAM, đồng thời cảnh
+báo rằng thêm process sẽ tranh compute; mục tiêu của parallel suite là giảm wall
+time toàn suite, không bảo đảm giảm thời gian từng branch.
+
+Launcher mới chạy các branch SleeperMark thành process độc lập. Số process được
+tính từ VRAM trống, phần dự phòng và ước lượng per-process; không kiểm tra tên GPU.
+Mỗi branch có log/result riêng, rồi tạo `parallel_summary.csv/json`. Calibration
+tensor được cache lên CUDA nếu phép kiểm tra dung lượng an toàn pass, bảo toàn
+shared tensor references. Batch size và optimizer budget không tự thay đổi.

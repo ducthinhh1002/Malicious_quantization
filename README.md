@@ -15,6 +15,30 @@ Muốn trở lại chính sách cũ: `--profile transfer -- --warm-checkpoint-po
 SleeperMark chạy `fixed_ptq`, `cfg_reconstruction`, `equivariance_qat` ở W4
 group 64, `delta_cfg_equivariance` với FP32 base + delta INT4 per-channel,
 và nhánh thử mới `conditional_rollout_qat` ở W4 group 64.
+Các nhánh SleeperMark mặc định chạy bằng các process CUDA độc lập, đồng thời theo
+VRAM đang trống. Trên GPU đủ lớn, cả năm nhánh chạy song song. Kết quả được gom
+vào `output_attack/sleeper_parallel_*/parallel_summary.csv`; log của mỗi nhánh nằm
+cùng suite. Concurrency được tính từ VRAM, không hardcode tên H200.
+
+```bash
+# Giới hạn rõ số process nếu đang dùng chung GPU
+bash run_blind_quantization.sh --watermark sleepermark --parallel-branches 2
+
+# Chế độ tuần tự cũ để debug hoặc GPU ít VRAM
+WMQ_SLEEPER_SEQUENTIAL=1 bash run_blind_quantization.sh --watermark sleepermark
+```
+
+Mặc định bộ điều phối dự phòng 8% tổng VRAM (ít nhất 8 GiB), ước lượng 12 GiB
+mỗi process và chỉ chạy tối đa số nhánh thực có. Có thể chỉnh ước lượng bằng
+`--parallel-vram-per-process-gib` và phần dự phòng bằng
+`--parallel-reserve-vram-gib`. Đây là cơ chế tránh OOM, không phải cam kết mỗi
+process thực sự dùng đúng 12 GiB. Chạy song song tăng throughput của cả suite;
+nếu một nhánh đơn đã bão hòa compute, thời gian riêng của nó có thể tăng.
+
+Calibration tensors mặc định được cache một lần trên GPU nếu kích thước ước tính,
+50% headroom và phần dự phòng 5% VRAM còn vừa. Việc này giảm copy lặp lại mà không
+đổi dữ liệu/loss. Dùng `--calibration-cache cpu` để tắt hoặc `cuda` để yêu cầu bắt
+buộc và dừng rõ ràng nếu không đủ bộ nhớ.
 `adversarial_equivariance_qat` giữ trong code nhưng không chạy mặc định sau khi
 run mới cho thấy không cải thiện. Nhánh delta dùng mục tiêu spatial trên CFG
 prediction và giữ nguyên marked UNet làm base; không tải model sạch thay thế.

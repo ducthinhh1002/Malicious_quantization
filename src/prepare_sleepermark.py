@@ -2,6 +2,7 @@
 import hashlib
 import importlib.util
 import json
+import os
 from pathlib import Path
 import urllib.request
 
@@ -9,6 +10,7 @@ REVISION = 'a78789cbac92ff5a63a2ad13885cf3893a3d9c4f'
 SOURCE_SHA256 = '2b5d6f24f89e1a3cbb7a78076865632a37677e7084b4dacc25b3f59e0d70c591'
 UNET_FOLDER = '1OnpVaXC6r1014oOambHETAPcF3-PILlw'
 OWNER_FOLDER = '1q-CQiqhSkYESqgfRAQC43-Z-CXsXqI2F'
+PREFLIGHT_ENV = 'WMQ_INTERNAL_SLEEPER_PROVENANCE_SHA256'
 
 
 def digest(path):
@@ -19,10 +21,32 @@ def digest(path):
     return h.hexdigest()
 
 
+def prepared_paths(root):
+    root = Path(root).resolve()
+    configs = [p for p in (root / 'unet_download').rglob('config.json')
+               if json.loads(p.read_text()).get('_class_name') == 'UNet2DConditionModel']
+    if len(configs) != 1:
+        raise ValueError(f'Expected one official UNet config, found {configs}')
+    def unique(name):
+        paths = list((root / 'owner').rglob(name))
+        if len(paths) != 1:
+            raise ValueError(f'Expected one {name}, found {paths}')
+        return paths[0]
+    return configs[0].parent, unique('decoder.pth'), unique('secret.pt'), root / 'watermarkModel.py'
+
+
 def prepare(root):
-    import gdown
     root = Path(root).resolve()
     root.mkdir(parents=True, exist_ok=True)
+    marker = root / 'provenance.json'
+    # Set only by the parent orchestrator after a full verification in the same
+    # launch. The marker token avoids both a lock race and repeated 3.4-GB hashes.
+    preflight = os.environ.get(PREFLIGHT_ENV)
+    if preflight:
+        if not marker.exists() or digest(marker) != preflight:
+            raise ValueError('SleeperMark preflight provenance token mismatch')
+        return prepared_paths(root)
+    import gdown
     # Exclusive lock directory: concurrent launchers cannot publish mixed assets.
     lock = root / '.preparing'
     try:
@@ -30,7 +54,6 @@ def prepare(root):
     except FileExistsError:
         raise RuntimeError(f'Asset preparation is already running; stale lock after a crash: {lock}')
     try:
-        marker = root / 'provenance.json'
         if marker.exists():
             data = json.loads(marker.read_text())
             for relative, expected in data['sha256'].items():
@@ -59,16 +82,7 @@ def prepare(root):
             tmp = marker.with_suffix('.tmp')
             tmp.write_text(json.dumps(data, indent=2))
             tmp.replace(marker)
-        configs = [p for p in (root / 'unet_download').rglob('config.json')
-                   if json.loads(p.read_text()).get('_class_name') == 'UNet2DConditionModel']
-        if len(configs) != 1:
-            raise ValueError(f'Expected one official UNet config, found {configs}')
-        def unique(name):
-            paths = list((root / 'owner').rglob(name))
-            if len(paths) != 1:
-                raise ValueError(f'Expected one {name}, found {paths}')
-            return paths[0]
-        return configs[0].parent, unique('decoder.pth'), unique('secret.pt'), root / 'watermarkModel.py'
+        return prepared_paths(root)
     finally:
         lock.rmdir()
 

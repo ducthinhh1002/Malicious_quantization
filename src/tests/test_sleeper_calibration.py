@@ -2,11 +2,25 @@ import unittest
 from types import SimpleNamespace
 import numpy as np
 import torch
-from wmq_sleeper_calibration import TimestepSampler, spatial_reconstruction_loss, augmented_prompts
+from wmq_sleeper_calibration import (TimestepSampler, spatial_reconstruction_loss,
+                                     augmented_prompts, cache_datasets_on_device)
 from wmq_sleeper_equivariance import predicted_x0
 
 
 class CalibrationTests(unittest.TestCase):
+    def test_cpu_cache_preserves_shared_tensor_identity(self):
+        shared = torch.randn(2, 3)
+        datasets, stats = cache_datasets_on_device(
+            [[(shared, 'a', 1), (shared, 'b', 2)], []], torch.device('cpu'), 'auto')
+        self.assertIs(datasets[0][0][0], datasets[0][1][0])
+        self.assertIs(datasets[0][0][0], shared)
+        self.assertEqual(stats['unique_tensors'], 1)
+        self.assertEqual(stats['device'], 'cpu')
+
+    def test_invalid_cache_mode(self):
+        with self.assertRaises(ValueError):
+            cache_datasets_on_device([], torch.device('cpu'), 'invalid')
+
     def test_stratified_coverage_and_reproducibility(self):
         data = [(None, None, '', t) for t in (1, 1, 20, 50, 50, 50)]
         a = TimestepSampler(data, np.random.default_rng(10))

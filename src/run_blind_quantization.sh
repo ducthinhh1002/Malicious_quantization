@@ -86,7 +86,15 @@ echo "Using Python: $PY"
 if [[ "${1:-}" == "--watermark" ]]; then
   [[ "${2:-}" == "sleepermark" ]] || { echo 'Supported explicit watermark: sleepermark' >&2; exit 2; }
   shift 2
-  exec "$PY" "$SCRIPT_DIR/wmq_sleepermark.py" "$@"
+  for argument in "$@"; do
+    if [[ "$argument" == "--help" || "$argument" == "-h" ]]; then
+      exec "$PY" "$SCRIPT_DIR/wmq_sleepermark.py" "$@"
+    fi
+  done
+  if [[ "${WMQ_SLEEPER_SEQUENTIAL:-0}" == "1" ]]; then
+    exec "$PY" "$SCRIPT_DIR/wmq_sleepermark.py" "$@"
+  fi
+  exec "$PY" "$SCRIPT_DIR/wmq_sleeper_parallel.py" "$@"
 fi
 
 if [[ "${1:-}" == "--help" || "${1:-}" == "-h" ]]; then
