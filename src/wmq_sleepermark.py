@@ -23,7 +23,8 @@ from wmq_blind import RoundingGrid, finetune_quantized_weight, pair_metrics, sav
 from prepare_sleepermark import prepare, load_extractor, digest
 
 EQUIV_METHODS = ('equivariance_qat', 'adversarial_equivariance_qat')
-CFG_METHODS = ('cfg_reconstruction', 'prefix_consistency_qat') + EQUIV_METHODS
+DELTA_METHODS = ('delta_cfg_equivariance',)
+CFG_METHODS = ('cfg_reconstruction', 'prefix_consistency_qat') + EQUIV_METHODS + DELTA_METHODS
 METHODS = ('fixed_ptq', 'model_reconstruction', 'natural_rounding', 'natural_finetune', 'natural_joint_finetune') + CFG_METHODS
 
 
@@ -55,7 +56,7 @@ def noise_target(scheduler, latent, noise, timestep):
 
 
 class QuantizedWeight(nn.Module):
-    def __init__(self, weight, finetune=False, group_size=0):
+    def __init__(self, weight, finetune=False, group_size=0, delta_radius=None):
         super().__init__()
         self.enabled = True
         self.quantized = True
@@ -65,7 +66,9 @@ class QuantizedWeight(nn.Module):
             self.weight = nn.Parameter(weight.detach().clone())
         else:
             from wmq_grouped_quant import GroupedW4
-            self.grid = GroupedW4(weight, group_size) if group_size else RoundingGrid(weight, 4, learn_scale=True)
+            from wmq_delta_quant import DeltaGrid
+            self.grid = (DeltaGrid(weight, 4, delta_radius) if delta_radius is not None else
+                         GroupedW4(weight, group_size) if group_size else RoundingGrid(weight, 4, learn_scale=True))
 
     def forward(self, original):
         if not self.enabled:
@@ -78,12 +81,12 @@ class QuantizedWeight(nn.Module):
         return self.grid(self.training)
 
 
-def attach(unet, names, finetune=False, group_size=0):
+def attach(unet, names, finetune=False, group_size=0, delta_radius=None):
     modules = []
     for name in names:
         parent, leaf = name.rsplit('.', 1)
         module = unet.get_submodule(parent)
-        adapter = QuantizedWeight(getattr(module, leaf), finetune, group_size)
+        adapter = QuantizedWeight(getattr(module, leaf), finetune, group_size, delta_radius)
         parametrize.register_parametrization(module, leaf, adapter)
         modules.append((module, leaf, adapter))
     return modules
@@ -124,13 +127,15 @@ def load_image(path):
         return torch.from_numpy(np.asarray(image).copy()).permute(2, 0, 1).float().div(255).unsqueeze(0)
 
 
-def train_branch(pipe, scheduler, dataset, names, method, args, output):
+def train_branch(pipe, scheduler, dataset, names, method, args, output, artifact_output=None):
     device = next(pipe.unet.parameters()).device
     is_finetune = method in ('natural_finetune', 'natural_joint_finetune')
-    modules = attach(pipe.unet, names, is_finetune, getattr(args, "quant_group_size", 0))
+    delta_branch = method in DELTA_METHODS
+    modules = attach(pipe.unet, names, is_finetune, getattr(args, "quant_group_size", 0),
+                     args.delta_radius if delta_branch else None)
     params = [p for _, _, adapter in modules for p in adapter.parameters() if p.requires_grad]
-    optimizer = torch.optim.AdamW(params, lr=args.ft_lr if is_finetune else args.lr,
-                                 weight_decay=0, foreach=False)
+    optimizer = torch.optim.AdamW(params, lr=args.delta_lr if delta_branch else args.ft_lr if is_finetune else args.lr,
+                                 weight_decay=0, foreach=False, eps=1e-12 if delta_branch else 1e-8)
     pipe.unet.train()
     # Parametrizations remain attached during recomputation; unlike functional_call,
     # native diffusers gradient checkpointing sees the same weights on backward.
@@ -140,7 +145,7 @@ def train_branch(pipe, scheduler, dataset, names, method, args, output):
     auxiliary_order = np.random.default_rng(args.seed + 7919)
     rows = []
     cfg = method in CFG_METHODS
-    equiv = method in EQUIV_METHODS
+    equiv = method in (*EQUIV_METHODS, *DELTA_METHODS)
     empty = encode_text(pipe, ['']).detach() if cfg else None
     trajectory = cfg and bool(dataset) and len(dataset[0]) == 4
     late_indices = ([i for i, item in enumerate(dataset)
@@ -200,11 +205,18 @@ def train_branch(pipe, scheduler, dataset, names, method, args, output):
                     if method == 'adversarial_equivariance_qat' and step % args.probe_every == 0 and ramp > 0:
                         context, spatial_metrics = probe_condition(pipe.unet, late_z, late_t, context,
                             shift, scheduler, args.probe_radius, args.probe_steps, args.probe_tokens, rng)
-                    target_x0, diagnostics = spatial_target(pipe.unet, late_z, late_t, context,
-                        shift, scheduler, args.max_spatial_correction)
+                    if delta_branch:
+                        from wmq_sleeper_equivariance import guided_spatial_target, guided_prediction
+                        late_empty = empty.expand(len(late_z), -1, -1)
+                        target_x0, diagnostics = guided_spatial_target(pipe.unet, late_z, late_t,
+                            context, late_empty, shift, scheduler, args.max_spatial_correction)
+                    else:
+                        target_x0, diagnostics = spatial_target(pipe.unet, late_z, late_t, context,
+                            shift, scheduler, args.max_spatial_correction)
                     spatial_metrics.update(diagnostics)
                     switch(modules)
-                    prediction = pipe.unet(late_z, late_t, encoder_hidden_states=context).sample
+                    prediction = (guided_prediction(pipe.unet, late_z, late_t, context, late_empty)
+                                  if delta_branch else pipe.unet(late_z, late_t, encoder_hidden_states=context).sample)
                     student_x0 = predicted_x0(prediction, late_z, late_t, scheduler)
                     spatial_loss = args.spatial_weight * ramp * F.mse_loss(student_x0, target_x0)
                     spatial_loss.backward()
@@ -222,6 +234,9 @@ def train_branch(pipe, scheduler, dataset, names, method, args, output):
                     losses.append(prefix_loss.detach())
                 torch.nn.utils.clip_grad_norm_(params, 1., error_if_nonfinite=True)
                 optimizer.step()
+                if delta_branch:
+                    for _, _, adapter in modules:
+                        adapter.grid.clamp_parameters()
                 if (step + 1) % args.log_every == 0 or step + 1 == count:
                     row = {'method': method, 'step': step + 1,
                            'ordinary_cfg_loss': float(losses[0]),
@@ -230,6 +245,13 @@ def train_branch(pipe, scheduler, dataset, names, method, args, output):
                            'logical_unet_forwards': forward_calls[0],
                            'peak_allocated_gib': torch.cuda.max_memory_allocated() / 2**30 if device.type == 'cuda' else 0.,
                            **{k: float(v) for k, v in spatial_metrics.items()}}
+                    if delta_branch:
+                        with torch.no_grad():
+                            grids = [adapter.grid for _, _, adapter in modules]
+                            count_weights = sum(g.source.numel() for g in grids)
+                            row['delta_nonzero_code_fraction'] = float(sum(g.codes().ne(0).sum() for g in grids) / count_weights)
+                            row['delta_weight_rms'] = float((sum((g.codes() * g.scale).square().sum() for g in grids) / count_weights).sqrt())
+                            row['optimizer_epsilon'] = 1e-12
                     rows.append(row)
                     save_csv(output / f'{method}_training.csv', rows)
                     print(row, flush=True)
@@ -259,7 +281,16 @@ def train_branch(pipe, scheduler, dataset, names, method, args, output):
                 print(row, flush=True)
         pipe.unet.eval()
         switch(modules)
-        result = {method + '_w4': snapshot(pipe.unet, names)}
+        label = method + ('_fp32base_delta4' if delta_branch else '_w4')
+        result = {label: snapshot(pipe.unet, names)}
+        if delta_branch and artifact_output is not None:
+            from safetensors.torch import save_file
+            tensors = {}
+            for name, (_, _, adapter) in zip(names, modules):
+                grid = adapter.grid
+                tensors[name + '.codes'] = grid.codes().detach().to(torch.int8).cpu().contiguous()
+                tensors[name + '.scale'] = grid.scale.detach().cpu().contiguous()
+            save_file(tensors, str(Path(artifact_output) / (label + '_delta.safetensors')))
         if is_finetune:
             switch(modules, quantized=False)
             result[method + '_fp32'] = snapshot(pipe.unet, names)
@@ -309,7 +340,9 @@ def parser():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('--steps', type=int, default=2000)
     p.add_argument('--methods', nargs='+', choices=METHODS,
-                   default=['fixed_ptq', 'cfg_reconstruction', *EQUIV_METHODS])
+                   default=['fixed_ptq', 'cfg_reconstruction', 'equivariance_qat', *DELTA_METHODS])
+    p.add_argument('--delta-radius', type=float, default=.05)
+    p.add_argument('--delta-lr', type=float, default=.01)
     p.add_argument('--quant-group-size', type=int, default=64, help='0 reproduces legacy channel quantization')
     p.add_argument('--prefix-weight', type=float, default=.25)
     p.add_argument('--calibration-mode', choices=['trajectory', 'renoised'], default='trajectory')
@@ -356,7 +389,9 @@ def main():
             or not all(np.isfinite(v) and v >= 0 for v in
                        (args.spatial_weight, args.max_spatial_correction, args.probe_radius))):
         p.error('Invalid spatial/probe calibration settings')
-    if any(m in EQUIV_METHODS for m in args.methods) and args.calibration_mode != 'trajectory':
+    if min(args.delta_radius, args.delta_lr) <= 0 or not np.isfinite([args.delta_radius, args.delta_lr]).all():
+        p.error('Delta radius and learning rate must be finite and positive')
+    if any(m in (*EQUIV_METHODS, *DELTA_METHODS) for m in args.methods) and args.calibration_mode != 'trajectory':
         p.error('Spatial QAT requires --calibration-mode trajectory')
     if len(set(args.methods)) != len(args.methods):
         p.error('Duplicate methods')
@@ -450,7 +485,8 @@ def main():
         'probe_objective': 'Continuous context spatial-defect maximization; no trigger recovery claim',
         'prefix_calibration': 'TRAIN prompts with independently sampled punctuation; no owner trigger used',
         'quantization_group_size': args.quant_group_size,
-        'precision': 'FP32 activations; W4 fake quantization only on selected matrices',
+        'precision': 'FP32 activations; full W4 and FP32-base + delta4 are separate intervention classes',
+        'delta_base': 'Immutable marked UNet; not an unwatermarked checkpoint; no FP32 fine-tuning intermediate',
         'training_timesteps': 'CFG: uniform cached trajectory records (or renoised legacy); spatial auxiliary: late records; natural: uniform DDPM',
         'train_prompts': train_prompts, 'test_prompts': test_prompts,
         'natural_train_files': natural_files, 'original_unet_sha256': original_hash,
@@ -465,17 +501,25 @@ def main():
         dataset = (trajectory_data if method in CFG_METHODS and args.calibration_mode == 'trajectory' else
                    model_data if method in ('model_reconstruction', *CFG_METHODS) else natural_data)
         states = train_branch(pipe, scheduler, dataset,
-                              names, method, args, output)
+                              names, method, args, output, artifacts)
         for label, state in states.items():
             changed = sum(not torch.equal(state[n], original[n]) for n in names)
-            if not changed:
+            if not changed and method not in DELTA_METHODS:
                 raise RuntimeError(f'{label} did not modify the UNet')
             path = artifacts / (label + '.safetensors')
             save_file(state, str(path))
             checkpoints[label] = {'path': str(path), 'sha256': digest(path), 'changed_matrices': changed}
+            if method in DELTA_METHODS:
+                delta_path = artifacts / (label + '_delta.safetensors')
+                checkpoints[label]['delta_codes'] = {'path': str(delta_path), 'sha256': digest(delta_path),
+                    'base_unet_sha256': original_hash, 'base_precision': 'fp32', 'delta_bits': 4,
+                    'quantization_grouping': 'per_output_channel', 'whole_model_w4': False}
             manifest['test_branches'].append({'label': label, 'role': 'attack',
-                'threat_model': ('restricted_weight_finetune' if label.endswith('_fp32') else
-                                'restricted_weight_finetune_plus_quantization') if 'finetune' in label else 'quantizer_only'})
+                'identity_intervention': changed == 0,
+                'representation': 'fp32_base_plus_delta4' if method in DELTA_METHODS else 'fp32' if label.endswith('_fp32') else 'selected_weights_w4',
+                'threat_model': ('frozen_marked_fp32_base_plus_quantized_delta' if method in DELTA_METHODS else
+                                (('restricted_weight_finetune' if label.endswith('_fp32') else
+                                  'restricted_weight_finetune_plus_quantization') if 'finetune' in label else 'quantizer_only'))})
         del states
         release_branch_memory('cuda')
     restore(pipe.unet, original)
@@ -498,7 +542,9 @@ def main():
                 raise ValueError('Frozen UNet checkpoint changed')
             restore(pipe.unet, load_file(info['path']))
         generate(pipe, triggered, images / label, args)
-        row = {'label': label, **owner_scores(pipe, extractor, key, images / label, args.fpr, args.seed)}
+        row = {'label': label, 'representation': branch.get('representation', 'marked_reference'),
+               'identity_intervention': branch.get('identity_intervention', label == 'marked_reference_test'),
+               **owner_scores(pipe, extractor, key, images / label, args.fpr, args.seed)}
         # Untriggered outputs measure ordinary utility and supply empirical false positives.
         ordinary = images / (label + '_ordinary')
         generate(pipe, test_prompts, ordinary, args)

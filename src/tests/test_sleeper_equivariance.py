@@ -7,7 +7,7 @@ import torch
 from torch import nn
 from torch.utils.checkpoint import checkpoint
 from wmq_sleeper_equivariance import (predicted_x0, spatial_target, probe_condition,
-                                     TrajectoryCapture, interior)
+                                     TrajectoryCapture, interior, guided_spatial_target, guided_prediction)
 
 torch.set_num_threads(2)
 
@@ -58,6 +58,18 @@ class SpatialTests(unittest.TestCase):
         torch.testing.assert_close(result[:, 3:], self.c[:, 3:])
         self.assertTrue(((result-self.c).flatten(1).norm(dim=1) <= .2*self.c[:, 1:3].flatten(1).norm(dim=1)+1e-6).all())
         self.assertFalse(result.requires_grad)
+
+    def test_guided_target_matches_inference_cfg_and_caps_correction(self):
+        model = ToySpatialModel()
+        empty = self.c * 0
+        base = guided_prediction(model, self.x, self.t, self.c, empty)
+        torch.testing.assert_close(base, self.x + 7.5*(model(self.x, self.t, self.c).sample-self.x))
+        target, info = guided_spatial_target(model, self.x, self.t, self.c, empty,
+                                            (1, 0), self.scheduler, .25)
+        self.assertLessEqual(float(info['correction_rms']), .250001)
+        self.assertLess(float(interior(target-self.x, (1, 0)).square().mean()),
+                        float(interior(base-self.x, (1, 0)).square().mean()))
+        self.assertFalse(target.requires_grad)
 
     def test_capture_pre_forward_and_close(self):
         model = ToySpatialModel()

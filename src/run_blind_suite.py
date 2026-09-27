@@ -33,13 +33,14 @@ FULL_METHODS = ["--methods", "fixed_ptq", "qk_rotation_ptq", "reconstruction", "
                 "natural_random_subspace", "natural_frequency_subspace", "natural_contrastive_subspace", "natural_teacher_rounding",
                 "--finetune-rtn-bits", "4"]
 TRANSFER_METHODS = ["--methods", "fixed_ptq", "reconstruction", "--natural-methods",
-    "natural_rounding", "natural_residual", "natural_residual_qat_warm", "natural_full_finetune", "natural_joint_finetune", "natural_teacher_rounding",
-    # natural_joint_quality_finetune remains available for explicit experiments.
+    "natural_rounding", "natural_residual", "natural_residual_qat_warm", "natural_delta_residual",
+    # FP32 fine-tuning and its purified-teacher dependency are opt-in only.
     "--warm-qat-mode", "centered_scale",
+    "--warm-checkpoint-policy", "final",
     "--quant-refinement", "balanced", "--quant-selection-start", ".5",
     "--residual-basis", "contrastive", "--reconstruction-learn-scale",
-    "--finetune-rtn-bits", "4", "--quality-constraint", "off", "--quality-policy", "constrained",
-    "--gradient-diagnostics-every", "100", "--teacher-checkpoint-policy", "final"]
+    "--quality-constraint", "off", "--quality-policy", "constrained",
+    "--gradient-diagnostics-every", "100"]
 
 
 def configuration(profile, preserve_weight=.5):
@@ -86,6 +87,9 @@ def collect(run):
             "budget_psnr": manifest['args'].get('budget_psnr'),
             "shares_training_with": selected.get('shares_training_with'),
             "selected_step": selected.get('step'),
+            "checkpoint_policy": selected.get('checkpoint_policy'),
+            "parameter_space": selected.get('parameter_space'),
+            "proxy_preferred_candidate": selected.get('proxy_preferred_candidate'),
             "quant_refinement": selected.get('quant_refinement'),
             "quant_selection_start": selected.get('quant_selection_start'),
             "quant_quality_weight": selected.get('quant_quality_weight'),

@@ -1,15 +1,25 @@
 # Hướng dẫn chạy thí nghiệm malicious quantization cho watermark diffusion
 
-**Sau run Stable Signature `20260926_122550`:** [bảng kết quả và cải tiến toàn bộ nhánh quantization đang chạy](survey/Review_StableSignature_20260926_122550_VI.md).
-Profile `transfer` bật `quant-refinement=balanced`: mở rộng mã/scale cho natural, residual, warm-QAT và teacher; không sửa huấn luyện fine-tune.
+**Cấu hình hiện hành, 27/09/2026:** `transfer` không chạy bất kỳ nhánh FP32
+fine-tune nào, không chạy fine-tune → RTN và không tạo purified teacher ngầm.
+Các implementation này vẫn có trong `science`/`full` hoặc lệnh tường minh.
 
-**Cập nhật mặc định:** bỏ `natural_joint_quality_finetune` khỏi profile `transfer` (giữ implementation).
-Thay bằng `natural_residual_qat_warm --warm-qat-mode centered_scale`: học mã W4 và scale từ residual, có phạt chất lượng.
-SleeperMark mặc định: `fixed_ptq`, `cfg_reconstruction`, `equivariance_qat`, `adversarial_equivariance_qat`, group W4=64.
-Calibration lấy latent trên trajectory thật; nhánh mới thử spatial consistency ở timestep thấp và tìm context khó bằng gradient.
-Xem [survey chi tiết, công thức và ablation](survey/SleeperMark_Spatial_QAT_Survey_VI.md).
-Đây là các thử nghiệm mới, **chưa có bằng chứng cải thiện watermark trên GPU**.
-Xem [kết quả SleeperMark và thiết kế mới](survey/Review_SleeperMark_WarmQAT_20260926.md).
+Stable Signature chạy `fixed_ptq`, `reconstruction`, `natural_rounding`,
+`natural_residual`, `natural_residual_qat_warm` ở W4, thêm nhánh thử
+`natural_delta_residual` với **FP32 base + delta INT4**. Nhánh cuối không phải
+whole-model W4 và được báo trong comparison group riêng.
+Warm-QAT mặc định dùng `--warm-checkpoint-policy final`: checkpoint cuối ngân sách
+2.000 bước, không chọn theo owner TEST. SEARCH vẫn được ghi để phân tích.
+Muốn trở lại chính sách cũ: `--profile transfer -- --warm-checkpoint-policy search`.
+
+SleeperMark chạy `fixed_ptq`, `cfg_reconstruction`, `equivariance_qat` ở W4
+group 64 và `delta_cfg_equivariance` với FP32 base + delta INT4 per-channel.
+`adversarial_equivariance_qat` giữ trong code nhưng không chạy mặc định sau khi
+run mới cho thấy không cải thiện. Nhánh delta dùng mục tiêu spatial trên CFG
+prediction và giữ nguyên marked UNet làm base; không tải model sạch thay thế.
+
+[Phân tích kết quả, DeltaZip và giới hạn nhánh mới](survey/Review_Delta_Warm_Sleeper_20260927_VI.md).
+**Chưa có kết quả GPU của các nhánh delta; không bảo đảm chúng làm yếu watermark.**
 
 **Chạy cả hai watermark bằng một lệnh:**
 
@@ -83,17 +93,16 @@ launcher loại partial branch, chạy GC + CUDA cache/IPC cleanup rồi vẫn t
 evaluation cho các checkpoint đã đóng băng. Cleanup không thể giải phóng VRAM của
 process khác; hãy chạy `nvidia-smi` trước khi khởi động suite.
 
-**Sau review run `20260923_171848`:** profile `transfer` giữ joint fine-tune cũ và
+**Lịch sử run `20260923_171848`, không còn là mặc định:** profile `transfer` từng giữ joint fine-tune cũ và
 thêm `natural_joint_quality_finetune` + bản RTN W4. Nhánh mới phạt riêng từng ảnh
 generated TRAIN có PSNR dưới `min_image_psnr` (mặc định 25 dB) hoặc SSIM dưới
 `min_ssim` (0.80), cho cả FP32/W4. Trọng số `--joint-quality-weight` mặc định 0.01;
 SEARCH thêm cùng penalty, không dùng owner TEST. Giữ nguyên quality gate và
 tiếp tục ghi kết quả nếu không đạt. Nhánh này vẫn ngoài threat model quantizer-only.
-Hai warm-QAT không còn trong `transfer` vì chưa cải thiện run này; vẫn có trong
-`science`/lệnh tường minh. Các mô tả transfer cũ bên dưới là cấu hình lịch sử.
+Warm-QAT hiện đã được bật lại theo cấu hình đầu README; các nhánh fine-tune đã tắt.
 Xem [review và hướng cải tiến](survey/Review_20260923_171848_VI.md).
 
-**Thử nghiệm qua đêm:** `bash run_blind_quantization.sh --profile transfer` hiện thêm
+**Thử nghiệm fine-tune tùy chọn trong `science`:**
 `natural_joint_finetune`: fine-tune decoder bằng cả reconstruction FP32 và W4,
 kèm cycle latent qua encoder cố định. Nhánh xuất riêng FP32 và
 `natural_joint_finetune_rtn_w4` rồi tự owner-evaluate cùng các đối chứng.
@@ -103,8 +112,8 @@ Mỗi bước cần thêm lượt decoder/encoder nên chi phí cao hơn. Code c
 ghi nhận nếu không đạt quality gate. Chi tiết và ablation:
 [Joint FP32/W4 fine-tuning](survey/Joint_Finetune_VI.md).
 
-Nhánh thử nghiệm mới trong `transfer` và `science`: `natural_residual_cycle_qat_warm`.
-Chạy `bash run_blind_quantization.sh --profile transfer` để so với warm-QAT cũ cùng W4,
+Nhánh tùy chọn trong `science`: `natural_residual_cycle_qat_warm`.
+Chạy `bash run_blind_quantization.sh --profile science` để so với warm-QAT cùng W4,
 2.000 bước và ngưỡng SSIM trung bình 0.80. Nhánh này khởi tạo từ cùng residual W4
 đã chọn trên SEARCH, thêm loss encode(decode(z)) khớp latent tự nhiên ban đầu.
 Encoder cố định, gradient truyền qua encoder về quantizer; không dùng key/extractor.
@@ -124,17 +133,17 @@ Chỉ cần chạy:
 bash run_blind_quantization.sh
 ```
 
-Mặc định tương đương:
+Mặc định chạy tuần tự hai tác vụ:
 
 ```bash
-bash run_blind_quantization.sh --profile science --seeds 3407 --preservation-weights 0.5
+bash run_blind_quantization.sh --profile transfer --seeds 3407 --preservation-weights 0.5
+bash run_blind_quantization.sh --watermark sleepermark
 ```
 
-Mặc định mới là một run W4 với đầy đủ đối chứng khoa học, thay cho ba mức
+Mặc định là một seed 3407, preservation weight 0.5, thay cho ba mức
 preservation cũ. [Protocol và lệnh chi tiết](survey/Scientific_Ablations_VI.md)
 ghi rõ các nhánh, ngưỡng chất lượng, sweep và đánh giá trên key/checkpoint mới.
-Các mục bên dưới có ghi ngày cũ mô tả cấu hình lịch sử; cấu hình `science` mới
-được ưu tiên khi chạy không truyền flag.
+Các mục có ghi ngày cũ mô tả cấu hình lịch sử; bảng cấu hình đầu README được ưu tiên.
 Mọi nhánh hiện dùng SSIM **trung bình ≥0.80** và các ngưỡng PSNR hiện có.
 `science`/`transfer` không tự bật dual budget theo từng ảnh; nếu bật tường minh,
 `budget_ssim` mặc định cũng là 0.80 với tối đa 10% ảnh vi phạm. Ngưỡng 0.80
@@ -144,28 +153,25 @@ Mặc định research/science hiện là **2.000 update/nhánh**, gồm roundin
 và fine-tune; tập natural TRAIN vẫn là **4.000 ảnh**, batch 4. Nhánh mới
 `natural_teacher_rounding` dùng checkpoint FP32 đã chọn bằng SEARCH làm teacher,
 rồi học rounding trên trọng số fingerprint gốc. Teacher được dùng chung với
-đối chứng FP32, không train thêm một lần. `bash run_blind_quantization.sh`
-tự bao gồm nhánh này và owner evaluation.
+đối chứng FP32, không train thêm một lần. Đây là nhánh tùy chọn trong `science`,
+không có trong lệnh mặc định hoặc `transfer`.
 Profile `pilot` vẫn có ngân sách nhỏ để kiểm tra nhanh.
 
 Tất cả profile mặc định chỉ chạy **W4** cho các nhánh lượng tử hóa. W8 vẫn có
 trong code dự phòng nhưng phải bật tường minh bằng `--bits 8` (suite: sau `--`).
-Teacher và đối chứng FP32 vẫn cần cho thí nghiệm. Các script legacy cũng mặc
+Teacher và đối chứng FP32 chỉ chạy khi chọn profile/lệnh có chúng. Các script legacy cũng mặc
 định W4; `WMQ_SEARCH_BITS` chỉ dùng để chủ động thay bitwidth trong legacy grid.
 
 Để kiểm tra teacher → quantizer trước khi chạy bộ ablation lớn:
 
 ```bash
-bash run_blind_quantization.sh --profile transfer
+bash run_blind_quantization.sh --profile science
 ```
 
-Profile này giữ các đối chứng fixed W4, reconstruction W4, natural rounding,
-residual W4, residual → QAT W4, FP32 teacher, fine-tune → RTN W4 và teacher → rounding W4; vẫn 2.000
-step và tự evaluate. Student dùng **checkpoint cuối đã định trước** của FP32
-teacher làm mục tiêu, kể cả khi checkpoint FP32 được chọn theo ngưỡng chất lượng
-là step 0. Chỉ student đạt ngưỡng mới được coi là kết quả hợp lệ; FP32 cuối
-vẫn báo riêng nếu không đạt. `science` tiếp tục dùng teacher được chọn trên SEARCH
-để giữ đối chứng, cùng đầy đủ random/DCT/contrastive ablation.
+`science` có đối chứng FP32, fine-tune → RTN W4 và teacher → rounding W4;
+vẫn 2.000 step và tự evaluate. Teacher mặc định được chọn trên SEARCH,
+có thể đặt `--teacher-checkpoint-policy final` để dùng bước cuối định trước.
+Profile này còn có random/DCT/contrastive ablation; không phải lệnh chạy mặc định.
 `teacher_target_diagnostics.json` báo checkpoint và độ khác biệt teacher–model gốc
 trên TRAIN/SEARCH. Đây là lựa chọn chỉ dựa trên ngân sách đã khai báo, không dùng
 owner TEST để chọn teacher.

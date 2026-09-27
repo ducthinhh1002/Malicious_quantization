@@ -43,6 +43,37 @@ def cap_rms(delta, limit):
     return delta * (limit / rms).clamp(max=1).reshape(-1, 1, 1, 1)
 
 
+def guided_prediction(unet, sample, timesteps, condition, unconditional, guidance=7.5):
+    """Sequential passes keep peak activation memory bounded."""
+    uncond = unet(sample, timesteps, encoder_hidden_states=unconditional).sample
+    cond = unet(sample, timesteps, encoder_hidden_states=condition).sample
+    return uncond + guidance * (cond - uncond)
+
+
+@torch.no_grad()
+def guided_spatial_target(unet, sample, timesteps, condition, unconditional,
+                          shift, scheduler, max_correction):
+    """Align the proxy with actual CFG inference; still no ownership oracle."""
+    def x0(value):
+        pred = guided_prediction(unet, value, timesteps, condition, unconditional)
+        return predicted_x0(pred, value, timesteps, scheduler)
+    base = x0(sample)
+    aligned = []
+    for offset in (shift, tuple(-v for v in shift)):
+        shifted = torch.roll(sample, offset, dims=(-2, -1))
+        aligned.append(torch.roll(x0(shifted), tuple(-v for v in offset), dims=(-2, -1)))
+    correction = highpass((aligned[0] + aligned[1]) * .5 - base)
+    interior(correction, shift)
+    margin = max(abs(v) for v in shift) + 2
+    mask = torch.zeros_like(correction)
+    mask[..., margin:-margin, margin:-margin] = 1
+    correction = cap_rms(correction * mask, max_correction)
+    return (base + correction).detach(), {
+        'correction_rms': correction.square().mean().sqrt(),
+        'teacher_spatial_defect': interior(highpass(aligned[0] - base), shift).square().mean(),
+        'spatial_uses_guided_prediction': sample.new_tensor(1.)}
+
+
 @torch.no_grad()
 def spatial_target(unet, sample, timesteps, condition, shift, scheduler, max_correction):
     base = predicted_x0(unet(sample, timesteps, encoder_hidden_states=condition).sample,

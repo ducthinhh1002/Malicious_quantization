@@ -11,7 +11,7 @@ from torch import nn
 from torch.utils.checkpoint import checkpoint
 
 from wmq_sleepermark import (attach, detach, switch, snapshot, restore, selected_weights,
-                            noise_target, state_hash, train_branch, METHODS, EQUIV_METHODS, parser)
+                            noise_target, state_hash, train_branch, METHODS, EQUIV_METHODS, DELTA_METHODS, parser)
 from wmq_fid import feature_fid
 
 torch.set_num_threads(2)
@@ -65,7 +65,7 @@ class SleeperMarkTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp, patch('wmq_sleepermark.encode_text',
                 side_effect=lambda pipe, prompts: torch.zeros(len(prompts), 1, 8)):
             for method in METHODS:
-                if method in EQUIV_METHODS:
+                if method in EQUIV_METHODS or method.startswith('delta_'):
                     continue  # Spatial branches use a spatial UNet in the integration test below.
                 result = train_branch(SimpleNamespace(unet=self.unet), scheduler, data,
                                       self.names, method, args, Path(tmp))
@@ -119,12 +119,20 @@ class SleeperMarkTests(unittest.TestCase):
                                     '--probe-every', '1', '--probe-steps', '1'])
         with tempfile.TemporaryDirectory() as tmp, patch('wmq_sleepermark.encode_text',
                 side_effect=lambda pipe, prompts: torch.zeros(len(prompts), 3, 8)):
-            for method in ('natural_rounding', 'natural_joint_finetune', 'cfg_reconstruction', *EQUIV_METHODS):
-                dataset = [(*row, 1) for row in data] if method in ('cfg_reconstruction', *EQUIV_METHODS) else data
+            for method in ('natural_rounding', 'natural_joint_finetune', 'cfg_reconstruction', *EQUIV_METHODS, *DELTA_METHODS):
+                dataset = [(*row, 1) for row in data] if method in ('cfg_reconstruction', *EQUIV_METHODS, *DELTA_METHODS) else data
+                args.delta_lr = 1.  # Cross an integer cell in the two-step smoke test.
                 result = train_branch(SimpleNamespace(unet=unet), DDPMScheduler(num_train_timesteps=10),
-                                      dataset, names, method, args, Path(tmp))
+                                      dataset, names, method, args, Path(tmp), Path(tmp))
                 self.assertEqual(before, state_hash(unet))
-                exported = result[method + '_w4']
+                label = method + ('_fp32base_delta4' if method in DELTA_METHODS else '_w4')
+                exported = result[label]
+                if method in DELTA_METHODS:
+                    from safetensors.torch import load_file
+                    codes = load_file(str(Path(tmp) / (label + '_delta.safetensors')))
+                    for name in names:
+                        rebuilt = original[name] + codes[name+'.codes'].float()*codes[name+'.scale']
+                        torch.testing.assert_close(rebuilt, exported[name], rtol=0, atol=0)
                 restore(unet, exported)
                 self.assertNotEqual(before, state_hash(unet))
                 restore(unet, original)

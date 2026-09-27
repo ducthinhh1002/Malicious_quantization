@@ -26,17 +26,18 @@ from wmq_diagnostics import quality_warning
 from wmq_runtime import batches, batch_size, DataCache, all_finite, EVENTS, BATCH_LIMITS, image01, decoded01
 from wmq_objectives import spectral_loss, NaturalDiscriminator, discriminator_update
 from wmq_science import QualityBudget, audit_prompt_protocol
+from wmq_delta_quant import DeltaGrid
 
 FLOAT_METHODS = ("natural_full_finetune", "natural_gan_finetune", "natural_joint_finetune", "natural_joint_quality_finetune")
 QAT_METHODS = ("natural_qat_purification", "natural_residual_qat", "natural_residual_qat_warm",
                "natural_residual_cycle_qat_warm", "natural_qat_scale", "natural_gan_qat")
 RESIDUAL_METHODS = ("natural_residual", "natural_residual_qat", "natural_residual_qat_warm",
                     "natural_residual_cycle_qat_warm", "natural_random_subspace",
-                    "natural_frequency_subspace", "natural_contrastive_subspace")
+                    "natural_frequency_subspace", "natural_contrastive_subspace", "natural_delta_residual")
 NATURAL_METHODS = ("natural_rounding", "natural_rounding_scale", "natural_residual",
                    *QAT_METHODS, *FLOAT_METHODS, "natural_spectral",
                    "natural_random_subspace", "natural_frequency_subspace", "natural_contrastive_subspace",
-                   "natural_teacher_rounding")
+                   "natural_teacher_rounding", "natural_delta_residual")
 REFINED_METHODS = ('natural_rounding', 'natural_residual', 'natural_teacher_rounding',
                    'natural_residual_qat_warm')
 
@@ -561,7 +562,8 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
         if args.steps < len(block_groups):
             raise ValueError("Block reconstruction requires at least one step per block")
     pristine = {k: v.detach().clone() for k, v in vae.decoder.state_dict().items()}
-    refined = args.quant_refinement == 'balanced' and method in REFINED_METHODS
+    delta_branch = method == 'natural_delta_residual'
+    refined = delta_branch or (args.quant_refinement == 'balanced' and method in REFINED_METHODS)
     qat_branch = method in QAT_METHODS or refined
     float_branch = method in FLOAT_METHODS
     joint_branch = method in ('natural_joint_finetune', 'natural_joint_quality_finetune')
@@ -572,7 +574,8 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
     joint_names = set(select_names(vae, args.scope)) if joint_branch else set()
     gan_branch = method in ("natural_gan_qat", "natural_gan_finetune")
     spectral_weight = args.spectral_weight if method == "natural_spectral" else 0.
-    grids = nn.ModuleList([FloatWeight(vae.decoder.get_parameter(k)) if float_branch else RoundingGrid(vae.decoder.get_parameter(k), bits, clip,
+    grids = nn.ModuleList([FloatWeight(vae.decoder.get_parameter(k)) if float_branch else
+                           DeltaGrid(vae.decoder.get_parameter(k), bits, args.delta_radius * clip) if delta_branch else RoundingGrid(vae.decoder.get_parameter(k), bits, clip,
                            learn_scale=(method in ("rounding_scale", "natural_rounding_scale", "natural_qat_scale")
                                         or (method == 'reconstruction' and args.reconstruction_learn_scale)),
                            learn_code_offsets=qat_branch) for k in names]).to(device)
@@ -597,7 +600,7 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
         if warm_enhanced and not refined:
             for grid in grids:
                 grid.center_on_warm_codes()
-    elif refined:
+    elif refined and not delta_branch:
         for grid in grids:
             grid.center_on_warm_codes()
     steering_layers = getattr(args, '_steering_layers', None) if method.startswith('natural_') and not float_branch else None
@@ -701,16 +704,20 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
                     changed, trust, multicell = stats.cpu().tolist()
                     metrics.update(code_change_fraction_vs_rtn=changed, code_offset_rms=math.sqrt(trust),
                                    code_offset_ge_one_fraction=multicell)
+                    if delta_branch:
+                        metrics.pop('code_change_fraction_vs_rtn')
+                        metrics['delta_nonzero_code_fraction'] = changed
                     if warm_enhanced or refined:
                         metrics['code_change_fraction_vs_warm'] = float(sum(
-                            ((g(False) / g.scale).round() != g.warm_center).sum() for g in grids) / count)
+                            ((g.codes() if delta_branch else (g(False) / g.scale).round()) != g.warm_center).sum() for g in grids) / count)
                         metrics['scale_log_rms'] = float(torch.stack([g.log_scale.detach().square().mean() for g in grids]).mean().sqrt())
                         if refined:
                             metrics['code_change_fraction_vs_start'] = metrics['code_change_fraction_vs_warm']
             metrics.setdefault("selection_objective", metrics["target_mse"])
         finally:
             vae.decoder.load_state_dict(pristine)
-        row = {"candidate": f"{method}_w{bits}_c{clip}_step{step}", "source": source,
+        representation = f'fp32base_delta{bits}' if delta_branch else f'w{bits}'
+        row = {"candidate": f"{method}_{representation}_c{clip}_step{step}", "source": source,
                "method": method, "bits": bits, "clip": clip, "step": step, **metrics}
         if refined:
             row['selection_eligible'] = step >= math.ceil(args.quant_selection_start * (args.qat_steps or args.steps))
@@ -727,6 +734,11 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
         # Retain a diagnosed failed control if no candidate is feasible; never call it successful.
         if winner is None:
             winner = min(selection_rows, key=lambda r: (-r["psnr"], r["candidate"]))
+        if method == 'natural_residual_qat_warm' and args.warm_checkpoint_policy == 'final':
+            # Endpoint is predeclared, not an owner-metric oracle. Keep proxy choice
+            # as a diagnostic so disagreement remains visible in the report.
+            row['proxy_preferred_candidate'] = winner['candidate']
+            winner = row
         if best is None or winner["candidate"] != best["candidate"]:
             if winner is not row:
                 raise RuntimeError("Selection snapshot lost")
@@ -735,7 +747,7 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
         save_csv(folder / "search.csv", rows)
         print({k: v for k, v in row.items() if not k.startswith("per_image")}, flush=True)
 
-    evaluate(0, "marked_fp32_fallback" if float_branch else
+    evaluate(0, "marked_base_zero_delta" if delta_branch else "marked_fp32_fallback" if float_branch else
              ("fixed_rtn" if method in ("fixed_ptq", "qk_rotation_ptq") else "rtn_fallback"))
     order_rng = torch.Generator().manual_seed(args.seed)
     params = [p for p in grids.parameters() if p.requires_grad]
@@ -746,7 +758,7 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
         optimizer = optimizer_class([
             {'params': [g.code_offset for g in grids], 'lr_multiplier': 1.},
             {'params': [g.log_scale for g in grids], 'lr_multiplier': .1}],
-            lr=base_lr, weight_decay=args.weight_decay)
+            lr=base_lr, weight_decay=args.weight_decay, eps=1e-12 if delta_branch else 1e-8)
     discriminator = None
     if gan_branch:
         # Isolate initialization from branch ordering and the data sampler.
@@ -901,7 +913,10 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
                                 quant_generated, preserve_ref, args.min_image_psnr, args.min_ssim)
                         del quant_generated
                 if qat_branch:
-                    trust_loss = sum(g.code_offset.square().sum() for g in grids) / sum(g.code_offset.numel() for g in grids)
+                    if delta_branch:
+                        trust_loss = sum(g.relative_delta_energy() * g.source.numel() for g in grids) / sum(g.source.numel() for g in grids)
+                    else:
+                        trust_loss = sum(g.code_offset.square().sum() for g in grids) / sum(g.code_offset.numel() for g in grids)
                     if warm_enhanced or refined:
                         trust_loss = trust_loss + sum(g.log_scale.square().mean() for g in grids) / len(grids)
             preserve_weight = (args.preserve_weight if natural and not float_branch and args.natural_preservation == "lowpass" else args.ft_preserve_weight if float_branch else
@@ -977,7 +992,8 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
                     if grid.log_scale.requires_grad:
                         grid.log_scale.clamp_(math.log(.8), math.log(1.25))
                     if grid.code_offset.requires_grad:
-                        grid.code_offset.clamp_(-args.qat_max_code_shift, args.qat_max_code_shift)
+                        grid.code_offset.clamp_(grid.qmin if delta_branch else -args.qat_max_code_shift,
+                                                grid.qmax if delta_branch else args.qat_max_code_shift)
             scalars = torch.stack([target_loss.detach(), perceptual_loss.detach(), preserve.detach(), loss.detach(),
                                    residual_loss.detach(), trust_loss.detach(), spectrum.detach(), adversarial.detach(),
                                    grad_norm if grad_norm is not None else raw.new_tensor(float("nan"))]).cpu().tolist()
@@ -1020,6 +1036,10 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
         grids.final_state = {k: v.detach().cpu().clone() for k, v in grids.state_dict().items()}
     grids.load_state_dict(best_state)
     selected = {**best, "search_feasible": best["feasible"], "valid_updates": valid_updates,
+                "checkpoint_policy": ('fixed_final_step' if args.warm_checkpoint_policy == 'final' else 'search') if method == 'natural_residual_qat_warm' else 'search',
+                "delta_radius": args.delta_radius if delta_branch else None,
+                "optimizer_epsilon": 1e-12 if delta_branch else 1e-8,
+                "delta_trust_units": 'delta_weight_over_marked_channel_rms' if delta_branch else None,
                 "quant_refinement": 'balanced' if refined else 'legacy',
                 "quant_selection_start": args.quant_selection_start if refined else 0.,
                 "quant_quality_weight": quality_weight if refined else None,
@@ -1072,7 +1092,7 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
                 "budget_psnr": args.budget_psnr, "budget_ssim": args.budget_ssim,
                 "residual_loss_scale": residual.loss_scale if residual_branch else None,
                 "preservation_mode": "lowpass_8x" if args.natural_preservation == "lowpass" and natural else (args.residual_preservation if residual_branch else ("lowpass_8x" if qat_branch or float_branch else "legacy")),
-                "parameter_space": "unrestricted_fp32_decoder" if float_branch else "quantized_decoder_weights",
+                "parameter_space": "frozen_marked_fp32_base_plus_quantized_delta" if delta_branch else "unrestricted_fp32_decoder" if float_branch else "quantized_decoder_weights",
                 "learning_rate_peak": base_lr, "lr_schedule": "warmup_cosine" if qat_branch or float_branch else args.lr_schedule,
                 "objective_strength": strength,
                 "quality_policy": policy, "perceptual_weight": perceptual_weight,
@@ -1088,6 +1108,7 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
                     "block_reconstruction": ["sequential_block_rounding"],
                     "natural_rounding": ["rounding"], "natural_residual": ["rounding"],
                     "natural_teacher_rounding": ["rounding"],
+                    "natural_delta_residual": ["delta_integer_codes", "delta_per_channel_scale"],
                     "natural_random_subspace": ["rounding"], "natural_frequency_subspace": ["rounding"],
                     "natural_contrastive_subspace": ["rounding"],
                     "natural_rounding_scale": ["rounding", "per_channel_scale"],
@@ -1102,8 +1123,12 @@ def optimize_branch(vae, names, train_z, train_ref, search_z, search_ref,
                     "natural_joint_finetune": ["all_decoder_parameters_including_bias_and_norm"],
                     "natural_joint_quality_finetune": ["all_decoder_parameters_including_bias_and_norm"],
                     "natural_qat_purification": ["bounded_multi_cell_code_offsets"]}[method],
-                "status": "selected" if best["feasible"] else ("selected_quality_failed" if policy == "report" else "no_feasible_candidate")}
-    if refined:
+                "status": "selected" if best["feasible"] else ("selected_quality_failed" if policy == "report" or
+                           (method == 'natural_residual_qat_warm' and args.warm_checkpoint_policy == 'final') else "no_feasible_candidate")}
+    if delta_branch:
+        selected['optimized_dofs'] = ['delta_integer_codes', 'delta_per_channel_scale']
+        selected['quantizer_center'] = 'zero_delta_over_immutable_marked_fp32_base'
+    elif refined:
         selected['optimized_dofs'] = ['centered_bounded_code_offsets', 'per_channel_scale']
     elif method == 'reconstruction' and args.reconstruction_learn_scale:
         selected['optimized_dofs'] = ['rounding', 'per_channel_scale']
@@ -1133,15 +1158,19 @@ def export_quantizer(vae, names, grids, folder, extra_fp32_names=()):
     for name, grid in zip(names, grids):
         scale = grid.scale.detach()
         weight = grid(False)
-        codes = (weight / scale).round()
+        delta = getattr(grid, 'is_delta', False)
+        codes = grid.codes() if delta else (weight / scale).round()
+        rebuilt = grid.source + codes * scale if delta else codes * scale
         if (not torch.isfinite(weight).all() or not torch.isfinite(scale).all()
                 or (scale <= 0).any() or (codes < grid.qmin).any() or (codes > grid.qmax).any()
-                or not torch.allclose(weight, codes * scale, atol=1e-7, rtol=1e-6)):
+                or not torch.allclose(weight, rebuilt, atol=1e-7, rtol=1e-6)):
             raise ValueError(f"Invalid quantizer export: {name}")
         if not torch.equal(vae.decoder.get_parameter(name), weight):
             raise ValueError(f"Materialized weight differs from hard quantizer: {name}")
         tensors[name + ".codes"] = codes.to(torch.int8).cpu().contiguous()
         tensors[name + ".scale"] = scale.cpu().contiguous()
+        if delta:
+            tensors[name + '.base'] = grid.source.cpu().contiguous()
         spec[name] = {"bits": grid.bits, "zero_point": 0, "qmin": grid.qmin, "qmax": grid.qmax}
     for name in extra_fp32_names:
         if name in names:
@@ -1149,6 +1178,7 @@ def export_quantizer(vae, names, grids, folder, extra_fp32_names=()):
         tensors[name + ".fp32"] = vae.decoder.get_parameter(name).detach().cpu().contiguous()
     save_file(tensors, str(folder / "quantizer.safetensors"))
     save_json(folder / "quantizer.json", {"scheme": "signed_per_output_channel_zero_point_0_full_range", "layers": spec,
+              "representation": "frozen_marked_fp32_base_plus_quantized_delta" if any(getattr(g, 'is_delta', False) for g in grids) else 'quantized_weights',
               "extra_fp32_parameter_names": list(extra_fp32_names),
               "execution": "simulated PTQ; dequantized FP32 weights, not a certified backend kernel"})
 
@@ -1204,6 +1234,10 @@ def parser():
     p.add_argument("--lr", type=float, default=.01)
     p.add_argument("--qat-lr", type=float, default=.001, help="Code-offset LR, independent of sigmoid rounding LR")
     p.add_argument('--warm-qat-mode', choices=['legacy', 'centered_scale'], default='legacy')
+    p.add_argument('--warm-checkpoint-policy', choices=['search', 'final'], default='search',
+                   help='final predeclares the budget endpoint; it does not select on watermark TEST results')
+    p.add_argument('--delta-radius', type=float, default=.05,
+                   help='Positive delta-grid radius / marked per-channel weight RMS; expanded FP32-base intervention')
     p.add_argument('--warm-qat-lr', type=float, default=.01, help='Code-coordinate LR for centered warm-QAT; scale LR is 0.1x')
     p.add_argument('--warm-qat-quality-weight', type=float, default=.01)
     p.add_argument('--quant-refinement', choices=['legacy', 'balanced'], default='legacy')
@@ -1332,6 +1366,8 @@ def main():
     if (not math.isfinite(args.warm_qat_lr) or args.warm_qat_lr <= 0 or
             not math.isfinite(args.warm_qat_quality_weight) or args.warm_qat_quality_weight < 0):
         raise ValueError('Invalid warm-QAT learning rate or quality weight')
+    if not math.isfinite(args.delta_radius) or args.delta_radius <= 0:
+        raise ValueError('Delta radius must be finite and positive')
     if (args.warmup_steps < 0 or min(args.qat_lr, args.ft_lr) <= 0 or args.ft_preserve_weight < 0
             or not all(math.isfinite(v) for v in (args.qat_lr, args.ft_lr, args.ft_preserve_weight))):
         raise ValueError("Invalid QAT/FP32 optimizer configuration")
@@ -1456,7 +1492,7 @@ def main():
                 "ownership_loss": None, "surrogate_transfer_evaluated": False,
                 "git_commit": commit, "script_sha256": sha(script),
                 "helper_sources_sha256": {name: sha(script.parent / name) for name in
-                    ("wmq_runtime.py", "wmq_diagnostics.py", "wmq_residual.py", "wmq_objectives.py", "wmq_science.py", "wmq_teacher.py", "wmq_reparam.py")},
+                    ("wmq_runtime.py", "wmq_diagnostics.py", "wmq_residual.py", "wmq_objectives.py", "wmq_science.py", "wmq_teacher.py", "wmq_reparam.py", "wmq_delta_quant.py")},
                 "model_files_sha256": {str(p.relative_to(model)): sha(p) for p in sorted(model.rglob("*"))
                       if p.is_file() and p.suffix in (".safetensors", ".bin", ".json")},
                 "prompts": prompts, "seeds": list(range(args.seed, args.seed + n)),
@@ -1487,11 +1523,13 @@ def main():
                     continue  # No duplicate FP32 control for every bitwidth/clip.
                 if (method, bits) in excluded_method_bits:
                     continue
-                branch_id = f"{method}_w{bits}_c{clip}"
+                representation = f'fp32base_delta{bits}' if method == 'natural_delta_residual' else f'w{bits}'
+                branch_id = f"{method}_{representation}_c{clip}"
                 plan.append({"label": branch_id + "_test", "method": method,
-                             "comparison_group": f"w{bits}_c{clip}_{args.scope}",
+                             "comparison_group": f"{representation}_c{clip}_{args.scope}",
+                             "representation": representation,
                              "bits": bits, "clip": clip, "role": "candidate",
-                             "threat_model": "marked_model_plus_unpaired_natural_images" if method.startswith("natural_") else "marked_model_only",
+                             "threat_model": "marked_model_plus_natural_images_quantized_delta_adapter" if method == 'natural_delta_residual' else "marked_model_plus_unpaired_natural_images" if method.startswith("natural_") else "marked_model_only",
                              "artifact": f"branches/{branch_id}"})
     for method in FLOAT_METHODS:
         if not natural_manifest or method not in args.natural_methods:
@@ -1971,7 +2009,10 @@ def main():
             tensors = load_file(str(artifact_out / branch["artifact"] / "quantizer.safetensors"), device=args.device)
             with torch.no_grad():
                 for name in names:
-                    vae.decoder.get_parameter(name).copy_(tensors[name + ".codes"].float() * tensors[name + ".scale"])
+                    weight = tensors[name + ".codes"].float() * tensors[name + ".scale"]
+                    if name + '.base' in tensors:
+                        weight = weight + tensors[name + '.base']
+                    vae.decoder.get_parameter(name).copy_(weight)
                 for name in (branch.get('reparameterization') or {}).get('fp32_parameter_names', []):
                     vae.decoder.get_parameter(name).copy_(tensors[name + '.fp32'])
         quality[branch["label"]] = score(vae, test_z, test_ref, args.strength, args, image_out / branch["label"])

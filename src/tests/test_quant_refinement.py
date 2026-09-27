@@ -48,6 +48,7 @@ class RefinementTests(unittest.TestCase):
         args = parser().parse_args(['--model', 'x', '--prompts', 'x', '--output', 'x',
             '--steps', '4', '--eval-every', '1', '--warmup-steps', '1',
             '--natural-perceptual-weight', '0', '--quant-refinement', 'balanced',
+            '--warm-checkpoint-policy', 'final',
             '--warm-qat-mode', 'centered_scale', '--reconstruction-learn-scale'])
         teacher = {'train': natural, 'search': natural, 'provenance': {}}
         warm = None
@@ -58,6 +59,10 @@ class RefinementTests(unittest.TestCase):
                     method, [], Path(tmp) / method, natural_search=(z, natural),
                     preserve_data=(z, refs), residual=residual, teacher_targets=teacher, warm_start=warm)
                 self.assertEqual(selected['gradient_updates'], 4)
+                if method == 'natural_residual_qat_warm':
+                    self.assertEqual(selected['step'], 4)
+                    self.assertEqual(selected['checkpoint_policy'], 'fixed_final_step')
+                    self.assertIn('proxy_preferred_candidate', selected)
                 self.assertTrue(grid[0].log_scale.requires_grad)
                 if method in REFINED_METHODS:
                     self.assertGreaterEqual(selected['step'], 2)
