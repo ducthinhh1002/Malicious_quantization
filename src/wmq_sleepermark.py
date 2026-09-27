@@ -446,6 +446,7 @@ def parser():
     p.add_argument('--evolution-generations', type=int, default=12)
     p.add_argument('--evolution-records', type=int, default=16, help='Each of disjoint TRAIN fit/select banks')
     p.add_argument('--evolution-quality-ratio', type=float, default=1.25, help='SELECT ordinary noise MSE / RTN MSE cap')
+    p.add_argument('--evolution-tail-ratio', type=float, default=2., help='Max paired SELECT record noise MSE / RTN MSE; report failed candidates and continue')
     p.add_argument('--methods', nargs='+', choices=METHODS,
                    default=list(DEFAULT_METHODS))
     p.add_argument('--rollout-horizon', type=int, default=2,
@@ -502,7 +503,8 @@ def main():
     p = parser()
     args = p.parse_args()
     if (args.evolution_population < 4 or args.evolution_generations < 1 or args.evolution_records < 2
-            or not np.isfinite(args.evolution_quality_ratio) or args.evolution_quality_ratio < 1):
+            or not np.isfinite([args.evolution_quality_ratio, args.evolution_tail_ratio]).all()
+            or min(args.evolution_quality_ratio, args.evolution_tail_ratio) < 1):
         p.error('Invalid evolutionary search budget or quality ratio')
     if any(m in EVOLUTION_METHODS for m in args.methods) and (args.calibration_mode != 'trajectory' or args.quant_group_size < 1):
         p.error('Evolution needs trajectory calibration and positive quant-group-size')

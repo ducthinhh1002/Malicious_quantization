@@ -47,14 +47,37 @@ def search(evaluate, dimensions, population=12, generations=12, seed=0, random=F
     """Integer genes in [-3,3]. Zero anchor is measured, not assumed optimal.
 
     Elitist parent+offspring selection, Pareto rank/crowding tournaments,
-    uniform crossover and discrete mutation. Exactly P*(G+1) evaluations.
+    uniform crossover and discrete mutation. Exactly P*(G+1) distinct genomes
+    evaluated; reject budgets larger than the finite search space.
     """
     if dimensions < 1 or population < 4 or generations < 1:
         raise ValueError('Need dimensions>0, population>=4, generations>=1')
+    if population*(generations+1) > 7**dimensions:
+        raise ValueError('Unique evaluation budget exceeds the integer search space')
     rng = np.random.default_rng(seed)
     records = []
+    seen = set()
+
+    def unseen(gene):
+        # Duplicates arise from crossover, saturated mutation and elitism.
+        # Try random immigrants without spending a model forward. Near space
+        # exhaustion, deterministic enumeration guarantees termination.
+        for _ in range(64):
+            if tuple(gene) not in seen:
+                return gene
+            gene = rng.integers(-3, 4, dimensions)
+        for code in range(len(seen)+1):
+            gene = np.empty(dimensions, dtype=int)
+            for j in range(dimensions):
+                gene[j] = code % 7-3
+                code //= 7
+            if tuple(gene) not in seen:
+                return gene
+        raise RuntimeError('No unseen chromosome despite valid budget')
 
     def measure(gene, generation):
+        gene = unseen(gene)
+        seen.add(tuple(gene))
         score = np.asarray(evaluate(gene.copy()), dtype=float)
         if score.shape != (2,) or not np.isfinite(score).all():
             raise ValueError('Nonfinite or malformed candidate fitness')

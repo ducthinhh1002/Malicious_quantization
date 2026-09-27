@@ -61,6 +61,21 @@ def split_records(dataset, count, seed):
     return result
 
 
+def tail_diagnostics(losses, reference, ratio_limit):
+    """Paired calibration guard: a good average must not hide a damaged row."""
+    losses, reference = np.asarray(losses, dtype=float), np.asarray(reference, dtype=float)
+    if (losses.shape != reference.shape or losses.ndim != 1 or not len(losses)
+            or not np.isfinite([losses, reference]).all() or np.any(losses < 0) or np.any(reference < 0)):
+        raise ValueError('Need finite, paired nonnegative per-record losses')
+    # Avoid unstable ratios for almost perfectly reconstructed reference rows.
+    floor = max(float(reference.mean())*1e-3, 1e-12)
+    ratios = losses/np.maximum(reference, floor)
+    return {'ordinary_ratio_p95': float(np.quantile(ratios, .95)),
+            'ordinary_ratio_max': float(ratios.max()),
+            'ordinary_tail_violation_fraction': float(np.mean(ratios > ratio_limit)),
+            'ordinary_ratio_denominator_floor': floor}
+
+
 @torch.no_grad()
 def train_evolution(pipe, scheduler, dataset, names, method, args, output):
     from wmq_sleepermark import encode_text, snapshot
@@ -128,10 +143,11 @@ def train_evolution(pipe, scheduler, dataset, names, method, args, output):
                 if target is not None:
                     guided = guided_prediction(pipe.unet, z, t, augmented, empty)
                     proxy.append(F.mse_loss(predicted_x0(guided, z, t, scheduler), target))
-            return torch.stack([torch.stack(ordinary).mean(), torch.stack(proxy).mean()]).cpu().numpy()
+            per_record = torch.stack(ordinary).cpu().numpy()
+            return np.array([per_record.mean(), float(torch.stack(proxy).mean())]), per_record
         def fitness(gene):
             apply(gene)
-            value = score(fit_bank)
+            value, _ = score(fit_bank)
             rows.append({'phase': 'fit', 'candidate': len(rows), 'ordinary_loss': float(value[0]), 'proxy_loss': float(value[1]),
                          'elapsed_seconds': time.perf_counter()-started,
                          'logical_unet_forwards': calls[0],
@@ -148,14 +164,21 @@ def train_evolution(pipe, scheduler, dataset, names, method, args, output):
         validation = []
         for i in shortlist:
             apply(records[i]['gene'])
-            ordinary, proxy = map(float, score(select_bank))
-            validation.append({'candidate': i, 'ordinary_loss': ordinary, 'proxy_loss': proxy})
+            value, per_record = score(select_bank)
+            ordinary, proxy = map(float, value)
+            if i == 0:
+                reference_losses = per_record
+            validation.append({'candidate': i, 'ordinary_loss': ordinary, 'proxy_loss': proxy,
+                               'ordinary_per_record': per_record.tolist(),
+                               **tail_diagnostics(per_record, reference_losses, args.evolution_tail_ratio)})
             rows.append({'phase': 'select', **validation[-1],
                          'elapsed_seconds': time.perf_counter()-started,
                          'logical_unet_forwards': calls[0],
                          'peak_allocated_gib': torch.cuda.max_memory_allocated(device)/2**30 if device.type == 'cuda' else 0.})
         limit = max(validation[0]['ordinary_loss']*args.evolution_quality_ratio, 1e-12)
-        feasible = [v for v in validation if v['ordinary_loss'] <= limit]
+        for v in validation:
+            v['feasible'] = v['ordinary_loss'] <= limit and v['ordinary_ratio_max'] <= args.evolution_tail_ratio
+        feasible = [v for v in validation if v['feasible']]
         winner = min(feasible, key=lambda v: (v['proxy_loss'], v['ordinary_loss'], v['candidate']))
         apply(records[winner['candidate']]['gene'])
         save_csv(output/(method+'_validation.csv'), validation)
@@ -163,6 +186,8 @@ def train_evolution(pipe, scheduler, dataset, names, method, args, output):
             'groups': groups, 'gene_meaning': ['log_scale/.04', 'rounding_bias/.1'], 'bounds': [-3, 3],
             'records': records, 'fit_pareto_indices': pareto, 'selected': winner,
             'ordinary_loss_limit': limit, 'quality_ratio_to_rtn': args.evolution_quality_ratio,
+            'per_record_ratio_limit': args.evolution_tail_ratio, 'validation_records': validation,
+            'unique_genomes_evaluated': len({tuple(r['gene']) for r in records}),
             'fit_prompt_names': sorted(set(dataset[i][2] for i in fit_indices)),
             'select_prompt_names': sorted(set(dataset[i][2] for i in select_indices)),
             'fit_record_indices': fit_indices, 'select_record_indices': select_indices,

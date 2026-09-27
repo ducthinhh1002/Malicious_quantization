@@ -47,10 +47,19 @@ texture hoặc tín hiệu thường, GA vẫn có thể tối ưu sai mục ti�
   tournament selection, uniform crossover, mutation rời rạc, elitist survival
   theo Pareto rank/crowding. Random dùng cùng initial population, miền gene,
   số lần tính fitness và quy tắc chốt. Không có Adam/STE trong search.
+- Mỗi chromosome chỉ tính fitness một lần; lai ghép/đột biến tạo chromosome
+  đã thử sẽ được thay bằng cá thể mới trước khi gọi UNet. Hai nhánh đều có
+  cùng ngân sách chromosome khác nhau. Điều này không bảo đảm mọi chromosome
+  tạo trọng số khác nhau (hai cấu hình có thể trùng sau rounding).
 - Sau search, kiểm tra chromosome 0 và 11 candidate xếp theo FIT rank/crowding
   trên SELECT. Chọn proxy loss thấp nhất với ordinary MSE không quá 1,25 lần
   RTN trên SELECT. Nếu không có candidate mới tốt, có thể giữ RTN. Đây không
   phải ngưỡng SSIM; bảo toàn ảnh thực phải đo ở owner evaluation.
+- Bổ sung kiểm tra từng record SELECT: noise MSE không quá 2 lần RTN của
+  chính record đó (`--evolution-tail-ratio 2`). Mẫu có RTN loss gần 0 dùng
+  denominator floor được ghi rõ trong JSON. Báo max/p95/violation fraction
+  và lưu toàn bộ loss từng record; candidate không đạt vẫn được ghi lại,
+  thí nghiệm tiếp tục chạy. Anchor RTN luôn là phương án dự phòng hợp lệ.
 - Không dùng TEST, BA, TPR, extractor hay key trong fitness/chọn cấu hình.
   Sau khi freeze, pipeline hiện có tự tính BA, double-tail TPR, chất lượng và
   FID. Không chọn lại chromosome theo kết quả TEST.
