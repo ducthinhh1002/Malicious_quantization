@@ -11,7 +11,8 @@ from wmq_sleeper_parallel import split_arguments, automatic_parallelism, aggrega
 class SleeperParallelTests(unittest.TestCase):
     def test_split_defaults_and_explicit_methods(self):
         methods, engine, options = split_arguments(['--steps', '7', '--parallel-branches', '2'])
-        self.assertIn('conditional_rollout_qat', methods)
+        self.assertIn('coherent_probe_qat', methods)
+        self.assertNotIn('conditional_rollout_qat', methods)
         self.assertEqual(engine, ['--steps', '7'])
         self.assertEqual(options.parallel_branches, 2)
         methods, engine, _ = split_arguments(['--methods', 'fixed_ptq', 'equivariance_qat',
@@ -20,6 +21,9 @@ class SleeperParallelTests(unittest.TestCase):
         self.assertEqual(engine, ['--test-n', '3'])
         with self.assertRaises(ValueError):
             split_arguments(['--methods', 'fixed_ptq', 'fixed_ptq'])
+        for value in ('nan', '0', '-1'):
+            with self.assertRaises(ValueError):
+                split_arguments(['--parallel-vram-per-process-gib', value])
 
     @patch('torch.cuda.mem_get_info', return_value=(80*2**30, 96*2**30))
     def test_parallelism_uses_free_memory_not_gpu_name(self, _):

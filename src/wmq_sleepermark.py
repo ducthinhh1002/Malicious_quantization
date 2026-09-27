@@ -23,11 +23,12 @@ from wmq_blind import RoundingGrid, finetune_quantized_weight, pair_metrics, sav
 from prepare_sleepermark import prepare, load_extractor, digest
 
 EQUIV_METHODS = ('equivariance_qat', 'adversarial_equivariance_qat')
-DELTA_METHODS = ('delta_cfg_equivariance',)
+DELTA_METHODS = ('delta_cfg_equivariance', 'delta_coherent_probe')
+COHERENT_METHODS = ('coherent_probe_qat', 'delta_coherent_probe')
 ROLLOUT_METHODS = ('conditional_rollout_qat',)
-CFG_METHODS = ('cfg_reconstruction', 'prefix_consistency_qat') + EQUIV_METHODS + DELTA_METHODS + ROLLOUT_METHODS
+CFG_METHODS = ('cfg_reconstruction', 'prefix_consistency_qat', 'coherent_probe_qat') + EQUIV_METHODS + DELTA_METHODS + ROLLOUT_METHODS
 METHODS = ('fixed_ptq', 'model_reconstruction', 'natural_rounding', 'natural_finetune', 'natural_joint_finetune') + CFG_METHODS
-DEFAULT_METHODS = ('fixed_ptq', 'cfg_reconstruction', 'equivariance_qat', *DELTA_METHODS, *ROLLOUT_METHODS)
+DEFAULT_METHODS = ('fixed_ptq', 'cfg_reconstruction', 'delta_cfg_equivariance', *COHERENT_METHODS)
 
 
 def selected_weights(unet, scope):
@@ -138,6 +139,7 @@ def train_branch(pipe, scheduler, dataset, names, method, args, output, artifact
         rollout_scheduler = make_rollout_scheduler(pipe.scheduler, args.inference_steps)
     is_finetune = method in ('natural_finetune', 'natural_joint_finetune')
     delta_branch = method in DELTA_METHODS
+    coherent = method in COHERENT_METHODS
     refined = getattr(args, 'quant_refinement', 'legacy') == 'balanced' and not is_finetune
     modules = attach(pipe.unet, names, is_finetune, getattr(args, "quant_group_size", 0),
                      args.delta_radius if delta_branch else None, getattr(args, 'weight_init', 'rtn'))
@@ -156,8 +158,8 @@ def train_branch(pipe, scheduler, dataset, names, method, args, output, artifact
                 code_params.append(grid.alpha)
             scale_params.append(grid.log_scale)
         optimizer = torch.optim.AdamW([
-            {'params': code_params, 'lr': args.delta_lr if delta_branch else args.code_lr},
-            {'params': scale_params, 'lr': args.lr}], weight_decay=0, foreach=False, eps=1e-12)
+            {'params': code_params, 'lr': args.delta_lr if delta_branch else args.coherent_code_lr if coherent else args.code_lr},
+            {'params': scale_params, 'lr': args.coherent_scale_lr if coherent else args.lr}], weight_decay=0, foreach=False, eps=1e-12)
         for group in optimizer.param_groups:
             group['initial_lr'] = group['lr']
     pipe.unet.train()
@@ -170,19 +172,20 @@ def train_branch(pipe, scheduler, dataset, names, method, args, output, artifact
     context_order = np.random.default_rng(args.seed + 104729)
     rows = []
     cfg = method in CFG_METHODS
-    equiv = method in (*EQUIV_METHODS, *DELTA_METHODS, *ROLLOUT_METHODS)
+    equiv = method in (*EQUIV_METHODS, *DELTA_METHODS, *ROLLOUT_METHODS) and not coherent
     empty = encode_text(pipe, ['']).detach() if cfg else None
     trajectory = cfg and bool(dataset) and len(dataset[0]) == 4
     from wmq_sleeper_calibration import TimestepSampler, augmented_prompts, spatial_reconstruction_loss
     sampler = TimestepSampler(dataset, order) if trajectory and refined else None
     late_indices = ([i for i, item in enumerate(dataset)
-                     if item[3] <= args.late_fraction * scheduler.config.num_train_timesteps] if equiv and trajectory else [])
-    if equiv and (not trajectory or not late_indices):
+                     if item[3] <= args.late_fraction * scheduler.config.num_train_timesteps] if (equiv or coherent) and trajectory else [])
+    if (equiv or coherent) and (not trajectory or not late_indices):
         detach(modules)
         pipe.unet.disable_gradient_checkpointing()
         pipe.unet.eval()
         raise ValueError('Spatial QAT requires trajectory calibration with late-timestep records')
-    late_sampler = TimestepSampler([dataset[i] for i in late_indices], auxiliary_order) if equiv and refined else None
+    late_sampler = TimestepSampler([dataset[i] for i in late_indices], auxiliary_order) if (equiv or coherent) and refined else None
+    shared_probe = None
     count = 0 if method == 'fixed_ptq' else args.steps
     started = time.perf_counter()
     forward_calls = [0]
@@ -277,6 +280,33 @@ def train_branch(pipe, scheduler, dataset, names, method, args, output, artifact
                         del student_x0, prediction, target_x0
                     spatial_metrics['augmented_context'] = float(use_augmented)
                     losses.append(spatial_loss.detach())
+                if coherent and args.coherent_weight > 0 and step / max(count, 1) > .1:
+                    from wmq_sleeper_coherent import coherent_probe, coherent_target, sample_distinct_prompts
+                    from wmq_sleeper_equivariance import guided_prediction, predicted_x0
+                    anchor = (late_indices[late_sampler.sample(1)[0]] if late_sampler else int(auxiliary_order.choice(late_indices)))
+                    eligible = [i for i in late_indices if dataset[i][3] == dataset[anchor][3]]
+                    chosen = sample_distinct_prompts(dataset, eligible, auxiliary_order, args.coherent_batch_size)
+                    probe_z = torch.cat([dataset[i][0] for i in chosen]).to(device)
+                    probe_c = torch.cat([dataset[i][1] for i in chosen]).to(device)
+                    probe_t = torch.full((len(chosen),), dataset[anchor][3], device=device, dtype=torch.long)
+                    probe_u = empty.expand(len(chosen), -1, -1)
+                    switch(modules, enabled=False)
+                    inner_steps = args.probe_steps if shared_probe is None or step % args.probe_every == 0 else 0
+                    probe_c, shared_probe, common, diagnostics = coherent_probe(pipe.unet, probe_z,
+                        probe_t, probe_c, scheduler, shared_probe, rng, args.probe_radius,
+                        args.probe_tokens, inner_steps, args.coherent_semantic_weight)
+                    target, correction_rms = coherent_target(pipe.unet, probe_z, probe_t, probe_c,
+                        probe_u, common, scheduler, args.max_spatial_correction)
+                    switch(modules)
+                    prediction = guided_prediction(pipe.unet, probe_z, probe_t, probe_c, probe_u)
+                    student_x0 = predicted_x0(prediction, probe_z, probe_t, scheduler)
+                    ramp = max(0., min(1., (step / max(count, 1) - .1) / .2))
+                    probe_loss = args.coherent_weight*ramp*spatial_reconstruction_loss(
+                        student_x0, target, probe_t, scheduler, mode=args.spatial_loss_mode)
+                    probe_loss.backward()
+                    losses.append(probe_loss.detach())
+                    spatial_metrics.update(diagnostics, coherent_correction_rms=correction_rms)
+                    del prediction, student_x0, target, common, probe_loss
                 if method == 'prefix_consistency_qat':
                     # Sample from punctuation alphabet, independent of owner assets.
                     prefixes = [''.join(order.choice(list(string.punctuation), size=int(order.integers(1, 9))))
@@ -432,6 +462,12 @@ def parser():
     p.add_argument('--probe-steps', type=int, default=2)
     p.add_argument('--probe-every', type=int, default=4)
     p.add_argument('--probe-tokens', type=int, default=4)
+    p.add_argument('--coherent-batch-size', type=int, default=2,
+                   help='Distinct TRAIN prompts at one timestep; only for coherent probe branches')
+    p.add_argument('--coherent-weight', type=float, default=1.)
+    p.add_argument('--coherent-semantic-weight', type=float, default=1.)
+    p.add_argument('--coherent-code-lr', type=float, default=.003)
+    p.add_argument('--coherent-scale-lr', type=float, default=.0001)
     p.add_argument('--scope', choices=['up_attentions', 'all'], default='up_attentions')
     p.add_argument('--train-n', type=int, default=256)
     p.add_argument('--test-n', type=int, default=100)
@@ -474,7 +510,11 @@ def main():
         p.error('Invalid code LR or spatial context probability')
     if args.rollout_horizon < 1:
         p.error('Rollout horizon must be positive')
-    if any(m in (*EQUIV_METHODS, *DELTA_METHODS, *ROLLOUT_METHODS) for m in args.methods) and args.calibration_mode != 'trajectory':
+    if (args.coherent_batch_size < 2 or not np.isfinite([args.coherent_weight, args.coherent_semantic_weight,
+            args.coherent_code_lr, args.coherent_scale_lr]).all() or min(args.coherent_weight, args.coherent_semantic_weight) < 0
+            or min(args.coherent_code_lr, args.coherent_scale_lr) <= 0):
+        p.error('Invalid coherent probe settings')
+    if any(m in (*EQUIV_METHODS, *DELTA_METHODS, *ROLLOUT_METHODS, *COHERENT_METHODS) for m in args.methods) and args.calibration_mode != 'trajectory':
         p.error('Spatial QAT requires --calibration-mode trajectory')
     if len(set(args.methods)) != len(args.methods):
         p.error('Duplicate methods')
@@ -573,6 +613,7 @@ def main():
         'spatial_objective': 'Late-time aligned spatial teacher ensemble; balanced mode uses CFG prediction and declared loss normalization; not ownership oracle',
         'spatial_context': 'Independent TRAIN punctuation augmentation in balanced mode; no owner tokens or detector feedback',
         'conditional_rollout': 'Only conditional-minus-unconditional spatial defect is corrected; independent teacher/student DDIM paths; detached states between steps; ordinary TRAIN starting latents',
+        'coherent_probe': 'Shared continuous context delta; maximize cross-image highpass agreement minus lowpass response on distinct TRAIN prompts; suppress only coherence-gated common residual; no recovered-trigger claim',
         'probe_objective': 'Continuous context spatial-defect maximization; no trigger recovery claim',
         'prefix_calibration': 'TRAIN prompts with independently sampled punctuation; no owner trigger used',
         'quantization_group_size': args.quant_group_size,
@@ -580,7 +621,7 @@ def main():
         'delta_base': 'Immutable marked UNet; not an unwatermarked checkpoint; no FP32 fine-tuning intermediate',
         'training_timesteps': 'Balanced CFG cycles through shuffled timestep strata; late auxiliary has separate strata; legacy samples records uniformly; natural uses DDPM',
         'source_sha256': {file: digest(Path(__file__).with_name(file)) for file in
-            ('wmq_sleepermark.py', 'wmq_sleeper_calibration.py', 'wmq_sleeper_equivariance.py', 'wmq_sleeper_rollout.py',
+            ('wmq_sleepermark.py', 'wmq_sleeper_calibration.py', 'wmq_sleeper_equivariance.py', 'wmq_sleeper_rollout.py', 'wmq_sleeper_coherent.py',
              'wmq_grouped_quant.py', 'wmq_delta_quant.py')},
         'train_prompts': train_prompts, 'test_prompts': test_prompts,
         'natural_train_files': natural_files, 'original_unet_sha256': original_hash,

@@ -11,7 +11,7 @@ from torch import nn
 from torch.utils.checkpoint import checkpoint
 
 from wmq_sleepermark import (attach, detach, switch, snapshot, restore, selected_weights,
-                            noise_target, state_hash, train_branch, METHODS, EQUIV_METHODS, DELTA_METHODS, ROLLOUT_METHODS, parser)
+                            noise_target, state_hash, train_branch, METHODS, EQUIV_METHODS, DELTA_METHODS, ROLLOUT_METHODS, COHERENT_METHODS, parser)
 from wmq_fid import feature_fid
 
 torch.set_num_threads(2)
@@ -65,7 +65,7 @@ class SleeperMarkTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp, patch('wmq_sleepermark.encode_text',
                 side_effect=lambda pipe, prompts: torch.zeros(len(prompts), 1, 8)):
             for method in METHODS:
-                if method in (*EQUIV_METHODS, *ROLLOUT_METHODS) or method.startswith('delta_'):
+                if method in (*EQUIV_METHODS, *ROLLOUT_METHODS, *COHERENT_METHODS) or method.startswith('delta_'):
                     continue  # Spatial branches use a spatial UNet in the integration test below.
                 result = train_branch(SimpleNamespace(unet=self.unet), scheduler, data,
                                       self.names, method, args, Path(tmp))
@@ -114,13 +114,13 @@ class SleeperMarkTests(unittest.TestCase):
         names = selected_weights(unet, 'up_attentions')
         before = state_hash(unet)
         original = snapshot(unet, names)
-        data = [(torch.randn(1, 4, 16, 16), torch.randn(1, 3, 8), 'ordinary prompt')]
+        data = [(torch.randn(1, 4, 16, 16), torch.randn(1, 3, 8), f'ordinary prompt {i}') for i in range(3)]
         args = parser().parse_args(['--steps', '4', '--log-every', '4', '--spatial-shift', '1',
                                     '--probe-every', '1', '--probe-steps', '1', '--inference-steps', '5'])
         with tempfile.TemporaryDirectory() as tmp, patch('wmq_sleepermark.encode_text',
                 side_effect=lambda pipe, prompts: torch.zeros(len(prompts), 3, 8)):
-            for method in ('natural_rounding', 'natural_joint_finetune', 'cfg_reconstruction', *EQUIV_METHODS, *DELTA_METHODS, *ROLLOUT_METHODS):
-                dataset = [(*row, 3) for row in data] if method in ('cfg_reconstruction', *EQUIV_METHODS, *DELTA_METHODS, *ROLLOUT_METHODS) else data
+            for method in ('natural_rounding', 'natural_joint_finetune', 'cfg_reconstruction', *EQUIV_METHODS, *DELTA_METHODS, *ROLLOUT_METHODS, 'coherent_probe_qat'):
+                dataset = [(*row, 3) for row in data] if method in ('cfg_reconstruction', *EQUIV_METHODS, *DELTA_METHODS, *ROLLOUT_METHODS, *COHERENT_METHODS) else data
                 args.delta_lr = 1.  # Cross an integer cell in the two-step smoke test.
                 result = train_branch(SimpleNamespace(unet=unet, scheduler=DDIMScheduler(num_train_timesteps=10)), DDPMScheduler(num_train_timesteps=10),
                                       dataset, names, method, args, Path(tmp), Path(tmp))

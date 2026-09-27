@@ -2,6 +2,7 @@
 import argparse
 import csv
 import json
+import math
 import os
 import subprocess
 import sys
@@ -16,7 +17,7 @@ def split_arguments(argv):
     """Remove orchestrator flags and one --methods list from engine arguments."""
     parser = argparse.ArgumentParser(add_help=False)
     parser.add_argument('--parallel-branches', type=int)
-    parser.add_argument('--parallel-vram-per-process-gib', type=float, default=12.)
+    parser.add_argument('--parallel-vram-per-process-gib', type=float, default=18.)
     parser.add_argument('--parallel-reserve-vram-gib', type=float, default=8.)
     known, remaining = parser.parse_known_args(argv)
     methods, engine = [], []
@@ -41,12 +42,13 @@ def split_arguments(argv):
         raise ValueError(f'Invalid or duplicate methods: {unknown or methods}')
     if known.parallel_branches is not None and known.parallel_branches < 1:
         raise ValueError('--parallel-branches must be positive')
-    if min(known.parallel_vram_per_process_gib, known.parallel_reserve_vram_gib) < 0:
-        raise ValueError('Parallel VRAM estimates must be nonnegative')
+    if (not all(math.isfinite(v) for v in (known.parallel_vram_per_process_gib, known.parallel_reserve_vram_gib))
+            or known.parallel_vram_per_process_gib <= 0 or known.parallel_reserve_vram_gib < 0):
+        raise ValueError('Per-process VRAM must be positive and reserve nonnegative; both must be finite')
     return methods, engine, known
 
 
-def automatic_parallelism(method_count, per_process_gib=12., reserve_gib=8.):
+def automatic_parallelism(method_count, per_process_gib=18., reserve_gib=8.):
     """Size from currently free VRAM; never hardcode a GPU model name."""
     import torch
     free, total = torch.cuda.mem_get_info()

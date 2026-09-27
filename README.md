@@ -12,11 +12,12 @@ Warm-QAT mặc định dùng `--warm-checkpoint-policy final`: checkpoint cuối
 2.000 bước, không chọn theo owner TEST. SEARCH vẫn được ghi để phân tích.
 Muốn trở lại chính sách cũ: `--profile transfer -- --warm-checkpoint-policy search`.
 
-SleeperMark chạy `fixed_ptq`, `cfg_reconstruction`, `equivariance_qat` ở W4
+SleeperMark chạy `fixed_ptq`, `cfg_reconstruction` ở W4
 group 64, `delta_cfg_equivariance` với FP32 base + delta INT4 per-channel,
-và nhánh thử mới `conditional_rollout_qat` ở W4 group 64.
+và hai nhánh thử `coherent_probe_qat`
+(W4) / `delta_coherent_probe` (FP32 base + delta4).
 Các nhánh SleeperMark mặc định chạy bằng các process CUDA độc lập, đồng thời theo
-VRAM đang trống. Trên GPU đủ lớn, cả năm nhánh chạy song song. Kết quả được gom
+VRAM đang trống. Hiện có năm nhánh mặc định; số chạy cùng lúc phụ thuộc bộ nhớ. Kết quả được gom
 vào `output_attack/sleeper_parallel_*/parallel_summary.csv`; log của mỗi nhánh nằm
 cùng suite. Concurrency được tính từ VRAM, không hardcode tên H200.
 
@@ -28,19 +29,21 @@ bash run_blind_quantization.sh --watermark sleepermark --parallel-branches 2
 WMQ_SLEEPER_SEQUENTIAL=1 bash run_blind_quantization.sh --watermark sleepermark
 ```
 
-Mặc định bộ điều phối dự phòng 8% tổng VRAM (ít nhất 8 GiB), ước lượng 12 GiB
+Mặc định bộ điều phối dự phòng 8% tổng VRAM (ít nhất 8 GiB), ước lượng 18 GiB
 mỗi process và chỉ chạy tối đa số nhánh thực có. Có thể chỉnh ước lượng bằng
 `--parallel-vram-per-process-gib` và phần dự phòng bằng
 `--parallel-reserve-vram-gib`. Đây là cơ chế tránh OOM, không phải cam kết mỗi
-process thực sự dùng đúng 12 GiB. Chạy song song tăng throughput của cả suite;
+process thực sự dùng đúng 18 GiB. Cấu hình mới dành thêm headroom cho probe batch 2.
+Chạy song song có thể tăng throughput của cả suite;
 nếu một nhánh đơn đã bão hòa compute, thời gian riêng của nó có thể tăng.
 
 Calibration tensors mặc định được cache một lần trên GPU nếu kích thước ước tính,
 50% headroom và phần dự phòng 5% VRAM còn vừa. Việc này giảm copy lặp lại mà không
 đổi dữ liệu/loss. Dùng `--calibration-cache cpu` để tắt hoặc `cuda` để yêu cầu bắt
 buộc và dừng rõ ràng nếu không đủ bộ nhớ.
-`adversarial_equivariance_qat` giữ trong code nhưng không chạy mặc định sau khi
-run mới cho thấy không cải thiện. Nhánh delta dùng mục tiêu spatial trên CFG
+`adversarial_equivariance_qat`, `equivariance_qat`, `conditional_rollout_qat`
+giữ trong code nhưng không chạy mặc định sau khi kết quả không cải thiện attack
+ở chất lượng chấp nhận được. Nhánh delta control dùng mục tiêu spatial trên CFG
 prediction và giữ nguyên marked UNet làm base; không tải model sạch thay thế.
 
 [Phân tích ý tưởng DeltaZip](survey/Review_Delta_Warm_Sleeper_20260927_VI.md).
@@ -50,8 +53,9 @@ TPR vẫn 100%; tất cả nhánh có joint success 0/100.
 Mặc định mới dùng `--weight-init mse --quant-refinement balanced`: khởi tạo W4
 theo sai số trọng số, tách LR code/scale, lấy mẫu đều các timestep; equivariance
 và delta dùng CFG spatial loss quy đổi về noise prediction cùng TRAIN context
-augmentation. Run H200 `sleepermark_20260927_061035_583957` đang đánh giá phiên bản
-này; chưa dùng loss train để kết luận watermark đã yếu đi.
+augmentation. Run H200 `sleepermark_20260927_061035_583957` đã hoàn tất: W4 học
+đưa BA xuống 94–95% nhưng TPR 98%, SSIM triggered 0.62–0.63; delta giữ SSIM
+0.959 nhưng TPR 100%. Mọi nhánh joint success 0/100. Đây chưa phải attack hiệu quả.
 Để đối chiếu đúng bốn nhánh cấu hình trước:
 `bash run_blind_quantization.sh --watermark sleepermark --methods fixed_ptq cfg_reconstruction equivariance_qat delta_cfg_equivariance --weight-init rtn --quant-refinement legacy`.
 
@@ -59,11 +63,12 @@ này; chưa dùng loss train để kết luận watermark đã yếu đi.
 nhằm tránh sửa cả sai lệch không gian vốn có của dự đoán vô điều kiện. Nhánh này
 học hai bước DDIM liên tiếp trên hai quỹ đạo riêng của teacher đã hiệu chỉnh và
 student W4; detach trạng thái giữa các bước để giữ bộ nhớ thấp. Chỉ code/scale
-quantizer được học, không dùng key/extractor/trigger hoặc model sạch. Chưa có
-bằng chứng hiệu quả attack tốt hơn. Đây không phải full-trajectory backprop.
+quantizer được học, không dùng key/extractor/trigger hoặc model sạch. Run hoàn tất
+`20260927_075826_683759` đạt BA 94.23%, TPR 98%, triggered SSIM 0.632, joint success
+0/100, gần như ngang equivariance. Đây không phải full-trajectory backprop.
 Xem [báo cáo server và giả thuyết cải tiến](survey/Review_SleeperMark_Server_20260927_VI.md).
 
-Chỉ thử nhánh mới, kèm baseline FP32 tự đánh giá:
+Chạy lại nhánh rollout để đối chứng, kèm baseline FP32 tự đánh giá:
 
 ```bash
 bash run_blind_quantization.sh --watermark sleepermark --methods conditional_rollout_qat
@@ -72,6 +77,25 @@ bash run_blind_quantization.sh --watermark sleepermark --methods conditional_rol
 Đối chứng cùng conditional target nhưng một bước: thêm `--rollout-horizon 1`.
 Mặc định hai bước tăng chi phí huấn luyện riêng nhánh mới; không chạy W8 hoặc
 FP32 fine-tune, không đổi thuật toán sinh ảnh lúc inference.
+
+Hai nhánh coherent probe tìm một perturbation nhỏ dùng chung trên embedding của
+ít nhất hai prompt TRAIN khác nhau, cùng timestep. Probe tối đa hóa phần response
+high-pass lặp lại giữa các ảnh và phạt thay đổi low-pass. Quantizer học giảm thành
+phần chung khi pairwise agreement dương; ordinary CFG reconstruction vẫn bảo toàn
+hành vi thông thường. Không dùng trigger/key/extractor lúc học; continuous context
+không phải trigger đã phục hồi. Đây là giả thuyết mới, chưa có kết quả full-run.
+Xem [review kết quả và mục tiêu coherent probe](survey/Review_SleeperMark_Coherent_20260927_VI.md).
+
+```bash
+# Chỉ hai nhánh mới, chạy song song và tự đánh giá/FID
+bash run_blind_quantization.sh --watermark sleepermark --methods coherent_probe_qat delta_coherent_probe
+```
+
+`--coherent-batch-size 2`, `--coherent-weight 1`, `--coherent-semantic-weight 1`
+là mặc định. Riêng W4 coherent dùng code LR 0.003, scale LR 0.0001 để hạn chế
+drift; delta dùng delta LR như trước và scale LR 0.0001. `--probe-steps 0` tạo đối
+chứng shared random context không tìm bằng gradient. Các nhánh mới chưa được chứng
+minh hữu ích; giữ đối chứng để tách chất lượng, representation và mục tiêu mới.
 
 **Chạy cả hai watermark bằng một lệnh:**
 
