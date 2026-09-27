@@ -96,39 +96,64 @@ class LocalLLMProposer:
             {'role': 'system', 'content': 'You propose bounded integer configurations for W4 quantization. '
              'Use the supplied FIT measurements only. Both losses are minimized. '
              'Preserve ordinary quality while reducing the residual proxy. '
-             'Prefer small coordinated changes to good configurations and avoid repeated genomes. '
+             'Prefer small coordinated changes to good configurations. Every output genome '
+             'must differ from every supplied archive genome and every other output genome. '
              'Return only valid JSON: {"genes":[[integer,...],...]}. No explanation or code. '
              f'Each genome has exactly {2*len(self.groups)} integers. Return at most {self.count} genomes.'},
             {'role': 'user', 'content': json.dumps(context, allow_nan=False)}]
-        encoded = self.tokenizer.apply_chat_template(messages, add_generation_prompt=True,
-                                                     return_tensors='pt').to(self.device)
-        with torch.inference_mode():
-            generated = self.model.generate(encoded, attention_mask=torch.ones_like(encoded),
-                max_new_tokens=self.max_tokens, do_sample=False,
-                pad_token_id=self.tokenizer.eos_token_id)
-        response = self.tokenizer.decode(generated[0, encoded.shape[1]:], skip_special_tokens=True)
-        error, genes = None, []
-        try:
-            genes = parse_proposals(response, 2*len(self.groups), self.count)
-        except (ValueError, TypeError) as exc:
-            error = str(exc)
         seen = {tuple(r['gene']) for r in archive}
-        fresh = []
-        for gene in genes:
-            if tuple(gene) not in seen:
-                fresh.append(gene)
-                seen.add(tuple(gene))
+        fresh, attempts, total_input, total_output = [], [], 0, 0
+        # One bounded reflection retry follows ReEvo/HSEvo's feedback pattern.
+        # It can improve proposal yield but never increases evaluator candidates.
+        for attempt in range(2):
+            encoded = self.tokenizer.apply_chat_template(messages, add_generation_prompt=True,
+                                                         return_tensors='pt').to(self.device)
+            with torch.inference_mode():
+                generated = self.model.generate(encoded, attention_mask=torch.ones_like(encoded),
+                    max_new_tokens=self.max_tokens, do_sample=False, temperature=None,
+                    top_p=None, top_k=None, pad_token_id=self.tokenizer.eos_token_id)
+            response = self.tokenizer.decode(generated[0, encoded.shape[1]:], skip_special_tokens=True)
+            error, genes, rejected = None, [], []
+            try:
+                genes = parse_proposals(response, 2*len(self.groups), self.count)
+            except (ValueError, TypeError) as exc:
+                error = str(exc)
+            for gene in genes:
+                if tuple(gene) in seen:
+                    rejected.append(gene)
+                elif len(fresh) < self.count:
+                    fresh.append(gene)
+                    seen.add(tuple(gene))
+            attempts.append({'attempt': attempt+1, 'response': response, 'parse_error': error,
+                             'proposed': len(genes), 'accepted_unique_total': len(fresh),
+                             'rejected_duplicates': rejected,
+                             'input_tokens': encoded.shape[1],
+                             'output_tokens': generated.shape[1]-encoded.shape[1]})
+            total_input += encoded.shape[1]
+            total_output += generated.shape[1]-encoded.shape[1]
+            if len(fresh) >= self.count:
+                break
+            messages.extend([
+                {'role': 'assistant', 'content': response},
+                {'role': 'user', 'content': json.dumps({
+                    'validation_feedback': 'Some proposals were duplicates or malformed.',
+                    'parse_error': error, 'rejected_duplicate_genes': rejected,
+                    'accepted_genes': fresh, 'still_needed': self.count-len(fresh),
+                    'instruction': 'Return only the still-needed new genomes in the same JSON schema. '
+                                   'Change at least one coordinate relative to every rejected and accepted genome.'
+                }, allow_nan=False)}])
         entry = {'generation': generation, 'model': MODEL, 'revision': REVISION,
-                 'messages': messages, 'response': response, 'parse_error': error,
-                 'input_tokens': encoded.shape[1], 'output_tokens': generated.shape[1]-encoded.shape[1],
-                 'proposed': len(genes), 'accepted_unique': len(fresh),
+                 'messages': messages, 'attempts': attempts,
+                 'input_tokens': total_input, 'output_tokens': total_output,
+                 'accepted_unique': len(fresh), 'reflection_attempted': len(attempts) > 1,
                  'seconds': time.perf_counter()-started, 'owner_feedback': False}
         self.trace.append(entry)
         self.output.parent.mkdir(parents=True, exist_ok=True)
         with self.output.open('a', encoding='utf-8') as stream:
             stream.write(json.dumps(entry, allow_nan=False)+'\n')
         print({'llm_generation': generation, 'accepted_unique': len(fresh),
-               'parse_error': error, 'seconds': entry['seconds']}, flush=True)
+               'attempts': len(attempts), 'last_parse_error': attempts[-1]['parse_error'],
+               'seconds': entry['seconds']}, flush=True)
         return fresh
 
     def close(self):

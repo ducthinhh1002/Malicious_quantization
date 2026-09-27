@@ -53,6 +53,11 @@ số chiều và chỉ chứa integer trong `[-3,3]`. Output không được `ex
 hoặc import. Proposal trùng bị bỏ. JSON lỗi tạo 0 proposal cho vòng đó và GA
 thường lấp đủ population; trace ghi lỗi thay vì âm thầm gọi đó là LLM success.
 
+Một lượt reflection tối đa được phép nếu lượt đầu lỗi hoặc không đủ gene mới.
+LLM nhận danh sách gene vừa bị từ chối và số lượng còn thiếu. Tối đa ba gene
+mới được chuyển tới evaluator; lượt reflection chỉ thêm inference LLM, không
+thêm candidate/UNet forward. Trace giữ riêng cả hai lần sinh và token tương ứng.
+
 ## Chạy thí nghiệm
 
 ```bash
