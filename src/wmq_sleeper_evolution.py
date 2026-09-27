@@ -132,7 +132,7 @@ def train_evolution(pipe, scheduler, dataset, names, method, args, output):
         def fitness(gene):
             apply(gene)
             value = score(fit_bank)
-            rows.append({'candidate': len(rows), 'ordinary_loss': float(value[0]), 'proxy_loss': float(value[1]),
+            rows.append({'phase': 'fit', 'candidate': len(rows), 'ordinary_loss': float(value[0]), 'proxy_loss': float(value[1]),
                          'elapsed_seconds': time.perf_counter()-started,
                          'logical_unet_forwards': calls[0],
                          'peak_allocated_gib': torch.cuda.max_memory_allocated(device)/2**30 if device.type == 'cuda' else 0.})
@@ -150,6 +150,10 @@ def train_evolution(pipe, scheduler, dataset, names, method, args, output):
             apply(records[i]['gene'])
             ordinary, proxy = map(float, score(select_bank))
             validation.append({'candidate': i, 'ordinary_loss': ordinary, 'proxy_loss': proxy})
+            rows.append({'phase': 'select', **validation[-1],
+                         'elapsed_seconds': time.perf_counter()-started,
+                         'logical_unet_forwards': calls[0],
+                         'peak_allocated_gib': torch.cuda.max_memory_allocated(device)/2**30 if device.type == 'cuda' else 0.})
         limit = max(validation[0]['ordinary_loss']*args.evolution_quality_ratio, 1e-12)
         feasible = [v for v in validation if v['ordinary_loss'] <= limit]
         winner = min(feasible, key=lambda v: (v['proxy_loss'], v['ordinary_loss'], v['candidate']))

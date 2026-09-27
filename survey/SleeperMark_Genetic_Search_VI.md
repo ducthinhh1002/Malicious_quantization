@@ -85,3 +85,14 @@ Hai nhánh có cùng số candidate và forward ngân sách search/selection; th
 gian chạy thực có thể khác do tranh chấp GPU. Không gọi đó là cùng ngân sách
 với QAT 2.000 bước. Muốn kết luận về ưu thế phương pháp phải bổ sung nhiều
 seed, held-out prompts/keys và đối chứng proxy; không chọn tham số theo TEST.
+
+## Kiểm thử triển khai
+
+14 unit/integration tests đã qua, gồm UNet diffusers thật ở kích thước nhỏ,
+khôi phục trọng số sau lỗi, split theo prompt, reproducibility và miền mã W4.
+Sau cập nhật log có thêm 5 kiểm thử nhánh evolution chạy lại đều qua.
+Smoke test trên H200 với checkpoint UNet SleeperMark chính thức, latent 64×64,
+FP32, population 4 và một thế hệ: cả GA/random đều qua, peak allocated khoảng
+3,93 GiB cho UNet-only smoke. Đây không phải VRAM toàn pipeline và không phải
+kết quả attack: latent/context trong smoke là ngẫu nhiên. Không thay đổi hay
+ngắt các tiến trình thí nghiệm đang chạy.
