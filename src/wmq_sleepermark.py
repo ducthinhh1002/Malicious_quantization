@@ -26,7 +26,8 @@ EQUIV_METHODS = ('equivariance_qat', 'adversarial_equivariance_qat')
 DELTA_METHODS = ('delta_cfg_equivariance', 'delta_coherent_probe')
 COHERENT_METHODS = ('coherent_probe_qat', 'delta_coherent_probe')
 ROLLOUT_METHODS = ('conditional_rollout_qat',)
-CFG_METHODS = ('cfg_reconstruction', 'prefix_consistency_qat', 'coherent_probe_qat') + EQUIV_METHODS + DELTA_METHODS + ROLLOUT_METHODS
+EVOLUTION_METHODS = ('genetic_quantizer_w4', 'random_quantizer_w4')
+CFG_METHODS = ('cfg_reconstruction', 'prefix_consistency_qat', 'coherent_probe_qat') + EQUIV_METHODS + DELTA_METHODS + ROLLOUT_METHODS + EVOLUTION_METHODS
 METHODS = ('fixed_ptq', 'model_reconstruction', 'natural_rounding', 'natural_finetune', 'natural_joint_finetune') + CFG_METHODS
 DEFAULT_METHODS = ('fixed_ptq', 'cfg_reconstruction', 'delta_cfg_equivariance', *COHERENT_METHODS)
 
@@ -131,6 +132,9 @@ def load_image(path):
 
 
 def train_branch(pipe, scheduler, dataset, names, method, args, output, artifact_output=None):
+    if method in EVOLUTION_METHODS:
+        from wmq_sleeper_evolution import train_evolution
+        return train_evolution(pipe, scheduler, dataset, names, method, args, output)
     device = next(pipe.unet.parameters()).device
     rollout = method in ROLLOUT_METHODS
     rollout_scheduler = None
@@ -438,6 +442,10 @@ def owner_scores(pipe, extractor, key, folder, fpr, seed):
 def parser():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('--steps', type=int, default=2000)
+    p.add_argument('--evolution-population', type=int, default=12)
+    p.add_argument('--evolution-generations', type=int, default=12)
+    p.add_argument('--evolution-records', type=int, default=16, help='Each of disjoint TRAIN fit/select banks')
+    p.add_argument('--evolution-quality-ratio', type=float, default=1.25, help='SELECT ordinary noise MSE / RTN MSE cap')
     p.add_argument('--methods', nargs='+', choices=METHODS,
                    default=list(DEFAULT_METHODS))
     p.add_argument('--rollout-horizon', type=int, default=2,
@@ -493,6 +501,11 @@ def parser():
 def main():
     p = parser()
     args = p.parse_args()
+    if (args.evolution_population < 4 or args.evolution_generations < 1 or args.evolution_records < 2
+            or not np.isfinite(args.evolution_quality_ratio) or args.evolution_quality_ratio < 1):
+        p.error('Invalid evolutionary search budget or quality ratio')
+    if any(m in EVOLUTION_METHODS for m in args.methods) and (args.calibration_mode != 'trajectory' or args.quant_group_size < 1):
+        p.error('Evolution needs trajectory calibration and positive quant-group-size')
     if min(args.steps, args.train_n, args.test_n, args.train_batch_size, args.log_every, args.inference_steps) < 1:
         p.error('Counts must be positive')
     if not 0 < args.fpr < 1 or min(args.lr, args.ft_lr) <= 0 or args.preserve_weight < 0:

@@ -11,7 +11,7 @@ from torch import nn
 from torch.utils.checkpoint import checkpoint
 
 from wmq_sleepermark import (attach, detach, switch, snapshot, restore, selected_weights,
-                            noise_target, state_hash, train_branch, METHODS, EQUIV_METHODS, DELTA_METHODS, ROLLOUT_METHODS, COHERENT_METHODS, parser)
+                            noise_target, state_hash, train_branch, METHODS, EQUIV_METHODS, DELTA_METHODS, ROLLOUT_METHODS, COHERENT_METHODS, EVOLUTION_METHODS, parser)
 from wmq_fid import feature_fid
 
 torch.set_num_threads(2)
@@ -65,7 +65,7 @@ class SleeperMarkTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp, patch('wmq_sleepermark.encode_text',
                 side_effect=lambda pipe, prompts: torch.zeros(len(prompts), 1, 8)):
             for method in METHODS:
-                if method in (*EQUIV_METHODS, *ROLLOUT_METHODS, *COHERENT_METHODS) or method.startswith('delta_'):
+                if method in (*EQUIV_METHODS, *ROLLOUT_METHODS, *COHERENT_METHODS, *EVOLUTION_METHODS) or method.startswith('delta_'):
                     continue  # Spatial branches use a spatial UNet in the integration test below.
                 result = train_branch(SimpleNamespace(unet=self.unet), scheduler, data,
                                       self.names, method, args, Path(tmp))

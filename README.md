@@ -1,5 +1,16 @@
 # Hướng dẫn chạy thí nghiệm malicious quantization cho watermark diffusion
 
+Thử nghiệm mới SleeperMark: genetic search trên scale/rounding W4 và random
+search cùng ngân sách (chưa bật mặc định vì chưa có kết quả xác nhận):
+
+```bash
+bash run_blind_quantization.sh --watermark sleepermark --methods genetic_quantizer_w4 random_quantizer_w4
+```
+
+Mặc định mỗi nhánh 156 candidate, không dùng owner key/extractor để chọn.
+`--steps` không điều khiển GA; dùng `--evolution-population` và
+`--evolution-generations`. Xem [protocol và giới hạn](survey/SleeperMark_Genetic_Search_VI.md).
+
 **Cấu hình hiện hành, 27/09/2026:** `transfer` không chạy bất kỳ nhánh FP32
 fine-tune nào, không chạy fine-tune → RTN và không tạo purified teacher ngầm.
 Các implementation này vẫn có trong `science`/`full` hoặc lệnh tường minh.
