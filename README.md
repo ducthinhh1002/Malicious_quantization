@@ -11,6 +11,17 @@ Mặc định mỗi nhánh 156 candidate, không dùng owner key/extractor để
 `--steps` không điều khiển GA; dùng `--evolution-population` và
 `--evolution-generations`. Xem [protocol và giới hạn](survey/SleeperMark_Genetic_Search_VI.md).
 
+Ứng dụng survey: crossover theo cặp scale–rounding, chọn theo đa dạng prediction,
+operator thích nghi và proxy residual subspace, kèm hai đối chứng:
+
+```bash
+bash run_blind_quantization.sh --watermark sleepermark --methods adaptive_genetic_w4 subspace_genetic_w4 random_subspace_genetic_w4 quality_genetic_w4
+```
+
+Bốn nhánh này dùng cùng ngân sách 156 candidate/nhánh. `random_subspace_genetic_w4`
+dùng basis ngẫu nhiên nhưng vẫn chạy GA cải tiến; khác với random search cũ.
+Chưa bật vào mặc định. Xem [kết quả cũ, công thức proxy và protocol mới](survey/SleeperMark_Structured_GA_Residual_Proxy_VI.md).
+
 **Cấu hình hiện hành, 27/09/2026:** `transfer` không chạy bất kỳ nhánh FP32
 fine-tune nào, không chạy fine-tune → RTN và không tạo purified teacher ngầm.
 Các implementation này vẫn có trong `science`/`full` hoặc lệnh tường minh.

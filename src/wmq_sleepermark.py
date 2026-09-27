@@ -26,7 +26,9 @@ EQUIV_METHODS = ('equivariance_qat', 'adversarial_equivariance_qat')
 DELTA_METHODS = ('delta_cfg_equivariance', 'delta_coherent_probe')
 COHERENT_METHODS = ('coherent_probe_qat', 'delta_coherent_probe')
 ROLLOUT_METHODS = ('conditional_rollout_qat',)
-EVOLUTION_METHODS = ('genetic_quantizer_w4', 'random_quantizer_w4')
+STRUCTURED_EVOLUTION_METHODS = ('adaptive_genetic_w4', 'subspace_genetic_w4',
+                                'random_subspace_genetic_w4', 'quality_genetic_w4')
+EVOLUTION_METHODS = ('genetic_quantizer_w4', 'random_quantizer_w4') + STRUCTURED_EVOLUTION_METHODS
 CFG_METHODS = ('cfg_reconstruction', 'prefix_consistency_qat', 'coherent_probe_qat') + EQUIV_METHODS + DELTA_METHODS + ROLLOUT_METHODS + EVOLUTION_METHODS
 METHODS = ('fixed_ptq', 'model_reconstruction', 'natural_rounding', 'natural_finetune', 'natural_joint_finetune') + CFG_METHODS
 DEFAULT_METHODS = ('fixed_ptq', 'cfg_reconstruction', 'delta_cfg_equivariance', *COHERENT_METHODS)
@@ -447,6 +449,11 @@ def parser():
     p.add_argument('--evolution-records', type=int, default=16, help='Each of disjoint TRAIN fit/select banks')
     p.add_argument('--evolution-quality-ratio', type=float, default=1.25, help='SELECT ordinary noise MSE / RTN MSE cap')
     p.add_argument('--evolution-tail-ratio', type=float, default=2., help='Max paired SELECT record noise MSE / RTN MSE; report failed candidates and continue')
+    p.add_argument('--evolution-residual-rank', type=int, default=2)
+    p.add_argument('--evolution-orthogonal-weight', type=float, default=.25)
+    p.add_argument('--evolution-ablate-grouping', action='store_true')
+    p.add_argument('--evolution-ablate-diversity', action='store_true')
+    p.add_argument('--evolution-ablate-adaptation', action='store_true')
     p.add_argument('--methods', nargs='+', choices=METHODS,
                    default=list(DEFAULT_METHODS))
     p.add_argument('--rollout-horizon', type=int, default=2,
@@ -508,6 +515,9 @@ def main():
         p.error('Invalid evolutionary search budget or quality ratio')
     if any(m in EVOLUTION_METHODS for m in args.methods) and (args.calibration_mode != 'trajectory' or args.quant_group_size < 1):
         p.error('Evolution needs trajectory calibration and positive quant-group-size')
+    if (args.evolution_residual_rank < 1 or not np.isfinite(args.evolution_orthogonal_weight)
+            or args.evolution_orthogonal_weight < 0):
+        p.error('Invalid residual subspace rank/orthogonal weight')
     if min(args.steps, args.train_n, args.test_n, args.train_batch_size, args.log_every, args.inference_steps) < 1:
         p.error('Counts must be positive')
     if not 0 < args.fpr < 1 or min(args.lr, args.ft_lr) <= 0 or args.preserve_weight < 0:

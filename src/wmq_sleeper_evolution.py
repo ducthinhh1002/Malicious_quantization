@@ -78,11 +78,14 @@ def tail_diagnostics(losses, reference, ratio_limit):
 
 @torch.no_grad()
 def train_evolution(pipe, scheduler, dataset, names, method, args, output):
-    from wmq_sleepermark import encode_text, snapshot
+    from wmq_sleepermark import encode_text, snapshot, STRUCTURED_EVOLUTION_METHODS
     from wmq_blind import save_csv, save_json
     from wmq_sleeper_calibration import augmented_prompts
     from wmq_sleeper_equivariance import guided_prediction
     started = time.perf_counter()
+    structured = method in STRUCTURED_EVOLUTION_METHODS
+    diversity = structured and not args.evolution_ablate_diversity
+    subspace = method in ('subspace_genetic_w4', 'random_subspace_genetic_w4')
     device = next(pipe.unet.parameters()).device
     empty = encode_text(pipe, ['']).detach()
     pipe.unet.eval()
@@ -124,30 +127,50 @@ def train_evolution(pipe, scheduler, dataset, names, method, args, output):
                 augmented = encode_text(pipe, augmented_prompts([prompt], rng)).detach()
                 # Proxy calibration restricted to late time; early records still
                 # contribute ordinary quality over the trajectory.
-                target = None
+                target = base = None
                 if timestep <= args.late_fraction*scheduler.config.num_train_timesteps:
-                    target, _ = guided_spatial_target(pipe.unet, z, t, augmented, empty,
-                        (args.spatial_shift, -args.spatial_shift), scheduler, args.max_spatial_correction)
-                result.append((z, t, context, u.detach(), (u+7.5*(c-u)).detach(), augmented, target))
-            if not any(row[-1] is not None for row in result):
+                    target, _, base = guided_spatial_target(pipe.unet, z, t, augmented, empty,
+                        (args.spatial_shift, -args.spatial_shift), scheduler, args.max_spatial_correction, return_base=True)
+                result.append((z, t, context, u.detach(), (u+7.5*(c-u)).detach(), augmented, target, base))
+            if not any(row[-2] is not None for row in result):
                 raise ValueError('Evolution calibration bank has no late timestep; increase records/trajectory points')
             return result
         enable(False)
         fit_bank, select_bank = bank(fit_indices), bank(select_indices)
+        residual_proxy = None
+        proxy_diagnostics = {'mode': 'quality_only' if method == 'quality_genetic_w4' else 'spatial_mse'}
+        if subspace:
+            from wmq_residual_proxy import ResidualProxy
+            residual_proxy = ResidualProxy([r[-2]-r[-1] for r in fit_bank if r[-2] is not None],
+                args.evolution_residual_rank, method == 'random_subspace_genetic_w4',
+                args.seed+15485863, args.evolution_orthogonal_weight)
+            proxy_diagnostics = {'mode': 'residual_subspace', **residual_proxy.diagnostics,
+                'orthogonal_weight': args.evolution_orthogonal_weight,
+                'select_capture_fraction': residual_proxy.capture(torch.cat([r[-2]-r[-1] for r in select_bank if r[-2] is not None]))}
+            print({'method': method, 'proxy_diagnostics': proxy_diagnostics}, flush=True)
         def score(data):
-            ordinary, proxy = [], []
-            for z, t, context, u, cfg, augmented, target in data:
+            ordinary, proxy, behavior = [], [], []
+            for z, t, context, u, cfg, augmented, target, base in data:
                 pred_u = pipe.unet(z, t, encoder_hidden_states=empty).sample
                 pred_c = pipe.unet(z, t, encoder_hidden_states=context).sample
-                ordinary.append(F.mse_loss(pred_u+7.5*(pred_c-pred_u), cfg)/7.5**2+F.mse_loss(pred_u, u))
+                error = pred_u+7.5*(pred_c-pred_u)-cfg
+                ordinary.append(error.square().mean()/7.5**2+F.mse_loss(pred_u, u))
+                if diversity:
+                    scale = cfg.square().mean().sqrt().clamp_min(1e-6)
+                    behavior.extend([F.adaptive_avg_pool2d(error, 2).flatten()/scale,
+                                     error.square().mean().sqrt().reshape(1)/scale])
                 if target is not None:
                     guided = guided_prediction(pipe.unet, z, t, augmented, empty)
-                    proxy.append(F.mse_loss(predicted_x0(guided, z, t, scheduler), target))
-            per_record = torch.stack(ordinary).cpu().numpy()
-            return np.array([per_record.mean(), float(torch.stack(proxy).mean())]), per_record
+                    prediction = predicted_x0(guided, z, t, scheduler)
+                    proxy.append(residual_proxy.loss(prediction-base, target-base) if residual_proxy else F.mse_loss(prediction, target))
+            # One device synchronization for losses and all descriptors.
+            packed = torch.cat([torch.stack(ordinary), torch.stack(proxy).mean().reshape(1), *behavior]).cpu().numpy()
+            per_record = packed[:len(data)]
+            proxy_loss = per_record.mean() if method == 'quality_genetic_w4' else packed[len(data)]
+            return np.array([per_record.mean(), proxy_loss]), per_record, packed[len(data)+1:]
         def fitness(gene):
             apply(gene)
-            value, _ = score(fit_bank)
+            value, _, descriptor = score(fit_bank)
             rows.append({'phase': 'fit', 'candidate': len(rows), 'ordinary_loss': float(value[0]), 'proxy_loss': float(value[1]),
                          'elapsed_seconds': time.perf_counter()-started,
                          'logical_unet_forwards': calls[0],
@@ -155,16 +178,20 @@ def train_evolution(pipe, scheduler, dataset, names, method, args, output):
             if len(rows) % args.evolution_population == 0:
                 save_csv(output/(method+'_training.csv'), rows)
                 print({'method': method, 'evaluated': len(rows), **rows[-1]}, flush=True)
-            return value
+            return {'fitness': value, 'behavior': descriptor} if structured else value
         records, pareto = search(fitness, 2*len(groups), args.evolution_population,
-                                args.evolution_generations, args.seed, random=method == 'random_quantizer_w4')
+                                args.evolution_generations, args.seed, random=method == 'random_quantizer_w4',
+                                structured=structured, behavior_selection=diversity,
+                                adaptive=structured and not args.evolution_ablate_adaptation,
+                                paired=not args.evolution_ablate_grouping)
         # Predeclared holdout budget: anchor plus P-1 diverse fit-Pareto/ranked
         # candidates; SELECT is disjoint from FIT and from owner TEST prompts.
-        shortlist = [0]+[i for i in ranked([r['fitness'] for r in records]) if i != 0][:args.evolution_population-1]
+        shortlist = [0]+[i for i in ranked([r['fitness'] for r in records],
+                        [r['behavior'] for r in records] if diversity else None) if i != 0][:args.evolution_population-1]
         validation = []
         for i in shortlist:
             apply(records[i]['gene'])
-            value, per_record = score(select_bank)
+            value, per_record, _ = score(select_bank)
             ordinary, proxy = map(float, value)
             if i == 0:
                 reference_losses = per_record
@@ -182,7 +209,10 @@ def train_evolution(pipe, scheduler, dataset, names, method, args, output):
         winner = min(feasible, key=lambda v: (v['proxy_loss'], v['ordinary_loss'], v['candidate']))
         apply(records[winner['candidate']]['gene'])
         save_csv(output/(method+'_validation.csv'), validation)
-        save_json(output/(method+'_search.json'), {'algorithm': 'random' if method.startswith('random') else 'NSGA-II-style integer GA',
+        save_json(output/(method+'_search.json'), {'algorithm': 'random' if method == 'random_quantizer_w4' else 'structured adaptive GA' if structured else 'NSGA-II-style integer GA',
+            'structured_operators': structured, 'paired_genes': structured and not args.evolution_ablate_grouping,
+            'behavior_selection': diversity, 'adaptive_operators': structured and not args.evolution_ablate_adaptation,
+            'proxy_diagnostics': proxy_diagnostics,
             'groups': groups, 'gene_meaning': ['log_scale/.04', 'rounding_bias/.1'], 'bounds': [-3, 3],
             'records': records, 'fit_pareto_indices': pareto, 'selected': winner,
             'ordinary_loss_limit': limit, 'quality_ratio_to_rtn': args.evolution_quality_ratio,

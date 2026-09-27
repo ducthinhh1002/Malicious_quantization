@@ -52,7 +52,7 @@ def guided_prediction(unet, sample, timesteps, condition, unconditional, guidanc
 
 @torch.no_grad()
 def guided_spatial_target(unet, sample, timesteps, condition, unconditional,
-                          shift, scheduler, max_correction):
+                          shift, scheduler, max_correction, return_base=False):
     """Align the proxy with actual CFG inference; still no ownership oracle."""
     def x0(value):
         pred = guided_prediction(unet, value, timesteps, condition, unconditional)
@@ -68,10 +68,11 @@ def guided_spatial_target(unet, sample, timesteps, condition, unconditional,
     mask = torch.zeros_like(correction)
     mask[..., margin:-margin, margin:-margin] = 1
     correction = cap_rms(correction * mask, max_correction)
-    return (base + correction).detach(), {
+    result = ((base + correction).detach(), {
         'correction_rms': correction.square().mean().sqrt(),
         'teacher_spatial_defect': interior(highpass(aligned[0] - base), shift).square().mean(),
-        'spatial_uses_guided_prediction': sample.new_tensor(1.)}
+        'spatial_uses_guided_prediction': sample.new_tensor(1.)})
+    return (*result, base.detach()) if return_base else result
 
 
 @torch.no_grad()

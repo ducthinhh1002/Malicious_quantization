@@ -8,13 +8,39 @@ from unittest.mock import patch
 import numpy as np
 import torch
 
-from wmq_evolution import fronts, ranked, search
+from wmq_evolution import fronts, ranked, search, paired_crossover, operator_probabilities
 from wmq_sleeper_evolution import GeneticWeight, split_records, tail_diagnostics
 from wmq_grouped_quant import GroupedW4
-from wmq_sleepermark import parser, train_branch, selected_weights, state_hash
+from wmq_sleepermark import parser, train_branch, selected_weights, state_hash, EVOLUTION_METHODS
 
 
 class EvolutionTests(unittest.TestCase):
+    def test_paired_crossover_preserves_each_parent_pair(self):
+        a, b = np.arange(8), np.arange(8)+20
+        rng = np.random.default_rng(1)
+        for _ in range(20):
+            child = paired_crossover(a, b, rng)
+            for i in range(0, 8, 2):
+                self.assertTrue(np.array_equal(child[i:i+2], a[i:i+2]) or np.array_equal(child[i:i+2], b[i:i+2]))
+
+    def test_adaptation_and_behavior_search_reproducible(self):
+        def evaluate(x):
+            return {'fitness': [float(np.square(x-1).sum()), float(np.square(x+1).sum())],
+                    'behavior': [float(x.sum()), float(np.square(x).sum()), float(x[0])]}
+        args = dict(dimensions=6, population=8, generations=4, seed=17,
+                    structured=True, behavior_selection=True, adaptive=True)
+        a, _ = search(evaluate, **args)
+        b, _ = search(evaluate, **args)
+        self.assertEqual(a, b)
+        probabilities = [r['operator_probabilities'] for r in a if 'operator_probabilities' in r]
+        self.assertTrue(any(not np.allclose(p, [.25]*4) for p in probabilities))
+        self.assertTrue(all(min(p) >= .05 and abs(sum(p)-1) < 1e-10 for p in probabilities))
+        self.assertEqual(len({tuple(r['gene']) for r in a}), 40)
+        np.testing.assert_allclose(operator_probabilities([0, 0, 0, 0]), [.25]*4)
+        # Diversity breaks ties inside a front, never moves a dominated row ahead.
+        order = ranked([[0, 2], [1, 1], [2, 0], [3, 3]], [[0], [1], [10], [1000]])
+        self.assertEqual(order[-1], 3)
+
     def test_pareto_layers_and_tradeoff_extremes(self):
         values = [[0, 3], [1, 2], [3, 0], [4, 4], [1, 2]]
         self.assertEqual(fronts(values), [[0, 1, 2, 4], [3]])
@@ -92,7 +118,7 @@ class EvolutionTests(unittest.TestCase):
         scheduler = DDPMScheduler(num_train_timesteps=10)
         with tempfile.TemporaryDirectory() as tmp, patch('wmq_sleepermark.encode_text',
                 side_effect=lambda pipe, prompts: torch.zeros(len(prompts), 3, 8)):
-            for method in ('genetic_quantizer_w4', 'random_quantizer_w4'):
+            for method in EVOLUTION_METHODS:
                 result = train_branch(SimpleNamespace(unet=unet), scheduler, data, names, method, args, Path(tmp))
                 self.assertEqual(before, state_hash(unet))
                 self.assertEqual(set(result[method]), set(names))
@@ -104,6 +130,10 @@ class EvolutionTests(unittest.TestCase):
                 self.assertLessEqual(report['selected']['ordinary_loss'], report['ordinary_loss_limit'])
                 self.assertLessEqual(report['selected']['ordinary_ratio_max'], report['per_record_ratio_limit'])
                 self.assertEqual(report['unique_genomes_evaluated'], 8)
+                if 'subspace' in method:
+                    self.assertEqual(report['proxy_diagnostics']['normalization_source'], 'FIT only')
+                if method == 'quality_genetic_w4':
+                    self.assertTrue(all(r['fitness'][0] == r['fitness'][1] for r in report['records']))
             with patch('wmq_sleeper_evolution.search', side_effect=RuntimeError('injected')):
                 with self.assertRaisesRegex(RuntimeError, 'injected'):
                     train_branch(SimpleNamespace(unet=unet), scheduler, data, names,
