@@ -86,6 +86,28 @@ def aggregate(suite, jobs, hardware):
                              'error': f'expected one attack row, found {len(attacks)}'})
             continue
         row = {'method': method, 'result_dir': str(result), 'log': str(job['log']), **attacks[0]}
+        reference = next((r for r in records if r['label'] == 'marked_reference_test'), {})
+        row['baseline_tpr'] = reference.get('tpr', '')
+        row['baseline_bit_accuracy'] = reference.get('bit_accuracy', '')
+        row['wall_seconds'] = job.get('elapsed_seconds', '')
+        for filename, suffix, column in [('fid.csv', '', 'fid_triggered_to_marked_reference'),
+                ('ordinary_fid.csv', '_ordinary', 'fid_ordinary_to_marked_reference')]:
+            path = result/filename
+            row[column] = ''
+            if path.exists():
+                with path.open(encoding='utf-8', newline='') as handle:
+                    match = next((r for r in csv.DictReader(handle) if r['label'] == row['label']+suffix), None)
+                if match is not None:
+                    row[column] = match.get('fid_to_marked_reference', '')
+        row['fid_status'] = ('failed' if (result/'fid_error.json').exists() else
+                             'complete' if row['fid_triggered_to_marked_reference'] != '' and row['fid_ordinary_to_marked_reference'] != '' else 'not_available')
+        training = result/(method+'_training.csv')
+        if training.exists():
+            with training.open(encoding='utf-8', newline='') as handle:
+                training_rows = list(csv.DictReader(handle))
+            if training_rows:
+                for column in ('elapsed_seconds', 'logical_unet_forwards', 'peak_allocated_gib'):
+                    row['train_'+column] = training_rows[-1].get(column, '')
         rows.append(row)
     columns = list(dict.fromkeys(key for row in rows for key in row))
     with (suite/'parallel_summary.csv').open('w', encoding='utf-8', newline='') as handle:

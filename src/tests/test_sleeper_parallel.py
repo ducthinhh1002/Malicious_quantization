@@ -41,6 +41,10 @@ class SleeperParallelTests(unittest.TestCase):
                 writer.writeheader()
                 writer.writerows([{'label': 'marked_reference_test', 'tpr': '1'},
                                   {'label': 'fixed_ptq_w4', 'tpr': '.9'}])
+            for file, label in [('fid.csv', 'fixed_ptq_w4'), ('ordinary_fid.csv', 'fixed_ptq_w4_ordinary')]:
+                with (result/file).open('w', newline='', encoding='utf-8') as handle:
+                    writer = csv.DictWriter(handle, fieldnames=['label', 'fid_to_marked_reference'])
+                    writer.writeheader(); writer.writerow({'label': label, 'fid_to_marked_reference': '12.3'})
             jobs = [{'method': 'fixed_ptq', 'returncode': 0, 'log': suite/'fixed.log'},
                     {'method': 'bad', 'returncode': 4, 'log': suite/'bad.log'}]
             failures = aggregate(suite, jobs, {'parallel_branches': 2})
@@ -48,6 +52,9 @@ class SleeperParallelTests(unittest.TestCase):
             with (suite/'parallel_summary.csv').open(encoding='utf-8') as handle:
                 rows = list(csv.DictReader(handle))
             self.assertEqual(rows[0]['label'], 'fixed_ptq_w4')
+            self.assertEqual(rows[0]['fid_status'], 'complete')
+            self.assertEqual(rows[0]['fid_ordinary_to_marked_reference'], '12.3')
+            self.assertEqual(rows[0]['baseline_tpr'], '1')
             self.assertEqual(json.loads((suite/'parallel_summary.json').read_text())['status'], 'partial_failure')
 
 

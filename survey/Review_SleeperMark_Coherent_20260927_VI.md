@@ -109,3 +109,21 @@ Các nhánh tiếp tục dùng process riêng; mặc định ước lượng 18 
 headroom cho gradient theo context batch 2. Concurrency là ước lượng dung lượng,
 không phải phép đo SM occupancy. `nvidia-smi` utilization 100% chỉ biểu thị GPU
 đang chạy kernel gần như suốt khoảng đo; không chứng minh đạt 100% compute tối đa.
+
+## Kiểm tra implementation
+
+Test CPU gồm UNet Diffusers thật, gradient checkpointing, delta export/reload,
+khôi phục hash nguồn, giới hạn context perturbation, chọn prompt độc lập, pairwise
+score loại self-energy và correction bằng 0 khi response ngược chiều. Các test
+đều pass. Bash syntax cũng pass.
+
+Smoke test CUDA đã chạy cả hai nhánh trên checkpoint SleeperMark SD1.4 đầy đủ,
+hai optimizer steps với batch probe 2: peak allocated 8.16 GiB (W4) và 8.54 GiB
+(delta), output trọng số hữu hạn và source hash được khôi phục. Smoke dùng latent
+ngẫu nhiên để kiểm tra thực thi, không phải thí nghiệm attack. Ở minibatch smoke,
+agreement âm nên correction bằng 0 đúng thiết kế; delta codes chưa đổi sau hai
+bước. Không dùng smoke này làm bằng chứng suppression.
+
+Bảng `parallel_summary.csv` bổ sung baseline BA/TPR, FID triggered/ordinary,
+trạng thái FID và thời gian/forward count/peak VRAM TRAIN khi có log. FID thiếu
+hoặc lỗi được báo rõ, không suy diễn từ trạng thái owner evaluation.
