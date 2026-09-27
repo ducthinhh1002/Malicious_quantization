@@ -27,7 +27,8 @@ DELTA_METHODS = ('delta_cfg_equivariance', 'delta_coherent_probe')
 COHERENT_METHODS = ('coherent_probe_qat', 'delta_coherent_probe')
 ROLLOUT_METHODS = ('conditional_rollout_qat',)
 STRUCTURED_EVOLUTION_METHODS = ('adaptive_genetic_w4', 'subspace_genetic_w4',
-                                'random_subspace_genetic_w4', 'quality_genetic_w4')
+                                'random_subspace_genetic_w4', 'quality_genetic_w4',
+                                'local_proposal_genetic_w4', 'llm_genetic_w4')
 EVOLUTION_METHODS = ('genetic_quantizer_w4', 'random_quantizer_w4') + STRUCTURED_EVOLUTION_METHODS
 CFG_METHODS = ('cfg_reconstruction', 'prefix_consistency_qat', 'coherent_probe_qat') + EQUIV_METHODS + DELTA_METHODS + ROLLOUT_METHODS + EVOLUTION_METHODS
 METHODS = ('fixed_ptq', 'model_reconstruction', 'natural_rounding', 'natural_finetune', 'natural_joint_finetune') + CFG_METHODS
@@ -453,6 +454,9 @@ def parser():
     p.add_argument('--evolution-subspace-layout', choices=['global', 'patch3'], default='global',
                    help='Experimental shared 3x3 residual basis; affects learned and random subspace controls equally')
     p.add_argument('--evolution-orthogonal-weight', type=float, default=.25)
+    p.add_argument('--llm-proposals-per-generation', type=int, default=3,
+                   help='FIT-only proposals replacing part of each GA generation; total candidate budget unchanged')
+    p.add_argument('--llm-max-new-tokens', type=int, default=768)
     p.add_argument('--evolution-ablate-grouping', action='store_true')
     p.add_argument('--evolution-ablate-diversity', action='store_true')
     p.add_argument('--evolution-ablate-adaptation', action='store_true')
@@ -520,6 +524,9 @@ def main():
     if (args.evolution_residual_rank < 1 or not np.isfinite(args.evolution_orthogonal_weight)
             or args.evolution_orthogonal_weight < 0):
         p.error('Invalid residual subspace rank/orthogonal weight')
+    if (not 1 <= args.llm_proposals_per_generation < args.evolution_population
+            or args.llm_max_new_tokens < 64):
+        p.error('Invalid LLM proposal count/token budget')
     if min(args.steps, args.train_n, args.test_n, args.train_batch_size, args.log_every, args.inference_steps) < 1:
         p.error('Counts must be positive')
     if not 0 < args.fpr < 1 or min(args.lr, args.ft_lr) <= 0 or args.preserve_weight < 0:
@@ -668,11 +675,12 @@ def main():
         'source_sha256': {file: digest(Path(__file__).with_name(file)) for file in
             ('wmq_sleepermark.py', 'wmq_sleeper_calibration.py', 'wmq_sleeper_equivariance.py', 'wmq_sleeper_rollout.py', 'wmq_sleeper_coherent.py',
              'wmq_grouped_quant.py', 'wmq_delta_quant.py', 'wmq_evolution.py',
-             'wmq_sleeper_evolution.py', 'wmq_residual_proxy.py')},
+             'wmq_sleeper_evolution.py', 'wmq_residual_proxy.py', 'wmq_llm_proposals.py')},
         'train_prompts': train_prompts, 'test_prompts': test_prompts,
         'natural_train_files': natural_files, 'original_unet_sha256': original_hash,
         'frozen_components': frozen_hashes,
-        'arguments': {k: str(v) if isinstance(v, Path) else v for k,v in vars(args).items()}}
+        'arguments': {k: str(v) if isinstance(v, Path) else v for k,v in vars(args).items()
+                      if not k.startswith('_')}}
     checkpoints = {}
     for method in args.methods:
         restore(pipe.unet, original)

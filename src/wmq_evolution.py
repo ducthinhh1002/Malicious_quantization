@@ -74,7 +74,8 @@ def paired_crossover(a, b, rng, group_size=2):
 
 
 def search(evaluate, dimensions, population=12, generations=12, seed=0, random=False,
-           structured=False, behavior_selection=False, adaptive=False, paired=True):
+           structured=False, behavior_selection=False, adaptive=False, paired=True,
+           proposal_provider=None):
     """Integer genes in [-3,3]. Zero anchor is measured, not assumed optimal.
 
     Elitist parent+offspring selection, Pareto rank/crowding tournaments,
@@ -139,13 +140,31 @@ def search(evaluate, dimensions, population=12, generations=12, seed=0, random=F
     initial[0] = 0
     live = [measure(gene, 0) for gene in initial]
     for generation in range(1, generations+1):
+        proposed = []
+        if proposal_provider is not None:
+            # Copy only FIT measurements; provider cannot mutate archive or see SELECT/TEST.
+            archive = [{'gene': list(r['gene']), 'fitness': list(r['fitness'])} for r in records]
+            seen_batch = set(seen)
+            for value in proposal_provider(generation, archive):
+                array = np.asarray(value)
+                if (array.shape != (dimensions,) or array.dtype.kind not in 'iu'
+                        or np.any(array < -3) or np.any(array > 3)):
+                    raise ValueError('Proposal must be a bounded integer genome')
+                gene = array.astype(int)
+                if tuple(gene) not in seen_batch:
+                    proposed.append(gene)
+                    seen_batch.add(tuple(gene))
+                if len(proposed) >= population:
+                    break
         order = population_order(live)
         priority = {live[index]: rank for rank, index in enumerate(order)}
         def tournament_index():
             a, b = rng.choice(live, 2, replace=False)
             return min((a, b), key=priority.get)
         children = []
-        for _ in range(population):
+        for gene in proposed:
+            children.append(measure(gene, generation, proposal_provider.label))
+        for _ in range(population-len(children)):
             op = None
             probabilities = operator_probabilities(credits) if adaptive else np.full(4, .25)
             parent = None

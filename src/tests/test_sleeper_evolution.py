@@ -9,12 +9,36 @@ import numpy as np
 import torch
 
 from wmq_evolution import fronts, ranked, search, paired_crossover, operator_probabilities
+from wmq_llm_proposals import LocalEliteProposer
 from wmq_sleeper_evolution import GeneticWeight, split_records, tail_diagnostics, sparse_calibration_plan
 from wmq_grouped_quant import GroupedW4
 from wmq_sleepermark import parser, train_branch, selected_weights, state_hash, EVOLUTION_METHODS
 
 
 class EvolutionTests(unittest.TestCase):
+    def test_proposals_replace_ga_children_without_changing_budget(self):
+        class Fixed:
+            label = 'test_proposal'
+            def __call__(self, generation, archive):
+                self.archive = archive
+                return [[3, 3], [3, 3], [-3, -3]]
+        provider = Fixed()
+        records, _ = search(lambda x: [float((x-1).dot(x-1)), float((x+1).dot(x+1))],
+                            2, population=4, generations=2, seed=9,
+                            structured=True, proposal_provider=provider)
+        self.assertEqual(len(records), 12)
+        self.assertEqual(len({tuple(r['gene']) for r in records}), 12)
+        self.assertTrue(any(r['operator'] == 'test_proposal' for r in records))
+        self.assertEqual(set(provider.archive[-1]), {'gene', 'fitness'})
+
+    def test_local_proposer_is_deterministic_bounded_and_archive_only(self):
+        archive = [{'gene': [0, 0, 0, 0], 'fitness': [2., 2.]},
+                   {'gene': [1, 1, 1, 1], 'fitness': [1., 3.]},
+                   {'gene': [-1, -1, -1, -1], 'fitness': [3., 1.]}]
+        a, b = LocalEliteProposer(['a', 'b'], 3, 7), LocalEliteProposer(['a', 'b'], 3, 7)
+        self.assertEqual(a(1, archive), b(1, archive))
+        self.assertTrue(all(len(g) == 4 and all(-3 <= x <= 3 for x in g) for g in a(2, archive)))
+
     def test_sparse_calibration_matches_full_records_and_seeds(self):
         for prompt_count, train_n, count in ((300, 256, 16), (7, 35, 20), (4, 4, 2)):
             prompts = [f'p{i}' for i in range(prompt_count)]
@@ -134,7 +158,9 @@ class EvolutionTests(unittest.TestCase):
         args._evolution_record_indices = split_records(data, args.evolution_records, args.seed)
         with tempfile.TemporaryDirectory() as tmp, patch('wmq_sleepermark.encode_text',
                 side_effect=lambda pipe, prompts: torch.zeros(len(prompts), 3, 8)), patch(
-                    'wmq_sleeper_evolution.split_records', side_effect=AssertionError('Must reuse planned split')):
+                    'wmq_sleeper_evolution.split_records', side_effect=AssertionError('Must reuse planned split')), patch(
+                    'wmq_llm_proposals.LocalLLMProposer', side_effect=lambda groups, output, count, **kw:
+                        LocalEliteProposer(groups, count, seed=1)):
             for method in EVOLUTION_METHODS:
                 result = train_branch(SimpleNamespace(unet=unet), scheduler, data, names, method, args, Path(tmp))
                 self.assertEqual(before, state_hash(unet))

@@ -118,7 +118,7 @@ def train_evolution(pipe, scheduler, dataset, names, method, args, output):
     groups = sorted(set(n.split('.transformer_blocks.')[0] if '.transformer_blocks.' in n
                         else n.rsplit('.', 2)[0] for n in names))
     group_index = {name: i for i, name in enumerate(groups)}
-    modules, rows, calls = [], [], [0]
+    modules, rows, calls, proposer = [], [], [0], None
     def count_forward(module, inputs):
         calls[0] += 1
     counter = pipe.unet.register_forward_pre_hook(count_forward)
@@ -209,11 +209,20 @@ def train_evolution(pipe, scheduler, dataset, names, method, args, output):
                 save_csv(output/(method+'_training.csv'), rows)
                 print({'method': method, 'evaluated': len(rows), **rows[-1]}, flush=True)
             return {'fitness': value, 'behavior': descriptor} if structured else value
+        if method in ('llm_genetic_w4', 'local_proposal_genetic_w4'):
+            from wmq_llm_proposals import LocalLLMProposer, LocalEliteProposer
+            common = (groups, args.llm_proposals_per_generation)
+            proposer = (LocalLLMProposer(groups, output/(method+'_llm_trace.jsonl'),
+                                         count=args.llm_proposals_per_generation,
+                                         max_tokens=args.llm_max_new_tokens, device=str(device))
+                        if method == 'llm_genetic_w4' else
+                        LocalEliteProposer(*common, seed=args.seed))
         records, pareto = search(fitness, 2*len(groups), args.evolution_population,
                                 args.evolution_generations, args.seed, random=method == 'random_quantizer_w4',
                                 structured=structured, behavior_selection=diversity,
                                 adaptive=structured and not args.evolution_ablate_adaptation,
-                                paired=not args.evolution_ablate_grouping)
+                                paired=not args.evolution_ablate_grouping,
+                                proposal_provider=proposer)
         # Predeclared holdout budget: anchor plus P-1 diverse fit-Pareto/ranked
         # candidates; SELECT is disjoint from FIT and from owner TEST prompts.
         shortlist = [0]+[i for i in ranked([r['fitness'] for r in records],
@@ -254,6 +263,10 @@ def train_evolution(pipe, scheduler, dataset, names, method, args, output):
             'structured_operators': structured, 'paired_genes': structured and not args.evolution_ablate_grouping,
             'behavior_selection': diversity, 'adaptive_operators': structured and not args.evolution_ablate_adaptation,
             'proxy_diagnostics': proxy_diagnostics,
+            'proposal_provider': None if proposer is None else {
+                'kind': proposer.label, 'requested_per_generation': args.llm_proposals_per_generation,
+                'trace': proposer.trace, 'owner_feedback': False,
+                'total_candidate_budget_unchanged': True},
             'selection_diagnostics': selection_diagnostics,
             'groups': groups, 'gene_meaning': ['log_scale/.04', 'rounding_bias/.1'], 'bounds': [-3, 3],
             'records': records, 'fit_pareto_indices': pareto, 'selected': winner,
@@ -269,6 +282,8 @@ def train_evolution(pipe, scheduler, dataset, names, method, args, output):
         save_csv(output/(method+'_training.csv'), rows)
         return {method: snapshot(pipe.unet, names)}
     finally:
+        if proposer is not None:
+            proposer.close()
         counter.remove()
         for module, leaf, _, _ in reversed(modules):
             parametrize.remove_parametrizations(module, leaf, leave_parametrized=False)

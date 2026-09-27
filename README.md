@@ -42,6 +42,17 @@ dùng (tối đa 32 thay vì 256 ở mặc định), giữ nguyên seed và reco
 Manifest có `evolution_calibration_plan` để kiểm tra. QAT vẫn dùng đầy đủ
 calibration. Xem [kết quả cuối structured GA](survey/Review_SleeperMark_Structured_Final_VI.md).
 
+Thử LLM đề xuất quantizer, cùng local-search control và adaptive GA:
+
+```bash
+bash run_blind_quantization.sh --watermark sleepermark --methods adaptive_genetic_w4 local_proposal_genetic_w4 llm_genetic_w4
+```
+
+LLM chạy local, model/revision được pin, chỉ nhận FIT archive và không thực thi
+code sinh ra. Ba proposal/thế hệ thay thế offspring GA nên vẫn có 156 candidate;
+token, thời gian và VRAM LLM vẫn là compute bổ sung. Xem [thiết kế, survey và
+protocol](survey/LLM_Guided_Quantization_Search_VI.md).
+
 **Cấu hình hiện hành, 27/09/2026:** `transfer` không chạy bất kỳ nhánh FP32
 fine-tune nào, không chạy fine-tune → RTN và không tạo purified teacher ngầm.
 Các implementation này vẫn có trong `science`/`full` hoặc lệnh tường minh.
