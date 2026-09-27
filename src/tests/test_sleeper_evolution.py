@@ -9,12 +9,26 @@ import numpy as np
 import torch
 
 from wmq_evolution import fronts, ranked, search, paired_crossover, operator_probabilities
-from wmq_sleeper_evolution import GeneticWeight, split_records, tail_diagnostics
+from wmq_sleeper_evolution import GeneticWeight, split_records, tail_diagnostics, sparse_calibration_plan
 from wmq_grouped_quant import GroupedW4
 from wmq_sleepermark import parser, train_branch, selected_weights, state_hash, EVOLUTION_METHODS
 
 
 class EvolutionTests(unittest.TestCase):
+    def test_sparse_calibration_matches_full_records_and_seeds(self):
+        for prompt_count, train_n, count in ((300, 256, 16), (7, 35, 20), (4, 4, 2)):
+            prompts = [f'p{i}' for i in range(prompt_count)]
+            times = [981, 841, 701, 561, 421, 281, 141, 1]
+            full = [(3407+i, None, prompts[i % prompt_count], t)
+                    for i in range(train_n) for t in times]
+            plan = sparse_calibration_plan(prompts, train_n, times, count, 3407)
+            compact = [full[i*len(times)+j] for i in plan['trajectory_ids'] for j in range(len(times))]
+            expected = split_records(full, count, 3407)
+            for original, retained in zip(expected, plan['compact_record_indices']):
+                self.assertEqual([full[i] for i in original], [compact[i] for i in retained])
+            self.assertEqual([(r[2], r[3]) for r in compact], plan['expected_records'])
+            self.assertLessEqual(plan['generated_trajectories'], min(train_n, 2*count))
+
     def test_paired_crossover_preserves_each_parent_pair(self):
         a, b = np.arange(8), np.arange(8)+20
         rng = np.random.default_rng(1)
@@ -117,8 +131,10 @@ class EvolutionTests(unittest.TestCase):
                                    '--evolution-records', '2', '--spatial-shift', '1',
                                    '--evolution-subspace-layout', 'patch3'])
         scheduler = DDPMScheduler(num_train_timesteps=10)
+        args._evolution_record_indices = split_records(data, args.evolution_records, args.seed)
         with tempfile.TemporaryDirectory() as tmp, patch('wmq_sleepermark.encode_text',
-                side_effect=lambda pipe, prompts: torch.zeros(len(prompts), 3, 8)):
+                side_effect=lambda pipe, prompts: torch.zeros(len(prompts), 3, 8)), patch(
+                    'wmq_sleeper_evolution.split_records', side_effect=AssertionError('Must reuse planned split')):
             for method in EVOLUTION_METHODS:
                 result = train_branch(SimpleNamespace(unet=unet), scheduler, data, names, method, args, Path(tmp))
                 self.assertEqual(before, state_hash(unet))

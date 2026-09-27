@@ -76,6 +76,28 @@ def tail_diagnostics(losses, reference, ratio_limit):
             'ordinary_ratio_denominator_floor': floor}
 
 
+def sparse_calibration_plan(prompts, train_n, timesteps, count, seed):
+    """Choose exactly the old FIT/SELECT records before generating any latents.
+
+    Keep original trajectory IDs (and therefore seed+i), including repeated
+    prompts. Compact indices address the retained trajectories in original order.
+    """
+    if not prompts or train_n < 1 or not timesteps or count < 1:
+        raise ValueError('Invalid sparse calibration plan')
+    full = [(None, None, prompts[i % len(prompts)], int(t))
+            for i in range(train_n) for t in timesteps]
+    chosen = split_records(full, count, seed)
+    width = len(timesteps)
+    trajectory_ids = sorted({index//width for part in chosen for index in part})
+    kept = [i*width+j for i in trajectory_ids for j in range(width)]
+    mapping = {old: new for new, old in enumerate(kept)}
+    return {'trajectory_ids': trajectory_ids,
+            'full_record_indices': chosen,
+            'compact_record_indices': [[mapping[i] for i in part] for part in chosen],
+            'expected_records': [(full[i][2], full[i][3]) for i in kept],
+            'requested_trajectories': train_n, 'generated_trajectories': len(trajectory_ids)}
+
+
 @torch.no_grad()
 def train_evolution(pipe, scheduler, dataset, names, method, args, output):
     from wmq_sleepermark import encode_text, snapshot, STRUCTURED_EVOLUTION_METHODS
@@ -90,7 +112,9 @@ def train_evolution(pipe, scheduler, dataset, names, method, args, output):
     pipe.unet.eval()
     if args.quant_group_size < 1:
         raise ValueError('Evolution needs grouped W4 (--quant-group-size > 0)')
-    fit_indices, select_indices = split_records(dataset, args.evolution_records, args.seed)
+    preselected = getattr(args, '_evolution_record_indices', None)
+    fit_indices, select_indices = (preselected if preselected is not None else
+                                   split_records(dataset, args.evolution_records, args.seed))
     groups = sorted(set(n.split('.transformer_blocks.')[0] if '.transformer_blocks.' in n
                         else n.rsplit('.', 2)[0] for n in names))
     group_index = {name: i for i, name in enumerate(groups)}

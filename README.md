@@ -37,6 +37,11 @@ bash run_blind_quantization.sh --watermark sleepermark --methods subspace_geneti
 
 Xem [động cơ, số liệu tổng quát hóa và giới hạn của patch proxy](survey/SleeperMark_Patch_Residual_Proxy_VI.md).
 
+Tiến trình chỉ chạy GA nay lập trước FIT/SELECT để chỉ sinh trajectory được
+dùng (tối đa 32 thay vì 256 ở mặc định), giữ nguyên seed và record đã chọn.
+Manifest có `evolution_calibration_plan` để kiểm tra. QAT vẫn dùng đầy đủ
+calibration. Xem [kết quả cuối structured GA](survey/Review_SleeperMark_Structured_Final_VI.md).
+
 **Cấu hình hiện hành, 27/09/2026:** `transfer` không chạy bất kỳ nhánh FP32
 fine-tune nào, không chạy fine-tune → RTN và không tạo purified teacher ngầm.
 Các implementation này vẫn có trong `science`/`full` hoặc lệnh tường minh.

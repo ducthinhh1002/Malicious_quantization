@@ -582,8 +582,22 @@ def main():
     test_prompts = [prompts[i] for i in shuffled[:args.test_n]]
     train_prompts = [prompts[i] for i in shuffled[args.test_n:]]
     model_data, natural_data, trajectory_data = [], [], []
+    evolution_plan = None
+    trajectory_ids = list(range(args.train_n))
+    if args.methods and all(m in EVOLUTION_METHODS for m in args.methods):
+        from wmq_sleeper_evolution import sparse_calibration_plan
+        pipe.scheduler.set_timesteps(args.inference_steps)
+        positions = torch.linspace(0, args.inference_steps-1,
+                                   min(args.trajectory_points, args.inference_steps)).round().long()
+        captured_times = [int(pipe.scheduler.timesteps[i]) for i in positions]
+        evolution_plan = sparse_calibration_plan(train_prompts, args.train_n, captured_times,
+                                                 args.evolution_records, args.seed)
+        trajectory_ids = evolution_plan['trajectory_ids']
+        args._evolution_record_indices = evolution_plan['compact_record_indices']
+        print(f'Evolution calibration: generating {len(trajectory_ids)}/{args.train_n} trajectories; '
+              'FIT/SELECT records and original seeds unchanged', flush=True)
     if any(m in ('model_reconstruction', *CFG_METHODS) for m in args.methods):
-        for i in range(args.train_n):
+        for generated, i in enumerate(trajectory_ids, 1):
             prompt = train_prompts[i % len(train_prompts)]
             from wmq_sleeper_equivariance import TrajectoryCapture
             capture = (TrajectoryCapture(pipe.unet, args.inference_steps, args.trajectory_points)
@@ -601,8 +615,11 @@ def main():
             finally:
                 if capture is not None:
                     capture.close()
-            if (i+1) % 10 == 0:
-                print(f'Model-only latent calibration {i+1}/{args.train_n}', flush=True)
+            if generated % 10 == 0 or generated == len(trajectory_ids):
+                print(f'Model-only latent calibration {generated}/{len(trajectory_ids)}', flush=True)
+    if evolution_plan is not None:
+        if [(r[2], r[3]) for r in trajectory_data] != evolution_plan['expected_records']:
+            raise RuntimeError('Captured trajectory order/timesteps differ from sparse calibration plan')
     natural_files = []
     if any(m.startswith('natural_') for m in args.methods):
         if args.natural_images is None:
@@ -637,6 +654,7 @@ def main():
         'trajectory_records': len(trajectory_data),
         'trajectory_timesteps': sorted(set(record[3] for record in trajectory_data)),
         'calibration_cache': cache_stats,
+        'evolution_calibration_plan': evolution_plan,
         'spatial_objective': 'Late-time aligned spatial teacher ensemble; balanced mode uses CFG prediction and declared loss normalization; not ownership oracle',
         'spatial_context': 'Independent TRAIN punctuation augmentation in balanced mode; no owner tokens or detector feedback',
         'conditional_rollout': 'Only conditional-minus-unconditional spatial defect is corrected; independent teacher/student DDIM paths; detached states between steps; ordinary TRAIN starting latents',
