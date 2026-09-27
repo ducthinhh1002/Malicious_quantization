@@ -18,8 +18,15 @@ group 64 và `delta_cfg_equivariance` với FP32 base + delta INT4 per-channel.
 run mới cho thấy không cải thiện. Nhánh delta dùng mục tiêu spatial trên CFG
 prediction và giữ nguyên marked UNet làm base; không tải model sạch thay thế.
 
-[Phân tích kết quả, DeltaZip và giới hạn nhánh mới](survey/Review_Delta_Warm_Sleeper_20260927_VI.md).
-**Chưa có kết quả GPU của các nhánh delta; không bảo đảm chúng làm yếu watermark.**
+[Phân tích ý tưởng DeltaZip](survey/Review_Delta_Warm_Sleeper_20260927_VI.md).
+Run SleeperMark `20260927_013638_836714`: delta đạt SSIM triggered 0.897 nhưng
+TPR vẫn 100%; tất cả nhánh có joint success 0/100.
+[Bảng kết quả và cải tiến cả bốn nhánh](survey/Review_SleeperMark_20260927_013638_VI.md).
+Mặc định mới dùng `--weight-init mse --quant-refinement balanced`: khởi tạo W4
+theo sai số trọng số, tách LR code/scale, lấy mẫu đều các timestep; equivariance
+và delta dùng CFG spatial loss quy đổi về noise prediction cùng TRAIN context
+augmentation. Chưa có kết quả GPU của phiên bản cải tiến này.
+Để đối chiếu cấu hình trước: `bash run_blind_quantization.sh --watermark sleepermark --weight-init rtn --quant-refinement legacy`.
 
 **Chạy cả hai watermark bằng một lệnh:**
 

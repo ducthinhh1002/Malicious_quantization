@@ -5,6 +5,22 @@ from wmq_blind import RoundingGrid
 
 
 class GridTests(unittest.TestCase):
+    def test_mse_initialization_never_worsens_legacy_weight_error(self):
+        torch.manual_seed(37)
+        for shape in ((3, 9), (2, 3, 3, 3)):
+            weight = torch.randn(shape)
+            old, new = GroupedW4(weight, 4), GroupedW4(weight, 4, 'mse')
+            self.assertLessEqual(float((new(False)-weight).square().sum()),
+                                 float((old(False)-weight).square().sum())+1e-7)
+            self.assertLessEqual(float(new.initial_weight_mse), float(new.legacy_weight_mse)+1e-7)
+            torch.testing.assert_close(new.initial_weight_mse, (new(False)-weight).square().mean())
+            with torch.no_grad():
+                new.offset.fill_(30)
+                new.log_scale.fill_(-5)
+            new.clamp_parameters()
+            self.assertEqual(float(new.offset.max()), 2.)
+            self.assertTrue(torch.isfinite(new(False)).all())
+
     def test_group_padding_export_and_gradients(self):
         torch.manual_seed(7)
         for shape in ((3, 9), (2, 3, 3, 3)):

@@ -56,7 +56,7 @@ def noise_target(scheduler, latent, noise, timestep):
 
 
 class QuantizedWeight(nn.Module):
-    def __init__(self, weight, finetune=False, group_size=0, delta_radius=None):
+    def __init__(self, weight, finetune=False, group_size=0, delta_radius=None, initialization='rtn'):
         super().__init__()
         self.enabled = True
         self.quantized = True
@@ -68,7 +68,7 @@ class QuantizedWeight(nn.Module):
             from wmq_grouped_quant import GroupedW4
             from wmq_delta_quant import DeltaGrid
             self.grid = (DeltaGrid(weight, 4, delta_radius) if delta_radius is not None else
-                         GroupedW4(weight, group_size) if group_size else RoundingGrid(weight, 4, learn_scale=True))
+                         GroupedW4(weight, group_size, initialization) if group_size else RoundingGrid(weight, 4, learn_scale=True))
 
     def forward(self, original):
         if not self.enabled:
@@ -81,12 +81,12 @@ class QuantizedWeight(nn.Module):
         return self.grid(self.training)
 
 
-def attach(unet, names, finetune=False, group_size=0, delta_radius=None):
+def attach(unet, names, finetune=False, group_size=0, delta_radius=None, initialization='rtn'):
     modules = []
     for name in names:
         parent, leaf = name.rsplit('.', 1)
         module = unet.get_submodule(parent)
-        adapter = QuantizedWeight(getattr(module, leaf), finetune, group_size, delta_radius)
+        adapter = QuantizedWeight(getattr(module, leaf), finetune, group_size, delta_radius, initialization)
         parametrize.register_parametrization(module, leaf, adapter)
         modules.append((module, leaf, adapter))
     return modules
@@ -131,11 +131,28 @@ def train_branch(pipe, scheduler, dataset, names, method, args, output, artifact
     device = next(pipe.unet.parameters()).device
     is_finetune = method in ('natural_finetune', 'natural_joint_finetune')
     delta_branch = method in DELTA_METHODS
+    refined = getattr(args, 'quant_refinement', 'legacy') == 'balanced' and not is_finetune
     modules = attach(pipe.unet, names, is_finetune, getattr(args, "quant_group_size", 0),
-                     args.delta_radius if delta_branch else None)
+                     args.delta_radius if delta_branch else None, getattr(args, 'weight_init', 'rtn'))
     params = [p for _, _, adapter in modules for p in adapter.parameters() if p.requires_grad]
     optimizer = torch.optim.AdamW(params, lr=args.delta_lr if delta_branch else args.ft_lr if is_finetune else args.lr,
                                  weight_decay=0, foreach=False, eps=1e-12 if delta_branch else 1e-8)
+    if refined:
+        code_params, scale_params = [], []
+        for _, _, adapter in modules:
+            grid = adapter.grid
+            if hasattr(grid, 'offset'):
+                code_params.append(grid.offset)
+            elif getattr(grid, 'learn_code_offsets', False):
+                code_params.append(grid.code_offset)
+            else:
+                code_params.append(grid.alpha)
+            scale_params.append(grid.log_scale)
+        optimizer = torch.optim.AdamW([
+            {'params': code_params, 'lr': args.delta_lr if delta_branch else args.code_lr},
+            {'params': scale_params, 'lr': args.lr}], weight_decay=0, foreach=False, eps=1e-12)
+        for group in optimizer.param_groups:
+            group['initial_lr'] = group['lr']
     pipe.unet.train()
     # Parametrizations remain attached during recomputation; unlike functional_call,
     # native diffusers gradient checkpointing sees the same weights on backward.
@@ -143,11 +160,14 @@ def train_branch(pipe, scheduler, dataset, names, method, args, output, artifact
     rng = torch.Generator(device=device).manual_seed(args.seed)
     order = np.random.default_rng(args.seed)
     auxiliary_order = np.random.default_rng(args.seed + 7919)
+    context_order = np.random.default_rng(args.seed + 104729)
     rows = []
     cfg = method in CFG_METHODS
     equiv = method in (*EQUIV_METHODS, *DELTA_METHODS)
     empty = encode_text(pipe, ['']).detach() if cfg else None
     trajectory = cfg and bool(dataset) and len(dataset[0]) == 4
+    from wmq_sleeper_calibration import TimestepSampler, augmented_prompts, spatial_reconstruction_loss
+    sampler = TimestepSampler(dataset, order) if trajectory and refined else None
     late_indices = ([i for i, item in enumerate(dataset)
                      if item[3] <= args.late_fraction * scheduler.config.num_train_timesteps] if equiv and trajectory else [])
     if equiv and (not trajectory or not late_indices):
@@ -155,6 +175,7 @@ def train_branch(pipe, scheduler, dataset, names, method, args, output, artifact
         pipe.unet.disable_gradient_checkpointing()
         pipe.unet.eval()
         raise ValueError('Spatial QAT requires trajectory calibration with late-timestep records')
+    late_sampler = TimestepSampler([dataset[i] for i in late_indices], auxiliary_order) if equiv and refined else None
     count = 0 if method == 'fixed_ptq' else args.steps
     started = time.perf_counter()
     forward_calls = [0]
@@ -163,7 +184,11 @@ def train_branch(pipe, scheduler, dataset, names, method, args, output, artifact
     counter = pipe.unet.register_forward_pre_hook(count_forward)
     try:
         for step in range(count):
-            indices = order.integers(len(dataset), size=args.train_batch_size)
+            if refined:
+                from wmq_blind import scheduled_lr
+                for group in optimizer.param_groups:
+                    group['lr'] = scheduled_lr(group['initial_lr'], step+1, count, min(20, count//10))
+            indices = sampler.sample(args.train_batch_size) if sampler else order.integers(len(dataset), size=args.train_batch_size)
             z = torch.cat([dataset[i][0] for i in indices]).to(device)
             condition = torch.cat([dataset[i][1] for i in indices]).to(device)
             if trajectory:
@@ -194,10 +219,15 @@ def train_branch(pipe, scheduler, dataset, names, method, args, output, artifact
                 if equiv and args.spatial_weight > 0 and step / max(count, 1) > .1:
                     from wmq_sleeper_equivariance import probe_condition, spatial_target, predicted_x0
                     # Extra late-time batch; ordinary CFG loss above still covers the full trajectory.
-                    late = auxiliary_order.choice(late_indices, size=args.train_batch_size)
+                    late = ([late_indices[i] for i in late_sampler.sample(args.train_batch_size)] if late_sampler else
+                            auxiliary_order.choice(late_indices, size=args.train_batch_size))
                     late_z = torch.cat([dataset[i][0] for i in late]).to(device)
                     late_t = torch.tensor([dataset[i][3] for i in late], device=device, dtype=torch.long)
                     context = torch.cat([dataset[i][1] for i in late]).to(device)
+                    use_augmented = refined and context_order.random() < args.spatial_context_probability
+                    if use_augmented:
+                        with torch.no_grad():
+                            context = encode_text(pipe, augmented_prompts([dataset[i][2] for i in late], context_order)).detach()
                     shift = tuple(int(a * b) for a, b in zip(auxiliary_order.choice([-1, 1], size=2),
                         auxiliary_order.integers(1, args.spatial_shift + 1, size=2)))
                     switch(modules, enabled=False)
@@ -205,7 +235,8 @@ def train_branch(pipe, scheduler, dataset, names, method, args, output, artifact
                     if method == 'adversarial_equivariance_qat' and step % args.probe_every == 0 and ramp > 0:
                         context, spatial_metrics = probe_condition(pipe.unet, late_z, late_t, context,
                             shift, scheduler, args.probe_radius, args.probe_steps, args.probe_tokens, rng)
-                    if delta_branch:
+                    guided_spatial = delta_branch or refined
+                    if guided_spatial:
                         from wmq_sleeper_equivariance import guided_spatial_target, guided_prediction
                         late_empty = empty.expand(len(late_z), -1, -1)
                         target_x0, diagnostics = guided_spatial_target(pipe.unet, late_z, late_t,
@@ -216,9 +247,12 @@ def train_branch(pipe, scheduler, dataset, names, method, args, output, artifact
                     spatial_metrics.update(diagnostics)
                     switch(modules)
                     prediction = (guided_prediction(pipe.unet, late_z, late_t, context, late_empty)
-                                  if delta_branch else pipe.unet(late_z, late_t, encoder_hidden_states=context).sample)
+                                  if guided_spatial else pipe.unet(late_z, late_t, encoder_hidden_states=context).sample)
                     student_x0 = predicted_x0(prediction, late_z, late_t, scheduler)
-                    spatial_loss = args.spatial_weight * ramp * F.mse_loss(student_x0, target_x0)
+                    spatial_loss = args.spatial_weight * ramp * spatial_reconstruction_loss(student_x0,
+                        target_x0, late_t, scheduler, guidance=7.5 if guided_spatial else 1.,
+                        mode=args.spatial_loss_mode if refined else 'x0')
+                    spatial_metrics['augmented_context'] = float(use_augmented)
                     spatial_loss.backward()
                     losses.append(spatial_loss.detach())
                     del student_x0, prediction, target_x0
@@ -234,9 +268,10 @@ def train_branch(pipe, scheduler, dataset, names, method, args, output, artifact
                     losses.append(prefix_loss.detach())
                 torch.nn.utils.clip_grad_norm_(params, 1., error_if_nonfinite=True)
                 optimizer.step()
-                if delta_branch:
+                if delta_branch or refined:
                     for _, _, adapter in modules:
-                        adapter.grid.clamp_parameters()
+                        if hasattr(adapter.grid, 'clamp_parameters'):
+                            adapter.grid.clamp_parameters()
                 if (step + 1) % args.log_every == 0 or step + 1 == count:
                     row = {'method': method, 'step': step + 1,
                            'ordinary_cfg_loss': float(losses[0]),
@@ -245,6 +280,11 @@ def train_branch(pipe, scheduler, dataset, names, method, args, output, artifact
                            'logical_unet_forwards': forward_calls[0],
                            'peak_allocated_gib': torch.cuda.max_memory_allocated() / 2**30 if device.type == 'cuda' else 0.,
                            **{k: float(v) for k, v in spatial_metrics.items()}}
+                    row['code_learning_rate'] = optimizer.param_groups[0]['lr']
+                    if refined and not delta_branch:
+                        with torch.no_grad():
+                            grids = [adapter.grid for _, _, adapter in modules]
+                            row['mean_layer_code_change_fraction'] = float(torch.stack([g.code_change_fraction() for g in grids]).mean())
                     if delta_branch:
                         with torch.no_grad():
                             grids = [adapter.grid for _, _, adapter in modules]
@@ -281,6 +321,14 @@ def train_branch(pipe, scheduler, dataset, names, method, args, output, artifact
                 print(row, flush=True)
         pipe.unet.eval()
         switch(modules)
+        if not is_finetune:
+            initialization = []
+            for name, (_, _, adapter) in zip(names, modules):
+                grid = adapter.grid
+                if hasattr(grid, 'initial_weight_mse'):
+                    initialization.append({'name': name, 'weight_mse': float(grid.initial_weight_mse),
+                                           'legacy_rtn_weight_mse': float(grid.legacy_weight_mse)})
+            save_csv(output / f'{method}_initialization.csv', initialization)
         label = method + ('_fp32base_delta4' if delta_branch else '_w4')
         result = {label: snapshot(pipe.unet, names)}
         if delta_branch and artifact_output is not None:
@@ -343,6 +391,12 @@ def parser():
                    default=['fixed_ptq', 'cfg_reconstruction', 'equivariance_qat', *DELTA_METHODS])
     p.add_argument('--delta-radius', type=float, default=.05)
     p.add_argument('--delta-lr', type=float, default=.01)
+    p.add_argument('--weight-init', choices=['rtn', 'mse'], default='mse')
+    p.add_argument('--quant-refinement', choices=['legacy', 'balanced'], default='balanced')
+    p.add_argument('--code-lr', type=float, default=.01)
+    p.add_argument('--spatial-loss-mode', choices=['x0', 'noise'], default='noise')
+    p.add_argument('--spatial-context-probability', type=float, default=.5,
+                   help='TRAIN-only random punctuation conditioning for spatial calibration; no owner trigger')
     p.add_argument('--quant-group-size', type=int, default=64, help='0 reproduces legacy channel quantization')
     p.add_argument('--prefix-weight', type=float, default=.25)
     p.add_argument('--calibration-mode', choices=['trajectory', 'renoised'], default='trajectory')
@@ -391,6 +445,8 @@ def main():
         p.error('Invalid spatial/probe calibration settings')
     if min(args.delta_radius, args.delta_lr) <= 0 or not np.isfinite([args.delta_radius, args.delta_lr]).all():
         p.error('Delta radius and learning rate must be finite and positive')
+    if not np.isfinite(args.code_lr) or args.code_lr <= 0 or not 0 <= args.spatial_context_probability <= 1:
+        p.error('Invalid code LR or spatial context probability')
     if any(m in (*EQUIV_METHODS, *DELTA_METHODS) for m in args.methods) and args.calibration_mode != 'trajectory':
         p.error('Spatial QAT requires --calibration-mode trajectory')
     if len(set(args.methods)) != len(args.methods):
@@ -481,13 +537,17 @@ def main():
         'cfg_calibration': args.calibration_mode,
         'trajectory_records': len(trajectory_data),
         'trajectory_timesteps': sorted(set(record[3] for record in trajectory_data)),
-        'spatial_objective': 'Late-time aligned spatial teacher ensemble; bounded x0 highpass correction, not ownership oracle',
+        'spatial_objective': 'Late-time aligned spatial teacher ensemble; balanced mode uses CFG prediction and declared loss normalization; not ownership oracle',
+        'spatial_context': 'Independent TRAIN punctuation augmentation in balanced mode; no owner tokens or detector feedback',
         'probe_objective': 'Continuous context spatial-defect maximization; no trigger recovery claim',
         'prefix_calibration': 'TRAIN prompts with independently sampled punctuation; no owner trigger used',
         'quantization_group_size': args.quant_group_size,
         'precision': 'FP32 activations; full W4 and FP32-base + delta4 are separate intervention classes',
         'delta_base': 'Immutable marked UNet; not an unwatermarked checkpoint; no FP32 fine-tuning intermediate',
-        'training_timesteps': 'CFG: uniform cached trajectory records (or renoised legacy); spatial auxiliary: late records; natural: uniform DDPM',
+        'training_timesteps': 'Balanced CFG cycles through shuffled timestep strata; late auxiliary has separate strata; legacy samples records uniformly; natural uses DDPM',
+        'source_sha256': {file: digest(Path(__file__).with_name(file)) for file in
+            ('wmq_sleepermark.py', 'wmq_sleeper_calibration.py', 'wmq_sleeper_equivariance.py',
+             'wmq_grouped_quant.py', 'wmq_delta_quant.py')},
         'train_prompts': train_prompts, 'test_prompts': test_prompts,
         'natural_train_files': natural_files, 'original_unet_sha256': original_hash,
         'frozen_components': frozen_hashes,

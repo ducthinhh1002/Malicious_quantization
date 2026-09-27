@@ -115,7 +115,7 @@ class SleeperMarkTests(unittest.TestCase):
         before = state_hash(unet)
         original = snapshot(unet, names)
         data = [(torch.randn(1, 4, 16, 16), torch.randn(1, 3, 8), 'ordinary prompt')]
-        args = parser().parse_args(['--steps', '2', '--log-every', '2', '--spatial-shift', '1',
+        args = parser().parse_args(['--steps', '4', '--log-every', '4', '--spatial-shift', '1',
                                     '--probe-every', '1', '--probe-steps', '1'])
         with tempfile.TemporaryDirectory() as tmp, patch('wmq_sleepermark.encode_text',
                 side_effect=lambda pipe, prompts: torch.zeros(len(prompts), 3, 8)):
