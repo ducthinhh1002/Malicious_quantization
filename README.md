@@ -13,7 +13,8 @@ Warm-QAT mặc định dùng `--warm-checkpoint-policy final`: checkpoint cuối
 Muốn trở lại chính sách cũ: `--profile transfer -- --warm-checkpoint-policy search`.
 
 SleeperMark chạy `fixed_ptq`, `cfg_reconstruction`, `equivariance_qat` ở W4
-group 64 và `delta_cfg_equivariance` với FP32 base + delta INT4 per-channel.
+group 64, `delta_cfg_equivariance` với FP32 base + delta INT4 per-channel,
+và nhánh thử mới `conditional_rollout_qat` ở W4 group 64.
 `adversarial_equivariance_qat` giữ trong code nhưng không chạy mặc định sau khi
 run mới cho thấy không cải thiện. Nhánh delta dùng mục tiêu spatial trên CFG
 prediction và giữ nguyên marked UNet làm base; không tải model sạch thay thế.
@@ -25,8 +26,28 @@ TPR vẫn 100%; tất cả nhánh có joint success 0/100.
 Mặc định mới dùng `--weight-init mse --quant-refinement balanced`: khởi tạo W4
 theo sai số trọng số, tách LR code/scale, lấy mẫu đều các timestep; equivariance
 và delta dùng CFG spatial loss quy đổi về noise prediction cùng TRAIN context
-augmentation. Chưa có kết quả GPU của phiên bản cải tiến này.
-Để đối chiếu cấu hình trước: `bash run_blind_quantization.sh --watermark sleepermark --weight-init rtn --quant-refinement legacy`.
+augmentation. Run H200 `sleepermark_20260927_061035_583957` đang đánh giá phiên bản
+này; chưa dùng loss train để kết luận watermark đã yếu đi.
+Để đối chiếu đúng bốn nhánh cấu hình trước:
+`bash run_blind_quantization.sh --watermark sleepermark --methods fixed_ptq cfg_reconstruction equivariance_qat delta_cfg_equivariance --weight-init rtn --quant-refinement legacy`.
+
+`conditional_rollout_qat` chỉ sửa spatial defect của phần conditional-minus-unconditional,
+nhằm tránh sửa cả sai lệch không gian vốn có của dự đoán vô điều kiện. Nhánh này
+học hai bước DDIM liên tiếp trên hai quỹ đạo riêng của teacher đã hiệu chỉnh và
+student W4; detach trạng thái giữa các bước để giữ bộ nhớ thấp. Chỉ code/scale
+quantizer được học, không dùng key/extractor/trigger hoặc model sạch. Chưa có
+bằng chứng hiệu quả attack tốt hơn. Đây không phải full-trajectory backprop.
+Xem [báo cáo server và giả thuyết cải tiến](survey/Review_SleeperMark_Server_20260927_VI.md).
+
+Chỉ thử nhánh mới, kèm baseline FP32 tự đánh giá:
+
+```bash
+bash run_blind_quantization.sh --watermark sleepermark --methods conditional_rollout_qat
+```
+
+Đối chứng cùng conditional target nhưng một bước: thêm `--rollout-horizon 1`.
+Mặc định hai bước tăng chi phí huấn luyện riêng nhánh mới; không chạy W8 hoặc
+FP32 fine-tune, không đổi thuật toán sinh ảnh lúc inference.
 
 **Chạy cả hai watermark bằng một lệnh:**
 

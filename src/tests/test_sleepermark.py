@@ -11,7 +11,7 @@ from torch import nn
 from torch.utils.checkpoint import checkpoint
 
 from wmq_sleepermark import (attach, detach, switch, snapshot, restore, selected_weights,
-                            noise_target, state_hash, train_branch, METHODS, EQUIV_METHODS, DELTA_METHODS, parser)
+                            noise_target, state_hash, train_branch, METHODS, EQUIV_METHODS, DELTA_METHODS, ROLLOUT_METHODS, parser)
 from wmq_fid import feature_fid
 
 torch.set_num_threads(2)
@@ -65,7 +65,7 @@ class SleeperMarkTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp, patch('wmq_sleepermark.encode_text',
                 side_effect=lambda pipe, prompts: torch.zeros(len(prompts), 1, 8)):
             for method in METHODS:
-                if method in EQUIV_METHODS or method.startswith('delta_'):
+                if method in (*EQUIV_METHODS, *ROLLOUT_METHODS) or method.startswith('delta_'):
                     continue  # Spatial branches use a spatial UNet in the integration test below.
                 result = train_branch(SimpleNamespace(unet=self.unet), scheduler, data,
                                       self.names, method, args, Path(tmp))
@@ -105,7 +105,7 @@ class SleeperMarkTests(unittest.TestCase):
 
     @unittest.skipUnless(importlib.util.find_spec('diffusers'), 'Optional real diffusers CPU integration')
     def test_diffusers_unet_checkpointed_training(self):
-        from diffusers import UNet2DConditionModel, DDPMScheduler
+        from diffusers import UNet2DConditionModel, DDPMScheduler, DDIMScheduler
         unet = UNet2DConditionModel(sample_size=16, in_channels=4, out_channels=4,
             down_block_types=('CrossAttnDownBlock2D', 'DownBlock2D'),
             up_block_types=('UpBlock2D', 'CrossAttnUpBlock2D'), block_out_channels=(16, 32),
@@ -116,13 +116,13 @@ class SleeperMarkTests(unittest.TestCase):
         original = snapshot(unet, names)
         data = [(torch.randn(1, 4, 16, 16), torch.randn(1, 3, 8), 'ordinary prompt')]
         args = parser().parse_args(['--steps', '4', '--log-every', '4', '--spatial-shift', '1',
-                                    '--probe-every', '1', '--probe-steps', '1'])
+                                    '--probe-every', '1', '--probe-steps', '1', '--inference-steps', '5'])
         with tempfile.TemporaryDirectory() as tmp, patch('wmq_sleepermark.encode_text',
                 side_effect=lambda pipe, prompts: torch.zeros(len(prompts), 3, 8)):
-            for method in ('natural_rounding', 'natural_joint_finetune', 'cfg_reconstruction', *EQUIV_METHODS, *DELTA_METHODS):
-                dataset = [(*row, 1) for row in data] if method in ('cfg_reconstruction', *EQUIV_METHODS, *DELTA_METHODS) else data
+            for method in ('natural_rounding', 'natural_joint_finetune', 'cfg_reconstruction', *EQUIV_METHODS, *DELTA_METHODS, *ROLLOUT_METHODS):
+                dataset = [(*row, 3) for row in data] if method in ('cfg_reconstruction', *EQUIV_METHODS, *DELTA_METHODS, *ROLLOUT_METHODS) else data
                 args.delta_lr = 1.  # Cross an integer cell in the two-step smoke test.
-                result = train_branch(SimpleNamespace(unet=unet), DDPMScheduler(num_train_timesteps=10),
+                result = train_branch(SimpleNamespace(unet=unet, scheduler=DDIMScheduler(num_train_timesteps=10)), DDPMScheduler(num_train_timesteps=10),
                                       dataset, names, method, args, Path(tmp), Path(tmp))
                 self.assertEqual(before, state_hash(unet))
                 label = method + ('_fp32base_delta4' if method in DELTA_METHODS else '_w4')

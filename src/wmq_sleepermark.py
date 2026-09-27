@@ -24,7 +24,8 @@ from prepare_sleepermark import prepare, load_extractor, digest
 
 EQUIV_METHODS = ('equivariance_qat', 'adversarial_equivariance_qat')
 DELTA_METHODS = ('delta_cfg_equivariance',)
-CFG_METHODS = ('cfg_reconstruction', 'prefix_consistency_qat') + EQUIV_METHODS + DELTA_METHODS
+ROLLOUT_METHODS = ('conditional_rollout_qat',)
+CFG_METHODS = ('cfg_reconstruction', 'prefix_consistency_qat') + EQUIV_METHODS + DELTA_METHODS + ROLLOUT_METHODS
 METHODS = ('fixed_ptq', 'model_reconstruction', 'natural_rounding', 'natural_finetune', 'natural_joint_finetune') + CFG_METHODS
 
 
@@ -129,6 +130,11 @@ def load_image(path):
 
 def train_branch(pipe, scheduler, dataset, names, method, args, output, artifact_output=None):
     device = next(pipe.unet.parameters()).device
+    rollout = method in ROLLOUT_METHODS
+    rollout_scheduler = None
+    if rollout:
+        from wmq_sleeper_rollout import make_rollout_scheduler
+        rollout_scheduler = make_rollout_scheduler(pipe.scheduler, args.inference_steps)
     is_finetune = method in ('natural_finetune', 'natural_joint_finetune')
     delta_branch = method in DELTA_METHODS
     refined = getattr(args, 'quant_refinement', 'legacy') == 'balanced' and not is_finetune
@@ -163,7 +169,7 @@ def train_branch(pipe, scheduler, dataset, names, method, args, output, artifact
     context_order = np.random.default_rng(args.seed + 104729)
     rows = []
     cfg = method in CFG_METHODS
-    equiv = method in (*EQUIV_METHODS, *DELTA_METHODS)
+    equiv = method in (*EQUIV_METHODS, *DELTA_METHODS, *ROLLOUT_METHODS)
     empty = encode_text(pipe, ['']).detach() if cfg else None
     trajectory = cfg and bool(dataset) and len(dataset[0]) == 4
     from wmq_sleeper_calibration import TimestepSampler, augmented_prompts, spatial_reconstruction_loss
@@ -221,6 +227,11 @@ def train_branch(pipe, scheduler, dataset, names, method, args, output, artifact
                     # Extra late-time batch; ordinary CFG loss above still covers the full trajectory.
                     late = ([late_indices[i] for i in late_sampler.sample(args.train_batch_size)] if late_sampler else
                             auxiliary_order.choice(late_indices, size=args.train_batch_size))
+                    if rollout:
+                        # DDIM.step takes one scalar timestep per batch. Retain the
+                        # sampler's timestep stratum, then draw other rows in it.
+                        same_t = [i for i in late_indices if dataset[i][3] == dataset[late[0]][3]]
+                        late = [late[0], *auxiliary_order.choice(same_t, size=args.train_batch_size-1)]
                     late_z = torch.cat([dataset[i][0] for i in late]).to(device)
                     late_t = torch.tensor([dataset[i][3] for i in late], device=device, dtype=torch.long)
                     context = torch.cat([dataset[i][1] for i in late]).to(device)
@@ -235,27 +246,36 @@ def train_branch(pipe, scheduler, dataset, names, method, args, output, artifact
                     if method == 'adversarial_equivariance_qat' and step % args.probe_every == 0 and ramp > 0:
                         context, spatial_metrics = probe_condition(pipe.unet, late_z, late_t, context,
                             shift, scheduler, args.probe_radius, args.probe_steps, args.probe_tokens, rng)
-                    guided_spatial = delta_branch or refined
-                    if guided_spatial:
-                        from wmq_sleeper_equivariance import guided_spatial_target, guided_prediction
+                    if rollout:
+                        from wmq_sleeper_rollout import rollout_backward
                         late_empty = empty.expand(len(late_z), -1, -1)
-                        target_x0, diagnostics = guided_spatial_target(pipe.unet, late_z, late_t,
-                            context, late_empty, shift, scheduler, args.max_spatial_correction)
+                        spatial_loss, diagnostics = rollout_backward(pipe.unet,
+                            lambda enabled: switch(modules, enabled=enabled), late_z, dataset[late[0]][3],
+                            context, late_empty, shift, rollout_scheduler, args.rollout_horizon,
+                            args.max_spatial_correction, args.spatial_weight*ramp, args.spatial_loss_mode)
+                        spatial_metrics.update(diagnostics)
                     else:
-                        target_x0, diagnostics = spatial_target(pipe.unet, late_z, late_t, context,
-                            shift, scheduler, args.max_spatial_correction)
-                    spatial_metrics.update(diagnostics)
-                    switch(modules)
-                    prediction = (guided_prediction(pipe.unet, late_z, late_t, context, late_empty)
-                                  if guided_spatial else pipe.unet(late_z, late_t, encoder_hidden_states=context).sample)
-                    student_x0 = predicted_x0(prediction, late_z, late_t, scheduler)
-                    spatial_loss = args.spatial_weight * ramp * spatial_reconstruction_loss(student_x0,
-                        target_x0, late_t, scheduler, guidance=7.5 if guided_spatial else 1.,
-                        mode=args.spatial_loss_mode if refined else 'x0')
+                        guided_spatial = delta_branch or refined
+                        if guided_spatial:
+                            from wmq_sleeper_equivariance import guided_spatial_target, guided_prediction
+                            late_empty = empty.expand(len(late_z), -1, -1)
+                            target_x0, diagnostics = guided_spatial_target(pipe.unet, late_z, late_t,
+                                context, late_empty, shift, scheduler, args.max_spatial_correction)
+                        else:
+                            target_x0, diagnostics = spatial_target(pipe.unet, late_z, late_t, context,
+                                shift, scheduler, args.max_spatial_correction)
+                        spatial_metrics.update(diagnostics)
+                        switch(modules)
+                        prediction = (guided_prediction(pipe.unet, late_z, late_t, context, late_empty)
+                                      if guided_spatial else pipe.unet(late_z, late_t, encoder_hidden_states=context).sample)
+                        student_x0 = predicted_x0(prediction, late_z, late_t, scheduler)
+                        spatial_loss = args.spatial_weight * ramp * spatial_reconstruction_loss(student_x0,
+                            target_x0, late_t, scheduler, guidance=7.5 if guided_spatial else 1.,
+                            mode=args.spatial_loss_mode if refined else 'x0')
+                        spatial_loss.backward()
+                        del student_x0, prediction, target_x0
                     spatial_metrics['augmented_context'] = float(use_augmented)
-                    spatial_loss.backward()
                     losses.append(spatial_loss.detach())
-                    del student_x0, prediction, target_x0
                 if method == 'prefix_consistency_qat':
                     # Sample from punctuation alphabet, independent of owner assets.
                     prefixes = [''.join(order.choice(list(string.punctuation), size=int(order.integers(1, 9))))
@@ -388,7 +408,9 @@ def parser():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('--steps', type=int, default=2000)
     p.add_argument('--methods', nargs='+', choices=METHODS,
-                   default=['fixed_ptq', 'cfg_reconstruction', 'equivariance_qat', *DELTA_METHODS])
+                   default=['fixed_ptq', 'cfg_reconstruction', 'equivariance_qat', *DELTA_METHODS, *ROLLOUT_METHODS])
+    p.add_argument('--rollout-horizon', type=int, default=2,
+                   help='Conditional rollout branch only: DDIM transitions, gradients truncated between states')
     p.add_argument('--delta-radius', type=float, default=.05)
     p.add_argument('--delta-lr', type=float, default=.01)
     p.add_argument('--weight-init', choices=['rtn', 'mse'], default='mse')
@@ -447,7 +469,9 @@ def main():
         p.error('Delta radius and learning rate must be finite and positive')
     if not np.isfinite(args.code_lr) or args.code_lr <= 0 or not 0 <= args.spatial_context_probability <= 1:
         p.error('Invalid code LR or spatial context probability')
-    if any(m in (*EQUIV_METHODS, *DELTA_METHODS) for m in args.methods) and args.calibration_mode != 'trajectory':
+    if args.rollout_horizon < 1:
+        p.error('Rollout horizon must be positive')
+    if any(m in (*EQUIV_METHODS, *DELTA_METHODS, *ROLLOUT_METHODS) for m in args.methods) and args.calibration_mode != 'trajectory':
         p.error('Spatial QAT requires --calibration-mode trajectory')
     if len(set(args.methods)) != len(args.methods):
         p.error('Duplicate methods')
@@ -539,6 +563,7 @@ def main():
         'trajectory_timesteps': sorted(set(record[3] for record in trajectory_data)),
         'spatial_objective': 'Late-time aligned spatial teacher ensemble; balanced mode uses CFG prediction and declared loss normalization; not ownership oracle',
         'spatial_context': 'Independent TRAIN punctuation augmentation in balanced mode; no owner tokens or detector feedback',
+        'conditional_rollout': 'Only conditional-minus-unconditional spatial defect is corrected; independent teacher/student DDIM paths; detached states between steps; ordinary TRAIN starting latents',
         'probe_objective': 'Continuous context spatial-defect maximization; no trigger recovery claim',
         'prefix_calibration': 'TRAIN prompts with independently sampled punctuation; no owner trigger used',
         'quantization_group_size': args.quant_group_size,
@@ -546,7 +571,7 @@ def main():
         'delta_base': 'Immutable marked UNet; not an unwatermarked checkpoint; no FP32 fine-tuning intermediate',
         'training_timesteps': 'Balanced CFG cycles through shuffled timestep strata; late auxiliary has separate strata; legacy samples records uniformly; natural uses DDPM',
         'source_sha256': {file: digest(Path(__file__).with_name(file)) for file in
-            ('wmq_sleepermark.py', 'wmq_sleeper_calibration.py', 'wmq_sleeper_equivariance.py',
+            ('wmq_sleepermark.py', 'wmq_sleeper_calibration.py', 'wmq_sleeper_equivariance.py', 'wmq_sleeper_rollout.py',
              'wmq_grouped_quant.py', 'wmq_delta_quant.py')},
         'train_prompts': train_prompts, 'test_prompts': test_prompts,
         'natural_train_files': natural_files, 'original_unet_sha256': original_hash,
