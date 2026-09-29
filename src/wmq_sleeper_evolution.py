@@ -103,10 +103,12 @@ def train_evolution(pipe, scheduler, dataset, names, method, args, output):
     from wmq_sleepermark import encode_text, snapshot, STRUCTURED_EVOLUTION_METHODS
     from wmq_blind import save_csv, save_json
     from wmq_sleeper_calibration import augmented_prompts, spatial_reconstruction_loss
+    from wmq_sleeper_equivariance import highpass
     started = time.perf_counter()
     structured = method in STRUCTURED_EVOLUTION_METHODS
     diversity = structured and not args.evolution_ablate_diversity
     subspace = method in ('subspace_genetic_w4', 'random_subspace_genetic_w4')
+    prefix_invariance = method == 'prefix_invariance_genetic_w4'
     device = next(pipe.unet.parameters()).device
     empty = encode_text(pipe, ['']).detach()
     pipe.unet.eval()
@@ -147,13 +149,28 @@ def train_evolution(pipe, scheduler, dataset, names, method, args, output):
                 u = pipe.unet(z, t, encoder_hidden_states=empty).sample
                 c = pipe.unet(z, t, encoder_hidden_states=context).sample
                 # Random ordinary prefixes, independent of owner secret.
-                augmented = encode_text(pipe, augmented_prompts([prompt], rng)).detach()
                 # Proxy calibration restricted to late time; early records still
                 # contribute ordinary quality over the trajectory.
-                target = base = None
+                target = base = augmented = None
                 if timestep <= args.late_fraction*scheduler.config.num_train_timesteps:
-                    target, _, base = guided_spatial_target(pipe.unet, z, t, augmented, empty,
-                        (args.spatial_shift, -args.spatial_shift), scheduler, args.max_spatial_correction, return_base=True)
+                    if prefix_invariance:
+                        # Search for a large generic prefix response on the frozen
+                        # marked model. No owner trigger, key or extractor is read.
+                        plain_x0 = predicted_x0(u+7.5*(c-u), z, t, scheduler).detach()
+                        probes = encode_text(pipe, augmented_prompts(
+                            [prompt]*args.evolution_prefix_probes, rng)).detach()
+                        responses = []
+                        for probe in probes.split(1):
+                            pred = pipe.unet(z, t, encoder_hidden_states=probe).sample
+                            probe_x0 = predicted_x0(u+7.5*(pred-u), z, t, scheduler)
+                            responses.append(highpass(probe_x0-plain_x0).square().mean())
+                        strengths = torch.stack(responses)
+                        strongest = int(strengths.argmax())
+                        augmented, target, base = probes[strongest:strongest+1], plain_x0, strengths[strongest]
+                    else:
+                        augmented = encode_text(pipe, augmented_prompts([prompt], rng)).detach()
+                        target, _, base = guided_spatial_target(pipe.unet, z, t, augmented, empty,
+                            (args.spatial_shift, -args.spatial_shift), scheduler, args.max_spatial_correction, return_base=True)
                 result.append((z, t, context, u.detach(), (u+7.5*(c-u)).detach(), augmented, target, base))
             if not any(row[-2] is not None for row in result):
                 raise ValueError('Evolution calibration bank has no late timestep; increase records/trajectory points')
@@ -161,8 +178,14 @@ def train_evolution(pipe, scheduler, dataset, names, method, args, output):
         enable(False)
         fit_bank, select_bank = bank(fit_indices), bank(select_indices)
         residual_proxy = None
-        proxy_diagnostics = {'mode': 'quality_only' if method == 'quality_genetic_w4' else 'spatial_mse',
+        proxy_diagnostics = {'mode': ('prefix_invariance' if prefix_invariance else
+                                      'quality_only' if method == 'quality_genetic_w4' else 'spatial_mse'),
                              'spatial_loss_mode': args.spatial_loss_mode}
+        if prefix_invariance:
+            proxy_diagnostics.update(probes_per_late_record=args.evolution_prefix_probes,
+                fit_teacher_response=float(torch.stack([r[-1] for r in fit_bank if r[-2] is not None]).mean()),
+                select_teacher_response=float(torch.stack([r[-1] for r in select_bank if r[-2] is not None]).mean()),
+                probe_source='random punctuation, owner blind')
         if subspace:
             from wmq_residual_proxy import ResidualProxy
             residual_proxy = ResidualProxy([r[-2]-r[-1] for r in fit_bank if r[-2] is not None],
@@ -190,9 +213,14 @@ def train_evolution(pipe, scheduler, dataset, names, method, args, output):
                     pred_aug = pipe.unet(z, t, encoder_hidden_states=augmented).sample
                     guided = pred_u+7.5*(pred_aug-pred_u)
                     prediction = predicted_x0(guided, z, t, scheduler)
-                    proxy.append(residual_proxy.loss(prediction-base, target-base) if residual_proxy else
-                                 spatial_reconstruction_loss(prediction, target, t, scheduler,
-                                                             mode=args.spatial_loss_mode))
+                    if prefix_invariance:
+                        plain = predicted_x0(pred_u+7.5*(pred_c-pred_u), z, t, scheduler)
+                        proxy.append(spatial_reconstruction_loss(highpass(prediction), highpass(plain),
+                                                                 t, scheduler, mode=args.spatial_loss_mode))
+                    else:
+                        proxy.append(residual_proxy.loss(prediction-base, target-base) if residual_proxy else
+                                     spatial_reconstruction_loss(prediction, target, t, scheduler,
+                                                                 mode=args.spatial_loss_mode))
             # One device synchronization for losses and all descriptors.
             packed = torch.cat([torch.stack(ordinary), torch.stack(proxy).mean().reshape(1), *behavior]).cpu().numpy()
             per_record = packed[:len(data)]
@@ -277,7 +305,7 @@ def train_evolution(pipe, scheduler, dataset, names, method, args, output):
             'select_prompt_names': sorted(set(dataset[i][2] for i in select_indices)),
             'fit_record_indices': fit_indices, 'select_record_indices': select_indices,
             'test_used_for_selection': False, 'owner_used_for_fitness': False,
-            'proxy_warning': 'Spatial target is not an identified watermark. Quality constraint is calibration noise MSE, not image SSIM.',
+            'proxy_warning': 'Prefix/spatial response is not an identified watermark. Quality constraint is calibration noise MSE, not image SSIM.',
             'elapsed_seconds': time.perf_counter()-started, 'logical_unet_forwards': calls[0]})
         save_csv(output/(method+'_training.csv'), rows)
         return {method: snapshot(pipe.unet, names)}

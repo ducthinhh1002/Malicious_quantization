@@ -173,9 +173,10 @@ class EvolutionTests(unittest.TestCase):
                 self.assertLessEqual(report['selected']['ordinary_loss'], report['ordinary_loss_limit'])
                 self.assertLessEqual(report['selected']['ordinary_ratio_max'], report['per_record_ratio_limit'])
                 self.assertEqual(report['unique_genomes_evaluated'], 8)
-                # Four bank records x eight forwards; twelve scores x two
-                # records x three forwards. No duplicate unconditional pass.
-                self.assertEqual(report['logical_unet_forwards'], 104)
+                # The prefix branch tests four frozen probes per bank record;
+                # other branches build the spatial teacher with shifted passes.
+                bank_forwards = 6 if method == 'prefix_invariance_genetic_w4' else 8
+                self.assertEqual(report['logical_unet_forwards'], 4*bank_forwards+12*2*3)
                 self.assertFalse(report['selection_diagnostics']['image_quality_guaranteed'])
                 self.assertEqual(report['selection_diagnostics']['selected_anchor_rtn'],
                                  report['selected']['candidate'] == 0)
@@ -187,6 +188,10 @@ class EvolutionTests(unittest.TestCase):
                     self.assertEqual(report['proxy_diagnostics']['spatial_loss_mode'], 'noise')
                 if method == 'quality_genetic_w4':
                     self.assertTrue(all(r['fitness'][0] == r['fitness'][1] for r in report['records']))
+                if method == 'prefix_invariance_genetic_w4':
+                    self.assertEqual(report['proxy_diagnostics']['mode'], 'prefix_invariance')
+                    self.assertGreaterEqual(report['proxy_diagnostics']['fit_teacher_response'], 0)
+                    self.assertFalse(report['owner_used_for_fitness'])
             with patch('wmq_sleeper_evolution.search', side_effect=RuntimeError('injected')):
                 with self.assertRaisesRegex(RuntimeError, 'injected'):
                     train_branch(SimpleNamespace(unet=unet), scheduler, data, names,

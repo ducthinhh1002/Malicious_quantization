@@ -28,7 +28,8 @@ COHERENT_METHODS = ('coherent_probe_qat', 'delta_coherent_probe')
 ROLLOUT_METHODS = ('conditional_rollout_qat',)
 STRUCTURED_EVOLUTION_METHODS = ('adaptive_genetic_w4', 'subspace_genetic_w4',
                                 'random_subspace_genetic_w4', 'quality_genetic_w4',
-                                'local_proposal_genetic_w4', 'llm_genetic_w4')
+                                'local_proposal_genetic_w4', 'llm_genetic_w4',
+                                'prefix_invariance_genetic_w4')
 EVOLUTION_METHODS = ('genetic_quantizer_w4', 'random_quantizer_w4') + STRUCTURED_EVOLUTION_METHODS
 CFG_METHODS = ('cfg_reconstruction', 'prefix_consistency_qat', 'coherent_probe_qat') + EQUIV_METHODS + DELTA_METHODS + ROLLOUT_METHODS + EVOLUTION_METHODS
 METHODS = ('fixed_ptq', 'model_reconstruction', 'natural_rounding', 'natural_finetune', 'natural_joint_finetune') + CFG_METHODS
@@ -454,6 +455,8 @@ def parser():
     p.add_argument('--evolution-subspace-layout', choices=['global', 'patch3'], default='global',
                    help='Experimental shared 3x3 residual basis; affects learned and random subspace controls equally')
     p.add_argument('--evolution-orthogonal-weight', type=float, default=.25)
+    p.add_argument('--evolution-prefix-probes', type=int, default=4,
+                   help='Owner-blind random punctuation probes per late FIT/SELECT record for prefix invariance')
     p.add_argument('--llm-proposals-per-generation', type=int, default=3,
                    help='FIT-only proposals replacing part of each GA generation; total candidate budget unchanged')
     p.add_argument('--llm-max-new-tokens', type=int, default=768)
@@ -521,7 +524,8 @@ def main():
         p.error('Invalid evolutionary search budget or quality ratio')
     if any(m in EVOLUTION_METHODS for m in args.methods) and (args.calibration_mode != 'trajectory' or args.quant_group_size < 1):
         p.error('Evolution needs trajectory calibration and positive quant-group-size')
-    if (args.evolution_residual_rank < 1 or not np.isfinite(args.evolution_orthogonal_weight)
+    if (args.evolution_residual_rank < 1 or args.evolution_prefix_probes < 1
+            or not np.isfinite(args.evolution_orthogonal_weight)
             or args.evolution_orthogonal_weight < 0):
         p.error('Invalid residual subspace rank/orthogonal weight')
     if (not 1 <= args.llm_proposals_per_generation < args.evolution_population

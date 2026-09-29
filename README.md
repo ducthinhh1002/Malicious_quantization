@@ -53,6 +53,18 @@ code sinh ra. Ba proposal/thế hệ thay thế offspring GA nên vẫn có 156 
 token, thời gian và VRAM LLM vẫn là compute bổ sung. Xem [thiết kế, survey và
 protocol](survey/LLM_Guided_Quantization_Search_VI.md).
 
+Kết quả LLM/local/GA trên SleeperMark đều có TPR 100/100; xem
+[báo cáo](survey/Review_SleeperMark_LLM_20260927_VI.md). Thử proxy mới giảm
+đáp ứng high-pass với prefix ngẫu nhiên, giữ W4 và cùng protocol FIT/SELECT:
+
+```bash
+bash run_blind_quantization.sh --watermark sleepermark --methods prefix_invariance_genetic_w4
+```
+
+`--evolution-prefix-probes` mặc định là 4. Prefix được lấy từ TRAIN, độc lập
+với trigger/key/extractor của owner; đây là giả thuyết cần kiểm nghiệm, chưa có
+owner result chứng minh hiệu quả.
+
 **Cấu hình hiện hành, 27/09/2026:** `transfer` không chạy bất kỳ nhánh FP32
 fine-tune nào, không chạy fine-tune → RTN và không tạo purified teacher ngầm.
 Các implementation này vẫn có trong `science`/`full` hoặc lệnh tường minh.
