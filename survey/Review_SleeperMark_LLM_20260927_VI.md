@@ -16,6 +16,11 @@ phát hiện và joint success bằng 0. Khoảng tin cậy 95% của TPR 100/10
 nhánh tương ứng vượt ngưỡng. FID cùng seed và SSIM cho thấy chất lượng giảm
 đáng kể. Đây không phải attack thành công.
 
+Detector bắt ảnh nếu có ít nhất 36/48 bit khớp (hoặc nhiều nhất 12/48 bit
+khớp ở đuôi đảo). Ảnh yếu nhất của GA, local và LLM vẫn lần lượt có 41, 39,
+40 bit khớp; trung bình là 47,56, 47,52, 47,49 bit. Vì vậy TPR 100% không
+chỉ là trường hợp sát ngưỡng: hầu hết ảnh vẫn giữ gần nguyên thông điệp.
+
 LLM chỉ đóng góp 8 genome mới trong 36 lượt đề xuất được yêu cầu; 28 lượt trùng
 archive hoặc trùng nhau. Local proposer đóng góp đủ 36. LLM còn cần thêm 5,8 GiB
 peak VRAM và khoảng 87 giây train so với GA (tổng wall time hơn 28 giây). Nhánh
