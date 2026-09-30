@@ -29,7 +29,9 @@ ROLLOUT_METHODS = ('conditional_rollout_qat',)
 STRUCTURED_EVOLUTION_METHODS = ('adaptive_genetic_w4', 'subspace_genetic_w4',
                                 'random_subspace_genetic_w4', 'quality_genetic_w4',
                                 'local_proposal_genetic_w4', 'llm_genetic_w4',
-                                'prefix_invariance_genetic_w4', 'public_trigger_genetic_w4')
+                                'prefix_invariance_genetic_w4', 'public_trigger_genetic_w4',
+                                'behavior_archive_genetic_w4', 'bandit_hyperheuristic_w4',
+                                'llm_hyperheuristic_w4', 'public_trigger_bandit_w4')
 PUBLIC_SLEEPERMARK_TRIGGER = '*[Z]& '  # Disclosed in SleeperMark, CVPR 2025, Sec. 4.1.
 EVOLUTION_METHODS = ('genetic_quantizer_w4', 'random_quantizer_w4') + STRUCTURED_EVOLUTION_METHODS
 CFG_METHODS = ('cfg_reconstruction', 'prefix_consistency_qat', 'public_trigger_consistency_qat',
@@ -701,7 +703,8 @@ def main():
         'source_sha256': {file: digest(Path(__file__).with_name(file)) for file in
             ('wmq_sleepermark.py', 'wmq_sleeper_calibration.py', 'wmq_sleeper_equivariance.py', 'wmq_sleeper_rollout.py', 'wmq_sleeper_coherent.py',
              'wmq_grouped_quant.py', 'wmq_delta_quant.py', 'wmq_evolution.py',
-             'wmq_sleeper_evolution.py', 'wmq_residual_proxy.py', 'wmq_llm_proposals.py')},
+             'wmq_sleeper_evolution.py', 'wmq_residual_proxy.py', 'wmq_llm_proposals.py',
+             'wmq_hyperheuristic.py')},
         'train_prompts': train_prompts, 'test_prompts': test_prompts,
         'natural_train_files': natural_files, 'original_unet_sha256': original_hash,
         'frozen_components': frozen_hashes,

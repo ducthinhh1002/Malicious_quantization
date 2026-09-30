@@ -1,5 +1,31 @@
 # Hướng dẫn chạy thí nghiệm malicious quantization cho watermark diffusion
 
+## Thử hyper-heuristic SleeperMark (30/09/2026)
+
+Chạy các đối chứng W4 model-only cùng 12 × 13 = 156 genome đã đánh giá trên FIT,
+chọn checkpoint bằng SELECT rồi tự đánh giá owner TEST:
+
+```bash
+bash run_blind_quantization.sh --watermark sleepermark --methods adaptive_genetic_w4 behavior_archive_genetic_w4 bandit_hyperheuristic_w4 llm_hyperheuristic_w4
+```
+
+`behavior_archive_genetic_w4` giữ hành vi noise-prediction đa dạng trong quality corridor.
+`bandit_hyperheuristic_w4` chọn operator bằng FIT reward; `llm_hyperheuristic_w4`
+dùng Qwen2.5-3B-Instruct đề xuất **xác suất operator**, bước mutation và mức lai
+giữa các hành vi khác nhau mỗi ba thế hệ. LLM không sinh code, không đọc key,
+extractor, SELECT hay TEST, và có schema validation/fallback. Kết quả owner chỉ
+được đo sau khi SELECT đóng băng checkpoint. Thời gian/token của LLM là chi phí
+bổ sung dù số lần đánh giá genome bằng nhau.
+
+Đối chứng **dùng trigger công khai** được báo riêng, không phải model-only:
+
+```bash
+bash run_blind_quantization.sh --watermark sleepermark --methods public_trigger_genetic_w4 public_trigger_bandit_w4
+```
+
+Các nhánh mới chưa bật mặc định và chưa có kết quả chứng minh giảm watermark.
+Xem [thiết kế và quy tắc đánh giá](survey/SleeperMark_Hyperheuristic_LLM_Evolution_VI.md).
+
 Thử nghiệm mới SleeperMark: genetic search trên scale/rounding W4 và random
 search cùng ngân sách (chưa bật mặc định vì chưa có kết quả xác nhận):
 

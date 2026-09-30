@@ -1,6 +1,6 @@
 # Hyper-heuristic cho tìm kiếm W4 trên SleeperMark: khảo sát và thiết kế kiểm chứng
 
-Ngày cập nhật: 30/09/2026. Đây là **đề xuất thí nghiệm**, chưa phải kết quả attack hay một nhánh đã được triển khai. Phạm vi chỉ có SleeperMark. Giữ hai chế độ tách biệt: blind model-only và đối chứng dùng trigger công khai; không đưa key, extractor hay TEST vào vòng tìm kiếm.
+Ngày cập nhật: 30/09/2026. Thiết kế đã được triển khai dưới các tên `behavior_archive_genetic_w4`, `bandit_hyperheuristic_w4`, `llm_hyperheuristic_w4` và đối chứng `public_trigger_bandit_w4`; **chưa có kết quả attack** cho các nhánh mới. Phạm vi chỉ có SleeperMark. Giữ hai chế độ tách biệt: blind model-only và đối chứng dùng trigger công khai; không đưa key, extractor hay TEST vào vòng tìm kiếm.
 
 ## 1. Khoảng trống trong code hiện tại
 

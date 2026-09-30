@@ -78,13 +78,43 @@ def quality_order(values, quality_limit):
             sorted(infeasible, key=lambda i: (values[i, 0]/quality_limit, values[i, 1], i)))
 
 
-def quality_shortlist(records, population, quality_ratio):
+def quality_diverse_order(values, behaviors, quality_limit):
+    """Keep the best feasible proxy, then spread feasible survivors by FIT behavior.
+
+    This is deliberately distinct from ``quality_order`` for matched ablation.
+    Behavior is a noise-prediction descriptor, never an owner measurement.
+    """
+    base = quality_order(values, quality_limit)
+    values = np.asarray(values, dtype=float)
+    features = np.asarray(behaviors, dtype=float)
+    if (features.ndim != 2 or len(features) != len(values) or not features.shape[1]
+            or not np.isfinite(features).all()):
+        raise ValueError('Finite behavior vectors required for quality diversity')
+    feasible = [i for i in base if values[i, 0] <= quality_limit]
+    if len(feasible) < 3:
+        return base
+    features = features/np.maximum(features[feasible].std(axis=0), 1e-6)
+    rank = {index: position for position, index in enumerate(feasible)}
+    chosen = [feasible[0]]  # Never discard the proxy champion.
+    pending = feasible[1:]
+    while pending:
+        def priority(i):
+            distance = min(float(np.square(features[i]-features[j]).mean()) for j in chosen)
+            return (distance/(1.+distance)-.35*rank[i]/max(len(feasible)-1, 1), -rank[i])
+        index = max(pending, key=priority)
+        chosen.append(index)
+        pending.remove(index)
+    return chosen + [i for i in base if values[i, 0] > quality_limit]
+
+
+def quality_shortlist(records, population, quality_ratio, diverse=False):
     """Anchor plus FIT-feasible proxy leaders and ordinary-quality controls."""
     if population < 2 or quality_ratio < 1:
         raise ValueError('Invalid shortlist size or quality ratio')
     fitness = np.asarray([record['fitness'] for record in records], dtype=float)
     limit = max(float(fitness[0, 0]*quality_ratio), 1e-12)
-    order = quality_order(fitness, limit)
+    order = (quality_diverse_order(fitness, [r['behavior'] for r in records], limit)
+             if diverse else quality_order(fitness, limit))
     viable = [i for i in order if i and fitness[i, 0] <= limit]
     chosen = [0]
     proxy_slots = max(1, (population-1)*3//4)
@@ -111,7 +141,8 @@ def paired_crossover(a, b, rng, group_size=2):
 
 def search(evaluate, dimensions, population=12, generations=12, seed=0, random=False,
            structured=False, behavior_selection=False, adaptive=False, paired=True,
-           proposal_provider=None, quality_ratio=None):
+           proposal_provider=None, quality_ratio=None, quality_diversity=False,
+           policy_provider=None):
     """Integer genes in [-3,3]. Zero anchor is measured, not assumed optimal.
 
     Elitist parent+offspring selection, Pareto rank/crowding tournaments,
@@ -126,6 +157,11 @@ def search(evaluate, dimensions, population=12, generations=12, seed=0, random=F
         raise ValueError('Paired search needs an even number of genes')
     if quality_ratio is not None and (not np.isfinite(quality_ratio) or quality_ratio < 1):
         raise ValueError('Quality ratio must be finite and at least one')
+    if quality_diversity and (quality_ratio is None or not behavior_selection):
+        raise ValueError('Quality diversity needs quality ratio and behavior descriptors')
+    if policy_provider is not None and (not structured or random or proposal_provider is not None
+                                        or quality_ratio is None or not behavior_selection):
+        raise ValueError('Operator policy needs structured, quality-constrained behavior search')
     rng = np.random.default_rng(seed)
     records = []
     seen = set()
@@ -172,7 +208,9 @@ def search(evaluate, dimensions, population=12, generations=12, seed=0, random=F
 
     def population_order(indices):
         values = [records[i]['fitness'] for i in indices]
-        return (quality_order(values, fit_quality_limit) if quality_ratio is not None else
+        return (quality_diverse_order(values, [records[i]['behavior'] for i in indices], fit_quality_limit)
+                if quality_diversity else
+                quality_order(values, fit_quality_limit) if quality_ratio is not None else
                 ranked(values, [records[i]['behavior'] for i in indices]
                        if behavior_selection else None))
 
@@ -188,6 +226,19 @@ def search(evaluate, dimensions, population=12, generations=12, seed=0, random=F
     live = [measure(gene, 0) for gene in initial]
     fit_quality_limit = max(records[0]['fitness'][0]*quality_ratio, 1e-12) if quality_ratio is not None else None
     for generation in range(1, generations+1):
+        policy = None
+        if policy_provider is not None:
+            archive = [{'gene': list(r['gene']), 'fitness': list(r['fitness']),
+                        'behavior': list(r['behavior']), 'operator': r['operator'],
+                        'operator_reward': r.get('operator_reward', 0.)} for r in records]
+            policy = policy_provider(generation, archive, fit_quality_limit)
+            p = np.asarray(policy.get('operator_weights'), dtype=float)
+            if (p.shape != (4,) or not np.isfinite(p).all() or np.any(p < .02)
+                    or not np.isclose(p.sum(), 1., atol=1e-6)
+                    or policy.get('mutation_step') not in (1, 2)
+                    or not isinstance(policy.get('distant_mate_probability'), (float, int))
+                    or not 0. <= policy['distant_mate_probability'] <= 1.):
+                raise ValueError('Invalid bounded operator policy')
         proposed = []
         if proposal_provider is not None:
             # Copy only FIT measurements; provider cannot mutate archive or see SELECT/TEST.
@@ -214,7 +265,8 @@ def search(evaluate, dimensions, population=12, generations=12, seed=0, random=F
             children.append(measure(gene, generation, proposal_provider.label))
         for _ in range(population-len(children)):
             op = None
-            probabilities = operator_probabilities(credits) if adaptive else np.full(4, .25)
+            probabilities = (p if policy is not None else
+                             operator_probabilities(credits) if adaptive else np.full(4, .25))
             parent = None
             if random:
                 gene = rng.integers(-3, 4, dimensions)
@@ -224,12 +276,26 @@ def search(evaluate, dimensions, population=12, generations=12, seed=0, random=F
                 gene = np.asarray(records[parent]['gene']).copy()
                 group_size = 2 if paired else 1
                 if op == 0:
-                    gene[rng.integers(dimensions)] += rng.choice([-2, -1, 1, 2])
+                    delta = (rng.choice([-policy['mutation_step'], policy['mutation_step']])
+                             if policy is not None else rng.choice([-2, -1, 1, 2]))
+                    gene[rng.integers(dimensions)] += delta
                 elif op == 1:
                     start = int(rng.integers(dimensions//group_size))*group_size
-                    gene[start:start+group_size] += rng.choice([-2, -1, 1, 2], group_size)
+                    deltas = (rng.choice([-policy['mutation_step'], policy['mutation_step']], group_size)
+                              if policy is not None else rng.choice([-2, -1, 1, 2], group_size))
+                    gene[start:start+group_size] += deltas
                 elif op == 2:
-                    other = np.asarray(records[tournament_index()]['gene'])
+                    if (policy is not None and behavior_selection and
+                            rng.random() < policy['distant_mate_probability']):
+                        features = np.asarray([records[i]['behavior'] for i in live], dtype=float)
+                        features /= np.maximum(features.std(axis=0), 1e-6)
+                        parent_pos = live.index(parent)
+                        mate_pos = max((j for j in range(len(live)) if j != parent_pos),
+                                       key=lambda j: (float(np.square(features[j]-features[parent_pos]).mean()), -j))
+                        mate = live[mate_pos]
+                    else:
+                        mate = tournament_index()
+                    other = np.asarray(records[mate]['gene'])
                     gene = paired_crossover(gene, other, rng, group_size)
                 else:
                     if quality_ratio is not None and rng.random() < .8:
@@ -257,6 +323,16 @@ def search(evaluate, dimensions, population=12, generations=12, seed=0, random=F
                 else:
                     reward = float(np.any(after < before) and not (np.all(before <= after) and np.any(before < after)))
                 credits[op] = .9*credits[op]+.1*reward
+                records[child]['operator_reward'] = reward
+            if policy_provider is not None and op is not None:
+                previous = [r['fitness'][1] for r in records[:-1]
+                            if r['fitness'][0] <= fit_quality_limit]
+                after = records[child]['fitness']
+                reward = (min(1., max(0., (min(previous)-after[1])/max(abs(min(previous)), 1e-12)))
+                          if previous and after[0] <= fit_quality_limit else 0.)
+                if records[child]['operator'] == 'duplicate_restart':
+                    reward = 0.
+                policy_provider.observe(op, reward)
                 records[child]['operator_reward'] = reward
         pool = live + children
         live = [pool[i] for i in population_order(pool)[:population]]

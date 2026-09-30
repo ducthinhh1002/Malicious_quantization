@@ -108,9 +108,13 @@ def train_evolution(pipe, scheduler, dataset, names, method, args, output):
     started = time.perf_counter()
     structured = method in STRUCTURED_EVOLUTION_METHODS
     diversity = structured and not args.evolution_ablate_diversity
+    quality_diversity = method in ('behavior_archive_genetic_w4', 'bandit_hyperheuristic_w4',
+                                   'llm_hyperheuristic_w4', 'public_trigger_bandit_w4')
+    if quality_diversity and (args.evolution_legacy_search or not diversity):
+        raise ValueError('Hyper-heuristic branches require quality corridor and behavior descriptors')
     subspace = method in ('subspace_genetic_w4', 'random_subspace_genetic_w4')
     prefix_invariance = method == 'prefix_invariance_genetic_w4'
-    public_trigger = method == 'public_trigger_genetic_w4'
+    public_trigger = method in ('public_trigger_genetic_w4', 'public_trigger_bandit_w4')
     device = next(pipe.unet.parameters()).device
     empty = encode_text(pipe, ['']).detach()
     pipe.unet.eval()
@@ -122,7 +126,7 @@ def train_evolution(pipe, scheduler, dataset, names, method, args, output):
     groups = sorted(set(n.split('.transformer_blocks.')[0] if '.transformer_blocks.' in n
                         else n.rsplit('.', 2)[0] for n in names))
     group_index = {name: i for i, name in enumerate(groups)}
-    modules, rows, calls, proposer = [], [], [0], None
+    modules, rows, calls, proposer, policy = [], [], [0], None, None
     def count_forward(module, inputs):
         calls[0] += 1
     counter = pipe.unet.register_forward_pre_hook(count_forward)
@@ -257,13 +261,20 @@ def train_evolution(pipe, scheduler, dataset, names, method, args, output):
                                          quality_ratio=quality_ratio)
                         if method == 'llm_genetic_w4' else
                         LocalEliteProposer(*common, seed=args.seed, quality_ratio=quality_ratio))
+        if method in ('bandit_hyperheuristic_w4', 'llm_hyperheuristic_w4',
+                      'public_trigger_bandit_w4'):
+            from wmq_hyperheuristic import BanditOperatorPolicy, LLMOperatorPolicy
+            policy = (LLMOperatorPolicy(output/(method+'_policy_trace.jsonl'),
+                         device=str(device), max_tokens=args.llm_max_new_tokens)
+                      if method == 'llm_hyperheuristic_w4' else BanditOperatorPolicy())
         records, pareto = search(fitness, 2*len(groups), args.evolution_population,
                                 args.evolution_generations, args.seed, random=method == 'random_quantizer_w4',
                                 structured=structured, behavior_selection=diversity,
-                                adaptive=structured and not args.evolution_ablate_adaptation,
+                                adaptive=structured and not args.evolution_ablate_adaptation and policy is None,
                                 paired=not args.evolution_ablate_grouping,
                                 proposal_provider=proposer,
-                                quality_ratio=None if args.evolution_legacy_search else args.evolution_quality_ratio)
+                                quality_ratio=None if args.evolution_legacy_search else args.evolution_quality_ratio,
+                                quality_diversity=quality_diversity, policy_provider=policy)
         # Predeclared holdout budget: anchor plus P-1 diverse fit-Pareto/ranked
         # candidates; SELECT is disjoint from FIT and from owner TEST prompts.
         if args.evolution_legacy_search:
@@ -272,7 +283,7 @@ def train_evolution(pipe, scheduler, dataset, names, method, args, output):
                             if i != 0][:args.evolution_population-1]
         else:
             shortlist, _ = quality_shortlist(records, args.evolution_population,
-                                             args.evolution_quality_ratio)
+                                             args.evolution_quality_ratio, diverse=quality_diversity)
         validation = []
         for i in shortlist:
             apply(records[i]['gene'])
@@ -310,10 +321,18 @@ def train_evolution(pipe, scheduler, dataset, names, method, args, output):
         print({'method': method, 'selection_diagnostics': selection_diagnostics}, flush=True)
         apply(records[winner['candidate']]['gene'])
         save_csv(output/(method+'_validation.csv'), validation)
-        save_json(output/(method+'_search.json'), {'algorithm': 'random' if method == 'random_quantizer_w4' else 'structured adaptive GA' if structured else 'NSGA-II-style integer GA',
+        algorithm = ('random' if method == 'random_quantizer_w4' else
+                     policy.label if policy is not None else
+                     'structured adaptive GA' if structured else 'NSGA-II-style integer GA')
+        save_json(output/(method+'_search.json'), {'algorithm': algorithm,
             'structured_operators': structured, 'paired_genes': structured and not args.evolution_ablate_grouping,
             'quality_corridor_search': not args.evolution_legacy_search,
-            'behavior_selection': diversity, 'adaptive_operators': structured and not args.evolution_ablate_adaptation,
+            'behavior_selection': diversity,
+            'adaptive_operators': structured and not args.evolution_ablate_adaptation and policy is None,
+            'quality_diversity_survival': quality_diversity,
+            'operator_policy': None if policy is None else {
+                'kind': policy.label, 'trace': policy.trace, 'owner_feedback': False,
+                'total_candidate_budget_unchanged': True},
             'proxy_diagnostics': proxy_diagnostics,
             'proposal_provider': None if proposer is None else {
                 'kind': proposer.label, 'requested_per_generation': args.llm_proposals_per_generation,
@@ -340,6 +359,8 @@ def train_evolution(pipe, scheduler, dataset, names, method, args, output):
     finally:
         if proposer is not None:
             proposer.close()
+        if policy is not None:
+            policy.close()
         counter.remove()
         for module, leaf, _, _ in reversed(modules):
             parametrize.remove_parametrizations(module, leaf, leave_parametrized=False)

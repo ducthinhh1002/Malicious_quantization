@@ -8,8 +8,11 @@ from unittest.mock import patch
 import numpy as np
 import torch
 
-from wmq_evolution import fronts, ranked, search, paired_crossover, operator_probabilities, quality_shortlist
+from wmq_evolution import (fronts, ranked, search, paired_crossover, operator_probabilities,
+                           quality_shortlist, quality_diverse_order)
 from wmq_llm_proposals import LocalEliteProposer
+from wmq_hyperheuristic import (BanditOperatorPolicy, LLMOperatorPolicy,
+                                bounded_policy, policy_context)
 from wmq_sleeper_evolution import GeneticWeight, split_records, tail_diagnostics, sparse_calibration_plan
 from wmq_grouped_quant import GroupedW4
 from wmq_sleepermark import (parser, train_branch, selected_weights, state_hash,
@@ -17,6 +20,63 @@ from wmq_sleepermark import (parser, train_branch, selected_weights, state_hash,
 
 
 class EvolutionTests(unittest.TestCase):
+    def test_quality_diversity_preserves_champion_and_behavior_niches(self):
+        values = [[1., 10.], [1.05, 9.], [1.08, 9.1], [1.1, 9.2], [1.5, 0.]]
+        behavior = [[0., 0.], [1., 0.], [1.01, 0.], [-2., 2.], [99., 99.]]
+        order = quality_diverse_order(values, behavior, 1.25)
+        self.assertEqual(order[0], 1)
+        self.assertLess(order.index(3), order.index(2))
+        self.assertEqual(order[-1], 4)
+
+    def test_bounded_policy_and_bandit_search_budget(self):
+        with self.assertRaises(ValueError):
+            bounded_policy({'operator_weights': [1, 0, 0, float('nan')],
+                            'mutation_step': 1, 'distant_mate_probability': .5})
+        controller = BanditOperatorPolicy()
+        def evaluate(x):
+            return {'fitness': [1.+.01*float(np.square(x).sum()),
+                                2.-.01*float(x.sum())],
+                    'behavior': [float(x[0]), float(x[-1]), float(x.sum())]}
+        records, _ = search(evaluate, 6, population=8, generations=3, seed=19,
+                            structured=True, behavior_selection=True, quality_ratio=1.25,
+                            quality_diversity=True, policy_provider=controller)
+        self.assertEqual(len(records), 32)
+        self.assertEqual(sum(controller.counts), 24)
+        self.assertEqual(len({tuple(r['gene']) for r in records}), 32)
+        self.assertTrue(all(min(r['operator_probabilities']) >= .02 for r in records[8:]))
+        summary = policy_context(4, records, 1.25, controller, [])
+        self.assertEqual(set(summary['operator_names']), set(('single_mutation',
+            'group_mutation', 'group_crossover', 'immigrant')))
+        self.assertNotIn('owner', str(summary))
+
+    def test_llm_operator_policy_uses_bounded_fit_summary_and_reuses_policy(self):
+        class Tokenizer:
+            eos_token_id = 0
+            calls = 0
+            def apply_chat_template(self, messages, **kwargs):
+                self.calls += 1
+                return torch.tensor([[1, 2]])
+            def decode(self, tokens, **kwargs):
+                return json.dumps({'operator_weights': [.1, .2, .3, .4],
+                    'mutation_step': 1, 'distant_mate_probability': .4})
+        class Model:
+            def generate(self, encoded, **kwargs):
+                return torch.tensor([[1, 2, 3]])
+        with tempfile.TemporaryDirectory() as tmp:
+            controller = LLMOperatorPolicy(Path(tmp)/'trace.jsonl', device='cpu')
+            controller._load = lambda: (setattr(controller, 'tokenizer', Tokenizer()),
+                                        setattr(controller, 'model', Model()))
+            archive = [{'gene': [0, 0], 'fitness': [1., 2.],
+                        'behavior': [0., 0.], 'operator': 'initial'}]
+            first = controller(1, archive, 1.25)
+            self.assertEqual(first, controller(2, archive, 1.25))
+            self.assertEqual(controller.tokenizer.calls, 1)
+            self.assertEqual(controller.trace[0]['source'], 'llm')
+            self.assertGreaterEqual(min(first['operator_weights']), .02)
+            trace = (Path(tmp)/'trace.jsonl').read_text(encoding='utf-8')
+            self.assertNotIn('owner_evaluation', trace)
+            controller.close()
+
     def test_quality_corridor_prioritizes_evaluable_genomes(self):
         objective = lambda x: [1+.1*float(np.square(x).sum()), 10.-float(x.sum())]
         common = dict(dimensions=8, population=12, generations=6, seed=42,
@@ -185,7 +245,9 @@ class EvolutionTests(unittest.TestCase):
                 side_effect=fake_encode), patch(
                     'wmq_sleeper_evolution.split_records', side_effect=AssertionError('Must reuse planned split')), patch(
                     'wmq_llm_proposals.LocalLLMProposer', side_effect=lambda groups, output, count, **kw:
-                        LocalEliteProposer(groups, count, seed=1)):
+                        LocalEliteProposer(groups, count, seed=1)), patch(
+                    'wmq_hyperheuristic.LLMOperatorPolicy', side_effect=lambda *a, **kw:
+                        BanditOperatorPolicy()):
             for method in EVOLUTION_METHODS:
                 encoded_prompts.clear()
                 result = train_branch(SimpleNamespace(unet=unet), scheduler, data, names, method, args, Path(tmp))
@@ -201,7 +263,7 @@ class EvolutionTests(unittest.TestCase):
                 self.assertEqual(report['unique_genomes_evaluated'], 8)
                 # The prefix branch tests four frozen probes per bank record;
                 # other branches build the spatial teacher with shifted passes.
-                bank_forwards = (2 if method == 'public_trigger_genetic_w4' else
+                bank_forwards = (2 if method in ('public_trigger_genetic_w4', 'public_trigger_bandit_w4') else
                                  6 if method == 'prefix_invariance_genetic_w4' else 8)
                 self.assertEqual(report['logical_unet_forwards'], 4*bank_forwards+12*2*3)
                 self.assertTrue(report['quality_corridor_search'])
@@ -220,7 +282,7 @@ class EvolutionTests(unittest.TestCase):
                     self.assertEqual(report['proxy_diagnostics']['mode'], 'prefix_invariance')
                     self.assertGreaterEqual(report['proxy_diagnostics']['fit_teacher_response'], 0)
                     self.assertFalse(report['owner_used_for_fitness'])
-                if method == 'public_trigger_genetic_w4':
+                if method in ('public_trigger_genetic_w4', 'public_trigger_bandit_w4'):
                     self.assertTrue(report['public_trigger_used_for_fitness'])
                     self.assertTrue(any(prompt.startswith(PUBLIC_SLEEPERMARK_TRIGGER)
                                         for prompt in encoded_prompts))
