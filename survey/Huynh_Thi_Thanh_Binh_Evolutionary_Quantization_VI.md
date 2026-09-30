@@ -1,5 +1,7 @@
 # Survey chọn lọc các bài của Huỳnh Thị Thanh Bình và khả năng áp dụng vào quantization
 
+**Cập nhật 30/09/2026:** Các đề xuất paired crossover, adaptive operators và descriptor hành vi bên dưới đã có trong code SleeperMark sau ngày khảo sát gốc. Bản thiết kế hyper-heuristic tiếp theo và các đối chứng cần chạy nằm ở [SleeperMark_Hyperheuristic_LLM_Evolution_VI.md](SleeperMark_Hyperheuristic_LLM_Evolution_VI.md). Trạng thái “chưa triển khai” trong nội dung 27/09 chỉ phản ánh thời điểm viết bản gốc.
+
 Ngày khảo sát: 27/09/2026. Phạm vi: các công trình tiến hóa, đa nhiệm và đa mục
 tiêu có cơ chế phù hợp với repository hiện tại; không phải danh mục toàn bộ
 công bố. Danh tính/đơn vị được đối chiếu từ [trang SoICT HUST](https://soict.hust.edu.vn/en/prof-huynh-thi-thanh-binh.html).
