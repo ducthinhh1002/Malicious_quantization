@@ -29,7 +29,8 @@ ROLLOUT_METHODS = ('conditional_rollout_qat',)
 STRUCTURED_EVOLUTION_METHODS = ('adaptive_genetic_w4', 'subspace_genetic_w4',
                                 'random_subspace_genetic_w4', 'quality_genetic_w4',
                                 'local_proposal_genetic_w4', 'llm_genetic_w4',
-                                'prefix_invariance_genetic_w4')
+                                'prefix_invariance_genetic_w4', 'public_trigger_genetic_w4')
+PUBLIC_SLEEPERMARK_TRIGGER = '*[Z]& '  # Disclosed in SleeperMark, CVPR 2025, Sec. 4.1.
 EVOLUTION_METHODS = ('genetic_quantizer_w4', 'random_quantizer_w4') + STRUCTURED_EVOLUTION_METHODS
 CFG_METHODS = ('cfg_reconstruction', 'prefix_consistency_qat', 'coherent_probe_qat') + EQUIV_METHODS + DELTA_METHODS + ROLLOUT_METHODS + EVOLUTION_METHODS
 METHODS = ('fixed_ptq', 'model_reconstruction', 'natural_rounding', 'natural_finetune', 'natural_joint_finetune') + CFG_METHODS
@@ -455,6 +456,8 @@ def parser():
     p.add_argument('--evolution-subspace-layout', choices=['global', 'patch3'], default='global',
                    help='Experimental shared 3x3 residual basis; affects learned and random subspace controls equally')
     p.add_argument('--evolution-orthogonal-weight', type=float, default=.25)
+    p.add_argument('--evolution-legacy-search', action='store_true',
+                   help='Ablation: unconstrained Pareto search and shortlist used before the quality-corridor fix')
     p.add_argument('--evolution-prefix-probes', type=int, default=4,
                    help='Owner-blind random punctuation probes per late FIT/SELECT record for prefix invariance')
     p.add_argument('--llm-proposals-per-generation', type=int, default=3,
@@ -657,6 +660,7 @@ def main():
         'test_branches': [{'label': 'marked_reference_test', 'role': 'reference'}],
         'attack_component': 'unet', 'scope': args.scope, 'selected_weight_names': names,
         'test_used_for_selection': False, 'owner_assets_used_for_training': False,
+        'public_trigger_used_for_selection': 'public_trigger_genetic_w4' in args.methods,
         'selection': 'Predeclared final step; no owner or test quality selection',
         'quality_policy': 'report_only; SSIM and FID never reject or choose checkpoints',
         'triggered_quality_thresholds': {'ssim': args.report_min_ssim, 'psnr': args.report_min_psnr},
@@ -671,7 +675,8 @@ def main():
         'conditional_rollout': 'Only conditional-minus-unconditional spatial defect is corrected; independent teacher/student DDIM paths; detached states between steps; ordinary TRAIN starting latents',
         'coherent_probe': 'Shared continuous context delta; maximize cross-image highpass agreement minus lowpass response on distinct TRAIN prompts; suppress only coherence-gated common residual; no recovered-trigger claim',
         'probe_objective': 'Continuous context spatial-defect maximization; no trigger recovery claim',
-        'prefix_calibration': 'TRAIN prompts with independently sampled punctuation; no owner trigger used',
+        'prefix_calibration': ('Public trigger used only in explicitly labeled public_trigger_genetic_w4; '
+                               'other branches use independently sampled punctuation or no prefix'),
         'quantization_group_size': args.quant_group_size,
         'precision': 'FP32 activations; full W4 and FP32-base + delta4 are separate intervention classes',
         'delta_base': 'Immutable marked UNet; not an unwatermarked checkpoint; no FP32 fine-tuning intermediate',
@@ -709,8 +714,10 @@ def main():
                     'quantization_grouping': 'per_output_channel', 'whole_model_w4': False}
             manifest['test_branches'].append({'label': label, 'role': 'attack',
                 'identity_intervention': changed == 0,
+                'public_trigger_used_for_selection': label == 'public_trigger_genetic_w4',
                 'representation': 'fp32_base_plus_delta4' if method in DELTA_METHODS else 'fp32' if label.endswith('_fp32') else 'selected_weights_w4',
-                'threat_model': ('frozen_marked_fp32_base_plus_quantized_delta' if method in DELTA_METHODS else
+                'threat_model': ('public_trigger_quantizer_only' if label == 'public_trigger_genetic_w4' else
+                                'frozen_marked_fp32_base_plus_quantized_delta' if method in DELTA_METHODS else
                                 (('restricted_weight_finetune' if label.endswith('_fp32') else
                                   'restricted_weight_finetune_plus_quantization') if 'finetune' in label else 'quantizer_only'))})
         del states
@@ -722,9 +729,10 @@ def main():
     save_json(output / 'selection_frozen.json', {'phase': 'before_test_generation',
               'manifest_sha256': digest(output / 'manifest.json'), 'checkpoints': checkpoints,
               'test_used_for_selection': False})
-    # Owner-only protocol starts here. Never pass this trigger, key or extractor to train_branch.
+    # Owner key/extractor and TEST remain post-freeze. Only the explicitly
+    # labeled public-trigger control may use the paper's published trigger.
     extractor, key = load_extractor(extractor_source, extractor_path, key_path, 'cuda')
-    triggered = ['*[Z]& ' + prompt for prompt in test_prompts]
+    triggered = [PUBLIC_SLEEPERMARK_TRIGGER + prompt for prompt in test_prompts]
     rows = []
     for branch in manifest['test_branches']:
         label = branch['label']

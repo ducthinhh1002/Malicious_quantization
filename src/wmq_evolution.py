@@ -61,6 +61,42 @@ def ranked(values, behaviors=None):
     return result
 
 
+def quality_order(values, quality_limit):
+    """Constraint-first FIT order; SELECT still decides the frozen checkpoint.
+
+    Infeasible candidates are ordered by their ordinary-loss violation, rather
+    than being rewarded for an extreme proxy score at unusable image quality.
+    """
+    values = np.asarray(values, dtype=float)
+    if values.ndim != 2 or values.shape[1] != 2 or not np.isfinite(values).all():
+        raise ValueError('Finite two-objective fitness required')
+    if not np.isfinite(quality_limit) or quality_limit <= 0:
+        raise ValueError('Positive finite quality limit required')
+    feasible = [i for i, value in enumerate(values) if value[0] <= quality_limit]
+    infeasible = [i for i, value in enumerate(values) if value[0] > quality_limit]
+    return (sorted(feasible, key=lambda i: (values[i, 1], values[i, 0], i)) +
+            sorted(infeasible, key=lambda i: (values[i, 0]/quality_limit, values[i, 1], i)))
+
+
+def quality_shortlist(records, population, quality_ratio):
+    """Anchor plus FIT-feasible proxy leaders and ordinary-quality controls."""
+    if population < 2 or quality_ratio < 1:
+        raise ValueError('Invalid shortlist size or quality ratio')
+    fitness = np.asarray([record['fitness'] for record in records], dtype=float)
+    limit = max(float(fitness[0, 0]*quality_ratio), 1e-12)
+    order = quality_order(fitness, limit)
+    viable = [i for i in order if i and fitness[i, 0] <= limit]
+    chosen = [0]
+    proxy_slots = max(1, (population-1)*3//4)
+    chosen.extend(viable[:proxy_slots])
+    for i in sorted(viable, key=lambda i: (fitness[i, 0], fitness[i, 1], i)) + order:
+        if i not in chosen:
+            chosen.append(i)
+        if len(chosen) == population:
+            break
+    return chosen, limit
+
+
 def operator_probabilities(credits):
     credits = np.asarray(credits, dtype=float)
     merit = np.maximum(credits, 0)+.05
@@ -75,7 +111,7 @@ def paired_crossover(a, b, rng, group_size=2):
 
 def search(evaluate, dimensions, population=12, generations=12, seed=0, random=False,
            structured=False, behavior_selection=False, adaptive=False, paired=True,
-           proposal_provider=None):
+           proposal_provider=None, quality_ratio=None):
     """Integer genes in [-3,3]. Zero anchor is measured, not assumed optimal.
 
     Elitist parent+offspring selection, Pareto rank/crowding tournaments,
@@ -88,6 +124,8 @@ def search(evaluate, dimensions, population=12, generations=12, seed=0, random=F
         raise ValueError('Unique evaluation budget exceeds the integer search space')
     if structured and paired and dimensions % 2:
         raise ValueError('Paired search needs an even number of genes')
+    if quality_ratio is not None and (not np.isfinite(quality_ratio) or quality_ratio < 1):
+        raise ValueError('Quality ratio must be finite and at least one')
     rng = np.random.default_rng(seed)
     records = []
     seen = set()
@@ -133,12 +171,22 @@ def search(evaluate, dimensions, population=12, generations=12, seed=0, random=F
         return len(records)-1
 
     def population_order(indices):
-        return ranked([records[i]['fitness'] for i in indices],
-                      [records[i]['behavior'] for i in indices] if behavior_selection else None)
+        values = [records[i]['fitness'] for i in indices]
+        return (quality_order(values, fit_quality_limit) if quality_ratio is not None else
+                ranked(values, [records[i]['behavior'] for i in indices]
+                       if behavior_selection else None))
 
     initial = rng.integers(-3, 4, size=(population, dimensions))
     initial[0] = 0
+    if quality_ratio is not None:
+        # Start near the feasible RTN anchor. Dense random W4 perturbations
+        # mostly waste evaluations outside the ordinary-quality corridor.
+        initial[1:] = 0
+        for gene in initial[1:]:
+            coordinates = rng.choice(dimensions, size=min(dimensions, int(rng.integers(1, 3))), replace=False)
+            gene[coordinates] = rng.choice([-1, 1], size=len(coordinates))
     live = [measure(gene, 0) for gene in initial]
+    fit_quality_limit = max(records[0]['fitness'][0]*quality_ratio, 1e-12) if quality_ratio is not None else None
     for generation in range(1, generations+1):
         proposed = []
         if proposal_provider is not None:
@@ -184,7 +232,12 @@ def search(evaluate, dimensions, population=12, generations=12, seed=0, random=F
                     other = np.asarray(records[tournament_index()]['gene'])
                     gene = paired_crossover(gene, other, rng, group_size)
                 else:
-                    gene = rng.integers(-3, 4, dimensions)
+                    if quality_ratio is not None and rng.random() < .8:
+                        gene = np.zeros(dimensions, dtype=int)
+                        coordinates = rng.choice(dimensions, size=min(dimensions, int(rng.integers(1, 4))), replace=False)
+                        gene[coordinates] = rng.choice([-2, -1, 1, 2], size=len(coordinates))
+                    else:
+                        gene = rng.integers(-3, 4, dimensions)
                 gene = np.clip(gene, -3, 3)
             else:
                 a, b = (np.asarray(records[tournament_index()]['gene']) for _ in range(2))
@@ -197,9 +250,12 @@ def search(evaluate, dimensions, population=12, generations=12, seed=0, random=F
             children.append(child)
             if adaptive and parent is not None and records[child]['operator'] != 'duplicate_restart':
                 before, after = np.asarray(records[parent]['fitness']), np.asarray(records[child]['fitness'])
-                # A success improves at least one objective without being
-                # dominated by its parent; final survival still uses all peers.
-                reward = float(np.any(after < before) and not (np.all(before <= after) and np.any(before < after)))
+                if quality_ratio is not None:
+                    reward = float((after[0] <= fit_quality_limit and
+                                    (before[0] > fit_quality_limit or after[1] < before[1])) or
+                                   (before[0] > fit_quality_limit and after[0] < before[0]))
+                else:
+                    reward = float(np.any(after < before) and not (np.all(before <= after) and np.any(before < after)))
                 credits[op] = .9*credits[op]+.1*reward
                 records[child]['operator_reward'] = reward
         pool = live + children

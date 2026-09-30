@@ -8,14 +8,35 @@ from unittest.mock import patch
 import numpy as np
 import torch
 
-from wmq_evolution import fronts, ranked, search, paired_crossover, operator_probabilities
+from wmq_evolution import fronts, ranked, search, paired_crossover, operator_probabilities, quality_shortlist
 from wmq_llm_proposals import LocalEliteProposer
 from wmq_sleeper_evolution import GeneticWeight, split_records, tail_diagnostics, sparse_calibration_plan
 from wmq_grouped_quant import GroupedW4
-from wmq_sleepermark import parser, train_branch, selected_weights, state_hash, EVOLUTION_METHODS
+from wmq_sleepermark import (parser, train_branch, selected_weights, state_hash,
+                            EVOLUTION_METHODS, PUBLIC_SLEEPERMARK_TRIGGER)
 
 
 class EvolutionTests(unittest.TestCase):
+    def test_quality_corridor_prioritizes_evaluable_genomes(self):
+        objective = lambda x: [1+.1*float(np.square(x).sum()), 10.-float(x.sum())]
+        common = dict(dimensions=8, population=12, generations=6, seed=42,
+                      structured=True, adaptive=True)
+        old, _ = search(objective, **common)
+        new, _ = search(objective, quality_ratio=1.25, **common)
+        self.assertEqual(len(old), len(new))
+        self.assertGreater(sum(r['fitness'][0] <= 1.25 for r in new),
+                           sum(r['fitness'][0] <= 1.25 for r in old))
+        self.assertEqual(len({tuple(r['gene']) for r in new}), len(new))
+        # A proxy extreme with unusable ordinary quality cannot consume the
+        # limited SELECT shortlist while a feasible proxy gain is available.
+        archive = [{'fitness': [1., 10.]}, {'fitness': [1.1, 9.]},
+                   {'fitness': [1.15, 8.5]}] + [
+                       {'fitness': [2.+i*.1, 1.+i*.01]} for i in range(12)]
+        chosen, limit = quality_shortlist(archive, 5, 1.25)
+        self.assertEqual(limit, 1.25)
+        self.assertIn(2, chosen)
+        self.assertEqual(chosen[0], 0)
+
     def test_proposals_replace_ga_children_without_changing_budget(self):
         class Fixed:
             label = 'test_proposal'
@@ -156,12 +177,17 @@ class EvolutionTests(unittest.TestCase):
                                    '--evolution-subspace-layout', 'patch3'])
         scheduler = DDPMScheduler(num_train_timesteps=10)
         args._evolution_record_indices = split_records(data, args.evolution_records, args.seed)
+        encoded_prompts = []
+        def fake_encode(pipe, prompts):
+            encoded_prompts.extend(prompts)
+            return torch.zeros(len(prompts), 3, 8)
         with tempfile.TemporaryDirectory() as tmp, patch('wmq_sleepermark.encode_text',
-                side_effect=lambda pipe, prompts: torch.zeros(len(prompts), 3, 8)), patch(
+                side_effect=fake_encode), patch(
                     'wmq_sleeper_evolution.split_records', side_effect=AssertionError('Must reuse planned split')), patch(
                     'wmq_llm_proposals.LocalLLMProposer', side_effect=lambda groups, output, count, **kw:
                         LocalEliteProposer(groups, count, seed=1)):
             for method in EVOLUTION_METHODS:
+                encoded_prompts.clear()
                 result = train_branch(SimpleNamespace(unet=unet), scheduler, data, names, method, args, Path(tmp))
                 self.assertEqual(before, state_hash(unet))
                 self.assertEqual(set(result[method]), set(names))
@@ -175,8 +201,10 @@ class EvolutionTests(unittest.TestCase):
                 self.assertEqual(report['unique_genomes_evaluated'], 8)
                 # The prefix branch tests four frozen probes per bank record;
                 # other branches build the spatial teacher with shifted passes.
-                bank_forwards = 6 if method == 'prefix_invariance_genetic_w4' else 8
+                bank_forwards = (2 if method == 'public_trigger_genetic_w4' else
+                                 6 if method == 'prefix_invariance_genetic_w4' else 8)
                 self.assertEqual(report['logical_unet_forwards'], 4*bank_forwards+12*2*3)
+                self.assertTrue(report['quality_corridor_search'])
                 self.assertFalse(report['selection_diagnostics']['image_quality_guaranteed'])
                 self.assertEqual(report['selection_diagnostics']['selected_anchor_rtn'],
                                  report['selected']['candidate'] == 0)
@@ -192,6 +220,15 @@ class EvolutionTests(unittest.TestCase):
                     self.assertEqual(report['proxy_diagnostics']['mode'], 'prefix_invariance')
                     self.assertGreaterEqual(report['proxy_diagnostics']['fit_teacher_response'], 0)
                     self.assertFalse(report['owner_used_for_fitness'])
+                if method == 'public_trigger_genetic_w4':
+                    self.assertTrue(report['public_trigger_used_for_fitness'])
+                    self.assertTrue(any(prompt.startswith(PUBLIC_SLEEPERMARK_TRIGGER)
+                                        for prompt in encoded_prompts))
+                    self.assertFalse(report['owner_used_for_fitness'])
+                else:
+                    self.assertFalse(report['public_trigger_used_for_fitness'])
+                    self.assertFalse(any(prompt.startswith(PUBLIC_SLEEPERMARK_TRIGGER)
+                                         for prompt in encoded_prompts))
             with patch('wmq_sleeper_evolution.search', side_effect=RuntimeError('injected')):
                 with self.assertRaisesRegex(RuntimeError, 'injected'):
                     train_branch(SimpleNamespace(unet=unet), scheduler, data, names,

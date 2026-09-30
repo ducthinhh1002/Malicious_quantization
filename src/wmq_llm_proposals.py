@@ -4,20 +4,24 @@ import time
 from pathlib import Path
 
 import numpy as np
-from wmq_evolution import ranked
+from wmq_evolution import ranked, quality_order
 
 MODEL = 'Qwen/Qwen2.5-3B-Instruct'
 REVISION = 'aa8e72537993ba99e69dfaafa59ed015b17504d1'
 
 
-def fit_context(groups, archive, generation, count):
+def fit_context(groups, archive, generation, count, quality_ratio=None):
     # Whitelist fields, never serialize a model report or args namespace here.
-    indices = list(dict.fromkeys([0]+ranked([r['fitness'] for r in archive])[:10]+
+    values = [r['fitness'] for r in archive]
+    quality_limit = max(values[0][0]*quality_ratio, 1e-12) if quality_ratio is not None else None
+    order = quality_order(values, quality_limit) if quality_limit is not None else ranked(values)
+    indices = list(dict.fromkeys([0]+order[:10]+
                                  list(range(max(0, len(archive)-4), len(archive)))))
     return {'generation': generation, 'groups': list(groups), 'proposal_count': count,
             'gene_order': 'for each group: integer log_scale/.04, integer rounding_bias/.1',
             'bounds': [-3, 3], 'objective_order': ['ordinary_noise_loss', 'residual_proxy_loss'],
             'objectives': 'Both minimized. Residual proxy is not a measured watermark score.',
+            'fit_ordinary_quality_limit': quality_limit,
             'fit_archive': [{'id': i, 'gene': list(archive[i]['gene']),
                              'fitness': list(archive[i]['fitness'])} for i in indices]}
 
@@ -44,13 +48,16 @@ class LocalEliteProposer:
     """Cheap locality control: one-coordinate neighbors of FIT Pareto elites."""
     label = 'local_elite_proposal'
 
-    def __init__(self, groups, count=3, seed=0):
+    def __init__(self, groups, count=3, seed=0, quality_ratio=None):
         self.groups, self.count = groups, count
+        self.quality_ratio = quality_ratio
         self.rng = np.random.default_rng(seed+65537)
         self.trace = []
 
     def __call__(self, generation, archive):
-        order = ranked([r['fitness'] for r in archive])[:4]
+        values = [r['fitness'] for r in archive]
+        order = (quality_order(values, max(values[0][0]*self.quality_ratio, 1e-12))
+                 if self.quality_ratio is not None else ranked(values))[:4]
         seen = {tuple(r['gene']) for r in archive}
         result = []
         for _ in range(self.count*32):
@@ -72,9 +79,10 @@ class LocalEliteProposer:
 class LocalLLMProposer:
     label = 'llm_proposal'
 
-    def __init__(self, groups, output, count=3, max_tokens=768, device='cuda'):
+    def __init__(self, groups, output, count=3, max_tokens=768, device='cuda', quality_ratio=None):
         self.groups, self.output, self.count = groups, Path(output), count
         self.max_tokens, self.device = max_tokens, device
+        self.quality_ratio = quality_ratio
         self.trace, self.model, self.tokenizer = [], None, None
 
     def _load(self):
@@ -91,7 +99,7 @@ class LocalLLMProposer:
         started = time.perf_counter()
         if self.model is None:
             self._load()  # Loading failure aborts this branch; never masquerade as LLM success.
-        context = fit_context(self.groups, archive, generation, self.count)
+        context = fit_context(self.groups, archive, generation, self.count, self.quality_ratio)
         messages = [
             {'role': 'system', 'content': 'You propose bounded integer configurations for W4 quantization. '
              'Use the supplied FIT measurements only. Both losses are minimized. '

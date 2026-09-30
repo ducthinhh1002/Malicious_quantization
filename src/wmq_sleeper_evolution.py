@@ -10,7 +10,7 @@ from torch import nn
 from torch.nn import functional as F
 from torch.nn.utils import parametrize
 
-from wmq_evolution import search, ranked
+from wmq_evolution import search, ranked, quality_shortlist
 from wmq_grouped_quant import GroupedW4
 from wmq_sleeper_equivariance import guided_spatial_target, predicted_x0
 
@@ -100,7 +100,8 @@ def sparse_calibration_plan(prompts, train_n, timesteps, count, seed):
 
 @torch.no_grad()
 def train_evolution(pipe, scheduler, dataset, names, method, args, output):
-    from wmq_sleepermark import encode_text, snapshot, STRUCTURED_EVOLUTION_METHODS
+    from wmq_sleepermark import (encode_text, snapshot, STRUCTURED_EVOLUTION_METHODS,
+                                PUBLIC_SLEEPERMARK_TRIGGER)
     from wmq_blind import save_csv, save_json
     from wmq_sleeper_calibration import augmented_prompts, spatial_reconstruction_loss
     from wmq_sleeper_equivariance import highpass
@@ -109,6 +110,7 @@ def train_evolution(pipe, scheduler, dataset, names, method, args, output):
     diversity = structured and not args.evolution_ablate_diversity
     subspace = method in ('subspace_genetic_w4', 'random_subspace_genetic_w4')
     prefix_invariance = method == 'prefix_invariance_genetic_w4'
+    public_trigger = method == 'public_trigger_genetic_w4'
     device = next(pipe.unet.parameters()).device
     empty = encode_text(pipe, ['']).detach()
     pipe.unet.eval()
@@ -167,6 +169,10 @@ def train_evolution(pipe, scheduler, dataset, names, method, args, output):
                         strengths = torch.stack(responses)
                         strongest = int(strengths.argmax())
                         augmented, target, base = probes[strongest:strongest+1], plain_x0, strengths[strongest]
+                    elif public_trigger:
+                        augmented = encode_text(pipe, [PUBLIC_SLEEPERMARK_TRIGGER+prompt]).detach()
+                        target = predicted_x0(u+7.5*(c-u), z, t, scheduler).detach()
+                        base = target
                     else:
                         augmented = encode_text(pipe, augmented_prompts([prompt], rng)).detach()
                         target, _, base = guided_spatial_target(pipe.unet, z, t, augmented, empty,
@@ -178,9 +184,13 @@ def train_evolution(pipe, scheduler, dataset, names, method, args, output):
         enable(False)
         fit_bank, select_bank = bank(fit_indices), bank(select_indices)
         residual_proxy = None
-        proxy_diagnostics = {'mode': ('prefix_invariance' if prefix_invariance else
+        proxy_diagnostics = {'mode': ('public_trigger_reconstruction' if public_trigger else
+                                      'prefix_invariance' if prefix_invariance else
                                       'quality_only' if method == 'quality_genetic_w4' else 'spatial_mse'),
                              'spatial_loss_mode': args.spatial_loss_mode}
+        if public_trigger:
+            proxy_diagnostics.update(trigger_source='SleeperMark CVPR 2025 Sec. 4.1',
+                                     owner_key_or_extractor_used=False)
         if prefix_invariance:
             proxy_diagnostics.update(probes_per_late_record=args.evolution_prefix_probes,
                 fit_teacher_response=float(torch.stack([r[-1] for r in fit_bank if r[-2] is not None]).mean()),
@@ -240,21 +250,29 @@ def train_evolution(pipe, scheduler, dataset, names, method, args, output):
         if method in ('llm_genetic_w4', 'local_proposal_genetic_w4'):
             from wmq_llm_proposals import LocalLLMProposer, LocalEliteProposer
             common = (groups, args.llm_proposals_per_generation)
+            quality_ratio = None if args.evolution_legacy_search else args.evolution_quality_ratio
             proposer = (LocalLLMProposer(groups, output/(method+'_llm_trace.jsonl'),
                                          count=args.llm_proposals_per_generation,
-                                         max_tokens=args.llm_max_new_tokens, device=str(device))
+                                         max_tokens=args.llm_max_new_tokens, device=str(device),
+                                         quality_ratio=quality_ratio)
                         if method == 'llm_genetic_w4' else
-                        LocalEliteProposer(*common, seed=args.seed))
+                        LocalEliteProposer(*common, seed=args.seed, quality_ratio=quality_ratio))
         records, pareto = search(fitness, 2*len(groups), args.evolution_population,
                                 args.evolution_generations, args.seed, random=method == 'random_quantizer_w4',
                                 structured=structured, behavior_selection=diversity,
                                 adaptive=structured and not args.evolution_ablate_adaptation,
                                 paired=not args.evolution_ablate_grouping,
-                                proposal_provider=proposer)
+                                proposal_provider=proposer,
+                                quality_ratio=None if args.evolution_legacy_search else args.evolution_quality_ratio)
         # Predeclared holdout budget: anchor plus P-1 diverse fit-Pareto/ranked
         # candidates; SELECT is disjoint from FIT and from owner TEST prompts.
-        shortlist = [0]+[i for i in ranked([r['fitness'] for r in records],
-                        [r['behavior'] for r in records] if diversity else None) if i != 0][:args.evolution_population-1]
+        if args.evolution_legacy_search:
+            shortlist = [0]+[i for i in ranked([r['fitness'] for r in records],
+                            [r['behavior'] for r in records] if diversity else None)
+                            if i != 0][:args.evolution_population-1]
+        else:
+            shortlist, _ = quality_shortlist(records, args.evolution_population,
+                                             args.evolution_quality_ratio)
         validation = []
         for i in shortlist:
             apply(records[i]['gene'])
@@ -277,6 +295,11 @@ def train_evolution(pipe, scheduler, dataset, names, method, args, output):
         anchor = validation[0]
         selection_diagnostics = {
             'selected_anchor_rtn': winner['candidate'] == 0,
+            'fit_quality_limit': records[0]['fitness'][0]*args.evolution_quality_ratio,
+            'fit_feasible_count': sum(r['fitness'][0] <= records[0]['fitness'][0]*args.evolution_quality_ratio
+                                      for r in records),
+            'fit_feasible_shortlist_count': sum(records[v['candidate']]['fitness'][0] <=
+                records[0]['fitness'][0]*args.evolution_quality_ratio for v in validation),
             'feasible_shortlist_count': len(feasible),
             'shortlist_count': len(validation),
             'proxy_relative_improvement_to_rtn': (anchor['proxy_loss']-winner['proxy_loss'])/max(abs(anchor['proxy_loss']), 1e-12),
@@ -289,6 +312,7 @@ def train_evolution(pipe, scheduler, dataset, names, method, args, output):
         save_csv(output/(method+'_validation.csv'), validation)
         save_json(output/(method+'_search.json'), {'algorithm': 'random' if method == 'random_quantizer_w4' else 'structured adaptive GA' if structured else 'NSGA-II-style integer GA',
             'structured_operators': structured, 'paired_genes': structured and not args.evolution_ablate_grouping,
+            'quality_corridor_search': not args.evolution_legacy_search,
             'behavior_selection': diversity, 'adaptive_operators': structured and not args.evolution_ablate_adaptation,
             'proxy_diagnostics': proxy_diagnostics,
             'proposal_provider': None if proposer is None else {
@@ -305,7 +329,11 @@ def train_evolution(pipe, scheduler, dataset, names, method, args, output):
             'select_prompt_names': sorted(set(dataset[i][2] for i in select_indices)),
             'fit_record_indices': fit_indices, 'select_record_indices': select_indices,
             'test_used_for_selection': False, 'owner_used_for_fitness': False,
-            'proxy_warning': 'Prefix/spatial response is not an identified watermark. Quality constraint is calibration noise MSE, not image SSIM.',
+            'public_trigger_used_for_fitness': public_trigger,
+            'proxy_warning': ('Published trigger is known; owner key/extractor remain hidden. '
+                              'Noise quality constraint does not guarantee image SSIM.' if public_trigger else
+                              'Prefix/spatial response is not an identified watermark. '
+                              'Quality constraint is calibration noise MSE, not image SSIM.'),
             'elapsed_seconds': time.perf_counter()-started, 'logical_unet_forwards': calls[0]})
         save_csv(output/(method+'_training.csv'), rows)
         return {method: snapshot(pipe.unet, names)}

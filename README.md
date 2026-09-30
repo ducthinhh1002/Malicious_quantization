@@ -65,6 +65,19 @@ bash run_blind_quantization.sh --watermark sleepermark --methods prefix_invarian
 với trigger/key/extractor của owner; đây là giả thuyết cần kiểm nghiệm, chưa có
 owner result chứng minh hiệu quả.
 
+Lần chạy đầu của nhánh prefix chọn lại RTN. Search evolutionary hiện ưu tiên
+ứng viên đạt chất lượng trên FIT trước khi tối ưu proxy, rồi vẫn kiểm tra SELECT
+độc lập; dùng `--evolution-legacy-search` để chạy lại search cũ. Đối chứng
+`public_trigger_genetic_w4` dùng trigger công khai trong paper nhưng vẫn giữ
+key/extractor và owner TEST ngoài vòng chọn. Chạy ba nhánh để tách ảnh hưởng
+của cách tìm quantizer và thông tin trigger:
+
+```bash
+bash run_blind_quantization.sh --watermark sleepermark --methods adaptive_genetic_w4 prefix_invariance_genetic_w4 public_trigger_genetic_w4
+```
+
+Xem [lý do, threat model và protocol](survey/SleeperMark_Quality_Corridor_Public_Trigger_VI.md).
+
 **Cấu hình hiện hành, 27/09/2026:** `transfer` không chạy bất kỳ nhánh FP32
 fine-tune nào, không chạy fine-tune → RTN và không tạo purified teacher ngầm.
 Các implementation này vẫn có trong `science`/`full` hoặc lệnh tường minh.
