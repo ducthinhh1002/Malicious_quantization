@@ -77,6 +77,8 @@ bash run_blind_quantization.sh --watermark sleepermark --methods adaptive_geneti
 ```
 
 Xem [lý do, threat model và protocol](survey/SleeperMark_Quality_Corridor_Public_Trigger_VI.md).
+Đối chứng gradient `public_trigger_consistency_qat` có cùng side information
+và xuất checkpoint W4; mặc định chạy 2.000 bước khi được chọn tường minh.
 
 **Cấu hình hiện hành, 27/09/2026:** `transfer` không chạy bất kỳ nhánh FP32
 fine-tune nào, không chạy fine-tune → RTN và không tạo purified teacher ngầm.

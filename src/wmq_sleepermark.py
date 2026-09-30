@@ -32,7 +32,8 @@ STRUCTURED_EVOLUTION_METHODS = ('adaptive_genetic_w4', 'subspace_genetic_w4',
                                 'prefix_invariance_genetic_w4', 'public_trigger_genetic_w4')
 PUBLIC_SLEEPERMARK_TRIGGER = '*[Z]& '  # Disclosed in SleeperMark, CVPR 2025, Sec. 4.1.
 EVOLUTION_METHODS = ('genetic_quantizer_w4', 'random_quantizer_w4') + STRUCTURED_EVOLUTION_METHODS
-CFG_METHODS = ('cfg_reconstruction', 'prefix_consistency_qat', 'coherent_probe_qat') + EQUIV_METHODS + DELTA_METHODS + ROLLOUT_METHODS + EVOLUTION_METHODS
+CFG_METHODS = ('cfg_reconstruction', 'prefix_consistency_qat', 'public_trigger_consistency_qat',
+               'coherent_probe_qat') + EQUIV_METHODS + DELTA_METHODS + ROLLOUT_METHODS + EVOLUTION_METHODS
 METHODS = ('fixed_ptq', 'model_reconstruction', 'natural_rounding', 'natural_finetune', 'natural_joint_finetune') + CFG_METHODS
 DEFAULT_METHODS = ('fixed_ptq', 'cfg_reconstruction', 'delta_cfg_equivariance', *COHERENT_METHODS)
 
@@ -179,6 +180,7 @@ def train_branch(pipe, scheduler, dataset, names, method, args, output, artifact
     order = np.random.default_rng(args.seed)
     auxiliary_order = np.random.default_rng(args.seed + 7919)
     context_order = np.random.default_rng(args.seed + 104729)
+    public_trigger_contexts = {}
     rows = []
     cfg = method in CFG_METHODS
     equiv = method in (*EQUIV_METHODS, *DELTA_METHODS, *ROLLOUT_METHODS) and not coherent
@@ -316,14 +318,24 @@ def train_branch(pipe, scheduler, dataset, names, method, args, output, artifact
                     losses.append(probe_loss.detach())
                     spatial_metrics.update(diagnostics, coherent_correction_rms=correction_rms)
                     del prediction, student_x0, target, common, probe_loss
-                if method == 'prefix_consistency_qat':
-                    # Sample from punctuation alphabet, independent of owner assets.
-                    prefixes = [''.join(order.choice(list(string.punctuation), size=int(order.integers(1, 9))))
-                                + ' ' + dataset[i][2] for i in indices]
-                    prefix_cond = encode_text(pipe, prefixes)
+                if method in ('prefix_consistency_qat', 'public_trigger_consistency_qat'):
+                    if method == 'public_trigger_consistency_qat':
+                        prompts = [dataset[i][2] for i in indices]
+                        for prompt in prompts:
+                            if prompt not in public_trigger_contexts:
+                                public_trigger_contexts[prompt] = encode_text(
+                                    pipe, [PUBLIC_SLEEPERMARK_TRIGGER+prompt]).detach()
+                        prefix_cond = torch.cat([public_trigger_contexts[prompt] for prompt in prompts])
+                    else:
+                        # Sample from punctuation alphabet, independent of owner assets.
+                        prefixes = [''.join(order.choice(list(string.punctuation), size=int(order.integers(1, 9))))
+                                    + ' ' + dataset[i][2] for i in indices]
+                        prefix_cond = encode_text(pipe, prefixes)
                     pred = pipe.unet(noisy, t, encoder_hidden_states=prefix_cond).sample
                     ramp = max(0., min(1., (step / max(count, 1) - .2) / .3))
-                    prefix_loss = args.prefix_weight * ramp * F.mse_loss(pred, marked)
+                    weight = (args.public_trigger_weight if method == 'public_trigger_consistency_qat'
+                              else args.prefix_weight)
+                    prefix_loss = weight * ramp * F.mse_loss(pred, marked)
                     prefix_loss.backward()
                     losses.append(prefix_loss.detach())
                 torch.nn.utils.clip_grad_norm_(params, 1., error_if_nonfinite=True)
@@ -480,6 +492,8 @@ def parser():
                    help='TRAIN-only random punctuation conditioning for spatial calibration; no owner trigger')
     p.add_argument('--quant-group-size', type=int, default=64, help='0 reproduces legacy channel quantization')
     p.add_argument('--prefix-weight', type=float, default=.25)
+    p.add_argument('--public-trigger-weight', type=float, default=1.,
+                   help='Known-trigger QAT control only; no owner key or extractor')
     p.add_argument('--calibration-mode', choices=['trajectory', 'renoised'], default='trajectory')
     p.add_argument('--trajectory-points', type=int, default=8)
     p.add_argument('--late-fraction', type=float, default=.35)
@@ -538,7 +552,8 @@ def main():
         p.error('Counts must be positive')
     if not 0 < args.fpr < 1 or min(args.lr, args.ft_lr) <= 0 or args.preserve_weight < 0:
         p.error('Invalid FPR, learning rate or preservation weight')
-    if args.quant_group_size < 0 or not np.isfinite(args.prefix_weight) or args.prefix_weight < 0:
+    if (args.quant_group_size < 0 or not np.isfinite([args.prefix_weight, args.public_trigger_weight]).all()
+            or min(args.prefix_weight, args.public_trigger_weight) < 0):
         p.error('Invalid quantization group size or prefix weight')
     if (min(args.trajectory_points, args.spatial_shift, args.probe_every, args.probe_tokens) < 1
             or args.probe_steps < 0 or not 0 < args.late_fraction <= 1
@@ -555,7 +570,8 @@ def main():
             args.coherent_code_lr, args.coherent_scale_lr]).all() or min(args.coherent_weight, args.coherent_semantic_weight) < 0
             or min(args.coherent_code_lr, args.coherent_scale_lr) <= 0):
         p.error('Invalid coherent probe settings')
-    if any(m in (*EQUIV_METHODS, *DELTA_METHODS, *ROLLOUT_METHODS, *COHERENT_METHODS) for m in args.methods) and args.calibration_mode != 'trajectory':
+    if any(m in (*EQUIV_METHODS, *DELTA_METHODS, *ROLLOUT_METHODS, *COHERENT_METHODS,
+                 'public_trigger_consistency_qat') for m in args.methods) and args.calibration_mode != 'trajectory':
         p.error('Spatial QAT requires --calibration-mode trajectory')
     if len(set(args.methods)) != len(args.methods):
         p.error('Duplicate methods')
@@ -660,7 +676,8 @@ def main():
         'test_branches': [{'label': 'marked_reference_test', 'role': 'reference'}],
         'attack_component': 'unet', 'scope': args.scope, 'selected_weight_names': names,
         'test_used_for_selection': False, 'owner_assets_used_for_training': False,
-        'public_trigger_used_for_selection': 'public_trigger_genetic_w4' in args.methods,
+        'public_trigger_used_for_selection': any(m in args.methods for m in
+            ('public_trigger_genetic_w4', 'public_trigger_consistency_qat')),
         'selection': 'Predeclared final step; no owner or test quality selection',
         'quality_policy': 'report_only; SSIM and FID never reject or choose checkpoints',
         'triggered_quality_thresholds': {'ssim': args.report_min_ssim, 'psnr': args.report_min_psnr},
@@ -675,7 +692,7 @@ def main():
         'conditional_rollout': 'Only conditional-minus-unconditional spatial defect is corrected; independent teacher/student DDIM paths; detached states between steps; ordinary TRAIN starting latents',
         'coherent_probe': 'Shared continuous context delta; maximize cross-image highpass agreement minus lowpass response on distinct TRAIN prompts; suppress only coherence-gated common residual; no recovered-trigger claim',
         'probe_objective': 'Continuous context spatial-defect maximization; no trigger recovery claim',
-        'prefix_calibration': ('Public trigger used only in explicitly labeled public_trigger_genetic_w4; '
+        'prefix_calibration': ('Public trigger used only in explicitly labeled public_trigger_* branches; '
                                'other branches use independently sampled punctuation or no prefix'),
         'quantization_group_size': args.quant_group_size,
         'precision': 'FP32 activations; full W4 and FP32-base + delta4 are separate intervention classes',
@@ -714,9 +731,11 @@ def main():
                     'quantization_grouping': 'per_output_channel', 'whole_model_w4': False}
             manifest['test_branches'].append({'label': label, 'role': 'attack',
                 'identity_intervention': changed == 0,
-                'public_trigger_used_for_selection': label == 'public_trigger_genetic_w4',
+                'public_trigger_used_for_selection': method in
+                    ('public_trigger_genetic_w4', 'public_trigger_consistency_qat'),
                 'representation': 'fp32_base_plus_delta4' if method in DELTA_METHODS else 'fp32' if label.endswith('_fp32') else 'selected_weights_w4',
-                'threat_model': ('public_trigger_quantizer_only' if label == 'public_trigger_genetic_w4' else
+                'threat_model': ('public_trigger_quantizer_only' if method in
+                                 ('public_trigger_genetic_w4', 'public_trigger_consistency_qat') else
                                 'frozen_marked_fp32_base_plus_quantized_delta' if method in DELTA_METHODS else
                                 (('restricted_weight_finetune' if label.endswith('_fp32') else
                                   'restricted_weight_finetune_plus_quantization') if 'finetune' in label else 'quantizer_only'))})

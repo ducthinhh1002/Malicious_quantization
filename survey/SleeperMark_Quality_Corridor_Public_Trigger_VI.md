@@ -36,11 +36,26 @@ là trigger công khai, nhưng không dùng key, extractor hoặc kết quả ow
 để tối ưu/chọn checkpoint. Báo cáo và manifest ghi rõ cờ
 `public_trigger_used_for_fitness`/`public_trigger_used_for_selection`.
 
+`public_trigger_consistency_qat` là đối chứng gradient: trong mỗi bước QAT W4,
+nó giữ ordinary CFG noise prediction theo marked teacher và kéo prediction của
+prompt có trigger về prediction của prompt gốc. Text context được cache theo
+prompt, không huấn luyện text encoder hoặc trọng số FP32 tự do. Đây cũng là
+nhánh **public-trigger**, không được gộp số liệu với model-only blind. Hai nhánh
+public-trigger cho phép tách lỗi proxy blind khỏi giới hạn do tìm kiếm W4 thô:
+nếu QAT thành công còn GA không, độ phân giải/optimizer của GA là nghi vấn.
+
 ## Thí nghiệm phân biệt nguyên nhân
 
 ```bash
 bash run_blind_quantization.sh --watermark sleepermark \
   --methods adaptive_genetic_w4 prefix_invariance_genetic_w4 public_trigger_genetic_w4
+```
+
+Chạy QAT công khai riêng vì 2.000 bước mặc định có chi phí lớn hơn 156 genome GA:
+
+```bash
+bash run_blind_quantization.sh --watermark sleepermark \
+  --methods public_trigger_consistency_qat
 ```
 
 Ba nhánh cùng W4, FIT/SELECT, seed, số genome và giao thức owner sau freeze.

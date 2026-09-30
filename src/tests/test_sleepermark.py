@@ -60,7 +60,8 @@ class SleeperMarkTests(unittest.TestCase):
                                     add_noise=lambda z, noise, t: z + noise)
         data = [(torch.randn(1, 8), torch.randn(1, 1, 8), 'ordinary prompt') for _ in range(3)]
         args = SimpleNamespace(ft_lr=.01, lr=.01, seed=5, steps=3, train_batch_size=1,
-                               preserve_weight=.5, log_every=3, prefix_weight=.25, quant_group_size=4)
+                               preserve_weight=.5, log_every=3, prefix_weight=.25,
+                               public_trigger_weight=1., quant_group_size=4)
         before = state_hash(self.unet)
         with tempfile.TemporaryDirectory() as tmp, patch('wmq_sleepermark.encode_text',
                 side_effect=lambda pipe, prompts: torch.zeros(len(prompts), 1, 8)):
@@ -119,8 +120,12 @@ class SleeperMarkTests(unittest.TestCase):
                                     '--probe-every', '1', '--probe-steps', '1', '--inference-steps', '5'])
         with tempfile.TemporaryDirectory() as tmp, patch('wmq_sleepermark.encode_text',
                 side_effect=lambda pipe, prompts: torch.zeros(len(prompts), 3, 8)):
-            for method in ('natural_rounding', 'natural_joint_finetune', 'cfg_reconstruction', *EQUIV_METHODS, *DELTA_METHODS, *ROLLOUT_METHODS, 'coherent_probe_qat'):
-                dataset = [(*row, 3) for row in data] if method in ('cfg_reconstruction', *EQUIV_METHODS, *DELTA_METHODS, *ROLLOUT_METHODS, *COHERENT_METHODS) else data
+            for method in ('natural_rounding', 'natural_joint_finetune', 'cfg_reconstruction',
+                           'public_trigger_consistency_qat', *EQUIV_METHODS, *DELTA_METHODS,
+                           *ROLLOUT_METHODS, 'coherent_probe_qat'):
+                dataset = [(*row, 3) for row in data] if method in ('cfg_reconstruction',
+                    'public_trigger_consistency_qat', *EQUIV_METHODS, *DELTA_METHODS,
+                    *ROLLOUT_METHODS, *COHERENT_METHODS) else data
                 args.delta_lr = 1.  # Cross an integer cell in the two-step smoke test.
                 result = train_branch(SimpleNamespace(unet=unet, scheduler=DDIMScheduler(num_train_timesteps=10)), DDPMScheduler(num_train_timesteps=10),
                                       dataset, names, method, args, Path(tmp), Path(tmp))
