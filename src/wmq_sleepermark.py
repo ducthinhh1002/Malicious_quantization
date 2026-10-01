@@ -483,7 +483,8 @@ def train_branch(pipe, scheduler, dataset, names, method, args, output, artifact
                     initialization.append({'name': name, 'weight_mse': float(grid.initial_weight_mse),
                                            'legacy_rtn_weight_mse': float(grid.legacy_weight_mse)})
             save_csv(output / f'{method}_initialization.csv', initialization)
-        label = method + ('_fp32base_delta4' if delta_branch else '_w4')
+        label = method + ('_fp32base_delta4' if delta_branch else
+                          '' if method.endswith('_w4') else '_w4')
         result = {label: best_state if quality_selection else snapshot(pipe.unet, names)}
         if quality_selection:
             save_json(output / f'{method}_selection.json', {
