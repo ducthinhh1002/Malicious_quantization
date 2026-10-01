@@ -2,6 +2,16 @@
 
 ## SleeperMark: quality-constrained public-trigger W4 control (01/10/2026)
 
+The separate public-trigger distillation **defense control** matches the
+marked FP32 teacher on ordinary and triggered TRAIN conditions while fitting
+a W4 UNet student. It runs independently of the attack branch:
+
+```bash
+bash run_blind_quantization.sh --watermark sleepermark --methods public_trigger_distill_defense_w4
+```
+
+See [why LLM watermark inheritance is only an analogy](survey/LLM_Distillation_Radioactivity_to_SleeperMark_VI.md).
+
 The 30/09/2026 six-branch evolutionary/LLM suite retained TPR 100/100 for every
 branch (bit accuracy 96.625–99.3125%). FIT/SELECT proxy gains did not transfer to
 owner TEST. A separate public-trigger QAT run reached 0/100 detection and 49.4%

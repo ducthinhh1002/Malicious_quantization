@@ -47,6 +47,8 @@ def assess(pipe, prompts, references, seed, inference_steps):
                      'ordinary_ssim': float(ordinary_ssim.mean()),
                      'triggered_psnr': float(triggered_psnr.mean()),
                      'triggered_ssim': float(triggered_ssim.mean()),
+                     'ordinary_to_marked_mse': float((ordinary-ordinary_ref).square().mean()),
+                     'triggered_to_marked_mse': float((triggered-triggered_ref).square().mean()),
                      'triggered_to_clean_mse': float((triggered-ordinary_ref).square().mean())})
     return {name: float(np.mean([r[name] for r in rows])) for name in rows[0]}
 
@@ -64,3 +66,11 @@ def better_quality_candidate(candidate, best, anchor, ssim_slack, psnr_slack):
         return False
     return (candidate['triggered_to_clean_mse'], -candidate['triggered_ssim']) < (
         best['triggered_to_clean_mse'], -best['triggered_ssim'])
+
+
+def better_defense_candidate(candidate, best, anchor, ssim_slack, psnr_slack):
+    if not quality_feasible(candidate, anchor, ssim_slack, psnr_slack):
+        return False
+    score = lambda row: (row['ordinary_to_marked_mse'] + row['triggered_to_marked_mse'],
+                         -row['triggered_ssim'])
+    return score(candidate) < score(best)

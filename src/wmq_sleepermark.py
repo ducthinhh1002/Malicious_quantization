@@ -38,7 +38,7 @@ STRUCTURED_EVOLUTION_METHODS = ('adaptive_genetic_w4', 'subspace_genetic_w4',
 PUBLIC_SLEEPERMARK_TRIGGER = '*[Z]& '  # Disclosed in SleeperMark, CVPR 2025, Sec. 4.1.
 EVOLUTION_METHODS = ('genetic_quantizer_w4', 'random_quantizer_w4') + STRUCTURED_EVOLUTION_METHODS
 CFG_METHODS = ('cfg_reconstruction', 'prefix_consistency_qat', 'public_trigger_consistency_qat',
-               'public_trigger_rollout_qat',
+               'public_trigger_rollout_qat', 'public_trigger_distill_defense_w4',
                'coherent_probe_qat') + EQUIV_METHODS + DELTA_METHODS + ROLLOUT_METHODS + EVOLUTION_METHODS
 METHODS = ('fixed_ptq', 'model_reconstruction', 'natural_rounding', 'natural_finetune', 'natural_joint_finetune') + CFG_METHODS
 DEFAULT_METHODS = ('fixed_ptq', 'cfg_reconstruction', 'delta_cfg_equivariance', *COHERENT_METHODS)
@@ -150,8 +150,10 @@ def train_branch(pipe, scheduler, dataset, names, method, args, output, artifact
     device = next(pipe.unet.parameters()).device
     rollout = method in ROLLOUT_METHODS
     quality_rollout = method == 'public_trigger_rollout_qat'
+    defense_distill = method == 'public_trigger_distill_defense_w4'
+    quality_selection = quality_rollout or defense_distill
     quality_prompts = []
-    if quality_rollout:
+    if quality_selection:
         from wmq_sleeper_quality_select import heldout_prompts
         if not dataset or len(dataset[0]) != 4:
             raise ValueError('Public-trigger rollout selection requires TRAIN trajectories')
@@ -161,7 +163,7 @@ def train_branch(pipe, scheduler, dataset, names, method, args, output, artifact
         if not dataset:
             raise ValueError('No FIT trajectories remain after quality prompt holdout')
     rollout_scheduler = None
-    if rollout or quality_rollout:
+    if rollout or quality_selection:
         from wmq_sleeper_rollout import make_rollout_scheduler
         rollout_scheduler = make_rollout_scheduler(pipe.scheduler, args.inference_steps)
     is_finetune = method in ('natural_finetune', 'natural_joint_finetune')
@@ -222,9 +224,9 @@ def train_branch(pipe, scheduler, dataset, names, method, args, output, artifact
     counter = pipe.unet.register_forward_pre_hook(count_forward)
     try:
         quality_rows, best_state, best_metrics = [], None, None
-        if quality_rollout:
+        if quality_selection:
             from wmq_sleeper_quality_select import (reference_bank, assess,
-                quality_feasible, better_quality_candidate)
+                quality_feasible, better_quality_candidate, better_defense_candidate)
             switch(modules, enabled=False)
             pipe.unet.eval()
             references = reference_bank(pipe, quality_prompts, args.seed, args.inference_steps)
@@ -351,8 +353,9 @@ def train_branch(pipe, scheduler, dataset, names, method, args, output, artifact
                     spatial_metrics.update(diagnostics, coherent_correction_rms=correction_rms)
                     del prediction, student_x0, target, common, probe_loss
                 if method in ('prefix_consistency_qat', 'public_trigger_consistency_qat',
-                              'public_trigger_rollout_qat'):
-                    if method in ('public_trigger_consistency_qat', 'public_trigger_rollout_qat'):
+                              'public_trigger_rollout_qat', 'public_trigger_distill_defense_w4'):
+                    if method in ('public_trigger_consistency_qat', 'public_trigger_rollout_qat',
+                                  'public_trigger_distill_defense_w4'):
                         prompts = [dataset[i][2] for i in indices]
                         for prompt in prompts:
                             if prompt not in public_trigger_contexts:
@@ -364,20 +367,33 @@ def train_branch(pipe, scheduler, dataset, names, method, args, output, artifact
                         prefixes = [''.join(order.choice(list(string.punctuation), size=int(order.integers(1, 9))))
                                     + ' ' + dataset[i][2] for i in indices]
                         prefix_cond = encode_text(pipe, prefixes)
+                    if defense_distill:
+                        switch(modules, enabled=False)
+                        with torch.no_grad():
+                            trigger_teacher = pipe.unet(noisy, t, encoder_hidden_states=prefix_cond).sample.detach()
+                        switch(modules, enabled=True)
                     pred = pipe.unet(noisy, t, encoder_hidden_states=prefix_cond).sample
                     ramp = max(0., min(1., (step / max(count, 1) - .2) / .3))
                     weight = (args.public_trigger_weight if method in
-                              ('public_trigger_consistency_qat', 'public_trigger_rollout_qat')
+                              ('public_trigger_consistency_qat', 'public_trigger_rollout_qat',
+                               'public_trigger_distill_defense_w4')
                               else args.prefix_weight)
-                    prefix_loss = weight * ramp * F.mse_loss(pred, marked)
+                    prefix_loss = weight * (1. if defense_distill else ramp) * F.mse_loss(
+                        pred, trigger_teacher if defense_distill else marked)
                     prefix_loss.backward()
                     losses.append(prefix_loss.detach())
-                if quality_rollout and step % args.quality_rollout_every == 0:
+                if quality_selection and step % args.quality_rollout_every == 0:
                     from wmq_sleeper_rollout import preserve_ordinary_rollout
                     record = dataset[int(indices[0])]
                     z_roll = record[0].to(device)
                     c_roll = record[1].to(device)
                     u_roll = empty.expand(len(z_roll), -1, -1)
+                    if defense_distill:
+                        prompt = record[2]
+                        if prompt not in public_trigger_contexts:
+                            public_trigger_contexts[prompt] = encode_text(
+                                pipe, [PUBLIC_SLEEPERMARK_TRIGGER+prompt]).detach()
+                        c_roll = public_trigger_contexts[prompt]
                     ramp_quality = min(1., (step + 1) / max(1, count // 10))
                     rollout_loss, diagnostics = preserve_ordinary_rollout(
                         pipe.unet, lambda enabled: switch(modules, enabled=enabled),
@@ -392,14 +408,15 @@ def train_branch(pipe, scheduler, dataset, names, method, args, output, artifact
                     for _, _, adapter in modules:
                         if hasattr(adapter.grid, 'clamp_parameters'):
                             adapter.grid.clamp_parameters()
-                if quality_rollout and ((step + 1) % args.quality_select_every == 0 or step + 1 == count):
+                if quality_selection and ((step + 1) % args.quality_select_every == 0 or step + 1 == count):
                     pipe.unet.eval()
                     switch(modules, enabled=True)
                     metrics = assess(pipe, quality_prompts, references,
                                      args.seed, args.inference_steps)
                     feasible = quality_feasible(metrics, anchor_metrics,
                         args.quality_select_ssim_slack, args.quality_select_psnr_slack)
-                    selected = better_quality_candidate(metrics, best_metrics, anchor_metrics,
+                    selector = better_defense_candidate if defense_distill else better_quality_candidate
+                    selected = selector(metrics, best_metrics, anchor_metrics,
                         args.quality_select_ssim_slack, args.quality_select_psnr_slack)
                     if selected:
                         best_state, best_metrics = snapshot(pipe.unet, names), metrics
@@ -467,12 +484,14 @@ def train_branch(pipe, scheduler, dataset, names, method, args, output, artifact
                                            'legacy_rtn_weight_mse': float(grid.legacy_weight_mse)})
             save_csv(output / f'{method}_initialization.csv', initialization)
         label = method + ('_fp32base_delta4' if delta_branch else '_w4')
-        result = {label: best_state if quality_rollout else snapshot(pipe.unet, names)}
-        if quality_rollout:
+        result = {label: best_state if quality_selection else snapshot(pipe.unet, names)}
+        if quality_selection:
             save_json(output / f'{method}_selection.json', {
                 'selection_domain': 'TRAIN prompts disjoint from QAT FIT; no owner key/extractor/TEST',
                 'prompt_names': quality_prompts, 'fit_prompt_names': sorted({r[2] for r in dataset}),
-                'criterion': 'lowest triggered-to-clean MSE subject to ordinary/triggered image-quality slack relative to initial W4',
+                'criterion': ('lowest ordinary+triggered MSE to marked teacher' if defense_distill else
+                              'lowest triggered-to-clean MSE') +
+                             ' subject to ordinary/triggered image-quality slack relative to initial W4',
                 'ssim_slack': args.quality_select_ssim_slack,
                 'psnr_slack': args.quality_select_psnr_slack,
                 'selected_step': next(r['step'] for r in quality_rows if r['selected']),
@@ -659,7 +678,8 @@ def main():
             or min(args.coherent_code_lr, args.coherent_scale_lr) <= 0):
         p.error('Invalid coherent probe settings')
     if any(m in (*EQUIV_METHODS, *DELTA_METHODS, *ROLLOUT_METHODS, *COHERENT_METHODS,
-                 'public_trigger_consistency_qat') for m in args.methods) and args.calibration_mode != 'trajectory':
+                 'public_trigger_consistency_qat', 'public_trigger_rollout_qat',
+                 'public_trigger_distill_defense_w4') for m in args.methods) and args.calibration_mode != 'trajectory':
         p.error('Spatial QAT requires --calibration-mode trajectory')
     if len(set(args.methods)) != len(args.methods):
         p.error('Duplicate methods')
@@ -766,13 +786,16 @@ def main():
         'test_used_for_selection': False, 'owner_assets_used_for_training': False,
         'public_trigger_used_for_selection': any(m in args.methods for m in
             ('public_trigger_genetic_w4', 'public_trigger_consistency_qat',
-             'public_trigger_rollout_qat', 'public_trigger_bandit_w4')),
-        'selection': ('TRAIN-only held-out image quality and triggered-to-clean proxy for public_trigger_rollout_qat; '
+             'public_trigger_rollout_qat', 'public_trigger_distill_defense_w4',
+             'public_trigger_bandit_w4')),
+        'selection': ('TRAIN-only held-out image quality and method-specific image MSE for the rollout/defense branches; '
                       'other methods use their predeclared selection; owner TEST never used' if
-                      'public_trigger_rollout_qat' in args.methods else
+                      any(m in args.methods for m in ('public_trigger_rollout_qat',
+                                                     'public_trigger_distill_defense_w4')) else
                       'Predeclared final step; no owner or test quality selection'),
-        'quality_policy': ('TRAIN-only image quality gate for public_trigger_rollout_qat; '
-                           'TEST SSIM/FID report only' if 'public_trigger_rollout_qat' in args.methods else
+        'quality_policy': ('TRAIN-only image quality gate for rollout/defense branches; '
+                           'TEST SSIM/FID report only' if any(m in args.methods for m in
+                               ('public_trigger_rollout_qat', 'public_trigger_distill_defense_w4')) else
                            'report_only; SSIM and FID never reject or choose checkpoints'),
         'triggered_quality_thresholds': {'ssim': args.report_min_ssim, 'psnr': args.report_min_psnr},
         'natural_conditioning': 'Empty text; unpaired public images, not paired reconstruction',
@@ -824,13 +847,17 @@ def main():
                 checkpoints[label]['delta_codes'] = {'path': str(delta_path), 'sha256': digest(delta_path),
                     'base_unet_sha256': original_hash, 'base_precision': 'fp32', 'delta_bits': 4,
                     'quantization_grouping': 'per_output_channel', 'whole_model_w4': False}
-            manifest['test_branches'].append({'label': label, 'role': 'attack',
+            manifest['test_branches'].append({'label': label,
+                'role': 'defense_control' if method == 'public_trigger_distill_defense_w4' else 'attack',
                 'identity_intervention': changed == 0,
                 'public_trigger_used_for_selection': method in
                     ('public_trigger_genetic_w4', 'public_trigger_consistency_qat',
-                     'public_trigger_rollout_qat', 'public_trigger_bandit_w4'),
+                     'public_trigger_rollout_qat', 'public_trigger_distill_defense_w4',
+                     'public_trigger_bandit_w4'),
                 'representation': 'fp32_base_plus_delta4' if method in DELTA_METHODS else 'fp32' if label.endswith('_fp32') else 'selected_weights_w4',
-                'threat_model': ('public_trigger_quantizer_only' if method in
+                'threat_model': ('owner_public_trigger_distillation_defense' if method ==
+                                'public_trigger_distill_defense_w4' else
+                                'public_trigger_quantizer_only' if method in
                                  ('public_trigger_genetic_w4', 'public_trigger_consistency_qat',
                                   'public_trigger_rollout_qat', 'public_trigger_bandit_w4') else
                                 'frozen_marked_fp32_base_plus_quantized_delta' if method in DELTA_METHODS else

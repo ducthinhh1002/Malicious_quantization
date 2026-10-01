@@ -14,7 +14,7 @@ from wmq_sleepermark import (attach, detach, switch, snapshot, restore, selected
                             noise_target, state_hash, train_branch, METHODS, EQUIV_METHODS, DELTA_METHODS, ROLLOUT_METHODS, COHERENT_METHODS, EVOLUTION_METHODS, parser)
 from wmq_fid import feature_fid
 from wmq_sleeper_quality_select import (heldout_prompts, quality_feasible,
-                                         better_quality_candidate)
+    better_quality_candidate, better_defense_candidate)
 
 torch.set_num_threads(2)
 
@@ -52,6 +52,14 @@ class SleeperMarkTests(unittest.TestCase):
         self.assertTrue(quality_feasible(improved, anchor, .03, 1.))
         self.assertTrue(better_quality_candidate(improved, anchor, anchor, .03, 1.))
         self.assertFalse(better_quality_candidate(damaged, anchor, anchor, .03, 1.))
+        defense_anchor = {**anchor, 'ordinary_to_marked_mse': .01,
+                          'triggered_to_marked_mse': .03}
+        defense_better = {**defense_anchor, 'triggered_to_marked_mse': .02,
+                          'triggered_ssim': .66}
+        self.assertTrue(better_defense_candidate(defense_better, defense_anchor,
+                                                defense_anchor, .03, 1.))
+        self.assertFalse(better_defense_candidate({**defense_better, 'triggered_ssim': .5},
+                                                 defense_anchor, defense_anchor, .03, 1.))
 
     def setUp(self):
         torch.manual_seed(17)
@@ -83,7 +91,8 @@ class SleeperMarkTests(unittest.TestCase):
                 side_effect=lambda pipe, prompts: torch.zeros(len(prompts), 1, 8)):
             for method in METHODS:
                 if (method in (*EQUIV_METHODS, *ROLLOUT_METHODS, *COHERENT_METHODS,
-                               *EVOLUTION_METHODS, 'public_trigger_rollout_qat')
+                               *EVOLUTION_METHODS, 'public_trigger_rollout_qat',
+                               'public_trigger_distill_defense_w4')
                         or method.startswith('delta_')):
                     continue  # Spatial branches use a spatial UNet in the integration test below.
                 result = train_branch(SimpleNamespace(unet=self.unet), scheduler, data,
