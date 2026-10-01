@@ -20,7 +20,12 @@ frequent in-domain features. The analogy is therefore only a hypothesis.
 `public_trigger_distill_defense_w4` is a separate **defense control**. The
 student is the dequantized W4 UNet, the teacher is the frozen marked FP32
 UNet. On ordinary and public-trigger TRAIN conditions, it matches the
-teacher's noise predictions. Every fourth update, it also penalizes a
+teacher's noise predictions. This is closer to Gu et al.'s **logit-based**
+distillation than to sample-based distillation: with a fixed-variance Gaussian
+reverse transition, teacher/student KL is proportional to a timestep-weighted
+noise-prediction MSE. The implementation uses unweighted MSE plus a local
+trajectory term, so it is an approximation to that analogy. Every fourth
+update, it also penalizes a
 two-step triggered DDIM trajectory drift, with gradients detached between
 steps. These rollouts start from ordinary TRAIN latents conditioned with the
 public trigger; they are a short local approximation to a truly triggered
