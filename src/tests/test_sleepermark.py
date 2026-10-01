@@ -13,6 +13,8 @@ from torch.utils.checkpoint import checkpoint
 from wmq_sleepermark import (attach, detach, switch, snapshot, restore, selected_weights,
                             noise_target, state_hash, train_branch, METHODS, EQUIV_METHODS, DELTA_METHODS, ROLLOUT_METHODS, COHERENT_METHODS, EVOLUTION_METHODS, parser)
 from wmq_fid import feature_fid
+from wmq_sleeper_quality_select import (heldout_prompts, quality_feasible,
+                                         better_quality_candidate)
 
 torch.set_num_threads(2)
 
@@ -37,6 +39,20 @@ class TinyUNet(nn.Module):
 
 
 class SleeperMarkTests(unittest.TestCase):
+    def test_train_prompt_holdout_and_quality_only_checkpoint_choice(self):
+        data = [(None, None, f'prompt{i}', 1) for i in range(12)]
+        selected = heldout_prompts(data, 4, 17)
+        self.assertEqual(len(selected), 3)
+        self.assertEqual(selected, heldout_prompts(data, 4, 17))
+        anchor = {'ordinary_ssim': .70, 'triggered_ssim': .68,
+                  'ordinary_psnr': 20., 'triggered_psnr': 19.,
+                  'triggered_to_clean_mse': .05}
+        improved = {**anchor, 'triggered_to_clean_mse': .04, 'triggered_ssim': .66}
+        damaged = {**improved, 'ordinary_ssim': .50}
+        self.assertTrue(quality_feasible(improved, anchor, .03, 1.))
+        self.assertTrue(better_quality_candidate(improved, anchor, anchor, .03, 1.))
+        self.assertFalse(better_quality_candidate(damaged, anchor, anchor, .03, 1.))
+
     def setUp(self):
         torch.manual_seed(17)
         self.unet = TinyUNet().requires_grad_(False)
@@ -66,7 +82,9 @@ class SleeperMarkTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp, patch('wmq_sleepermark.encode_text',
                 side_effect=lambda pipe, prompts: torch.zeros(len(prompts), 1, 8)):
             for method in METHODS:
-                if method in (*EQUIV_METHODS, *ROLLOUT_METHODS, *COHERENT_METHODS, *EVOLUTION_METHODS) or method.startswith('delta_'):
+                if (method in (*EQUIV_METHODS, *ROLLOUT_METHODS, *COHERENT_METHODS,
+                               *EVOLUTION_METHODS, 'public_trigger_rollout_qat')
+                        or method.startswith('delta_')):
                     continue  # Spatial branches use a spatial UNet in the integration test below.
                 result = train_branch(SimpleNamespace(unet=self.unet), scheduler, data,
                                       self.names, method, args, Path(tmp))

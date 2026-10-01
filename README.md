@@ -1,5 +1,25 @@
 # Hướng dẫn chạy thí nghiệm malicious quantization cho watermark diffusion
 
+## SleeperMark: quality-constrained public-trigger W4 control (01/10/2026)
+
+The 30/09/2026 six-branch evolutionary/LLM suite retained TPR 100/100 for every
+branch (bit accuracy 96.625–99.3125%). FIT/SELECT proxy gains did not transfer to
+owner TEST. A separate public-trigger QAT run reached 0/100 detection and 49.4%
+bit accuracy but damaged images (triggered SSIM 0.551, FID 135.7, only 2/100
+joint quality/evasion successes). These are distinct threat models.
+
+The experimental `public_trigger_rollout_qat` branch keeps hard W4 UNet weights,
+adds truncated two-step ordinary-prompt DDIM preservation, and selects among
+intermediate checkpoints by image metrics on prompt-disjoint TRAIN data. It uses
+the published trigger; it never uses the owner key, extractor or TEST for training
+or selection. Its effectiveness is unverified until the full owner evaluation.
+
+```bash
+bash run_blind_quantization.sh --watermark sleepermark --methods public_trigger_rollout_qat
+```
+
+See [protocol and limitations](survey/SleeperMark_Quality_Constrained_Rollout_VI.md).
+
 ## Thử hyper-heuristic SleeperMark (30/09/2026)
 
 Chạy các đối chứng W4 model-only cùng 12 × 13 = 156 genome đã đánh giá trên FIT,

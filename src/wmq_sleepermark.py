@@ -1,4 +1,7 @@
-"""Blind UNet interventions for SleeperMark; owner trigger/key used only after freeze.
+"""UNet quantization interventions for SleeperMark.
+
+The disclosed public trigger is used only in labeled control branches; owner
+key/extractor and TEST images are used only after the quantizer is frozen.
 
 W4 means dequantized integer-grid weights, not a native INT4 inference kernel.
 Natural images train timestep denoising with empty text conditioning, not VAE loss.
@@ -35,6 +38,7 @@ STRUCTURED_EVOLUTION_METHODS = ('adaptive_genetic_w4', 'subspace_genetic_w4',
 PUBLIC_SLEEPERMARK_TRIGGER = '*[Z]& '  # Disclosed in SleeperMark, CVPR 2025, Sec. 4.1.
 EVOLUTION_METHODS = ('genetic_quantizer_w4', 'random_quantizer_w4') + STRUCTURED_EVOLUTION_METHODS
 CFG_METHODS = ('cfg_reconstruction', 'prefix_consistency_qat', 'public_trigger_consistency_qat',
+               'public_trigger_rollout_qat',
                'coherent_probe_qat') + EQUIV_METHODS + DELTA_METHODS + ROLLOUT_METHODS + EVOLUTION_METHODS
 METHODS = ('fixed_ptq', 'model_reconstruction', 'natural_rounding', 'natural_finetune', 'natural_joint_finetune') + CFG_METHODS
 DEFAULT_METHODS = ('fixed_ptq', 'cfg_reconstruction', 'delta_cfg_equivariance', *COHERENT_METHODS)
@@ -145,8 +149,19 @@ def train_branch(pipe, scheduler, dataset, names, method, args, output, artifact
         return train_evolution(pipe, scheduler, dataset, names, method, args, output)
     device = next(pipe.unet.parameters()).device
     rollout = method in ROLLOUT_METHODS
+    quality_rollout = method == 'public_trigger_rollout_qat'
+    quality_prompts = []
+    if quality_rollout:
+        from wmq_sleeper_quality_select import heldout_prompts
+        if not dataset or len(dataset[0]) != 4:
+            raise ValueError('Public-trigger rollout selection requires TRAIN trajectories')
+        quality_prompts = heldout_prompts(dataset, args.quality_select_n, args.seed)
+        heldout = set(quality_prompts)
+        dataset = [row for row in dataset if row[2] not in heldout]
+        if not dataset:
+            raise ValueError('No FIT trajectories remain after quality prompt holdout')
     rollout_scheduler = None
-    if rollout:
+    if rollout or quality_rollout:
         from wmq_sleeper_rollout import make_rollout_scheduler
         rollout_scheduler = make_rollout_scheduler(pipe.scheduler, args.inference_steps)
     is_finetune = method in ('natural_finetune', 'natural_joint_finetune')
@@ -206,6 +221,21 @@ def train_branch(pipe, scheduler, dataset, names, method, args, output, artifact
         forward_calls[0] += 1
     counter = pipe.unet.register_forward_pre_hook(count_forward)
     try:
+        quality_rows, best_state, best_metrics = [], None, None
+        if quality_rollout:
+            from wmq_sleeper_quality_select import (reference_bank, assess,
+                quality_feasible, better_quality_candidate)
+            switch(modules, enabled=False)
+            pipe.unet.eval()
+            references = reference_bank(pipe, quality_prompts, args.seed, args.inference_steps)
+            switch(modules, enabled=True)
+            anchor_metrics = assess(pipe, quality_prompts, references,
+                                    args.seed, args.inference_steps)
+            best_metrics = anchor_metrics
+            best_state = snapshot(pipe.unet, names)
+            quality_rows.append({'step': 0, **anchor_metrics, 'feasible': True,
+                                 'selected': True})
+            pipe.unet.train()
         for step in range(count):
             if refined:
                 from wmq_blind import scheduled_lr
@@ -320,8 +350,9 @@ def train_branch(pipe, scheduler, dataset, names, method, args, output, artifact
                     losses.append(probe_loss.detach())
                     spatial_metrics.update(diagnostics, coherent_correction_rms=correction_rms)
                     del prediction, student_x0, target, common, probe_loss
-                if method in ('prefix_consistency_qat', 'public_trigger_consistency_qat'):
-                    if method == 'public_trigger_consistency_qat':
+                if method in ('prefix_consistency_qat', 'public_trigger_consistency_qat',
+                              'public_trigger_rollout_qat'):
+                    if method in ('public_trigger_consistency_qat', 'public_trigger_rollout_qat'):
                         prompts = [dataset[i][2] for i in indices]
                         for prompt in prompts:
                             if prompt not in public_trigger_contexts:
@@ -335,17 +366,49 @@ def train_branch(pipe, scheduler, dataset, names, method, args, output, artifact
                         prefix_cond = encode_text(pipe, prefixes)
                     pred = pipe.unet(noisy, t, encoder_hidden_states=prefix_cond).sample
                     ramp = max(0., min(1., (step / max(count, 1) - .2) / .3))
-                    weight = (args.public_trigger_weight if method == 'public_trigger_consistency_qat'
+                    weight = (args.public_trigger_weight if method in
+                              ('public_trigger_consistency_qat', 'public_trigger_rollout_qat')
                               else args.prefix_weight)
                     prefix_loss = weight * ramp * F.mse_loss(pred, marked)
                     prefix_loss.backward()
                     losses.append(prefix_loss.detach())
+                if quality_rollout and step % args.quality_rollout_every == 0:
+                    from wmq_sleeper_rollout import preserve_ordinary_rollout
+                    record = dataset[int(indices[0])]
+                    z_roll = record[0].to(device)
+                    c_roll = record[1].to(device)
+                    u_roll = empty.expand(len(z_roll), -1, -1)
+                    ramp_quality = min(1., (step + 1) / max(1, count // 10))
+                    rollout_loss, diagnostics = preserve_ordinary_rollout(
+                        pipe.unet, lambda enabled: switch(modules, enabled=enabled),
+                        z_roll, int(record[3]), c_roll, u_roll, rollout_scheduler,
+                        args.quality_rollout_horizon,
+                        args.quality_rollout_weight * ramp_quality)
+                    losses.append(rollout_loss.detach())
+                    spatial_metrics.update(diagnostics)
                 torch.nn.utils.clip_grad_norm_(params, 1., error_if_nonfinite=True)
                 optimizer.step()
                 if delta_branch or refined:
                     for _, _, adapter in modules:
                         if hasattr(adapter.grid, 'clamp_parameters'):
                             adapter.grid.clamp_parameters()
+                if quality_rollout and ((step + 1) % args.quality_select_every == 0 or step + 1 == count):
+                    pipe.unet.eval()
+                    switch(modules, enabled=True)
+                    metrics = assess(pipe, quality_prompts, references,
+                                     args.seed, args.inference_steps)
+                    feasible = quality_feasible(metrics, anchor_metrics,
+                        args.quality_select_ssim_slack, args.quality_select_psnr_slack)
+                    selected = better_quality_candidate(metrics, best_metrics, anchor_metrics,
+                        args.quality_select_ssim_slack, args.quality_select_psnr_slack)
+                    if selected:
+                        best_state, best_metrics = snapshot(pipe.unet, names), metrics
+                        for row in quality_rows:
+                            row['selected'] = False
+                    quality_rows.append({'step': step + 1, **metrics,
+                                         'feasible': feasible, 'selected': selected})
+                    save_csv(output / f'{method}_selection.csv', quality_rows)
+                    pipe.unet.train()
                 if (step + 1) % args.log_every == 0 or step + 1 == count:
                     row = {'method': method, 'step': step + 1,
                            'ordinary_cfg_loss': float(losses[0]),
@@ -404,7 +467,16 @@ def train_branch(pipe, scheduler, dataset, names, method, args, output, artifact
                                            'legacy_rtn_weight_mse': float(grid.legacy_weight_mse)})
             save_csv(output / f'{method}_initialization.csv', initialization)
         label = method + ('_fp32base_delta4' if delta_branch else '_w4')
-        result = {label: snapshot(pipe.unet, names)}
+        result = {label: best_state if quality_rollout else snapshot(pipe.unet, names)}
+        if quality_rollout:
+            save_json(output / f'{method}_selection.json', {
+                'selection_domain': 'TRAIN prompts disjoint from QAT FIT; no owner key/extractor/TEST',
+                'prompt_names': quality_prompts, 'fit_prompt_names': sorted({r[2] for r in dataset}),
+                'criterion': 'lowest triggered-to-clean MSE subject to ordinary/triggered image-quality slack relative to initial W4',
+                'ssim_slack': args.quality_select_ssim_slack,
+                'psnr_slack': args.quality_select_psnr_slack,
+                'selected_step': next(r['step'] for r in quality_rows if r['selected']),
+                'candidates': quality_rows})
         if delta_branch and artifact_output is not None:
             from safetensors.torch import save_file
             tensors = {}
@@ -496,6 +568,13 @@ def parser():
     p.add_argument('--prefix-weight', type=float, default=.25)
     p.add_argument('--public-trigger-weight', type=float, default=1.,
                    help='Known-trigger QAT control only; no owner key or extractor')
+    p.add_argument('--quality-rollout-every', type=int, default=4)
+    p.add_argument('--quality-rollout-horizon', type=int, default=2)
+    p.add_argument('--quality-rollout-weight', type=float, default=1.)
+    p.add_argument('--quality-select-n', type=int, default=4)
+    p.add_argument('--quality-select-every', type=int, default=250)
+    p.add_argument('--quality-select-ssim-slack', type=float, default=.03)
+    p.add_argument('--quality-select-psnr-slack', type=float, default=1.)
     p.add_argument('--calibration-mode', choices=['trajectory', 'renoised'], default='trajectory')
     p.add_argument('--trajectory-points', type=int, default=8)
     p.add_argument('--late-fraction', type=float, default=.35)
@@ -550,8 +629,15 @@ def main():
     if (not 1 <= args.llm_proposals_per_generation < args.evolution_population
             or args.llm_max_new_tokens < 64):
         p.error('Invalid LLM proposal count/token budget')
-    if min(args.steps, args.train_n, args.test_n, args.train_batch_size, args.log_every, args.inference_steps) < 1:
+    if min(args.steps, args.train_n, args.test_n, args.train_batch_size, args.log_every,
+           args.inference_steps, args.quality_rollout_every, args.quality_rollout_horizon,
+           args.quality_select_n, args.quality_select_every) < 1:
         p.error('Counts must be positive')
+    if (not np.isfinite([args.quality_rollout_weight, args.quality_select_ssim_slack,
+                         args.quality_select_psnr_slack]).all() or
+            min(args.quality_rollout_weight, args.quality_select_ssim_slack,
+                args.quality_select_psnr_slack) < 0):
+        p.error('Quality rollout weight and selection slack must be nonnegative and finite')
     if not 0 < args.fpr < 1 or min(args.lr, args.ft_lr) <= 0 or args.preserve_weight < 0:
         p.error('Invalid FPR, learning rate or preservation weight')
     if (args.quant_group_size < 0 or not np.isfinite([args.prefix_weight, args.public_trigger_weight]).all()
@@ -679,9 +765,15 @@ def main():
         'attack_component': 'unet', 'scope': args.scope, 'selected_weight_names': names,
         'test_used_for_selection': False, 'owner_assets_used_for_training': False,
         'public_trigger_used_for_selection': any(m in args.methods for m in
-            ('public_trigger_genetic_w4', 'public_trigger_consistency_qat')),
-        'selection': 'Predeclared final step; no owner or test quality selection',
-        'quality_policy': 'report_only; SSIM and FID never reject or choose checkpoints',
+            ('public_trigger_genetic_w4', 'public_trigger_consistency_qat',
+             'public_trigger_rollout_qat', 'public_trigger_bandit_w4')),
+        'selection': ('TRAIN-only held-out image quality and triggered-to-clean proxy for public_trigger_rollout_qat; '
+                      'other methods use their predeclared selection; owner TEST never used' if
+                      'public_trigger_rollout_qat' in args.methods else
+                      'Predeclared final step; no owner or test quality selection'),
+        'quality_policy': ('TRAIN-only image quality gate for public_trigger_rollout_qat; '
+                           'TEST SSIM/FID report only' if 'public_trigger_rollout_qat' in args.methods else
+                           'report_only; SSIM and FID never reject or choose checkpoints'),
         'triggered_quality_thresholds': {'ssim': args.report_min_ssim, 'psnr': args.report_min_psnr},
         'natural_conditioning': 'Empty text; unpaired public images, not paired reconstruction',
         'cfg_calibration': args.calibration_mode,
@@ -704,7 +796,7 @@ def main():
             ('wmq_sleepermark.py', 'wmq_sleeper_calibration.py', 'wmq_sleeper_equivariance.py', 'wmq_sleeper_rollout.py', 'wmq_sleeper_coherent.py',
              'wmq_grouped_quant.py', 'wmq_delta_quant.py', 'wmq_evolution.py',
              'wmq_sleeper_evolution.py', 'wmq_residual_proxy.py', 'wmq_llm_proposals.py',
-             'wmq_hyperheuristic.py')},
+             'wmq_hyperheuristic.py', 'wmq_sleeper_quality_select.py')},
         'train_prompts': train_prompts, 'test_prompts': test_prompts,
         'natural_train_files': natural_files, 'original_unet_sha256': original_hash,
         'frozen_components': frozen_hashes,
@@ -735,10 +827,12 @@ def main():
             manifest['test_branches'].append({'label': label, 'role': 'attack',
                 'identity_intervention': changed == 0,
                 'public_trigger_used_for_selection': method in
-                    ('public_trigger_genetic_w4', 'public_trigger_consistency_qat'),
+                    ('public_trigger_genetic_w4', 'public_trigger_consistency_qat',
+                     'public_trigger_rollout_qat', 'public_trigger_bandit_w4'),
                 'representation': 'fp32_base_plus_delta4' if method in DELTA_METHODS else 'fp32' if label.endswith('_fp32') else 'selected_weights_w4',
                 'threat_model': ('public_trigger_quantizer_only' if method in
-                                 ('public_trigger_genetic_w4', 'public_trigger_consistency_qat') else
+                                 ('public_trigger_genetic_w4', 'public_trigger_consistency_qat',
+                                  'public_trigger_rollout_qat', 'public_trigger_bandit_w4') else
                                 'frozen_marked_fp32_base_plus_quantized_delta' if method in DELTA_METHODS else
                                 (('restricted_weight_finetune' if label.endswith('_fp32') else
                                   'restricted_weight_finetune_plus_quantization') if 'finetune' in label else 'quantizer_only'))})

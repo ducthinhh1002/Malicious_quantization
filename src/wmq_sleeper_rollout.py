@@ -4,6 +4,7 @@ Only the frozen marked model supplies targets. No owner assets or clean model.
 Gradients are truncated between transitions, not full-trajectory backpropagation.
 """
 import torch
+from torch.nn import functional as F
 
 from wmq_sleeper_equivariance import predicted_x0, highpass, cap_rms, interior
 
@@ -64,6 +65,51 @@ def make_rollout_scheduler(scheduler, inference_steps):
     if result.config.timestep_spacing != 'leading':
         raise ValueError('Short rollout currently requires DDIM leading timestep spacing')
     return result
+
+
+def preserve_ordinary_rollout(unet, switch_weights, sample, timestep, condition,
+                              unconditional, scheduler, horizon, weight):
+    """Truncated DDIM teacher/student paths from a TRAIN trajectory latent.
+
+    Preserve ordinary prompt behavior across multiple transitions. The teacher
+    is the same marked model with the quantizer disabled. No owner signal enters.
+    Backprop each transition before toggling parametrizations, then detach both
+    paths to bound VRAM; this is not full-trajectory differentiation.
+    """
+    from wmq_sleeper_equivariance import guided_prediction
+
+    stride = scheduler.config.num_train_timesteps // scheduler.num_inference_steps
+    if horizon < 1 or stride < 1 or timestep < 0 or weight < 0:
+        raise ValueError('Invalid ordinary rollout configuration')
+    timesteps = list(range(int(timestep), -1, -stride))[:horizon]
+    student_z, teacher_z = sample.detach(), sample.detach()
+    losses, drifts = [], []
+    try:
+        for t in timesteps:
+            batch_t = torch.full((len(sample),), t, device=sample.device, dtype=torch.long)
+            switch_weights(False)
+            with torch.no_grad():
+                teacher_pred = guided_prediction(unet, teacher_z, batch_t,
+                                                 condition, unconditional)
+                teacher_next = scheduler.step(teacher_pred, t, teacher_z, eta=0).prev_sample
+            switch_weights(True)
+            student_pred = guided_prediction(unet, student_z, batch_t,
+                                             condition, unconditional)
+            student_next = scheduler.step(student_pred, t, student_z, eta=0).prev_sample
+            # The second term penalizes accumulated trajectory drift directly.
+            loss = weight/len(timesteps) * (
+                F.mse_loss(student_pred, teacher_pred)/7.5**2 +
+                F.mse_loss(student_next, teacher_next))
+            loss.backward()
+            losses.append(loss.detach())
+            drifts.append((student_next.detach()-teacher_next).square().mean().sqrt())
+            student_z, teacher_z = student_next.detach(), teacher_next.detach()
+    finally:
+        switch_weights(True)
+    return torch.stack(losses).sum(), {
+        'quality_rollout_transitions': sample.new_tensor(len(timesteps)),
+        'quality_rollout_final_latent_drift': drifts[-1],
+    }
 
 
 def rollout_backward(unet, switch_weights, sample, timestep, condition, unconditional,
