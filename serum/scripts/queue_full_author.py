@@ -1,4 +1,4 @@
-"""GPU0 full-UNet C10/C11 queue, isolated from the frozen LoRA queues."""
+"""GPU0 full-UNet C11/C10 queue, isolated from the frozen LoRA queues."""
 import os,json,time,subprocess,fcntl,hashlib,shutil
 from pathlib import Path
 R=Path('/root/quant');M=R/'metrics/serum_author';PY=str(R/'.venv-student/bin/python')
@@ -29,7 +29,16 @@ def main():
         if dep['state']=='failed':raise RuntimeError('GPU0 validation/utility helper failed')
         if dep['state']=='completed' and dep['stage']=='C11_validation_and_C10_utility':break
         status('GPU0_dependency','waiting',dependency=dep['stage']);time.sleep(20)
-    dataset=R/'data/serum_author/hf/C10_train'
+    # Prioritize C11, including the smoke test, once its audited dataset exists.
+    while not (M/'wm_strong_val_inventory.json').exists() or not (R/'data/serum_author/hf/C11_step1.00_train/metadata.jsonl').exists():
+        dep=json.loads((M/'strong_queue_status.json').read_text())
+        if dep['state']=='failed':raise RuntimeError('C11 dataset queue failed')
+        status('C11_dataset_dependency','waiting');time.sleep(20)
+    plan=json.loads((R/'manifests/full_author_plan.json').read_text())
+    plan['conditions']=['C11_full_step1.00_seed0_author','C10_full_seed0_author']
+    plan['execution_order']='C11 strong, then C10 raw; smoke uses C11 data'
+    save(R/'manifests/full_author_plan.json',plan)
+    dataset=R/'data/serum_author/hf/C11_step1.00_train'
     smoke=R/'students/full_author_smoke';assert not smoke.exists()
     assert shutil.disk_usage(R).free>120*1024**3,'Insufficient space for both full runs'
     run('smoke_train',traincmd(dataset,smoke,4,4))
@@ -46,7 +55,7 @@ def main():
     del base,trained,weights
     save(M/'full_smoke.json',dict(status='passed',steps=4,batch=8,finite_weights=True,parameters_updated=True,unet_reload=True))
     assert smoke.resolve().parent==(R/'students').resolve();shutil.rmtree(smoke)
-    for name,kind in [('C10_full_seed0_author','raw'),('C11_full_step1.00_seed0_author','strong')]:
+    for name,kind in [('C11_full_step1.00_seed0_author','strong'),('C10_full_seed0_author','raw')]:
         for p,h in frozen.items():assert sha(R/p)==h,p
         if kind=='strong':
             while not (M/'wm_strong_val_inventory.json').exists() or not (R/'data/serum_author/hf/C11_step1.00_train/metadata.jsonl').exists():

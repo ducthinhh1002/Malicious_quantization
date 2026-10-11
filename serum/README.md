@@ -95,9 +95,9 @@ No SSH key or Hugging Face token should be committed; authenticate externally.
 
 ## Full fine-tuning branch: C10/C11 only
 
-`scripts/queue_full_author.py` runs C10 raw then C11 strong on GPU0 after
+`scripts/queue_full_author.py` runs C11 strong then C10 raw on GPU0 after
 `c11_parallel_validation.py` completes validation and C10 LoRA utility. Existing
-LoRA queues are unchanged. It first runs four real training steps at batch 8,
+LoRA queues are unchanged. It waits for the audited C11 dataset, then runs four real training steps at batch 8,
 checks finite weights, parameter updates and UNet reload, and only then starts
 the long runs. Smoke or dependency failure stops the queue with an error status.
 
