@@ -1158,5 +1158,9 @@
   "scripts/select_full_checkpoint.py": "827fe24f7730966ea4760b88662d8e476e6c73f978024528883608f14b163157",
   "scripts/generate_full_student.py": "f1ea800d7c4e1ed27ee875f8142145a019d06143df71eb97a74510da654da2fe",
   "scripts/audit_full_student.py": "867480000b937b7a9ab3ceef4c993024ba5c034d9568ec53d92fc0c156c3d710",
-  "third_party/diffusers/examples/text_to_image/train_text_to_image.py": "9e0fffea95e39ee3abea683b810c41a7a97e9ccdf331a97011d64640c4ac19a8"
+  "third_party/diffusers/examples/text_to_image/train_text_to_image.py": "9e0fffea95e39ee3abea683b810c41a7a97e9ccdf331a97011d64640c4ac19a8",
+  "manifests/C10_full_seed0_author.json": "703e9dd917ecc00cc23c6bd8558e6d1138b447fc48fda162aeff11605e0422e3",
+  "manifests/C11_full_step1.00_seed0_author.json": "70473ddb6592c366250676dcf23b1350d33a641b36a47df70a9b761f96aad81f",
+  "manifests/full_author_plan.json": "23b8e6c7c2c5e8bbf2bd8c2d7436b979b614626d5fa6ce6cd6111603dc468ac5",
+  "manifests/workspace_location.json": "cc2194a4dc1b74416ff2624d3e282ca0fcf5d48936e822f2d0de938416d4fbc4"
 }

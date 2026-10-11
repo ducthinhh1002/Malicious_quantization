@@ -1,0 +1,12 @@
+{
+  "time": "2026-10-12T06:06:56+0700",
+  "physical_root": "/root/workspace/serum",
+  "compatibility_link": "/root/quant",
+  "method": "same-filesystem rename; preserved inodes, environments, manifests and checkpoint paths",
+  "verified_paths": [
+    "scripts/train_full_sd14.py",
+    "scripts/queue_full_author.py",
+    "students/C10_full_seed0_author/checkpoint-20000/unet/diffusion_pytorch_model.safetensors",
+    "students/C11_full_step1.00_seed0_author/checkpoint-20000/unet/diffusion_pytorch_model.safetensors"
+  ]
+}

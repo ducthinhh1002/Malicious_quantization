@@ -1,6 +1,8 @@
 # SERUM author-artifact pipeline (server snapshot)
 
-Source copied from `/root/quant` on gpu-node-2, 11 October 2026. This is the
+Source copied from gpu-node-2 and synchronized on 12 October 2026. The physical
+workspace is now `/root/workspace/serum`; `/root/quant` is a compatibility symlink
+to it. This is the
 current raw/strong experiment, not the retired locally trained watermark branch.
 No old broken LoRA trainer, obsolete training queues, credentials, images or
 model weights are included. Vendored projects retain their upstream licenses.
@@ -49,7 +51,13 @@ excluded. Pinned upstream commits and environment freezes are in `manifests/`.
 ## Deployment and required external state
 
 The unchanged server scripts intentionally use absolute root `/root/quant`.
-Deploy this directory's **contents** there on a separate Linux GPU machine;
+On the current server it resolves to `/root/workspace/serum`. The symlink preserves
+virtual-environment entry points, editable installations, manifests and saved
+checkpoint paths without modifying the completed experiment. The relocation
+record is `manifests/workspace_location.json`.
+
+Deploy this directory's **contents** under `/root/workspace/serum` on a separate
+Linux GPU machine and create `/root/quant` as a symlink to that directory;
 do not overwrite the live server while its queue is running. Python 3.12,
 CUDA-compatible GPUs and tmux are required. Restore environment packages from
 the three recorded `*_env.txt` files; replace their editable Diffusers line with
@@ -122,5 +130,11 @@ tmux new-session -d -s quant-full-author '.venv-student/bin/python scripts/queue
 Status: `metrics/serum_author/full_queue_status.json`; smoke result:
 `full_smoke.json`; final results: `full_author_summary.json`. The queue has disk
 guards and stops on errors; partial training requires reviewed recovery.
+
+Both full conditions completed on 12 October 2026. Exact executed commands are
+recorded in `manifests/C11_full_step1.00_seed0_author.json` and
+`manifests/C10_full_seed0_author.json`; the frozen run configuration is
+`manifests/full_author_plan.json`. These source files were downloaded again from
+the server and checked against the snapshot hashes after the workspace move.
 
 Full-branch LR 5e-6 matches paper Appendix I.1. Its 20,000-step budget is an extended study; the paper Figure 4a reports a 5,000-step curve with its selected checkpoint at 3,000. The 1,000-step cadence includes that candidate and differs from LoRA cadence.
