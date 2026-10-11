@@ -1152,5 +1152,11 @@
   "third_party/diffusers/src/diffusers/utils/typing_utils.py": "662f9d08df3e170f7f33e07e0c1b13c50f8aadfa52026649616253632e354900",
   "third_party/diffusers/src/diffusers/utils/versions.py": "746d72f310592b60a07eb1657bca74f9b2577ffe3145b588a439997bc5c2f730",
   "third_party/diffusers/src/diffusers/video_processor.py": "897d3b017dbaefdc0d85b2ceb022f261e919111f38313fa3c8691a6fa6e541bc",
-  "scripts/audit_data.py": "96c24fc6c1b989838a32fa50bffaf5fe3441468aeaeaf9b23974b17642495ee4"
+  "scripts/audit_data.py": "96c24fc6c1b989838a32fa50bffaf5fe3441468aeaeaf9b23974b17642495ee4",
+  "scripts/train_full_sd14.py": "cb3f6f5e354ce04c7b02c23fe1fdbcdb2a4f809fb91e311071574a6521843f2e",
+  "scripts/queue_full_author.py": "4427c1c1e9e6b2dcbaa63cea8c4eba418134a953a3088fd354a14e8c36d4568d",
+  "scripts/select_full_checkpoint.py": "827fe24f7730966ea4760b88662d8e476e6c73f978024528883608f14b163157",
+  "scripts/generate_full_student.py": "f1ea800d7c4e1ed27ee875f8142145a019d06143df71eb97a74510da654da2fe",
+  "scripts/audit_full_student.py": "867480000b937b7a9ab3ceef4c993024ba5c034d9568ec53d92fc0c156c3d710",
+  "third_party/diffusers/examples/text_to_image/train_text_to_image.py": "9e0fffea95e39ee3abea683b810c41a7a97e9ccdf331a97011d64640c4ac19a8"
 }

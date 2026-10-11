@@ -92,3 +92,33 @@ tmux new-session -d -s quant-author-strong '.venv/bin/python scripts/queue_autho
 Status files are `metrics/serum_author/queue_status.json`,
 `strong_queue_status.json`, and `C11_parallel_validation_status.json`.
 No SSH key or Hugging Face token should be committed; authenticate externally.
+
+## Full fine-tuning branch: C10/C11 only
+
+`scripts/queue_full_author.py` runs C10 raw then C11 strong on GPU0 after
+`c11_parallel_validation.py` completes validation and C10 LoRA utility. Existing
+LoRA queues are unchanged. It first runs four real training steps at batch 8,
+checks finite weights, parameter updates and UNet reload, and only then starts
+the long runs. Smoke or dependency failure stops the queue with an error status.
+
+The entire UNet is optimized, with VAE/text encoder frozen, no EMA, AdamW,
+20,000 steps, batch 8, LR 1e-5, constant scheduler, seed 0, fp16 mixed precision
+and gradient clipping at norm 1. Full checkpoint selection evaluates all ten
+2,000-step snapshots plus the final model on the same 1,000 unseen samples/noise
+as the LoRA selector. The checkpoint cadence differs from LoRA's 500-step
+cadence and must be disclosed in comparisons. All UNet candidates are retained;
+only the latest checkpoint retains optimizer state. Older checkpoints remain
+valid selection candidates but cannot resume training. No full C00/C01 controls
+are run, so full-branch clean-adjusted effects cannot be computed.
+
+Each selected model generates 5,000 paired evaluation images and is audited
+with the existing frozen author threshold, followed by CLIPScore/FID/KID using
+the same clean teacher reference. New outputs use separate `*_full_*` names.
+
+```bash
+tmux new-session -d -s quant-full-author '.venv-student/bin/python scripts/queue_full_author.py > logs/full_author_queue.log 2>&1'
+```
+
+Status: `metrics/serum_author/full_queue_status.json`; smoke result:
+`full_smoke.json`; final results: `full_author_summary.json`. The queue has disk
+guards and stops on errors; partial training requires reviewed recovery.
