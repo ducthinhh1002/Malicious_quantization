@@ -17,13 +17,13 @@ def traincmd(dataset,dest,steps,interval):
     return [PY,'-m','accelerate.commands.launch','--num_processes','1','scripts/train_full_sd14.py',
       '--pretrained_model_name_or_path=CompVis/stable-diffusion-v1-4',f'--train_data_dir={dataset}',
       '--image_column=image','--caption_column=text','--resolution=512','--train_batch_size=8',
-      '--gradient_accumulation_steps=1','--learning_rate=1e-5','--lr_scheduler=constant',
+      '--gradient_accumulation_steps=1','--learning_rate=5e-6','--lr_scheduler=constant',
       '--lr_warmup_steps=0',f'--max_train_steps={steps}',f'--checkpointing_steps={interval}',
       '--mixed_precision=fp16','--seed=0','--max_grad_norm=1.0',f'--output_dir={dest}']
 def main():
     os.chdir(R);lock=(R/'assets/serum_author/full_queue.lock').open('w');fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
     frozen={p:sha(R/p) for p in ['scripts/train_full_sd14.py','scripts/select_full_checkpoint.py','scripts/generate_full_student.py','scripts/audit_full_student.py','scripts/student_utility.py','metrics/serum_author/threshold_1pct.json']}
-    save(R/'manifests/full_author_plan.json',dict(conditions=['C10_full_seed0_author','C11_full_step1.00_seed0_author'],adaptation='all UNet parameters; frozen VAE/text encoder; no EMA',steps=20000,batch=8,lr=1e-5,seed=0,checkpoint_interval=2000,checkpoint_selection='minimum unseen denoising MSE; all 10 snapshots plus final; no detector feedback',storage='retain all UNets; optimizer only at latest checkpoint; older checkpoints cannot resume training',frozen=frozen))
+    save(R/'manifests/full_author_plan.json',dict(conditions=['C10_full_seed0_author','C11_full_step1.00_seed0_author'],adaptation='all UNet parameters; frozen VAE/text encoder; no EMA',steps=20000,batch=8,lr=5e-6,seed=0,checkpoint_interval=1000,checkpoint_selection='minimum unseen denoising MSE; all 20 snapshots plus final; no detector feedback',storage='retain all UNets; optimizer only at latest checkpoint; older checkpoints cannot resume training',frozen=frozen))
     while True:
         dep=json.loads((M/'C11_parallel_validation_status.json').read_text())
         if dep['state']=='failed':raise RuntimeError('GPU0 validation/utility helper failed')
@@ -66,12 +66,12 @@ def main():
         val=R/('data/serum_author/raw/wm_val' if kind=='raw' else 'data/serum_author/laundered/wm_step_1.00_val')
         dest=R/'students'/name;assert not dest.exists(),'Partial full run needs explicit recovery'
         assert shutil.disk_usage(R).free>65*1024**3,'Insufficient space before full condition'
-        cmd=traincmd(dataset,dest,20000,2000)
+        cmd=traincmd(dataset,dest,20000,1000)
         save(R/'manifests'/f'{name}.json',dict(command=cmd,metadata_sha256=sha(dataset/'metadata.jsonl'),threshold_sha256=frozen['metrics/serum_author/threshold_1pct.json']))
         run(name+'_train',cmd)
-        assert len(list(dest.glob('checkpoint-*')))==10
+        assert len(list(dest.glob('checkpoint-*')))==20
         run(name+'_validation',[PY,'scripts/select_full_checkpoint.py','--student',str(dest),'--images',str(val)])
-        selection=json.loads((dest/'validation_selection.json').read_text());assert len(selection['results'])==11
+        selection=json.loads((dest/'validation_selection.json').read_text());assert len(selection['results'])==21
         assert all(__import__('math').isfinite(x['mse']) for x in selection['results'])
         best=(dest/'BEST_UNET_PATH.txt').read_text().strip()
         run(name+'_generation',[PY,'scripts/generate_full_student.py','--unet',best,'--prompts','prompts/student_eval.txt','--out',f'student_outputs/{name}'])
@@ -79,7 +79,7 @@ def main():
         run(name+'_audit',[str(R/'.venv/bin/python'),'scripts/audit_full_student.py','--student',name])
         run(name+'_utility',[PY,'scripts/student_utility.py','--student',name])
     results={name:dict(audit=json.loads((M/f'{name}_audit.json').read_text()),utility=json.loads((R/f'metrics/{name}_utility.json').read_text())) for name in ['C10_full_seed0_author','C11_full_step1.00_seed0_author']}
-    save(M/'full_author_summary.json',dict(conditions=results,scope='one seed; C10/C11 only; no full-finetune clean controls; 2000-step selection cadence differs from LoRA'))
+    save(M/'full_author_summary.json',dict(conditions=results,scope='one seed; C10/C11 only; no full-finetune clean controls; 1000-step selection cadence differs from LoRA'))
     status('all','completed')
 if __name__=='__main__':
     try:main()

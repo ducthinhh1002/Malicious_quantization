@@ -102,9 +102,9 @@ checks finite weights, parameter updates and UNet reload, and only then starts
 the long runs. Smoke or dependency failure stops the queue with an error status.
 
 The entire UNet is optimized, with VAE/text encoder frozen, no EMA, AdamW,
-20,000 steps, batch 8, LR 1e-5, constant scheduler, seed 0, fp16 mixed precision
-and gradient clipping at norm 1. Full checkpoint selection evaluates all ten
-2,000-step snapshots plus the final model on the same 1,000 unseen samples/noise
+20,000 steps, batch 8, LR 5e-6, constant scheduler, seed 0, fp16 mixed precision
+and gradient clipping at norm 1. Full checkpoint selection evaluates all twenty
+1,000-step snapshots plus the final model on the same 1,000 unseen samples/noise
 as the LoRA selector. The checkpoint cadence differs from LoRA's 500-step
 cadence and must be disclosed in comparisons. All UNet candidates are retained;
 only the latest checkpoint retains optimizer state. Older checkpoints remain
@@ -122,3 +122,5 @@ tmux new-session -d -s quant-full-author '.venv-student/bin/python scripts/queue
 Status: `metrics/serum_author/full_queue_status.json`; smoke result:
 `full_smoke.json`; final results: `full_author_summary.json`. The queue has disk
 guards and stops on errors; partial training requires reviewed recovery.
+
+Full-branch LR 5e-6 matches paper Appendix I.1. Its 20,000-step budget is an extended study; the paper Figure 4a reports a 5,000-step curve with its selected checkpoint at 3,000. The 1,000-step cadence includes that candidate and differs from LoRA cadence.

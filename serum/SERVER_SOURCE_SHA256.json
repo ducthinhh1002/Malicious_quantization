@@ -1154,7 +1154,7 @@
   "third_party/diffusers/src/diffusers/video_processor.py": "897d3b017dbaefdc0d85b2ceb022f261e919111f38313fa3c8691a6fa6e541bc",
   "scripts/audit_data.py": "96c24fc6c1b989838a32fa50bffaf5fe3441468aeaeaf9b23974b17642495ee4",
   "scripts/train_full_sd14.py": "cb3f6f5e354ce04c7b02c23fe1fdbcdb2a4f809fb91e311071574a6521843f2e",
-  "scripts/queue_full_author.py": "6675444dff9088052a2fe72683a00010359ab92fb7915bd7a95e81b179738da7",
+  "scripts/queue_full_author.py": "d283cf7ac5c3419be1d223e1998337dee07799e541184a57604eda3563771980",
   "scripts/select_full_checkpoint.py": "827fe24f7730966ea4760b88662d8e476e6c73f978024528883608f14b163157",
   "scripts/generate_full_student.py": "f1ea800d7c4e1ed27ee875f8142145a019d06143df71eb97a74510da654da2fe",
   "scripts/audit_full_student.py": "867480000b937b7a9ab3ceef4c993024ba5c034d9568ec53d92fc0c156c3d710",
