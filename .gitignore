@@ -9,3 +9,7 @@ __pycache__/
 /replication.local.json
 /final_prompts.txt
 /output_attack
+/tla-vpqh.pem
+/config.txt
+/tmp/
+/quet
