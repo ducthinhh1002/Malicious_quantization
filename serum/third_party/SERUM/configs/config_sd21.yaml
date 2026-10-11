@@ -15,7 +15,7 @@ dataset:
 
 # Diffusion Model configuration
 diffusion:
-  stable_diffusion_model_id: "/root/quant/models/sd21-base"
+  stable_diffusion_model_id: "/root/workspace/serum/models/sd21-base"
   torch_dtype: "float16"
   device: "cuda"
 

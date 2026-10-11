@@ -12,7 +12,7 @@ torch.serialization.add_safe_globals([
 ])
 
 p=argparse.ArgumentParser(); p.add_argument('--student',required=True); a=p.parse_args()
-r=Path('/root/quant'); images=r/'student_outputs'/a.student
+r=Path('/root/workspace/serum'); images=r/'student_outputs'/a.student
 ref=r/'data/utility_teacher_clean'; files=sorted(images.glob('*.png'))
 prompts=(r/'prompts/student_eval.txt').read_text().splitlines()
 assert len(files)==len(prompts)==len(list(ref.glob('*.png')))==5000

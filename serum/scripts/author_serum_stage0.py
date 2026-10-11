@@ -9,7 +9,7 @@ os.environ.setdefault('CUBLAS_WORKSPACE_CONFIG',':4096:8')
 import torch
 from PIL import Image
 
-ROOT=Path('/root/quant')
+ROOT=Path('/root/workspace/serum')
 A=ROOT/'assets/serum_author'
 D=ROOT/'data/serum_author/raw'
 M=ROOT/'metrics/serum_author'

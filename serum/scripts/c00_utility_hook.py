@@ -7,7 +7,7 @@ import subprocess
 import time
 from pathlib import Path
 
-R=Path('/root/quant');M=R/'metrics/serum_author';PARENT=15851
+R=Path('/root/workspace/serum');M=R/'metrics/serum_author';PARENT=15851
 STATUS=M/'C00_utility_hook_status.json'
 
 def status(state,**kw):

@@ -10,11 +10,11 @@
   "mild_jobs": 0,
   "dependency": "none; user cancelled previous core and switched artifacts",
   "source_files": {
-    "/root/quant/third_party/diffusers/examples/text_to_image/train_text_to_image_lora.py": "18c712a5b4aa1f47f3221ee0ea5a98758f02f35ac76f753bd5ad2bdf07e98534",
-    "/root/quant/scripts/author_serum_stage0.py": "9ebe717d4b88479dffd0607a71b8c2bfba0a383fa8789f5a3734e5ffb1a7c276",
-    "/root/quant/scripts/select_lora_checkpoint.py": "74cd520b94760fe82bd8f36fb47189d1ecee91fb1f32ea9deaf95d66e56bd797",
-    "/root/quant/scripts/generate_student.py": "5b5bd9aa646df9a2c20b8eaafe6725bcc7ebd2bbaef07772f99ef898a3e70704",
-    "/root/quant/assets/serum_author/manifest.json": "3ea758cd466caa4e7614f8c6795e171b0775a2de72270e7e558689be968f0d40"
+    "/root/workspace/serum/third_party/diffusers/examples/text_to_image/train_text_to_image_lora.py": "18c712a5b4aa1f47f3221ee0ea5a98758f02f35ac76f753bd5ad2bdf07e98534",
+    "/root/workspace/serum/scripts/author_serum_stage0.py": "97cec8f699e12ccffb102876c9ba9d7b1b65edbe4f2639c96b5e674b3269e822",
+    "/root/workspace/serum/scripts/select_lora_checkpoint.py": "4bb2b2e341e00389f2f3c30ccd86c848a0973bf0282bdfdbfbe29b0a419746df",
+    "/root/workspace/serum/scripts/generate_student.py": "5b5bd9aa646df9a2c20b8eaafe6725bcc7ebd2bbaef07772f99ef898a3e70704",
+    "/root/workspace/serum/assets/serum_author/manifest.json": "4a48a292ba85372c51eb82a2685f596d9429e5202aa0bf60dcc2dc78c235cd52"
   },
   "prompts": {
     "detector_calib.txt": "757fdbc79c68205a3ac255c23bcbc444dc6f535c56beb4835771f68d83ab2c3d",
@@ -36,5 +36,5 @@
     "GPU0": "quant-author-queue: resumed C00 then fresh C10",
     "GPU1": "quant-author-strong: reused-clean-data C01 then author-WM-data C11; waits for teacher calibration"
   },
-  "strong_plan": "/root/quant/manifests/serum_author_strong_plan.json"
+  "strong_plan": "/root/workspace/serum/manifests/serum_author_strong_plan.json"
 }

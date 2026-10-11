@@ -8,7 +8,7 @@ import time
 from pathlib import Path
 from author_serum_stage0 import sha,save_json
 
-R=Path('/root/quant');A=R/'assets/serum_author';M=R/'metrics/serum_author'
+R=Path('/root/workspace/serum');A=R/'assets/serum_author';M=R/'metrics/serum_author'
 PY=str(R/'.venv-student/bin/python');SERUM=str(R/'.venv/bin/python')
 STATUS=M/'queue_status.json'
 env=os.environ.copy()

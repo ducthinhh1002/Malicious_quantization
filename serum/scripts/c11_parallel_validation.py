@@ -7,7 +7,7 @@ import csv
 from pathlib import Path
 from PIL import Image
 
-R=Path('/root/quant')
+R=Path('/root/workspace/serum')
 M=R/'metrics/serum_author'
 def status(state, **kwargs):
     data=dict(state=state,gpu=0,updated_at=time.strftime('%Y-%m-%dT%H:%M:%S%z'),**kwargs)

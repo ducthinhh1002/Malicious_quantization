@@ -8,7 +8,7 @@ from pathlib import Path
 import numpy as np
 import torch
 
-ROOT=Path('/root/quant')
+ROOT=Path('/root/workspace/serum')
 SERUM=ROOT/'third_party/SERUM'
 sys.path.insert(0,str(SERUM))
 

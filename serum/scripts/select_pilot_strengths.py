@@ -3,7 +3,7 @@ import json
 from pathlib import Path
 import math
 
-root = Path('/root/quant')
+root = Path('/root/workspace/serum')
 policy = json.loads((root/'manifests/stage12_queue_policy.json').read_text())['preservation_policy']
 rows = []
 for strength in (.25, .50, .75, 1.):

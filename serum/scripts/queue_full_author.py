@@ -1,7 +1,7 @@
 """GPU0 full-UNet C11/C10 queue, isolated from the frozen LoRA queues."""
 import os,json,time,subprocess,fcntl,hashlib,shutil
 from pathlib import Path
-R=Path('/root/quant');M=R/'metrics/serum_author';PY=str(R/'.venv-student/bin/python')
+R=Path('/root/workspace/serum');M=R/'metrics/serum_author';PY=str(R/'.venv-student/bin/python')
 env=os.environ.copy();env.update(CUDA_VISIBLE_DEVICES='0',HF_HUB_OFFLINE='1',TRANSFORMERS_OFFLINE='1',HF_DATASETS_OFFLINE='1',OMP_NUM_THREADS='4',MKL_NUM_THREADS='4',OPENBLAS_NUM_THREADS='4',PYTHONUNBUFFERED='1')
 def sha(p):return hashlib.sha256(Path(p).read_bytes()).hexdigest()
 def save(p,x):

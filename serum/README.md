@@ -1,8 +1,9 @@
 # SERUM author-artifact pipeline (server snapshot)
 
 Source copied from gpu-node-2 and synchronized on 12 October 2026. The physical
-workspace is now `/root/workspace/serum`; `/root/quant` is a compatibility symlink
-to it. This is the
+workspace is `/root/workspace/serum`. Runtime sources, environment entry points
+and dependent manifests use that path directly; no compatibility symlink is
+required. This is the
 current raw/strong experiment, not the retired locally trained watermark branch.
 No old broken LoRA trainer, obsolete training queues, credentials, images or
 model weights are included. Vendored projects retain their upstream licenses.
@@ -50,18 +51,17 @@ excluded. Pinned upstream commits and environment freezes are in `manifests/`.
 
 ## Deployment and required external state
 
-The unchanged server scripts intentionally use absolute root `/root/quant`.
-On the current server it resolves to `/root/workspace/serum`. The symlink preserves
-virtual-environment entry points, editable installations, manifests and saved
-checkpoint paths without modifying the completed experiment. The relocation
-record is `manifests/workspace_location.json`.
+Server scripts use absolute root `/root/workspace/serum`. Virtual-environment
+entry points, editable installations, dataset metadata, selected checkpoint
+paths and dependent SHA-256 references have been migrated to that root. The
+relocation and validation record is `manifests/workspace_location.json`.
 
 Deploy this directory's **contents** under `/root/workspace/serum` on a separate
-Linux GPU machine and create `/root/quant` as a symlink to that directory;
+Linux GPU machine;
 do not overwrite the live server while its queue is running. Python 3.12,
 CUDA-compatible GPUs and tmux are required. Restore environment packages from
 the three recorded `*_env.txt` files; replace their editable Diffusers line with
-`pip install -e /root/quant/third_party/diffusers`. These are captured environment
+`pip install -e /root/workspace/serum/third_party/diffusers`. These are captured environment
 inventories, not portable dependency guarantees.
 
 The running queue reuses existing clean images and a corrected C00 checkpoint.
@@ -78,7 +78,7 @@ re-run artifact preparation after download rather than assuming the files exist.
 Teacher generation itself can run from scratch without legacy reuse:
 
 ```bash
-cd /root/quant
+cd /root/workspace/serum
 mkdir -p logs metrics/serum_author manifests
 bash scripts/download_author_serum.sh
 .venv/bin/python scripts/prepare_author_serum.py
@@ -136,5 +136,9 @@ recorded in `manifests/C11_full_step1.00_seed0_author.json` and
 `manifests/C10_full_seed0_author.json`; the frozen run configuration is
 `manifests/full_author_plan.json`. These source files were downloaded again from
 the server and checked against the snapshot hashes after the workspace move.
+
+Validation without the legacy alias passed for all five environment entry
+points, teacher/watermark/detector smoke generation, CtrlRegen and full trainer
+imports, and reload/forward inference from both selected full checkpoints.
 
 Full-branch LR 5e-6 matches paper Appendix I.1. Its 20,000-step budget is an extended study; the paper Figure 4a reports a 5,000-step curve with its selected checkpoint at 3,000. The 1,000-step cadence includes that candidate and differs from LoRA cadence.

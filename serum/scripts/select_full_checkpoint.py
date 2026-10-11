@@ -11,7 +11,7 @@ def main():
     p=argparse.ArgumentParser()
     p.add_argument('--student',type=Path,required=True)
     p.add_argument('--images',type=Path,required=True)
-    p.add_argument('--prompts',type=Path,default=Path('/root/quant/prompts/adapt_val.txt'))
+    p.add_argument('--prompts',type=Path,default=Path('/root/workspace/serum/prompts/adapt_val.txt'))
     p.add_argument('--base-model',default='CompVis/stable-diffusion-v1-4')
     p.add_argument('--seed',type=int,default=42000)
     p.add_argument('--noise-repeats',type=int,default=1)

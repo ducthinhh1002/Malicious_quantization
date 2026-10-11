@@ -8,7 +8,7 @@ from pathlib import Path
 import torch
 import yaml
 
-ROOT = Path('/root/quant')
+ROOT = Path('/root/workspace/serum')
 ASSETS = ROOT / 'assets/serum_author'
 sys.path.insert(0, str(ROOT / 'third_party/SERUM'))
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
-cd /root/quant
+cd /root/workspace/serum
 mkdir -p assets/serum_author logs
 python3 -m venv .venv-download
 .venv-download/bin/pip install 'gdown==5.2.0'

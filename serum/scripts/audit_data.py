@@ -3,7 +3,7 @@ import json
 from pathlib import Path
 from PIL import Image
 
-ROOT = Path('/root/quant')
+ROOT = Path('/root/workspace/serum')
 def sha(p):
     return hashlib.sha256(p.read_bytes()).hexdigest()
 def norm(s):

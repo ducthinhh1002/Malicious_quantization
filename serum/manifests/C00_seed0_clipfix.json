@@ -12,10 +12,10 @@
     "mixed_precision": "fp16"
   },
   "trainer_sha256": "18c712a5b4aa1f47f3221ee0ea5a98758f02f35ac76f753bd5ad2bdf07e98534",
-  "source_protocol_sha256": "996c6bbde7e4b420fcd4a41accc7b3c32cbd3d463d972d0abe3ea9a0ddfab8a4",
+  "source_protocol_sha256": "b133e06b4fc5dd1fe7dddc8b1debaadc122b167acd820e38b1cc72001ffaa0a8",
   "base_revision": "133a221b8aa7292a167afc5127cb63fb5005638b",
   "train_command": [
-    "/root/quant/.venv-student/bin/python",
+    "/root/workspace/serum/.venv-student/bin/python",
     "-m",
     "accelerate.commands.launch",
     "--num_processes",
@@ -34,11 +34,11 @@
     "--checkpointing_steps=500",
     "--mixed_precision=fp16",
     "--seed=0",
-    "--output_dir=/root/quant/students/C00_seed0_clipfix"
+    "--output_dir=/root/workspace/serum/students/C00_seed0_clipfix"
   ],
-  "validation_images": "/root/quant/data/raw/clean_val",
+  "validation_images": "/root/workspace/serum/data/raw/clean_val",
   "threshold": 0.04637297987937927,
   "fresh_initialization": true,
   "created_at": "2026-10-11T13:25:33+0700",
-  "queue_script_sha256": "e980209d1bda09c6c913a05d6888eb858efcd4b1ed70f0ae3754300fca4f8ccb"
+  "queue_script_sha256": "1b796e1d2315882bf5f146bc09e25e862ac4281851f39faa9030d19b624e7653"
 }

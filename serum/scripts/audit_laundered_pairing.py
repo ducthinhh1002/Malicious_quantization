@@ -3,7 +3,7 @@ from pathlib import Path
 from PIL import Image
 
 p=argparse.ArgumentParser(); p.add_argument('--kind',required=True); p.add_argument('--step',required=True)
-a=p.parse_args(); r=Path('/root/quant'); reports={}
+a=p.parse_args(); r=Path('/root/workspace/serum'); reports={}
 for split,n,seed in [('train',5000,10000),('val',1000,20000)]:
     raw=sorted((r/f'data/raw/{a.kind}_{split}').glob('*.png'))
     out=r/f'data/laundered/{a.kind}_step_{a.step}_{split}'
