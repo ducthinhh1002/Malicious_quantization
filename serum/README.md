@@ -142,3 +142,23 @@ points, teacher/watermark/detector smoke generation, CtrlRegen and full trainer
 imports, and reload/forward inference from both selected full checkpoints.
 
 Full-branch LR 5e-6 matches paper Appendix I.1. Its 20,000-step budget is an extended study; the paper Figure 4a reports a 5,000-step curve with its selected checkpoint at 3,000. The 1,000-step cadence includes that candidate and differs from LoRA cadence.
+
+## Fixed step-3,000 evaluation
+
+`scripts/evaluate_full_step3000.py` evaluates the saved full C10 and C11
+checkpoint-3000 models in parallel on GPU0/GPU1. It performs no retraining and
+uses separate `*_step3000_*` outputs. Each model generates 5,000 images at the
+same batch size 4, sampling seeds, prompts and generation settings as the final
+models, followed by author SERUM auditing and CLIPScore/FID/KID. The checkpoint
+is explicitly fixed by request, rather than selected using detector scores or
+minimum MSE. Its previously computed validation MSE is included in the audit.
+
+```bash
+cd /root/workspace/serum
+tmux new-session -d -s serum-full-step3000 '.venv-student/bin/python scripts/evaluate_full_step3000.py > logs/full_step3000_queue.log 2>&1'
+```
+
+Per-condition status: `metrics/serum_author/full_step3000_C10_status.json` and
+`full_step3000_C11_status.json`; combined results: `full_step3000_summary.json`.
+The audit checks checkpoint identity, output filename/prompt pairing and the
+same frozen author threshold. Existing step-20,000 measurements are preserved.

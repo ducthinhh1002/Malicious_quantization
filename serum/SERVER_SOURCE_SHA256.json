@@ -1163,5 +1163,7 @@
   "manifests/C11_full_step1.00_seed0_author.json": "fb33f760c20417f237edd8edce7bb281a93c1c2508a430a26ac0e573ee6cc56f",
   "manifests/full_author_plan.json": "5d87f25bcf6a4e987257cd1331ddeec5906ce25304d388c01424477f639e942c",
   "manifests/workspace_location.json": "2e585c6b9e82daf62be2ab421c5a51c7fa2023cbf98875aee140ec8ce86bc485",
-  "manifests/C00_seed0_clipfix.json": "6e9f540bb78f0e173ab3878a1e9656771a973f39f45c80512820352557a9bd66"
+  "manifests/C00_seed0_clipfix.json": "6e9f540bb78f0e173ab3878a1e9656771a973f39f45c80512820352557a9bd66",
+  "scripts/evaluate_full_step3000.py": "8980840988b76dc8996f05098b3e9aefb147c6678a746486b862fd244c4cddff",
+  "scripts/audit_full_checkpoint.py": "030276eba494e7f628d16f3a66041beadfa60b2589b4b82f8cb69485975a374d"
 }
