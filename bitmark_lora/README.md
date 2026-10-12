@@ -40,6 +40,45 @@ bash run_bitmark_lora.sh --setup-only
 bash run_bitmark_lora.sh
 ```
 
+## Google Colab
+
+Chọn GPU Ampere trở lên (ví dụ A100/L4) và đủ RAM/VRAM cho Infinity-2B + T5 và
+SD2.1 full fine-tune. Cấu hình FlashAttention hiện tại không hỗ trợ T4. Launcher
+kiểm tra compute capability trước khi tải môi trường; không tự giảm batch/data
+hay đổi thuật toán để vừa GPU.
+
+Trong cell Colab, có thể clone source lên ổ local:
+
+```python
+%cd /content
+!git clone https://github.com/ducthinhh1002/Malicious_quantization.git bitmark-colab
+%cd /content/bitmark-colab
+!bash run_bitmark_lora.sh
+```
+
+Nếu repository đã clone, dùng `%cd` vào repository và `!git pull --ff-only` trước
+khi chạy lại. Source nằm trên `/content/drive/...` cũng được hỗ trợ, kể cả đường
+dẫn có khoảng trắng. Launcher tự nhận diện Colab và đặt runtime ở:
+
+```text
+/content/bitmark_runtime/.venv
+/content/bitmark_runtime/cache/environment   # uv và Python riêng
+/content/bitmark_runtime/cache               # model cache
+/content/bitmark_runtime/runs                # ảnh, checkpoint, kết quả
+```
+
+Không đặt venv/cache/output đang chạy trên Drive mount: các thao tác khóa,
+symlink và atomic writes không tương đương ổ Linux local. Bản sửa gọi trực tiếp
+binary `uv==0.9.3` đã cài, kiểm tra phiên bản và bỏ biến `UV_INTERNAL_BIN` kế thừa;
+tránh chọn nhầm uv có sẵn trong Colab. Python notebook 3.13 vẫn có thể bootstrap
+môi trường Python 3.11 riêng.
+
+`/content` là dữ liệu tạm của runtime. Sao lưu thư mục run sang Drive trước khi
+xóa runtime; cache/interpreter/venv cần tạo lại ở phiên mới. Cơ chế resume vẫn yêu
+cầu đúng config/source và model paths đã lưu. Khuyến nghị của Colab là giảm I/O
+trực tiếp trên Drive và xử lý dữ liệu ở ổ VM local:
+https://research.google.com/colaboratory/faq.html
+
 ## Đánh giá ý tưởng và phạm vi kết luận
 
 Thiết kế đủ để làm pilot kiểm tra **radioactivity phụ thuộc cách adaptation**.

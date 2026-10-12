@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 HERE="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-export PYTHONUNBUFFERED=1 TOKENIZERS_PARALLELISM=false PYTHONNOUSERSITE=1
+export PYTHONUNBUFFERED=1 TOKENIZERS_PARALLELISM=false PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1
 BOOTSTRAP_PYTHON="${BITMARK_PYTHON:-python3}"
 if ! command -v "$BOOTSTRAP_PYTHON" >/dev/null 2>&1; then
   echo 'Python 3 is required. Set BITMARK_PYTHON to a Python executable.' >&2

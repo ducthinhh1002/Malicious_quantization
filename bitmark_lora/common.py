@@ -9,6 +9,26 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 
 
+def is_colab():
+    return (bool(os.environ.get('COLAB_RELEASE_TAG') or os.environ.get('COLAB_BACKEND_VERSION'))
+            or str(HERE).startswith('/content/'))
+
+
+def runtime_root():
+    """Drive may hold source code; local POSIX storage holds executable/run data."""
+    return Path(os.environ.get('BITMARK_RUNTIME_ROOT',
+                              '/content/bitmark_runtime' if is_colab() else str(HERE))).expanduser().resolve()
+
+
+def require_local_runtime_path(path):
+    resolved = Path(path).expanduser().resolve()
+    drive = Path('/content/drive').resolve()
+    if is_colab() and (resolved == drive or drive in resolved.parents):
+        raise ValueError(f'Use local /content storage for runtime files, not Drive: {resolved}. '
+                         'Copy completed results to Drive for backup.')
+    return resolved
+
+
 def sha256(path):
     h = hashlib.sha256()
     with open(path, "rb") as f:

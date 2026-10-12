@@ -13,7 +13,7 @@ import sys
 import time
 from pathlib import Path
 
-from common import HERE, freeze, read_json, sha256, verify_vendor, write_json
+from common import HERE, freeze, read_json, sha256, verify_vendor, write_json, runtime_root, require_local_runtime_path
 from student import branches, training_command
 
 
@@ -35,7 +35,7 @@ def parse_args(argv=None):
     p.add_argument("--paper-full-ema", action="store_true", help="Also run the paper-style full+EMA positive control")
     p.add_argument("--train-clean-controls", action="store_true", help="Also train matched clean LoRA/full controls to isolate generic adaptation effects")
     p.add_argument("--skip-utility", action="store_true", help="Explicitly omit CLIP/FID/KID (reported as unavailable)")
-    p.add_argument("--cache", type=Path, default=HERE / "cache")
+    p.add_argument("--cache", type=Path, default=runtime_root() / "cache")
     p.add_argument("--output", type=Path, help="Create a NEW run directory here")
     p.add_argument("--resume", type=Path, help="Resume exact recorded config from an existing run; do not supply experiment overrides")
     p.add_argument("--min-free-gb", type=float, default=70)
@@ -99,6 +99,8 @@ def stage(run, label, command):
 
 
 def preflight(a):
+    for path in [a.cache, a.resume or a.output or runtime_root() / 'runs']:
+        require_local_runtime_path(path)
     import torch
     import flash_attn
     if not torch.cuda.is_available():
@@ -113,7 +115,7 @@ def preflight(a):
         raise RuntimeError("FlashAttention CUDA smoke check returned nonfinite values")
     torch.cuda.synchronize()
     print(f"GPU: {torch.cuda.get_device_name()}; torch={torch.__version__}", flush=True)
-    for path in [a.cache, (a.output or HERE / "runs").parent]:
+    for path in [a.cache, (a.output or runtime_root() / "runs").parent]:
         probe = path.resolve()
         while not probe.exists():
             probe = probe.parent
@@ -155,7 +157,7 @@ def main(argv=None):
     if a.resume:
         run = a.resume.resolve()
     else:
-        run = a.output.resolve() if a.output else HERE / "runs" / datetime.datetime.now().strftime("run_%Y%m%d_%H%M%S_%f")
+        run = a.output.resolve() if a.output else runtime_root() / "runs" / datetime.datetime.now().strftime("run_%Y%m%d_%H%M%S_%f")
         run.mkdir(parents=True, exist_ok=False)
     with (run / ".lock").open("w") as lock:
         fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)

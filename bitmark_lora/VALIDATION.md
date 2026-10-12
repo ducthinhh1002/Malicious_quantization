@@ -1,5 +1,17 @@
 # Validation, 2026-10-12
 
+Colab compatibility follow-up:
+
+- Six new regression tests passed for Colab local-storage defaults, Drive-path
+  rejection, unchanged non-Colab defaults, direct private uv selection/version
+  rejection, and T4/A100 capability guards. These were local unit tests with
+  subprocess mocks; Windows used an import-only fcntl stub (no lock operations).
+- Existing 18 Linux test results below predate this Colab update. The current
+  change has not been executed in an actual Colab runtime or through GPU training.
+- Source on Drive is permitted; venv, assets, temporary files and active run
+  outputs default to `/content/bitmark_runtime` on Colab. Source/protocol parameters
+  and the pinned ML package requirements are unchanged.
+
 No-Conda launcher update:
 
 - 18 protocol/bootstrap tests passed on Linux, including the optional clean-trained

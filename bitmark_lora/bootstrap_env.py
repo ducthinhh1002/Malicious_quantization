@@ -11,6 +11,7 @@ import shutil
 import subprocess
 import sys
 from pathlib import Path
+from common import is_colab, runtime_root, require_local_runtime_path
 
 HERE = Path(__file__).resolve().parent
 UV_VERSION = "0.9.3"
@@ -32,12 +33,21 @@ def private_uv(cache):
     env.update(PYTHONPATH=str(target), PYTHONNOUSERSITE="1",
                UV_PYTHON_INSTALL_DIR=str(cache / "python"),
                UV_CACHE_DIR=str(cache / "uv"), UV_NO_CONFIG="1")
-    command = [sys.executable, "-m", "uv"]
-    probe = subprocess.run(command + ["--version"], env=env, capture_output=True, text=True)
-    if probe.returncode or probe.stdout.strip() != "uv " + UV_VERSION:
+    # Calling python -m uv can select a preinstalled uv binary via UV_INTERNAL_BIN.
+    # Use the wheel's executable directly and remove inherited uv launch hints.
+    env.pop('UV_INTERNAL_BIN', None)
+    env.pop('UV_INTERNAL_PARENT_INTERPRETER', None)
+    binary = target / 'bin/uv'
+    probe = (subprocess.run([str(binary), '--version'], env=env, capture_output=True, text=True)
+             if binary.is_file() else None)
+    if probe is None or probe.returncode or probe.stdout.split()[:2] != ['uv', UV_VERSION]:
         subprocess.run([sys.executable, "-m", "pip", "--isolated", "install", "--no-user",
                         "--upgrade", "--target", str(target), "uv==" + UV_VERSION], check=True)
-    subprocess.run(command + ["--version"], env=env, check=True)
+    command = [str(binary)]
+    verified = subprocess.run(command + ['--version'], env=env, check=True, capture_output=True, text=True)
+    if verified.stdout.split()[:2] != ['uv', UV_VERSION]:
+        raise RuntimeError(f'Unexpected private uv version: {verified.stdout.strip()}')
+    print(verified.stdout.strip(), flush=True)
     return command, env
 
 
@@ -75,6 +85,19 @@ def ensure_environment(venv, cache):
     return py
 
 
+def check_colab_gpu():
+    """Fail before large downloads on unsupported Colab accelerators."""
+    try:
+        result = subprocess.run(['nvidia-smi', '--query-gpu=compute_cap', '--format=csv,noheader'],
+                                check=True, capture_output=True, text=True)
+    except (OSError, subprocess.CalledProcessError) as exc:
+        raise RuntimeError('Enable a Colab GPU runtime (Ampere or newer) before running BitMark.') from exc
+    capabilities = [float(line.strip()) for line in result.stdout.splitlines() if line.strip()]
+    if not capabilities or min(capabilities) < 8:
+        raise RuntimeError('This BitMark FlashAttention build requires Ampere or newer (e.g. A100/L4). '
+                           'Colab T4 is unsupported; select a compatible GPU runtime.')
+
+
 def main(argv=None):
     args = sys.argv[1:] if argv is None else argv
     if platform.system() != "Linux" or platform.machine() != "x86_64":
@@ -85,9 +108,25 @@ def main(argv=None):
         raise ValueError("Use --setup-only by itself, then run the experiment with its flags.")
     if args != ["--setup-only"]:
         from run import parse_args
-        parse_args(args)
-    venv = Path(os.environ.get("BITMARK_VENV", HERE / ".venv")).expanduser().absolute()
-    cache = Path(os.environ.get("BITMARK_BOOTSTRAP_CACHE", HERE / "cache/environment")).expanduser().absolute()
+        parsed = parse_args(args)
+        for path in [parsed.cache, parsed.output, parsed.resume]:
+            if path is not None:
+                require_local_runtime_path(path)
+        if is_colab():
+            check_colab_gpu()
+    root = require_local_runtime_path(runtime_root())
+    venv = require_local_runtime_path(os.environ.get("BITMARK_VENV", root / ".venv"))
+    cache = require_local_runtime_path(os.environ.get("BITMARK_BOOTSTRAP_CACHE", root / "cache/environment"))
+    if is_colab():
+        # pip/torch/HF also create locks, executables and atomic temporary files.
+        for key, directory in {'TMPDIR': root / 'tmp', 'PIP_CACHE_DIR': root / 'cache/pip',
+                               'HF_HOME': root / 'cache/huggingface',
+                               'TORCH_HOME': root / 'cache/torch',
+                               'XDG_CACHE_HOME': root / 'cache/xdg'}.items():
+            location = require_local_runtime_path(os.environ.get(key, directory))
+            location.mkdir(parents=True, exist_ok=True)
+            os.environ[key] = str(location)
+        print(f'Colab local runtime: {root}; back up runs before deleting the runtime.', flush=True)
     venv.parent.mkdir(parents=True, exist_ok=True)
     cache.mkdir(parents=True, exist_ok=True)
     with (cache / "setup.lock").open("w") as cache_lock, Path(str(venv) + ".lock").open("w") as env_lock:
