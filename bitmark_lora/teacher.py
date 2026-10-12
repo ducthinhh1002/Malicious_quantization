@@ -11,6 +11,7 @@ import sys
 from pathlib import Path
 
 from common import HERE, freeze, image_name, read_json, sha256, verify_vendor, write_json
+from student import training_conditions
 
 
 def official_args(assets, delta=2):
@@ -81,7 +82,8 @@ def generate(run):
     config, prompts = read_json(run / "config.json"), read_json(run / "prompts.json")
     # Reset identical per-image seeds; delta=0 uses the same official sequential sampler.
     for split in ("train", "calibration", "test"):
-        conditions = ("clean",) if split == "calibration" else ("clean", "wm")
+        conditions = (training_conditions(config) if split == "train" else
+                      ("clean",) if split == "calibration" else ("clean", "wm"))
         for condition in conditions:
             out = run / "images" / f"teacher_{condition}_{split}"
             out.mkdir(parents=True, exist_ok=True)

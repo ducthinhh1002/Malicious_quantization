@@ -73,6 +73,7 @@ def freeze_threshold(run):
 
 def summarize(run):
     c = read_json(run / "config.json")
+    has_clean_controls = c.get("train_clean_controls", True)
     threshold = freeze_threshold(run)
     labels = ["teacher_clean_test", "teacher_wm_test", "unadapted"] + [b["name"] for b in branches(c)]
     rows_by_label = {label: scores(run, label, c["test_n"]) for label in labels}
@@ -95,28 +96,34 @@ def summarize(run):
                                  "paired_bootstrap_ci95_pp": [100*v for v in paired_ci(diff, c["seed"])],
                                  "ci_scope": "paired image sampling, conditional on this one training seed and threshold"}
         if not c["lora_only"]:
-            full = [a-b for a, b in zip(indicators["full_wm"], indicators["full_clean"])]
-            effect("full_clean_adjusted_transfer", full)
+            full_reference = "full_clean" if has_clean_controls else "unadapted"
+            full = [a-b for a, b in zip(indicators["full_wm"], indicators[full_reference])]
+            effect("full_clean_adjusted_transfer" if has_clean_controls else "full_wm_minus_unadapted", full)
         for rank in c["ranks"]:
-            lora = [a-b for a, b in zip(indicators[f"lora_r{rank}_wm"], indicators[f"lora_r{rank}_clean"])]
-            effect(f"lora_r{rank}_clean_adjusted_transfer", lora)
+            lora_reference = f"lora_r{rank}_clean" if has_clean_controls else "unadapted"
+            lora = [a-b for a, b in zip(indicators[f"lora_r{rank}_wm"], indicators[lora_reference])]
+            effect(f"lora_r{rank}_clean_adjusted_transfer" if has_clean_controls else f"lora_r{rank}_wm_minus_unadapted", lora)
             if not c["lora_only"]:
-                effect(f"full_minus_lora_r{rank}_clean_adjusted", [a-b for a, b in zip(full, lora)])
+                effect(f"full_minus_lora_r{rank}" + ("_clean_adjusted" if has_clean_controls else ""),
+                       [a-b for a, b in zip(full, lora)])
         tables[convention], effects[convention] = table, comparisons
     warnings = ["Single training seed; image bootstrap does not capture training-seed variance.",
                 "Matched full controls have no EMA, matching LoRA. Not an exact reproduction of the paper's full+EMA run.",
                 "Clean calibration uses generated Infinity images, not natural COCO images; inspect clean student false-positive rates.",
                 "Green fraction is NOT message bit accuracy: BitMark tests bit-pattern bias."]
     primary = {r["branch"]: r for r in tables["absolute_z"]}
+    full_effect = "full_clean_adjusted_transfer" if has_clean_controls else "full_wm_minus_unadapted"
+    if not has_clean_controls:
+        warnings.append("No clean-trained controls: contrasts use the unadapted baseline and cannot isolate generic fine-tuning effects.")
     if primary["teacher_wm_test"]["detection_rate"] < .9:
         warnings.append("Teacher positive control is weak: investigate generation/detection before attributing weak transfer to LoRA.")
     if c["lora_only"]:
         warnings.append("No matched full controls: cannot attribute low transfer specifically to LoRA.")
-    elif effects["absolute_z"]["full_clean_adjusted_transfer"]["paired_bootstrap_ci95_pp"][0] <= 0:
+    elif effects["absolute_z"][full_effect]["paired_bootstrap_ci95_pp"][0] <= 0:
         warnings.append("Matched full positive control has not established transfer; LoRA-weakness hypothesis remains inconclusive.")
     for label in ["unadapted"] + [b["name"] for b in branches(c) if b["condition"] == "clean"]:
         if primary[label]["ci95_low"] > c["fpr"]:
-            warnings.append(f"{label}: clean detection exceeds nominal FPR; use clean-adjusted effects, not raw TPR alone.")
+            warnings.append(f"{label}: clean detection exceeds nominal FPR; raw TPR alone is insufficient evidence of transfer.")
     utility = read_json(run / "result/utility.json") if (run / "result/utility.json").exists() else None
     if not utility:
         warnings.append("Utility metrics unavailable; no image-quality preservation claim can be made.")
@@ -133,7 +140,10 @@ def summarize(run):
              "| Branch | Detected | Rate | 95% Wilson CI |", "|---|---:|---:|---:|"]
     for r in tables["absolute_z"]:
         lines.append(f"| {r['branch']} | {r['detected']}/{r['n']} | {100*r['detection_rate']:.2f}% | {100*r['ci95_low']:.2f}–{100*r['ci95_high']:.2f}% |")
-    lines += ["", "Positive full-minus-LoRA interaction means stronger transfer under full adaptation after subtracting clean controls.", ""]
+    interpretation = ("Positive full-minus-LoRA interaction means stronger transfer under full adaptation after subtracting clean controls."
+                      if has_clean_controls else
+                      "Full-minus-LoRA is the paired detection-rate difference on watermarked-trained students; no clean-trained adjustment is available.")
+    lines += ["", interpretation, ""]
     for name, e in effects["absolute_z"].items():
         low, high = e["paired_bootstrap_ci95_pp"]
         lines.append(f"- {name}: {e['estimate_pp']:.2f} pp; paired CI [{low:.2f}, {high:.2f}] pp.")

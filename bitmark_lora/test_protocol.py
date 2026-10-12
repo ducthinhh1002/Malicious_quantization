@@ -10,7 +10,7 @@ from assets import split_prompts
 from common import freeze, image_name, read_json, sha256, verify_vendor, write_json
 from report import calibrate, paired_ci, scores, summarize, wilson
 from run import config_from_args, parse_args, stage
-from student import branches, training_command
+from student import branches, training_command, training_conditions
 
 
 class ProtocolTests(unittest.TestCase):
@@ -25,7 +25,8 @@ class ProtocolTests(unittest.TestCase):
     def test_matched_training_budget(self):
         c = self.config()
         students = branches(c)
-        self.assertEqual([b['name'] for b in students], ['lora_r4_clean', 'lora_r4_wm', 'full_clean', 'full_wm'])
+        self.assertEqual([b['name'] for b in students], ['lora_r4_wm', 'full_wm'])
+        self.assertEqual(training_conditions(c), ('wm',))
         for b in students:
             cmd = training_command(c, {'student': '/pinned/model'}, Path('/run'), b)
             self.assertEqual(cmd[cmd.index('--learning_rate')+1], '0.0001')
@@ -83,14 +84,23 @@ class ProtocolTests(unittest.TestCase):
             self.assertIn('"exit_code": 7', (Path(d)/'stages.jsonl').read_text())
 
     def test_complete_report_clean_adjustment_and_tamper(self):
+        self.check_report(legacy=True)
+
+    def test_report_without_clean_training_files(self):
+        self.check_report(legacy=False)
+
+    def check_report(self, legacy):
         with tempfile.TemporaryDirectory() as d, contextlib.redirect_stdout(io.StringIO()):
             run = Path(d)
             c = self.config(test_n=10, calibration_n=100)
+            if legacy:
+                del c['train_clean_controls']
             write_json(run/'config.json', c)
             data = {'teacher_clean_calibration': [0.]*100, 'teacher_clean_test': [0.]*10,
                     'teacher_wm_test': [10.]*10, 'unadapted': [0.]*10,
-                    'lora_r4_clean': [0.]*10, 'lora_r4_wm': [10.]*2+[0.]*8,
-                    'full_clean': [0.]*10, 'full_wm': [10.]*9+[0.]}
+                    'lora_r4_wm': [10.]*2+[0.]*8, 'full_wm': [10.]*9+[0.]}
+            if legacy:
+                data.update(lora_r4_clean=[0.]*10, full_clean=[0.]*10)
             for label, values in data.items():
                 rows = []
                 out = run/'images'/label
@@ -102,7 +112,11 @@ class ProtocolTests(unittest.TestCase):
                 write_json(run/'scores'/f'{label}.json', rows)
             summarize(run)
             r = read_json(run/'result/radioactivity.json')
-            self.assertAlmostEqual(r['paired_effects']['absolute_z']['full_minus_lora_r4_clean_adjusted']['estimate_pp'], 70.)
+            key = 'full_minus_lora_r4' + ('_clean_adjusted' if legacy else '')
+            self.assertAlmostEqual(r['paired_effects']['absolute_z'][key]['estimate_pp'], 70.)
+            if not legacy:
+                self.assertFalse(any('clean_adjusted' in k for k in r['paired_effects']['absolute_z']))
+                self.assertEqual(len(r['tables']['absolute_z']), 5)
             self.assertTrue((run/'result/README.md').exists())
             (run/'images/unadapted'/image_name(0)).write_bytes(b'changed')
             with self.assertRaises(RuntimeError):

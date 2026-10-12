@@ -8,13 +8,18 @@ from pathlib import Path
 from common import HERE, freeze, image_name, read_json, sha256, verify_vendor, write_json
 
 
+def training_conditions(config):
+    # Missing field denotes the original protocol, retained for analysis of old runs.
+    return ("clean", "wm") if config.get("train_clean_controls", True) else ("wm",)
+
+
 def branches(config):
     result = []
     for rank in config["ranks"]:
-        for condition in ("clean", "wm"):
+        for condition in training_conditions(config):
             result.append({"name": f"lora_r{rank}_{condition}", "kind": "lora", "rank": rank, "condition": condition})
     if not config["lora_only"]:
-        for condition in ("clean", "wm"):
+        for condition in training_conditions(config):
             result.append({"name": f"full_{condition}", "kind": "full", "condition": condition})
     if config["paper_full_ema"]:
         result.append({"name": "paper_full_wm_ema", "kind": "full", "condition": "wm", "ema": True})

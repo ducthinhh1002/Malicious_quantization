@@ -1,5 +1,10 @@
 # Validation, 2026-10-12
 
+Follow-up: new runs now omit both clean-trained students and clean training image
+generation. All 12 protocol tests pass, including reporting with no clean-trained
+files and compatibility with original run manifests. The trainer implementations
+and their CPU smoke validation below are unchanged.
+
 Executed locally with Python 3.12, torch 2.7.1+cpu, torchvision 0.22.1+cpu,
 diffusers 0.35.1, transformers 4.51.3, peft 0.17.1, accelerate 1.10.1,
 datasets 3.6.0, pyarrow 19.0.1, NumPy 1.26.4:

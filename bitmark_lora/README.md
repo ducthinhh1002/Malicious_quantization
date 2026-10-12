@@ -32,14 +32,12 @@ Mục tiêu: với dữ liệu BitMark, LoRA có truyền tín hiệu watermark 
 fine-tune hay không? Đây là **thí nghiệm truyền watermark qua adaptation**,
 không phải quantization attack, không phải thêm watermark trực tiếp vào SD2.1.
 
-Mặc định có 5 student/evaluation branches:
+Mặc định có 3 student/evaluation branches; không chạy train clean kiểu C00/C01:
 
 | Nhánh | Adaptation | Dữ liệu train |
 |---|---|---|
 | `unadapted` | Không | Không |
-| `lora_r4_clean` | LoRA rank 4, attention q/k/v/out | Infinity δ=0 |
 | `lora_r4_wm` | LoRA rank 4, attention q/k/v/out | Infinity BitMark δ=2 |
-| `full_clean` | Toàn UNet, VAE/text encoder frozen | Infinity δ=0 |
 | `full_wm` | Toàn UNet, VAE/text encoder frozen | Infinity BitMark δ=2 |
 
 Cả LoRA và full dùng cùng SD2.1, 1.000 ảnh train, 5 epochs, batch 4,
@@ -56,7 +54,9 @@ scores hoặc ảnh test. Pipeline cha có quyền owner để audit sau khi fre
 
 Prompt lấy từ COCO2014 validation: 1 caption/image, loại caption trùng,
 chia train/calibration/test rời nhau bằng seed. Mặc định calibration=5.000,
-test=1.000. Clean/watermarked teacher dùng cùng prompt và seed, cùng sampler
+test=1.000. Chỉ sinh ảnh watermarked cho train, bỏ `teacher_clean_train`.
+Clean calibration để đặt ngưỡng và clean test để đo false positives/FID vẫn được sinh.
+Clean/watermarked teacher ở test dùng cùng prompt và seed, cùng sampler
 bit tuần tự của tác giả, chỉ khác δ=0/2. Teacher Infinity-2B sinh 1024²;
 trainer crop/resize 512²; student sinh 512²; detector resize bằng code Infinity.
 
@@ -124,16 +124,19 @@ Paper mô tả detection hai phía `|z|`, trong khi ROC script chính thức dù
 Ngưỡng dùng empirical FPR≤1% trên clean calibration, xử lý ties bảo thủ; cùng
 ngưỡng cho mọi branch. Đây là FPR mục tiêu trên calibration, không phải bảo đảm
 FPR của mọi phân phối. Calibration ở đây là Infinity clean, không phải natural
-COCO; xem false positives trên `unadapted`, `lora_*_clean`, `full_clean`.
+COCO; xem false positives trên `unadapted` và `teacher_clean_test`.
 
-Hiệu ứng chính = `TPR(wm-trained) − detection_rate(clean-trained)`.
-So LoRA/full bằng difference-in-differences trên cùng prompt/seed:
+Báo cáo mức tăng detection so với `unadapted` cho từng student, và chênh lệch
+LoRA/full theo cùng prompt/seed:
 
 ```text
-[full_wm − full_clean] − [lora_wm − lora_clean]
+TPR(full_wm) − TPR(lora_r4_wm)
 ```
 
 Báo cáo Wilson CI cho từng detection rate và paired bootstrap CI cho hiệu ứng.
+Không còn clean-trained controls nên không gọi các hiệu ứng này là clean-adjusted;
+không tách được hoàn toàn ảnh hưởng fine-tuning nói chung. `--analyze` vẫn đọc được
+kết quả run cũ có clean-trained controls theo config đã lưu của chúng.
 Nếu full cũng chưa truyền được watermark, **chưa thể kết luận LoRA là điểm yếu**.
 Nếu LoRA tạo ảnh kém hoặc không học đủ thì TPR thấp cũng chưa chứng minh tính
 chọn lọc. CLIP/FID/KID giúp kiểm tra utility, không chứng minh task adaptation;

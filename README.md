@@ -3,8 +3,8 @@
 ## BitMark → LoRA radioactivity (12/10/2026)
 
 Thí nghiệm riêng dựa trên protocol SERUM, dùng source/checkpoint BitMark chính
-thức: so sánh LoRA và full fine-tune SD2.1, mỗi phương pháp có clean/watermarked
-control, kèm unadapted baseline. Chạy toàn trình trong Conda env riêng:
+thức: so sánh LoRA và full fine-tune SD2.1 trên dữ liệu watermarked, kèm unadapted
+baseline. Không chạy các nhánh train clean kiểu C00/C01. Chạy toàn trình trong Conda env riêng:
 
 ```bash
 bash run_bitmark_lora.sh
