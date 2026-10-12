@@ -1,83 +1,41 @@
-# BitMark → LoRA: thí nghiệm radioactivity riêng
+# BitMark to LoRA: radioactivity experiment
 
-Từ thư mục gốc repository, chạy **thật** toàn trình:
+Run from the repository root:
 
 ```bash
 bash run_bitmark_lora.sh
 ```
 
-Launcher tạo venv riêng `bitmark_lora/.venv`, tự cài bằng pip các phiên bản đã pin,
-tải và kiểm tra checkpoint, sinh dữ liệu, train, sinh ảnh student, chạy **detector
-chính thức**, tính CLIP/FID/KID và tổng hợp kết quả. Không cần activate thủ công.
-Log được in trực tiếp và lưu theo từng stage. Không thay đổi pipeline SERUM cũ.
+The launcher only calls `python3 -u bitmark_lora/run.py` with the supplied arguments.
+It does not install packages, invoke pip/uv, create a venv, or download Python.
+Set `BITMARK_PYTHON=/path/to/python` to use another existing interpreter.
+Dependencies must already be available in that interpreter. Missing dependencies
+produce an import error; the launcher never installs them automatically.
 
-Máy cần Linux x86_64, Python >=3.9 có pip, GPU Ampere trở lên, driver hỗ trợ PyTorch CUDA 12.8,
-Internet và tối thiểu 70 GiB trống theo preflight. Checkpoint teacher, tokenizer,
-T5 và SD2.1 tổng cộng hàng chục GB. Thực nghiệm đầy đủ tốn nhiều giờ tùy GPU.
-`--min-free-gb` chỉ thay đổi kiểm tra dung lượng, không làm thí nghiệm nhẹ hơn.
-FlashAttention dùng wheel CUDA đã pin hash, không tự compile bằng nvcc.
-
-Không cần Conda hoặc sudo. Nếu máy có Python 3.11, launcher dùng Python đó để tạo
-venv. Nếu chỉ có Python 3.9/3.10/3.12..., launcher cài `uv==0.9.3` bằng pip vào
-cache riêng, dùng uv tải Python 3.11 rồi tạo venv. Dependencies ML vẫn được cài
-bằng `venv/bin/python -m pip install -r requirements.txt`. Interpreter tải về nằm
-trong `bitmark_lora/cache/environment/python`; giữ thư mục này khi dùng venv.
-
-Có thể chọn vị trí bằng `BITMARK_VENV=/path/to/venv`, chọn Python bootstrap bằng
-`BITMARK_PYTHON=/path/to/python3`, và chọn cache bootstrap bằng
-`BITMARK_BOOTSTRAP_CACHE=/path/to/cache`. `--cache` là cache model của thí nghiệm,
-độc lập với các biến này. Setup dùng khóa file, kiểm tra phiên bản, `pip check`
-và import các binary. CUDA kernel được kiểm tra khi bắt đầu experiment; setup
-có thể chạy trên login node không có GPU. Nếu venv có sẵn dùng sai Python,
-launcher báo lỗi để người dùng chọn một đường dẫn mới.
-
-Server submit job: cài môi trường **một lần trên login node**, sau đó job chỉ dùng
-env đã có. Không đưa `--setup-only` vào lệnh chạy experiment:
-
-```bash
-bash run_bitmark_lora.sh --setup-only
-# Trong GPU job:
-bash run_bitmark_lora.sh
-```
+The experiment still downloads model checkpoints/data as needed, generates images,
+trains students, runs the detector, and computes CLIP/FID/KID.
 
 ## Google Colab
 
-Chọn GPU Ampere trở lên (ví dụ A100/L4) và đủ RAM/VRAM cho Infinity-2B + T5 và
-SD2.1 full fine-tune. Cấu hình FlashAttention hiện tại không hỗ trợ T4. Launcher
-kiểm tra compute capability trước khi tải môi trường; không tự giảm batch/data
-hay đổi thuật toán để vừa GPU.
-
-Trong cell Colab, có thể clone source lên ổ local:
+From the repository directory:
 
 ```python
-%cd /content
-!git clone https://github.com/ducthinhh1002/Malicious_quantization.git bitmark-colab
-%cd /content/bitmark-colab
+!git pull --ff-only
 !bash run_bitmark_lora.sh
 ```
 
-Nếu repository đã clone, dùng `%cd` vào repository và `!git pull --ff-only` trước
-khi chạy lại. Source nằm trên `/content/drive/...` cũng được hỗ trợ, kể cả đường
-dẫn có khoảng trắng. Launcher tự nhận diện Colab và đặt runtime ở:
+Source files can reside on Drive, including paths containing spaces. Model cache
+and experiment outputs default to local runtime storage:
 
 ```text
-/content/bitmark_runtime/.venv
-/content/bitmark_runtime/cache/environment   # uv và Python riêng
-/content/bitmark_runtime/cache               # model cache
-/content/bitmark_runtime/runs                # ảnh, checkpoint, kết quả
+/content/bitmark_runtime/cache
+/content/bitmark_runtime/runs
 ```
 
-Không đặt venv/cache/output đang chạy trên Drive mount: các thao tác khóa,
-symlink và atomic writes không tương đương ổ Linux local. Bản sửa gọi trực tiếp
-binary `uv==0.9.3` đã cài, kiểm tra phiên bản và bỏ biến `UV_INTERNAL_BIN` kế thừa;
-tránh chọn nhầm uv có sẵn trong Colab. Python notebook 3.13 vẫn có thể bootstrap
-môi trường Python 3.11 riêng.
-
-`/content` là dữ liệu tạm của runtime. Sao lưu thư mục run sang Drive trước khi
-xóa runtime; cache/interpreter/venv cần tạo lại ở phiên mới. Cơ chế resume vẫn yêu
-cầu đúng config/source và model paths đã lưu. Khuyến nghị của Colab là giảm I/O
-trực tiếp trên Drive và xử lý dữ liệu ở ổ VM local:
-https://research.google.com/colaboratory/faq.html
+Back up results to Drive before deleting the runtime. The current pipeline requires
+an Ampere-or-newer GPU for FlashAttention (e.g. A100/L4), compatible preinstalled
+libraries, and sufficient RAM/VRAM. Preflight requires 70 GiB free by default.
+The launcher does not change the Colab environment, batch size, or algorithm.
 
 ## Đánh giá ý tưởng và phạm vi kết luận
 
@@ -257,7 +215,7 @@ python3 -m unittest discover -s bitmark_lora -p 'test_*.py' -v
 
 # Trong môi trường đã cài dependencies: test thật 2 step/trainer với model tiny
 # ngẫu nhiên tạo tại chỗ, reload checkpoint và inference CPU, không tải model:
-bitmark_lora/.venv/bin/python bitmark_lora/smoke_cpu.py
+python3 bitmark_lora/smoke_cpu.py
 ```
 
 Partial training chưa có `complete.json` sẽ **train lại branch đó từ đầu**;
