@@ -80,6 +80,8 @@ class BootstrapTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp, patch.dict(os.environ, {
                 'BITMARK_VENV': str(Path(tmp) / 'venv'), 'BITMARK_BOOTSTRAP_CACHE': str(Path(tmp) / 'cache')}):
             with patch.object(bootstrap, 'ensure_environment', return_value=Path('/private/bin/python')), \
+                 patch.object(bootstrap.platform, 'system', return_value='Linux'), \
+                 patch.object(bootstrap.platform, 'machine', return_value='x86_64'), \
                  patch.object(bootstrap.subprocess, 'run', side_effect=subprocess.CalledProcessError(1, 'pip')), \
                  patch.object(bootstrap.os, 'execv') as execute:
                 with self.assertRaises(subprocess.CalledProcessError):

@@ -148,7 +148,7 @@ def summarize(run):
         low, high = e["paired_bootstrap_ci95_pp"]
         lines.append(f"- {name}: {e['estimate_pp']:.2f} pp; paired CI [{low:.2f}, {high:.2f}] pp.")
     lines += ["", "## Interpretation limits", ""] + [f"- {w}" for w in warnings]
-    (run / "result/README.md").write_text("\n".join(lines) + "\n")
+    (run / "result/README.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
     print("\n".join(lines), flush=True)
 
 

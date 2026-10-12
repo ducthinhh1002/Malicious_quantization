@@ -67,3 +67,24 @@ checkpoints. Full Infinity image generation, FlashAttention CUDA execution,
 real SD2.1 training, and final CLIP/FID/KID have **not** been run here. The launcher
 exercises FlashAttention on CUDA before downloading models. No experimental
 TPR or conclusion about LoRA radioactivity is fabricated or promised.
+
+## Colab generation regression check, 2026-10-12
+
+- Fixed upstream Infinity statistics reading `scale_bit_flips` when
+  `watermark_count_bit_flip=0` (the default). Measurement state resets at every
+  scale; absent measurements omit bit-flip fields. Sampling and RNG calls are
+  unchanged. The patch and vendor hash are recorded in `vendor/provenance.json`.
+- Executed the actual statistics block for two samples, with measurement off,
+  on, and off again. Verified entropy and measured bit-flip fields.
+- Exercised teacher generation orchestration with a fake model: clean/watermarked
+  train/test pairing, clean calibration, image manifests, captions, and reuse of
+  valid images on resume. This is a control-flow test, not an Infinity forward pass.
+- Protocol tests cover matched trainer commands, clean controls, prompt splits,
+  calibration, failed-stage propagation, report generation and tamper detection.
+- Fixed report output to explicitly use UTF-8. Windows test imports use an
+  import-only `fcntl` shim; Linux locking is not tested by that shim.
+- Both shell launchers call existing Python directly and do not call installers.
+  A source change makes old `code_manifest.json` incompatible with `--resume`.
+  Start a new run to retain strict provenance; downloaded model cache is reused.
+
+Full CUDA generation/training must still be checked in the user's Colab runtime.
