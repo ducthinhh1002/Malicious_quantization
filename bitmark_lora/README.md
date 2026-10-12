@@ -6,16 +6,30 @@ Từ thư mục gốc repository, chạy **thật** toàn trình:
 bash run_bitmark_lora.sh
 ```
 
-Launcher chọn/tạo Conda env riêng `bitmark-radioactivity`, cài các phiên bản đã pin,
+Launcher tạo venv riêng `bitmark_lora/.venv`, tự cài bằng pip các phiên bản đã pin,
 tải và kiểm tra checkpoint, sinh dữ liệu, train, sinh ảnh student, chạy **detector
 chính thức**, tính CLIP/FID/KID và tổng hợp kết quả. Không cần activate thủ công.
 Log được in trực tiếp và lưu theo từng stage. Không thay đổi pipeline SERUM cũ.
 
-Máy cần Linux x86_64, Conda, GPU Ampere trở lên, driver hỗ trợ PyTorch CUDA 12.8,
+Máy cần Linux x86_64, Python >=3.9 có pip, GPU Ampere trở lên, driver hỗ trợ PyTorch CUDA 12.8,
 Internet và tối thiểu 70 GiB trống theo preflight. Checkpoint teacher, tokenizer,
 T5 và SD2.1 tổng cộng hàng chục GB. Thực nghiệm đầy đủ tốn nhiều giờ tùy GPU.
 `--min-free-gb` chỉ thay đổi kiểm tra dung lượng, không làm thí nghiệm nhẹ hơn.
 FlashAttention dùng wheel CUDA đã pin hash, không tự compile bằng nvcc.
+
+Không cần Conda hoặc sudo. Nếu máy có Python 3.11, launcher dùng Python đó để tạo
+venv. Nếu chỉ có Python 3.9/3.10/3.12..., launcher cài `uv==0.9.3` bằng pip vào
+cache riêng, dùng uv tải Python 3.11 rồi tạo venv. Dependencies ML vẫn được cài
+bằng `venv/bin/python -m pip install -r requirements.txt`. Interpreter tải về nằm
+trong `bitmark_lora/cache/environment/python`; giữ thư mục này khi dùng venv.
+
+Có thể chọn vị trí bằng `BITMARK_VENV=/path/to/venv`, chọn Python bootstrap bằng
+`BITMARK_PYTHON=/path/to/python3`, và chọn cache bootstrap bằng
+`BITMARK_BOOTSTRAP_CACHE=/path/to/cache`. `--cache` là cache model của thí nghiệm,
+độc lập với các biến này. Setup dùng khóa file, kiểm tra phiên bản, `pip check`
+và import các binary. CUDA kernel được kiểm tra khi bắt đầu experiment; setup
+có thể chạy trên login node không có GPU. Nếu venv có sẵn dùng sai Python,
+launcher báo lỗi để người dùng chọn một đường dẫn mới.
 
 Server submit job: cài môi trường **một lần trên login node**, sau đó job chỉ dùng
 env đã có. Không đưa `--setup-only` vào lệnh chạy experiment:
@@ -25,6 +39,33 @@ bash run_bitmark_lora.sh --setup-only
 # Trong GPU job:
 bash run_bitmark_lora.sh
 ```
+
+## Đánh giá ý tưởng và phạm vi kết luận
+
+Thiết kế đủ để làm pilot kiểm tra **radioactivity phụ thuộc cách adaptation**.
+BitMark đã báo cáo truyền watermark sang SD2.1 full fine-tune, nên full là positive
+control thích hợp cho việc so với LoRA trên cùng dữ liệu. Mặc định rank 4, một seed
+và một ngân sách chưa đủ để khẳng định LoRA là điểm yếu chung hoặc đủ novelty cho
+một bài top conference. SERUM đã báo cáo radioactivity qua LoRA; không nên đặt giả
+thuyết tuyệt đối rằng LoRA không truyền watermark.
+
+Kết quả thuyết phục cần: full truyền rõ, LoRA truyền yếu nhưng vẫn học được phân
+phối/capability của teacher, hiệu ứng lặp lại qua rank/LR/ngân sách và seed. Cùng
+LR và số step giúp kiểm soát recipe nhưng không bảo đảm hai phương pháp hội tụ
+tương đương. CLIP/FID/KID chỉ là kiểm tra utility; ảnh đẹp từ model gốc vẫn có thể
+che việc LoRA chưa học đủ. Cần thêm đánh giá adaptation trên validation độc lập
+khi chuyển từ pilot sang kết luận chính. Nên xét đường cong theo ngân sách vì
+kết quả SERUM trước đó cho thấy hiệu ứng mạnh ở 3k có thể mất ở 20k.
+
+`--train-clean-controls` bổ sung clean-trained LoRA/full để đo interaction
+`(full_wm-full_clean) - (lora_wm-lora_clean)` và loại bớt confound từ fine-tuning
+nói chung. Rank sweep đã có; có thể thêm full+EMA gần recipe tác giả bằng
+`--paper-full-ema`. Những nhánh này tốn thêm compute và chỉ chạy khi bật cờ.
+`--seed` hiện thay cả chia prompt, generation và training; đó là lặp toàn pipeline,
+chưa phải phép đo chỉ biến thiên seed optimizer trên một dataset cố định.
+
+Nguồn đối chiếu: [BitMark recipe chính thức](https://github.com/sprintml/BitMark#radioactivity)
+và [SERUM, Appendix I](https://adam-dziedzic.com/static/assets/papers/serum.pdf).
 
 ## Câu hỏi thực nghiệm và đối chứng
 
@@ -134,7 +175,7 @@ TPR(full_wm) − TPR(lora_r4_wm)
 ```
 
 Báo cáo Wilson CI cho từng detection rate và paired bootstrap CI cho hiệu ứng.
-Không còn clean-trained controls nên không gọi các hiệu ứng này là clean-adjusted;
+Mặc định không có clean-trained controls nên không gọi các hiệu ứng này là clean-adjusted;
 không tách được hoàn toàn ảnh hưởng fine-tuning nói chung. `--analyze` vẫn đọc được
 kết quả run cũ có clean-trained controls theo config đã lưu của chúng.
 Nếu full cũng chưa truyền được watermark, **chưa thể kết luận LoRA là điểm yếu**.
@@ -157,6 +198,9 @@ bash run_bitmark_lora.sh --ranks 4 16 64
 # Thêm đối chứng full+EMA gần recipe paper, tách khỏi matched full controls:
 bash run_bitmark_lora.sh --paper-full-ema
 
+# Pilot mở rộng để kiểm tra capacity và ảnh hưởng fine-tuning nói chung:
+bash run_bitmark_lora.sh --ranks 4 16 64 --train-clean-controls --paper-full-ema
+
 # Chạy seed khác độc lập:
 bash run_bitmark_lora.sh --seed 1
 
@@ -166,7 +210,7 @@ bash run_bitmark_lora.sh --resume /absolute/path/to/run_...
 # Xem cấu hình mà không chạy; đây là lựa chọn tường minh, không phải mặc định:
 bash run_bitmark_lora.sh --plan-only
 
-# Tổng hợp lại từ dữ liệu thật, không cần GPU/Conda:
+# Tổng hợp lại từ dữ liệu thật, chỉ cần Python standard library:
 bash run_bitmark_lora.sh --analyze /absolute/path/to/run_...
 
 # Bộ kiểm tra integrity/statistics/command wiring CPU:
@@ -174,7 +218,7 @@ python3 -m unittest discover -s bitmark_lora -p 'test_*.py' -v
 
 # Trong môi trường đã cài dependencies: test thật 2 step/trainer với model tiny
 # ngẫu nhiên tạo tại chỗ, reload checkpoint và inference CPU, không tải model:
-conda run -n bitmark-radioactivity python bitmark_lora/smoke_cpu.py
+bitmark_lora/.venv/bin/python bitmark_lora/smoke_cpu.py
 ```
 
 Partial training chưa có `complete.json` sẽ **train lại branch đó từ đầu**;

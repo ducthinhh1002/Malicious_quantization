@@ -1,5 +1,19 @@
 # Validation, 2026-10-12
 
+No-Conda launcher update:
+
+- 18 protocol/bootstrap tests passed on Linux, including the optional clean-trained
+  controls, read-only CLI routing, existing-venv reuse, and setup failure propagation.
+- On a host with Python 3.12 and no `python3.11`, the bootstrap installed private
+  uv 0.9.3 through pip, downloaded Python 3.11.14, created the venv, installed pip
+  with ensurepip, and successfully reused the same venv on the second call.
+- Restored LF bytes for 45 vendor files whose Windows CRLF checkout broke their
+  recorded hashes. All vendor hashes match the unchanged provenance manifest.
+  Directory-level Git attributes now enforce LF on future checkouts.
+- Full dependency installation was stopped at the user's request. The new
+  deployment has not completed its binary/CUDA checks or an end-to-end GPU run.
+  Earlier CPU trainer checks below remain historical evidence, not GPU validation.
+
 Follow-up: new runs now omit both clean-trained students and clean training image
 generation. All 12 protocol tests pass, including reporting with no clean-trained
 files and compatibility with original run manifests. The trainer implementations

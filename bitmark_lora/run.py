@@ -33,6 +33,7 @@ def parse_args(argv=None):
     p.add_argument("--fpr", type=float, default=.01)
     p.add_argument("--lora-only", action="store_true", help="Omit matched full controls; inference about LoRA weakness remains limited")
     p.add_argument("--paper-full-ema", action="store_true", help="Also run the paper-style full+EMA positive control")
+    p.add_argument("--train-clean-controls", action="store_true", help="Also train matched clean LoRA/full controls to isolate generic adaptation effects")
     p.add_argument("--skip-utility", action="store_true", help="Explicitly omit CLIP/FID/KID (reported as unavailable)")
     p.add_argument("--cache", type=Path, default=HERE / "cache")
     p.add_argument("--output", type=Path, help="Create a NEW run directory here")
@@ -60,7 +61,6 @@ def parse_args(argv=None):
 def config_from_args(a):
     ignored = {"output", "resume", "plan_only", "analyze", "min_free_gb"}
     config = {k: str(v.resolve()) if isinstance(v, Path) else v for k, v in vars(a).items() if k not in ignored}
-    config["train_clean_controls"] = False
     return config
 
 
@@ -146,7 +146,7 @@ def main(argv=None):
     if a.plan_only:
         print(json.dumps({"config": c, "students": branches(c),
               "baseline": "unadapted SD2.1", "teacher": "official Infinity-2B / BitMark delta=2, all scales, G=01,10",
-              "training": "official Diffusers trainers; fixed final epoch; watermarked data only for new runs",
+              "training": "official Diffusers trainers; fixed final epoch; clean-trained controls optional",
               "expected_updates_per_student": ((c['train_n']+c['batch_size']-1)//c['batch_size'])*c['epochs'],
               "detection": "official tokenizer+detector, frozen clean threshold; |z| primary + signed-z secondary",
               "execute": "bash run_bitmark_lora.sh (omit --plan-only)"}, indent=2))

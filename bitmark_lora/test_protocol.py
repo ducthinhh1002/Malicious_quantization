@@ -41,6 +41,12 @@ class ProtocolTests(unittest.TestCase):
         self.assertEqual(b['name'], 'paper_full_wm_ema')
         self.assertIn('--use_ema', training_command(c, {'student': '/model'}, Path('/run'), b))
 
+    def test_optional_clean_controls(self):
+        c = config_from_args(parse_args(['--train-clean-controls']))
+        self.assertEqual(training_conditions(c), ('clean', 'wm'))
+        self.assertEqual([b['name'] for b in branches(c)],
+                         ['lora_r4_clean', 'lora_r4_wm', 'full_clean', 'full_wm'])
+
     def test_split_no_image_or_caption_leak(self):
         anns = [{'image_id': i//2, 'id': i, 'caption': f'image {i//2}'} for i in range(200)]
         a = split_prompts(anns, 0, {'train': 20, 'calibration': 30, 'test': 40})

@@ -13,3 +13,7 @@ __pycache__/
 /config.txt
 /tmp/
 /quet
+/bitmark_lora/.venv/
+/bitmark_lora/.venv.lock
+/bitmark_lora/cache/
+/bitmark_lora/runs/
