@@ -6,7 +6,9 @@ Run from the repository root:
 bash run_bitmark_lora.sh
 ```
 
-The launcher only calls `python3 -u bitmark_lora/run.py` with the supplied arguments.
+The launcher calls an existing Python interpreter with the supplied arguments.
+It prefers `/content/bitmark_runtime/.venv/bin/python` (or the runtime root set by
+`BITMARK_RUNTIME_ROOT`), then `bitmark_lora/.venv/bin/python`, then `python3`.
 It does not install packages, invoke pip/uv, create a venv, or download Python.
 Set `BITMARK_PYTHON=/path/to/python` to use another existing interpreter.
 Dependencies must already be available in that interpreter. Missing dependencies
@@ -30,12 +32,9 @@ If the Colab system Python cannot import T5, check the existing environment:
 !python3 bitmark_lora/check_runtime.py
 ```
 
-If a previously working Python 3.11 environment still exists, use it directly
-without installation:
-
-```python
-!BITMARK_PYTHON=/content/bitmark_runtime/.venv/bin/python bash run_bitmark_lora.sh
-```
+The default command automatically reuses the existing Python 3.11 environment
+at `/content/bitmark_runtime/.venv/bin/python` when present. No extra environment
+variable is needed. The selected interpreter is printed before launch.
 
 The pipeline checks T5/CLIP/SD/LoRA imports before model downloads or generation.
 Backend flags select PyTorch and disable optional TensorFlow/Flax imports. The
