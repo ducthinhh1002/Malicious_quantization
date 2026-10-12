@@ -1,5 +1,18 @@
 # Hướng dẫn chạy thí nghiệm malicious quantization cho watermark diffusion
 
+## BitMark → LoRA radioactivity (12/10/2026)
+
+Thí nghiệm riêng dựa trên protocol SERUM, dùng source/checkpoint BitMark chính
+thức: so sánh LoRA và full fine-tune SD2.1, mỗi phương pháp có clean/watermarked
+control, kèm unadapted baseline. Chạy toàn trình trong Conda env riêng:
+
+```bash
+bash run_bitmark_lora.sh
+```
+
+Code, protocol, cách resume và các giới hạn diễn giải: [bitmark_lora/README.md](bitmark_lora/README.md).
+Kết quả: `bitmark_lora/runs/run_<ngày_giờ>/result/README.md`.
+
 ## SleeperMark: quality-constrained public-trigger W4 control (01/10/2026)
 
 The separate public-trigger distillation **defense control** matches the
