@@ -24,6 +24,24 @@ From the repository directory:
 !bash run_bitmark_lora.sh
 ```
 
+If the Colab system Python cannot import T5, check the existing environment:
+
+```python
+!python3 bitmark_lora/check_runtime.py
+```
+
+If a previously working Python 3.11 environment still exists, use it directly
+without installation:
+
+```python
+!BITMARK_PYTHON=/content/bitmark_runtime/.venv/bin/python bash run_bitmark_lora.sh
+```
+
+The pipeline checks T5/CLIP/SD/LoRA imports before model downloads or generation.
+Backend flags select PyTorch and disable optional TensorFlow/Flax imports. The
+diagnostic command shows the original import exception; it does not repair or
+modify installed packages.
+
 Source files can reside on Drive, including paths containing spaces. Model cache
 and experiment outputs default to local runtime storage:
 

@@ -6,6 +6,10 @@ import os
 import tempfile
 from pathlib import Path
 
+# All pipeline models use PyTorch. Set these before Transformers is imported,
+# including when running a stage directly in a Colab subprocess.
+os.environ.update(USE_TORCH="1", USE_TF="0", USE_FLAX="0", FORCE_TF_AVAILABLE="0")
+
 HERE = Path(__file__).resolve().parent
 
 

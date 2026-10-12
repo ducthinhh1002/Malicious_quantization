@@ -101,6 +101,15 @@ def stage(run, label, command):
 def preflight(a):
     for path in [a.cache, a.resume or a.output or runtime_root() / 'runs']:
         require_local_runtime_path(path)
+    from check_runtime import check_model_imports
+    try:
+        check_model_imports()
+    except Exception as exc:
+        raise RuntimeError(
+            f"Existing Python environment cannot import pipeline models: {sys.executable}. "
+            "Run that interpreter with bitmark_lora/check_runtime.py to see the original error. "
+            "Select a working existing interpreter with BITMARK_PYTHON; no automatic installation."
+        ) from exc
     import torch
     import flash_attn
     if not torch.cuda.is_available():
