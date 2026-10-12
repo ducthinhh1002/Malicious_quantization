@@ -2,7 +2,11 @@
   "bitmark": {
     "repository": "https://github.com/sprintml/BitMark",
     "commit": "dd21db32dc86ac70526229e678a027cc06f5c296",
-    "files": "Infinity plus official wrapper, detector and helper; unchanged"
+    "files": "Infinity plus official wrapper, detector and helper; local patches listed below",
+    "infinity_original_sha256": "e7a1a74ed26a42d806d4dfe2629078ff7079524a861c714dd1a3eb6480bf2eba",
+    "patches": [
+      "Guard optional bit-flip statistics and reset them per scale; no changes to watermark sampling or RNG calls."
+    ]
   },
   "diffusers": {
     "repository": "https://github.com/huggingface/diffusers",
@@ -34,7 +38,7 @@
     "bitmark/Infinity/infinity/models/ema.py": "f1774f473801808706a30ee7c0a69bf260b68e9f638680019e30f605f27f5e42",
     "bitmark/Infinity/infinity/models/flex_attn.py": "d39f7da07caa6f80cd40e16e2781da3aa80a1fd5850de0a8d40fac36e1afe65d",
     "bitmark/Infinity/infinity/models/fused_op.py": "6caad7599d668551b9591cda68d85f831cc54f8a818780bdc7c2972a97bb49d4",
-    "bitmark/Infinity/infinity/models/infinity.py": "e7a1a74ed26a42d806d4dfe2629078ff7079524a861c714dd1a3eb6480bf2eba",
+    "bitmark/Infinity/infinity/models/infinity.py": "dc64ef92616b65b4b6793f3a8fa5f3799f33425e47e6c3ec099fced7ecff10af",
     "bitmark/Infinity/infinity/models/init_param.py": "4b3aea2c8129fa2c1572bd6ff6d7856c4b7d5ff8ffbf82e3b0924a47579a60bf",
     "bitmark/Infinity/infinity/models/t5.py": "010ffd847b909800597f1b7572eb828fe5f57e8e3e65fdd03a872e00eb63e6f1",
     "bitmark/Infinity/infinity/utils/amp_opt.py": "65f9d0f5602a155236ebebaeb452d105b619125888a996814c8310f11ddfc9c7",
