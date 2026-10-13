@@ -16,7 +16,10 @@
     "full_original_sha256": "729effb6c59cb7a1e5807665a271a0098559ae8e530f115894ea7a80c0ab214b",
     "patches": [
       "Materialize LoRA parameters for repeated gradient clipping (SERUM fix).",
-      "Both trainers: map CLI report_to=none to Python None for Accelerate 1.10 (no remote trackers)."
+      "Both trainers: map CLI report_to=none to Python None for Accelerate 1.10 (no remote trackers).",
+      "Inference-only snapshots at predeclared steps; no detector feedback in trainer.",
+      "Configurable attention / attention+Conv2d PEFT LoRA targets and parameter audit.",
+      "Save PEFT-native adapter state/config for reliable mixed Linear+Conv2d reload."
     ]
   },
   "files": {
@@ -64,7 +67,7 @@
     "bitmark/extended_watermark_processor.py": "6feb414b41a9cbc488050be3943c44e4e163e6fbfdc2a60d4438e264447df69c",
     "bitmark/helper.py": "c867f2a69a2c93a677b31b3e1c462d65816daf95cbb5b6931c6c402904ff2241",
     "diffusers/LICENSE": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
-    "diffusers/train_text_to_image.py": "874674c88cfc1a92a0cd7ceeb7737fe7674a80b92539da004e3c59123b294af8",
-    "diffusers/train_text_to_image_lora.py": "629204bb25b84e11fae2de4f1a596d023deaf21e846ac748ec90339f449ec788"
+    "diffusers/train_text_to_image.py": "a8c0f3e01f59f0eb40cabaa34620a283a47df5704c3a17480e7246cea00f1bec",
+    "diffusers/train_text_to_image_lora.py": "c42fdf1a61f897139e27b2bf60ecff0ff114cfc799b1d209dd3aca6087733df8"
   }
 }

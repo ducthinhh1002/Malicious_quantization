@@ -73,25 +73,75 @@ def main():
                 f.write(json.dumps({'file_name': f'{i}.png', 'text': 'a test'})+'\n')
         env = os.environ.copy()
         env.update(OMP_NUM_THREADS='2', MKL_NUM_THREADS='2', CUDA_VISIBLE_DEVICES='', TOKENIZERS_PARALLELISM='false')
-        for kind in ('lora', 'full'):
-            name = 'train_text_to_image_lora.py' if kind == 'lora' else 'train_text_to_image.py'
+        for kind in ('lora', 'lora_conv', 'full'):
+            is_lora = kind.startswith('lora')
+            name = 'train_text_to_image_lora.py' if is_lora else 'train_text_to_image.py'
             out = root/kind
             cmd = [sys.executable, str(HERE/'vendor/diffusers'/name),
                    '--pretrained_model_name_or_path', str(base), '--train_data_dir', str(data),
                    '--output_dir', str(out), '--resolution', '32', '--center_crop',
                    '--train_batch_size', '1', '--max_train_steps', '2', '--gradient_checkpointing',
                    '--learning_rate', '0.0001', '--mixed_precision', 'no', '--report_to', 'none',
-                   '--checkpointing_steps', '1000000', '--seed', '0']
-            if kind == 'lora':
-                cmd += ['--rank', '4']
+                   '--checkpointing_steps', '1000000', '--snapshot_steps', '1', '2', '--seed', '0']
+            if is_lora:
+                cmd += ['--rank', '4', '--adapter_scope', 'attention_conv' if kind == 'lora_conv' else 'attention']
             subprocess.run(cmd, check=True, env=env)
-            model = StableDiffusionPipeline.from_pretrained(base if kind == 'lora' else out)
-            if kind == 'lora':
-                tensors = load_file(str(out/'pytorch_lora_weights.safetensors'))
-                assert any(t.abs().max().item() > 0 for k, t in tensors.items() if 'lora.up' in k)
-                model.load_lora_weights(out)
+            model = StableDiffusionPipeline.from_pretrained(base if is_lora else out)
+            if is_lora:
+                tensors = load_file(str(out/'adapter_model.safetensors'))
+                assert any(t.abs().max().item() > 0 for k, t in tensors.items() if 'lora_B' in k)
+                from student import load_adapter
+                load_adapter(model.unet, out, model)
             else:
                 assert any(not torch.equal(p, q) for p, q in zip(pipe.unet.parameters(), model.unet.parameters()))
+            # Inference-only snapshots must load, including Conv2d LoRA tensors.
+            snapshot = out/'snapshot-2'
+            if is_lora:
+                snap = load_file(str(snapshot/'adapter_model.safetensors'))
+                assert all(torch.equal(t, snap[k]) for k,t in tensors.items())
+                if kind == 'lora_conv':
+                    assert any(t.ndim == 4 and t.abs().max().item() > 0 for k,t in snap.items() if 'lora_B' in k)
+                audit = json.loads((out/'adapter_audit.json').read_text())
+                assert audit['trainable_parameters'] > 0
+                reloaded = StableDiffusionPipeline.from_pretrained(base)
+                load_adapter(reloaded.unet, snapshot, reloaded)
+            else:
+                reloaded = StableDiffusionPipeline.from_pretrained(base)
+                reloaded.unet = UNet2DConditionModel.from_pretrained(snapshot/'unet')
+            # Exercise the production selection loader, not just direct PEFT/Diffusers APIs.
+            from common import write_json
+            from student import checkpoint_hashes, load_pipeline
+            branch_name = {'lora': 'lora_r4_wm', 'lora_conv': 'lora_r4_conv_wm', 'full': 'full_wm'}[kind]
+            (root/'students').mkdir(exist_ok=True)
+            (root/'students'/branch_name).symlink_to(out, target_is_directory=True)
+            write_json(root/'config.json', {'ranks':[4], 'adapter_scopes':['attention','attention_conv'],
+                'train_clean_controls':False, 'lora_only':False, 'paper_full_ema':False, 'checkpoint_steps':[1,2]})
+            write_json(root/'assets.json', {'student':str(base)})
+            write_json(out/'complete.json', {'checkpoints':checkpoint_hashes(out)})
+            write_json(root/'result/selection'/f'{branch_name}.json',
+                       {'selected_step':2, 'checkpoint_hashes':checkpoint_hashes(snapshot)})
+            selected_pipe, selected_hashes = load_pipeline(root, branch_name, device='cpu')
+            assert selected_hashes == checkpoint_hashes(snapshot)
+            model.unet.eval(); reloaded.unet.eval()
+            x = torch.randn(1,4,16,16)
+            hidden = torch.randn(1,77,32)
+            with torch.inference_mode():
+                before = model.unet(x, torch.tensor([5]), hidden).sample
+                after = reloaded.unet(x, torch.tensor([5]), hidden).sample
+            torch.testing.assert_close(before, after, rtol=1e-5, atol=1e-6)
+            with torch.inference_mode():
+                selected_prediction = selected_pipe.unet(x, torch.tensor([5]), hidden).sample
+            torch.testing.assert_close(before, selected_prediction, rtol=1e-5, atol=1e-6)
+            # The production validation objective must reproduce exactly on cached draws.
+            from validation import denoising_loss
+            from diffusers import DDPMScheduler
+            from safetensors.torch import save_file
+            cache = root/'validation.safetensors'
+            save_file({'latent': x, 'text': hidden}, str(cache))
+            noise_scheduler = DDPMScheduler(num_train_timesteps=100, prediction_type='v_prediction')
+            first = denoising_loss(reloaded.unet, noise_scheduler, [cache], 0, 2, device='cpu')
+            second = denoising_loss(reloaded.unet, noise_scheduler, [cache], 0, 2, device='cpu')
+            assert first == second and first['denoising_mse'] > 0
             with torch.inference_mode():
                 image = model('a test', height=32, width=32, num_inference_steps=2).images[0]
             assert image.size == (32, 32)

@@ -15,7 +15,7 @@ from student import branches, training_command, training_conditions
 
 class ProtocolTests(unittest.TestCase):
     def config(self, **overrides):
-        c = config_from_args(parse_args([]))
+        c = config_from_args(parse_args(["--ranks", "4", "--adapter-scopes", "attention"]))
         c.update(overrides)
         return c
 
@@ -31,6 +31,7 @@ class ProtocolTests(unittest.TestCase):
             cmd = training_command(c, {'student': '/pinned/model'}, Path('/run'), b)
             self.assertEqual(cmd[cmd.index('--learning_rate')+1], '0.0001')
             self.assertEqual(cmd[cmd.index('--num_train_epochs')+1], '5')
+            self.assertEqual(cmd[cmd.index('--max_train_steps')+1], '5000')
             self.assertNotIn('--use_ema', cmd)
             self.assertFalse(any('scores' in x or 'test' in x for x in cmd))
             self.assertNotIn('--push_to_hub', cmd)
@@ -42,7 +43,7 @@ class ProtocolTests(unittest.TestCase):
         self.assertIn('--use_ema', training_command(c, {'student': '/model'}, Path('/run'), b))
 
     def test_optional_clean_controls(self):
-        c = config_from_args(parse_args(['--train-clean-controls']))
+        c = config_from_args(parse_args(['--train-clean-controls', '--ranks', '4', '--adapter-scopes', 'attention']))
         self.assertEqual(training_conditions(c), ('clean', 'wm'))
         self.assertEqual([b['name'] for b in branches(c)],
                          ['lora_r4_clean', 'lora_r4_wm', 'full_clean', 'full_wm'])
@@ -99,6 +100,7 @@ class ProtocolTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as d, contextlib.redirect_stdout(io.StringIO()):
             run = Path(d)
             c = self.config(test_n=10, calibration_n=100)
+            c.pop('checkpoint_steps')
             if legacy:
                 del c['train_clean_controls']
             write_json(run/'config.json', c)

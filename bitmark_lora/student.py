@@ -15,9 +15,12 @@ def training_conditions(config):
 
 def branches(config):
     result = []
-    for rank in config["ranks"]:
-        for condition in training_conditions(config):
-            result.append({"name": f"lora_r{rank}_{condition}", "kind": "lora", "rank": rank, "condition": condition})
+    for scope in config.get("adapter_scopes", ["attention"]):
+        for rank in config["ranks"]:
+            for condition in training_conditions(config):
+                prefix = f"lora_r{rank}" + ("_conv" if scope == "attention_conv" else "")
+                result.append({"name": f"{prefix}_{condition}", "kind": "lora", "rank": rank,
+                               "scope": scope, "condition": condition})
     if not config["lora_only"]:
         for condition in training_conditions(config):
             result.append({"name": f"full_{condition}", "kind": "full", "condition": condition})
@@ -34,12 +37,16 @@ def training_command(config, assets, run, branch):
            "--output_dir", str(run / "students" / branch["name"]),
            "--resolution", "512", "--center_crop", "--train_batch_size", str(config["batch_size"]),
            "--gradient_accumulation_steps", "1", "--gradient_checkpointing",
-           "--num_train_epochs", str(config["epochs"]), "--learning_rate", str(config["learning_rate"]),
+           "--num_train_epochs", str(config.get("epochs") or 5), "--learning_rate", str(config["learning_rate"]),
            "--mixed_precision", config["precision"], "--lr_scheduler", "constant", "--lr_warmup_steps", "0",
            "--checkpointing_steps", "1000000000", "--report_to", "none", "--seed", str(config["seed"]),
            "--dataloader_num_workers", "0", "--max_grad_norm", "1.0"]
     if branch["kind"] == "lora":
-        cmd += ["--rank", str(branch["rank"])]
+        cmd += ["--rank", str(branch["rank"]), "--adapter_scope", branch.get("scope", "attention")]
+    if config.get("max_train_steps"):
+        cmd += ["--max_train_steps", str(config["max_train_steps"])]
+    if config.get("checkpoint_steps"):
+        cmd += ["--snapshot_steps", *map(str, config["checkpoint_steps"])]
     if branch.get("ema"):
         cmd += ["--use_ema"]
     return cmd
@@ -47,9 +54,10 @@ def training_command(config, assets, run, branch):
 
 def checkpoint_hashes(directory):
     files = sorted(directory.rglob("*.safetensors"))
+    configs = sorted(directory.rglob("adapter_config.json"))
     if not files:
         raise RuntimeError(f"Training returned without a checkpoint: {directory}")
-    return {str(p.relative_to(directory)): sha256(p) for p in files}
+    return {str(p.relative_to(directory)): sha256(p) for p in files + configs}
 
 
 def train(run, name):
@@ -69,7 +77,8 @@ def train(run, name):
             raise RuntimeError(f"Training image changed: {path}")
     command = training_command(config, assets, run, branch)
     freeze(out / "protocol.json", {"command": command, "branch": branch, "training_images": expected,
-                                   "selection": "fixed final epoch; no owner scores or test samples used"})
+                                   "selection": ("minimum held-out denoising MSE; detector and utility excluded" if config.get("checkpoint_steps")
+                                                 else "fixed final epoch; no owner scores or test samples used")})
     if (out / "complete.json").exists():
         if read_json(out / "complete.json")["checkpoints"] != checkpoint_hashes(out):
             raise RuntimeError(f"Saved checkpoint changed: {out}")
@@ -77,7 +86,7 @@ def train(run, name):
         return
     # A partial run restarts deterministically. No silent selection of an earlier checkpoint.
     subprocess.run(command, check=True, cwd=HERE)
-    checkpoint = out / "pytorch_lora_weights.safetensors" if branch["kind"] == "lora" else out / "unet/diffusion_pytorch_model.safetensors"
+    checkpoint = out / "adapter_model.safetensors" if branch["kind"] == "lora" else out / "unet/diffusion_pytorch_model.safetensors"
     tensors = load_file(str(checkpoint))
     if not all(torch.isfinite(t).all().item() for t in tensors.values()):
         raise RuntimeError(f"Nonfinite trained weights: {checkpoint}")
@@ -90,43 +99,93 @@ def train(run, name):
         initial_tensors = load_file(str(initial))
         if not any(not torch.equal(v, initial_tensors[k]) for k, v in tensors.items()):
             raise RuntimeError("Full UNet did not change during training")
+    for step in config.get("checkpoint_steps", []):
+        checkpoint_hashes(out / f"snapshot-{step}")
     write_json(out / "complete.json", {"checkpoints": checkpoint_hashes(out), "finite_weights": True,
                                        "actual_updates_verified": True})
 
 
-def generate(run, name):
+def load_adapter(unet, directory, pipe=None):
+    from peft import LoraConfig, set_peft_model_state_dict
+    from safetensors.torch import load_file
+    directory = Path(directory)
+    native = directory / "adapter_model.safetensors"
+    if not native.exists():
+        if pipe is None:
+            raise RuntimeError("Legacy adapter needs Diffusers pipeline loader")
+        pipe.load_lora_weights(str(directory))
+        return
+    config = LoraConfig.from_pretrained(str(directory))
+    unet.add_adapter(config)
+    state = load_file(str(native))
+    from peft import get_peft_model_state_dict
+    expected = get_peft_model_state_dict(unet)
+    if set(state) != set(expected) or any(state[k].shape != expected[k].shape for k in state):
+        raise RuntimeError("Adapter tensor keys/shapes do not match its declared targets")
+    result = set_peft_model_state_dict(unet, state)
+    missing = [k for k in result.missing_keys if "lora_" in k]
+    if result.unexpected_keys or missing:
+        raise RuntimeError(f"Adapter did not load completely: {result.unexpected_keys}, {missing}")
+
+
+def load_pipeline(run, name, checkpoint_dir=None, device="cuda", dtype=None):
     import torch
     from diffusers import StableDiffusionPipeline, UNet2DConditionModel
-    from teacher import valid_image
     config, assets = read_json(run / "config.json"), read_json(run / "assets.json")
-    prompts = read_json(run / "prompts.json")["test"]
-    pipe = StableDiffusionPipeline.from_pretrained(assets["student"], torch_dtype=torch.float16,
+    dtype = dtype or (torch.float16 if device == "cuda" else torch.float32)
+    pipe = StableDiffusionPipeline.from_pretrained(assets["student"], torch_dtype=dtype,
                                                   safety_checker=None, local_files_only=True)
     checkpoint = None
     if name != "unadapted":
         branch = next(b for b in branches(config) if b["name"] == name)
-        directory = run / "students" / name
-        checkpoint = read_json(directory / "complete.json")["checkpoints"]
-        if checkpoint != checkpoint_hashes(directory):
-            raise RuntimeError(f"Changed checkpoint before generation: {directory}")
-        if branch["kind"] == "lora":
-            pipe.load_lora_weights(str(directory))
+        root = run / "students" / name
+        recorded = read_json(root / "complete.json")["checkpoints"]
+        if checkpoint_dir is not None:
+            directory = Path(checkpoint_dir)
+        elif config.get("checkpoint_steps"):
+            selected = read_json(run / "result" / "selection" / f"{name}.json")
+            directory = root / f"snapshot-{selected['selected_step']}"
+            if checkpoint_hashes(directory) != selected["checkpoint_hashes"]:
+                raise RuntimeError(f"Selected weights changed: {directory}")
         else:
-            pipe.unet = UNet2DConditionModel.from_pretrained(directory / "unet", torch_dtype=torch.float16,
+            directory = root
+        checkpoint = checkpoint_hashes(directory)
+        for relative, digest in checkpoint.items():
+            key = str((directory / relative).relative_to(root))
+            if recorded.get(key) != digest:
+                raise RuntimeError(f"Changed checkpoint before generation: {directory / relative}")
+        if branch["kind"] == "lora":
+            load_adapter(pipe.unet, directory, pipe)
+        else:
+            pipe.unet = UNet2DConditionModel.from_pretrained(directory / "unet", torch_dtype=dtype,
                                                             local_files_only=True)
-    pipe.to("cuda")
+    pipe.to(device=device, dtype=dtype)
+    pipe.unet.eval()
+    pipe.vae.eval()
+    pipe.text_encoder.eval()
     pipe.set_progress_bar_config(disable=True)
-    out = run / "images" / name
+    return pipe, checkpoint
+
+
+def generate_images(run, name, pipe, checkpoint, split="test", label=None):
+    import torch
+    from teacher import valid_image
+    config = read_json(run / "config.json")
+    prompts = read_json(run / "prompts.json")[split]
+    if split == "validation":
+        prompts = prompts[:config["validation_generation_n"]]
+    label = label or name
+    out = run / "images" / label
     out.mkdir(parents=True, exist_ok=True)
     freeze(out / "generation.json", {"checkpoint": checkpoint, "prompts_sha256": sha256(run / "prompts.json"),
-           "seed": config["seed"], "steps": config["inference_steps"], "cfg": 7.5,
+           "seed": config["seed"], "split": split, "steps": config["inference_steps"], "cfg": 7.5,
            "resolution": 512, "batch_size": config["inference_batch"], "scheduler": type(pipe.scheduler).__name__,
            "dtype": "float16", "device": "cuda"})
     for start in range(0, len(prompts), config["inference_batch"]):
         batch = prompts[start:start+config["inference_batch"]]
         paths = [out / image_name(start+j) for j in range(len(batch))]
         if not all(valid_image(p, (512, 512)) for p in paths):
-            generators = [torch.Generator("cuda").manual_seed(config["seed"] * 1000000 + 500000 + start+j)
+            generators = [torch.Generator("cuda").manual_seed(config["seed"] * 1000000 + (700000 if split == "validation" else 500000) + start+j)
                           for j in range(len(batch))]
             with torch.inference_mode():
                 images = pipe([r["text"] for r in batch], height=512, width=512, generator=generators,
@@ -135,8 +194,13 @@ def generate(run, name):
                 temp = path.with_suffix(".partial.png")
                 image.save(temp)
                 temp.replace(path)
-        print(f"Student {name}: {start+len(batch)}/{len(prompts)}", flush=True)
+        print(f"Student {label}: {start+len(batch)}/{len(prompts)}", flush=True)
     freeze(out / "image_hashes.json", [{"file": p.name, "sha256": sha256(p)} for p in sorted(out.glob("sample_*.png"))])
+
+
+def generate(run, name):
+    pipe, checkpoint = load_pipeline(run, name)
+    generate_images(run, name, pipe, checkpoint)
 
 
 if __name__ == "__main__":

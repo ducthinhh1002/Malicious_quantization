@@ -41,24 +41,36 @@ Backend flags select PyTorch and disable optional TensorFlow/Flax imports. The
 diagnostic command shows the original import exception; it does not repair or
 modify installed packages.
 
-Source files can reside on Drive, including paths containing spaces. Model cache
-and experiment outputs default to local runtime storage:
+Source files can reside on Drive, including paths containing spaces. **Runs now
+persist beside the root launcher**, independent of the runtime/cache location:
 
 ```text
-/content/bitmark_runtime/cache
-/content/bitmark_runtime/runs
+/content/drive/MyDrive/Malicious_quantization/
+  run_bitmark_lora.sh
+  bitmark_lora/
+  run_bitmark_YYYYMMDD_HHMMSS_microseconds/
+    run.log
+    logs/
+    students/
+    images/
+    result/
 ```
 
-Back up results to Drive before deleting the runtime. The current pipeline requires
-an Ampere-or-newer GPU for FlashAttention (e.g. A100/L4), compatible preinstalled
-libraries, and sufficient RAM/VRAM. Preflight requires 70 GiB free by default.
-The launcher does not change the Colab environment, batch size, or algorithm.
+Launch the copy of `run_bitmark_lora.sh` inside your mounted Drive repository.
+The default uses the script's repository directory, not the shell working directory.
+`--output /absolute/path/to/new_run` or `BITMARK_RESULTS_ROOT` overrides this.
+Only environments, model caches and same-host locks stay under
+`/content/bitmark_runtime`. A mounted Drive must remain available while running.
+Locks protect simultaneous writers on one host, not different Colab machines.
+The GPU must be Ampere or newer (e.g. A100/L4). Preflight checks imports/kernels
+and requires 70 GiB free on cache and output volumes by default. The launcher
+does not install packages or change the active environment.
 
 ## Đánh giá ý tưởng và phạm vi kết luận
 
 Thiết kế đủ để làm pilot kiểm tra **radioactivity phụ thuộc cách adaptation**.
 BitMark đã báo cáo truyền watermark sang SD2.1 full fine-tune, nên full là positive
-control thích hợp cho việc so với LoRA trên cùng dữ liệu. Mặc định rank 4, một seed
+control thích hợp cho việc so với LoRA trên cùng dữ liệu. Mặc định rank 4/16/32, một seed
 và một ngân sách chưa đủ để khẳng định LoRA là điểm yếu chung hoặc đủ novelty cho
 một bài top conference. SERUM đã báo cáo radioactivity qua LoRA; không nên đặt giả
 thuyết tuyệt đối rằng LoRA không truyền watermark.
@@ -67,9 +79,9 @@ Kết quả thuyết phục cần: full truyền rõ, LoRA truyền yếu nhưng
 phối/capability của teacher, hiệu ứng lặp lại qua rank/LR/ngân sách và seed. Cùng
 LR và số step giúp kiểm soát recipe nhưng không bảo đảm hai phương pháp hội tụ
 tương đương. CLIP/FID/KID chỉ là kiểm tra utility; ảnh đẹp từ model gốc vẫn có thể
-che việc LoRA chưa học đủ. Cần thêm đánh giá adaptation trên validation độc lập
-khi chuyển từ pilot sang kết luận chính. Nên xét đường cong theo ngân sách vì
-kết quả SERUM trước đó cho thấy hiệu ứng mạnh ở 3k có thể mất ở 20k.
+che việc LoRA chưa học đủ. Pipeline đánh giá adaptation trên validation độc lập và lưu đường cong theo ngân sách.
+SERUM seed-0 nội bộ đã chạy rank 4 tới 20k nhưng chỉ đạt 4,42% detection;
+không có bảo đảm rằng tăng bước hoặc rank sẽ cải thiện radioactivity.
 
 `--train-clean-controls` bổ sung clean-trained LoRA/full để đo interaction
 `(full_wm-full_clean) - (lora_wm-lora_clean)` và loại bớt confound từ fine-tuning
@@ -87,33 +99,67 @@ Mục tiêu: với dữ liệu BitMark, LoRA có truyền tín hiệu watermark 
 fine-tune hay không? Đây là **thí nghiệm truyền watermark qua adaptation**,
 không phải quantization attack, không phải thêm watermark trực tiếp vào SD2.1.
 
-Mặc định có 3 student/evaluation branches; không chạy train clean kiểu C00/C01:
+Mặc định chạy **6 LoRA + 1 full UNet**, cùng unadapted baseline; không train C00/C01:
 
 | Nhánh | Adaptation | Dữ liệu train |
 |---|---|---|
 | `unadapted` | Không | Không |
-| `lora_r4_wm` | LoRA rank 4, attention q/k/v/out | Infinity BitMark δ=2 |
-| `full_wm` | Toàn UNet, VAE/text encoder frozen | Infinity BitMark δ=2 |
+| `lora_r{4,16,32}_wm` | Attention q/k/v/out | Infinity BitMark |
+| `lora_r{4,16,32}_conv_wm` | Attention + tất cả UNet Conv2d groups=1 | Cùng dữ liệu |
+| `full_wm` | Toàn UNet, VAE/text encoder frozen | Cùng dữ liệu |
 
-Cả LoRA và full dùng cùng SD2.1, 1.000 ảnh train, 5 epochs, batch 4,
-LR 1e-4, AdamW, clipping 1.0, FP16, resolution 512, không EMA, không random flip.
-Mặc định là **1.250 optimizer steps/student**, không phải 20.000 steps của SERUM.
-Giữ backbone/hyperparameter/budget cố định để hạn chế confound khi so adaptation.
-Chưa phải khảo sát hyperparameter tối ưu cho từng phương pháp.
+Cùng SD2.1, 1.000 ảnh train, **5.000 optimizer steps mỗi student**, batch 4,
+LR 1e-4, AdamW, clipping 1.0, FP16, resolution 512, không EMA/random flip.
+Đây là cùng step budget, **không cùng số tham số hoặc FLOPs**; xem
+`students/<branch>/adapter_audit.json` để biết targets và số tham số thực tế.
+Chạy tuần tự nên thời gian mặc định dài hơn bản chỉ train rank 4.
 
-Chọn **checkpoint cuối theo ngân sách định sẵn**, không chọn bằng detector hay
-test TPR. Đây là khác biệt có chủ đích so với chọn checkpoint bằng validation
-denoising loss trong SERUM. Các helper stage training không nhận key, threshold,
-scores hoặc ảnh test. Pipeline cha có quyền owner để audit sau khi freeze model;
-đây là cách ly theo luồng dữ liệu, không phải sandbox chống tiến trình độc hại.
+### Validation và checkpoint selection
 
-Prompt lấy từ COCO2014 validation: 1 caption/image, loại caption trùng,
-chia train/calibration/test rời nhau bằng seed. Mặc định calibration=5.000,
-test=1.000. Chỉ sinh ảnh watermarked cho train, bỏ `teacher_clean_train`.
-Clean calibration để đặt ngưỡng và clean test để đo false positives/FID vẫn được sinh.
-Clean/watermarked teacher ở test dùng cùng prompt và seed, cùng sampler
-bit tuần tự của tác giả, chỉ khác δ=0/2. Teacher Infinity-2B sinh 1024²;
-trainer crop/resize 512²; student sinh 512²; detector resize bằng code Infinity.
+- Prompt train/calibration/validation/test rời nhau cả image ID lẫn caption.
+- Validation mặc định 256 ảnh teacher watermark; chọn 128 prompt đầu để sinh ảnh
+  đo detection, CLIP/FID/KID. Clean teacher validation làm reference chất lượng.
+- Mỗi ảnh validation có một VAE posterior sample cố định. Mỗi checkpoint dùng
+  cùng hai noise/timestep draws mỗi ảnh; MSE FP32 hỗ trợ cả epsilon/v-prediction.
+- Export snapshots ở **1.250, 2.500, 5.000** bước. Mốc cuối luôn được thêm nếu đổi budget.
+  Chỉ lưu inference weights, không nhân bản optimizer state cho mỗi mốc.
+- Sau khi train xong một branch, lần lượt reload snapshots để đo MSE, sinh ảnh
+  validation, chạy detector chính thức và đo chất lượng. Đây là post-training
+  milestone evaluation, không chạy detector trong optimizer loop.
+- **Quy tắc chốt trước: MSE validation nhỏ nhất; hòa thì lấy bước sớm hơn.**
+  Detection và utility chỉ là diagnostics; chúng không chọn checkpoint.
+- Quyết định được freeze trong `result/selection/<branch>.json`. Chỉ sau khi mọi
+  branch đã chốt mới sinh test của các student được train; test mặc định 1.000
+  prompt riêng. Không chọn nhánh/rank tốt nhất dựa trên test rồi gọi là đánh giá độc lập.
+- FID trên 128 ảnh validation là chỉ báo nhiễu và thiên lệch mạnh, không phải
+  con số chất lượng đủ để kết luận paper. Dùng test lớn hơn cho kết luận cuối.
+
+`--max-train-steps`, `--checkpoint-steps`, `--validation-n`,
+`--validation-generation-n`, `--validation-draws` cho phép thay giao thức trước khi chạy.
+`--epochs` vẫn được hỗ trợ như cách tính budget thay thế; không dùng đồng thời
+với `--max-train-steps`. Ngân sách mới không được áp lên `--resume` run cũ.
+
+Calibration=5.000 clean teacher; chỉ train trên ảnh watermarked trừ khi bật
+`--train-clean-controls`. Teacher Infinity-2B sinh 1024²; trainer resize/crop
+512²; student sinh 512²; detector resize theo code chính thức của Infinity.
+Clean/watermarked teacher dùng cùng prompt/seed khi có cặp, chỉ khác delta.
+
+### Cải thiện radioactivity: thí nghiệm có căn cứ, chưa phải bảo đảm
+
+[SERUM Appendix I](https://arxiv.org/html/2603.13396) dùng unseen denoising MSE
+để chọn checkpoint; pipeline này áp dụng nguyên tắc đó. Kết quả nội bộ không tái
+lập được LoRA 52,3%, nên tăng budget được xem là phép kiểm tra, không phải lời giải chắc chắn.
+[HMark Table 11](https://arxiv.org/html/2512.00094) báo ảnh hưởng của rank lên
+radioactivity trong DDPM; không thể chuyển nguyên số liệu đó sang SD2.1/BitMark.
+[PEFT LoRA](https://huggingface.co/docs/peft/v0.17.0/developer_guides/lora)
+hỗ trợ convolution adapters. So sánh attention/convolution ở đây kiểm tra giả
+thuyết về vị trí học tín hiệu; không thêm watermark loss trực tiếp cho student.
+
+[BitMark chính thức](https://github.com/sprintml/BitMark#radioactivity) dùng
+`delta=2` trên mọi scale. Giữ đó làm baseline, thêm tùy chọn
+`--watermark-delta 2.5` hoặc `3` cho **run riêng**, cùng seed/budget/protocol.
+Cần xem cả quality của teacher lẫn student, không chỉ tăng detector score.
+Không tự tuyên bố delta lớn hơn sẽ truyền tốt hơn và không dùng test để chọn delta.
 
 ## Nguồn chính thức, không tự viết lại BitMark
 
@@ -142,6 +188,9 @@ trainer crop/resize 512²; student sinh 512²; detector resize bằng code Infin
   tránh optimizer dùng cạn iterator khiến clipping mất tác dụng.
   Đồng thời map `--report_to none` thành Python `None` vì Accelerate không chấp
   nhận chuỗi `"none"`; không bật tracker bên ngoài.
+  Snapshots LoRA dùng PEFT-native `adapter_model.safetensors` và `adapter_config.json`;
+  loader kiểm tra keys/shapes trước khi nạp cả attention và convolution.
+  Không dùng file legacy `pytorch_lora_weights.safetensors` để tự reload mixed Conv2d adapters.
   `vendor/provenance.json` lưu hash trước/sau và kiểm tra toàn bộ source khi chạy.
 
 BitMark áp bias **lúc sampling** trên pretrained Infinity; không cần bịa ra một
@@ -158,15 +207,21 @@ tham số `t5_path`); không đổi thuật toán watermark, encoder hay detecto
 ## Đọc kết quả
 
 ```text
-bitmark_lora/runs/run_YYYYMMDD_HHMMSS_microseconds/
+run_bitmark_YYYYMMDD_HHMMSS_microseconds/
   config.json, code_manifest.json, environment.json, assets.json
   prompts.json
+  run.log                # terminal orchestration và tracebacks
+  validation_cache/      # latent/text tensors cố định
+  validation/            # MSE theo ảnh tại từng mốc
   logs/                  # môi trường GPU/stage output; lỗi giữ nguyên traceback
   students/              # LoRA/full checkpoint + protocol + verification
   images/                # teacher/student PNG và manifests
   scores/                # signed z, green fraction, SHA256 từng ảnh
   result/
     README.md            # bảng tổng hợp dễ đọc
+    checkpoint_metrics.csv # MSE, detection CI, CLIP/FID/KID từng mốc
+    selection/           # checkpoint đã chốt theo MSE
+    validation_utility.json
     threshold.json       # frozen từ clean calibration trước training
     radioactivity.json   # đầy đủ số liệu, paired CI và cảnh báo
     detection_absolute_z.csv
@@ -206,8 +261,15 @@ Inception/CLIP lỗi. CI ảnh không bao gồm biến thiên seed huấn luyệ
 ## Chạy mở rộng và resume
 
 ```bash
-# Thêm rank để kiểm tra yếu do capacity hay do adaptation nói chung:
-bash run_bitmark_lora.sh --ranks 4 16 64
+# Mặc định đã so rank 4/16/32 và attention/convolution.
+# Mở rộng ngân sách, giữ cùng mốc cho mọi student:
+bash run_bitmark_lora.sh --max-train-steps 10000 --checkpoint-steps 1250 2500 5000 10000
+
+# Run riêng để kiểm tra cường độ nhúng (không đổi student loss):
+bash run_bitmark_lora.sh --watermark-delta 3
+
+# Chỉ attention rank 4 cho một pilot ngắn hơn:
+bash run_bitmark_lora.sh --ranks 4 --adapter-scopes attention --lora-only
 
 # Thêm đối chứng full+EMA gần recipe paper, tách khỏi matched full controls:
 bash run_bitmark_lora.sh --paper-full-ema
@@ -237,7 +299,7 @@ python3 bitmark_lora/smoke_cpu.py
 
 Partial training chưa có `complete.json` sẽ **train lại branch đó từ đầu**;
 không giả vờ tiếp tục optimizer. Teacher/student ảnh hoàn chỉnh được reuse với
-manifest; checkpoint đã hoàn tất được hash-verify. Một run chỉ có một tiến trình
+manifest; checkpoint đã hoàn tất được hash-verify. Trên cùng một host, một run chỉ có một tiến trình
 ghi; assets và setup env cũng được khóa khi nhiều job dùng chung cache.
 
 Các thay đổi so với paper cần ghi khi viết báo cáo: fixed seed/prompt split của

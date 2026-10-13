@@ -1,5 +1,7 @@
 """One-command BitMark→LoRA experiment, with matched full-finetuning controls."""
 import argparse
+import contextlib
+import traceback
 import datetime
 import fcntl
 import importlib.metadata
@@ -11,20 +13,29 @@ import signal
 import subprocess
 import sys
 import time
+from zoneinfo import ZoneInfo
 from pathlib import Path
 
-from common import HERE, freeze, read_json, sha256, verify_vendor, write_json, runtime_root, require_local_runtime_path
+from common import HERE, freeze, read_json, sha256, verify_vendor, write_json, runtime_root, require_local_runtime_path, results_root
 from student import branches, training_command
 
 
 def parse_args(argv=None):
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--seed", type=int, default=0)
-    p.add_argument("--ranks", type=int, nargs="+", default=[4])
+    p.add_argument("--ranks", type=int, nargs="+", default=[4, 16, 32])
     p.add_argument("--train-n", type=int, default=1000)
     p.add_argument("--calibration-n", type=int, default=5000)
     p.add_argument("--test-n", type=int, default=1000)
-    p.add_argument("--epochs", type=int, default=5)
+    p.add_argument("--epochs", type=int, help="Legacy budget override; cannot accompany --max-train-steps")
+    p.add_argument("--max-train-steps", type=int, default=None, help="Shared optimizer budget; default 5000")
+    p.add_argument("--checkpoint-steps", type=int, nargs="+", default=[1250, 2500, 5000])
+    p.add_argument("--adapter-scopes", nargs="+", choices=["attention", "attention_conv"],
+                   default=["attention", "attention_conv"])
+    p.add_argument("--validation-n", type=int, default=256)
+    p.add_argument("--validation-generation-n", type=int, default=128)
+    p.add_argument("--validation-draws", type=int, default=2, help="Fixed noise/timestep draws per validation image")
+    p.add_argument("--watermark-delta", type=float, default=2., help="Official BitMark embedding strength; separate-run ablation")
     p.add_argument("--batch-size", type=int, default=4)
     p.add_argument("--learning-rate", type=float, default=1e-4)
     p.add_argument("--precision", choices=["fp16", "bf16", "no"], default="fp16")
@@ -42,13 +53,28 @@ def parse_args(argv=None):
     p.add_argument("--plan-only", action="store_true", help="Print protocol only; default without this flag executes the experiment")
     p.add_argument("--analyze", type=Path, help="Recompute reports from an existing complete run; no GPU required")
     a = p.parse_args(argv)
+    if a.epochs is not None and a.max_train_steps is not None:
+        p.error("Choose --epochs or --max-train-steps, not both")
+    if a.epochs is not None and a.epochs <= 0:
+        p.error("--epochs must be positive")
+    if a.batch_size <= 0:
+        p.error("--batch-size must be positive")
+    if a.max_train_steps is None:
+        a.max_train_steps = (math.ceil(a.train_n / a.batch_size) * a.epochs if a.epochs else 5000)
+    if any(x <= 0 for x in a.checkpoint_steps):
+        p.error("Checkpoint steps must be positive")
+    a.checkpoint_steps = sorted(set(x for x in a.checkpoint_steps if x <= a.max_train_steps) | {a.max_train_steps})
+    if a.validation_generation_n > a.validation_n or a.validation_generation_n < 2:
+        p.error("Require 2 <= validation-generation-n <= validation-n")
+    if len(set(a.adapter_scopes)) != len(a.adapter_scopes):
+        p.error("Adapter scopes must be unique")
     if a.resume and a.output:
         p.error("--resume and --output are mutually exclusive")
-    numeric = [a.train_n, a.calibration_n, a.test_n, a.epochs, a.batch_size,
+    numeric = [a.train_n, a.calibration_n, a.test_n, a.max_train_steps, a.validation_n, a.validation_draws, a.batch_size,
                a.inference_batch, a.inference_steps, *a.ranks]
     if min(numeric) <= 0 or len(set(a.ranks)) != len(a.ranks):
         p.error("Counts/ranks must be positive and ranks unique")
-    if (not math.isfinite(a.learning_rate) or a.learning_rate <= 0 or not 0 < a.fpr < 1 or a.seed < 0
+    if (not math.isfinite(a.watermark_delta) or a.watermark_delta <= 0 or not math.isfinite(a.learning_rate) or a.learning_rate <= 0 or not 0 < a.fpr < 1 or a.seed < 0
             or not math.isfinite(a.min_free_gb) or a.min_free_gb < 0):
         p.error("Invalid learning rate/FPR/seed/disk limit")
     if a.calibration_n * a.fpr < 1:
@@ -99,8 +125,7 @@ def stage(run, label, command):
 
 
 def preflight(a):
-    for path in [a.cache, a.resume or a.output or runtime_root() / 'runs']:
-        require_local_runtime_path(path)
+    require_local_runtime_path(a.cache)
     from check_runtime import check_model_imports
     try:
         check_model_imports()
@@ -124,7 +149,7 @@ def preflight(a):
         raise RuntimeError("FlashAttention CUDA smoke check returned nonfinite values")
     torch.cuda.synchronize()
     print(f"GPU: {torch.cuda.get_device_name()}; torch={torch.__version__}", flush=True)
-    for path in [a.cache, (a.output or runtime_root() / "runs").parent]:
+    for path in [a.cache, (a.output or results_root())]:
         probe = path.resolve()
         while not probe.exists():
             probe = probe.parent
@@ -135,6 +160,30 @@ def preflight(a):
     return {"gpu": torch.cuda.get_device_name(), "capability": list(torch.cuda.get_device_capability()),
             "cuda_runtime": torch.version.cuda, "python": sys.version,
             "note": "Matching seeds does not promise bitwise equality across GPU/software versions."}
+
+
+class Tee:
+    def __init__(self, terminal, log):
+        self.terminal, self.log = terminal, log
+    def write(self, text):
+        self.log.write(text)
+        return self.terminal.write(text)
+    def flush(self):
+        self.log.flush()
+        self.terminal.flush()
+    def isatty(self):
+        return False
+
+
+@contextlib.contextmanager
+def persistent_log(run):
+    with (run / "run.log").open("a", buffering=1) as log:
+        with contextlib.redirect_stdout(Tee(sys.stdout, log)), contextlib.redirect_stderr(Tee(sys.stderr, log)):
+            try:
+                yield
+            except BaseException:
+                traceback.print_exc(file=log)
+                raise
 
 
 def main(argv=None):
@@ -156,20 +205,27 @@ def main(argv=None):
         a.output = a.resume.resolve()
     if a.plan_only:
         print(json.dumps({"config": c, "students": branches(c),
-              "baseline": "unadapted SD2.1", "teacher": "official Infinity-2B / BitMark delta=2, all scales, G=01,10",
-              "training": "official Diffusers trainers; fixed final epoch; clean-trained controls optional",
-              "expected_updates_per_student": ((c['train_n']+c['batch_size']-1)//c['batch_size'])*c['epochs'],
+              "baseline": "unadapted SD2.1", "teacher": f"official Infinity-2B / BitMark delta={c.get('watermark_delta',2)}, all scales, G=01,10",
+              "training": "fixed step budget; minimum held-out denoising MSE, earlier step breaks ties; detector/utility excluded",
+              "results_root": str(results_root()),
+              "expected_updates_per_student": c.get("max_train_steps") or math.ceil(c["train_n"]/c["batch_size"])*c["epochs"],
               "detection": "official tokenizer+detector, frozen clean threshold; |z| primary + signed-z secondary",
               "execute": "bash run_bitmark_lora.sh (omit --plan-only)"}, indent=2))
         return
-    hardware = preflight(a)
     if a.resume:
         run = a.resume.resolve()
     else:
-        run = a.output.resolve() if a.output else runtime_root() / "runs" / datetime.datetime.now().strftime("run_%Y%m%d_%H%M%S_%f")
+        run = a.output.resolve() if a.output else results_root() / datetime.datetime.now(ZoneInfo("Asia/Vientiane")).strftime("run_bitmark_%Y%m%d_%H%M%S_%f")
         run.mkdir(parents=True, exist_ok=False)
-    with (run / ".lock").open("w") as lock:
+    # Drive FUSE may not support flock; synchronize same-host launches on local storage.
+    import hashlib
+    lock_dir = runtime_root() / "locks"
+    lock_dir.mkdir(parents=True, exist_ok=True)
+    lock_path = lock_dir / (hashlib.sha256(str(run).encode()).hexdigest() + ".lock")
+    with lock_path.open("w") as lock, persistent_log(run):
         fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        print(f"Persistent run: {run}", flush=True)
+        hardware = preflight(a)
         freeze(run / "config.json", c)
         source_files = {str(p.relative_to(HERE)): sha256(p) for p in HERE.glob("*.py")}
         source_files["vendor/provenance.json"] = sha256(HERE / "vendor/provenance.json")
@@ -188,9 +244,21 @@ def main(argv=None):
         call("teacher.py", "03_teacher_scores", "--stage", "score", "--directories",
              "teacher_clean_calibration", "teacher_clean_test", "teacher_wm_test")
         call("report.py", "04_freeze_threshold", "--calibrate-only")
+        if c.get("checkpoint_steps"):
+            call("validation.py", "04b_validation_cache", "--stage", "cache")
         call("student.py", "05_unadapted", "--stage", "generate", "--branch", "unadapted")
         for b in branches(c):
             call("student.py", f"train_{b['name']}", "--stage", "train", "--branch", b["name"])
+            if c.get("checkpoint_steps"):
+                from validation import validation_label
+                call("validation.py", f"validate_{b['name']}", "--stage", "evaluate", "--branch", b["name"])
+                labels = [validation_label(b["name"], step) for step in c["checkpoint_steps"]]
+                call("teacher.py", f"validation_scores_{b['name']}", "--stage", "score", "--directories", *labels)
+                if not c["skip_utility"]:
+                    call("utility.py", f"validation_quality_{b['name']}", "--split", "validation", "--labels", *labels)
+                call("validation.py", f"select_{b['name']}", "--stage", "select", "--branch", b["name"])
+        # Final test is generated only after every branch has frozen its selection.
+        for b in branches(c):
             call("student.py", f"generate_{b['name']}", "--stage", "generate", "--branch", b["name"])
         call("teacher.py", "06_student_scores", "--stage", "score", "--directories",
              "unadapted", *[b["name"] for b in branches(c)])

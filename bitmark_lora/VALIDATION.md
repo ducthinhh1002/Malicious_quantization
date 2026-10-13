@@ -1,3 +1,30 @@
+# Validation update, 2026-10-13
+
+This section supersedes older output-location and fixed-final-checkpoint statements below.
+
+- 32 CPU protocol/bootstrap/generation/selection tests pass. They check the 3×2
+  rank/scope design, equal step budgets, disjoint splits, Drive results vs local
+  runtime, frozen MSE-only selection (including a deliberately worse detector
+  score on the selected checkpoint), tie-breaking, and resume tamper rejection.
+- Real tiny-model CPU integration: attention LoRA, attention+Conv2d LoRA, and full
+  UNet each execute two optimizer steps. Snapshots at steps 1/2 are exported;
+  saved adapters actually change. Final/snapshot UNet predictions agree after
+  reload, including the production selected-checkpoint loader. Fixed-draw validation v-prediction MSE repeats exactly on CPU.
+- Mixed convolution/attention state conversion through legacy Diffusers names
+  exposed an ambiguous reload during testing. Inference snapshots now store
+  `adapter_model.safetensors` plus `adapter_config.json` with native PEFT names.
+  Loader checks every adapter key/shape and rejects missing/unexpected LoRA tensors.
+- Snapshot/source hashes are recorded; checkpoint selection excludes detector,
+  utility and final test. Quality metrics are descriptive, never a stop gate.
+- KID subsets use at most half the available images (capped at 1000) instead of
+  repeatedly taking the entire 1000-image set. Subset standard deviation still
+  does not measure training-seed uncertainty.
+- GPU/Colab execution, mounted-Drive behavior, real Infinity generation and final
+  CLIP/FID/KID have not been exercised on this host (no NVIDIA GPU). CPU tests
+  cannot establish radioactivity strength or guarantee absence of GPU/OOM errors.
+
+## Historical checks
+
 # Validation, 2026-10-12
 
 Colab compatibility follow-up:

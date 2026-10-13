@@ -7,7 +7,7 @@ import urllib.request
 import zipfile
 from pathlib import Path
 
-from common import HERE, read_json, sha256, write_json
+from common import HERE, freeze, read_json, sha256, write_json
 
 INFINITY_REV = "e7108923249fb3c836ebfbc3f4b4d318d6131293"
 T5_REV = "7d6315df2c2fb742f0f5b556879d730926ca9001"
@@ -106,9 +106,11 @@ def prepare(config, run):
             raise RuntimeError(f"COCO annotation checksum mismatch: {archive}")
         with zipfile.ZipFile(archive) as z:
             anns = json.loads(z.read("annotations/captions_val2014.json"))["annotations"]
-        prompts = split_prompts(anns, config["seed"], {
-            "train": config["train_n"], "calibration": config["calibration_n"], "test": config["test_n"]})
-        write_json(run / "prompts.json", prompts)
+        counts = {"train": config["train_n"], "calibration": config["calibration_n"], "test": config["test_n"]}
+        if config.get("validation_n"):
+            counts["validation"] = config["validation_n"]
+        prompts = split_prompts(anns, config["seed"], counts)
+        freeze(run / "prompts.json", prompts)
         print("Disjoint COCO splits: " + ", ".join(f"{k}={len(v)}" for k, v in prompts.items()), flush=True)
         result = {"coco_url": COCO_URL, "coco_sha256": sha256(archive)}
         result["infinity"] = hub_snapshot("FoundationVision/Infinity", INFINITY_REV, cache,

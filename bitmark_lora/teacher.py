@@ -81,13 +81,13 @@ def generate(run):
     args, vae, model, official = initialize(run, generator=True)
     config, prompts = read_json(run / "config.json"), read_json(run / "prompts.json")
     # Reset identical per-image seeds; delta=0 uses the same official sequential sampler.
-    for split in ("train", "calibration", "test"):
+    for split in ("train", "calibration", "test", *(["validation"] if "validation" in prompts else [])):
         conditions = (training_conditions(config) if split == "train" else
                       ("clean",) if split == "calibration" else ("clean", "wm"))
         for condition in conditions:
             out = run / "images" / f"teacher_{condition}_{split}"
             out.mkdir(parents=True, exist_ok=True)
-            args.watermark_delta = 0.0 if condition == "clean" else 2.0
+            args.watermark_delta = 0.0 if condition == "clean" else config.get("watermark_delta", 2.0)
             watermark = official.WatermarkInference(args, vae)
             manifest = {"delta": args.watermark_delta, "all_scales": True,
                         "green_set": ["01", "10"], "prompts_sha256": sha256(run / "prompts.json"),

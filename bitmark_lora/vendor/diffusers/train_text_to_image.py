@@ -509,6 +509,7 @@ def parse_args():
         help="The image interpolation method to use for resizing images.",
     )
 
+    parser.add_argument("--snapshot_steps", type=int, nargs="+", default=[])
     args = parser.parse_args()
     env_local_rank = int(os.environ.get("LOCAL_RANK", -1))
     if env_local_rank != -1 and env_local_rank != args.local_rank:
@@ -1062,6 +1063,17 @@ def main():
                 global_step += 1
                 accelerator.log({"train_loss": train_loss}, step=global_step)
                 train_loss = 0.0
+
+                if global_step in args.snapshot_steps:
+                    if accelerator.is_main_process:
+                        snapshot = os.path.join(args.output_dir, f"snapshot-{global_step}")
+                        if args.use_ema:
+                            ema_unet.store(unet.parameters())
+                            ema_unet.copy_to(unet.parameters())
+                        unwrap_model(unet).save_pretrained(os.path.join(snapshot, "unet"))
+                        if args.use_ema:
+                            ema_unet.restore(unet.parameters())
+                        logger.info(f"Saved inference snapshot at step {global_step}: {snapshot}")
 
                 if global_step % args.checkpointing_steps == 0:
                     if accelerator.is_main_process:

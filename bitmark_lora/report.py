@@ -99,13 +99,20 @@ def summarize(run):
             full_reference = "full_clean" if has_clean_controls else "unadapted"
             full = [a-b for a, b in zip(indicators["full_wm"], indicators[full_reference])]
             effect("full_clean_adjusted_transfer" if has_clean_controls else "full_wm_minus_unadapted", full)
-        for rank in c["ranks"]:
-            lora_reference = f"lora_r{rank}_clean" if has_clean_controls else "unadapted"
-            lora = [a-b for a, b in zip(indicators[f"lora_r{rank}_wm"], indicators[lora_reference])]
-            effect(f"lora_r{rank}_clean_adjusted_transfer" if has_clean_controls else f"lora_r{rank}_wm_minus_unadapted", lora)
+        for b in branches(c):
+            if b["kind"] != "lora" or b["condition"] != "wm":
+                continue
+            prefix = b["name"].removesuffix("_wm")
+            lora_reference = prefix + "_clean" if has_clean_controls else "unadapted"
+            lora = [a-b for a, b in zip(indicators[b["name"]], indicators[lora_reference])]
+            effect(prefix + ("_clean_adjusted_transfer" if has_clean_controls else "_wm_minus_unadapted"), lora)
             if not c["lora_only"]:
-                effect(f"full_minus_lora_r{rank}" + ("_clean_adjusted" if has_clean_controls else ""),
+                effect(f"full_minus_{prefix}" + ("_clean_adjusted" if has_clean_controls else ""),
                        [a-b for a, b in zip(full, lora)])
+        for rank in c["ranks"]:
+            conv, attention = f"lora_r{rank}_conv_wm", f"lora_r{rank}_wm"
+            if conv in indicators and attention in indicators:
+                effect(f"conv_minus_attention_r{rank}", [a-b for a,b in zip(indicators[conv], indicators[attention])])
         tables[convention], effects[convention] = table, comparisons
     warnings = ["Single training seed; image bootstrap does not capture training-seed variance.",
                 "Matched full controls have no EMA, matching LoRA. Not an exact reproduction of the paper's full+EMA run.",
@@ -127,8 +134,16 @@ def summarize(run):
     utility = read_json(run / "result/utility.json") if (run / "result/utility.json").exists() else None
     if not utility:
         warnings.append("Utility metrics unavailable; no image-quality preservation claim can be made.")
+    selections = {}
+    if c.get("checkpoint_steps"):
+        for b in branches(c):
+            selections[b["name"]] = read_json(run / "result/selection" / f"{b['name']}.json")
+        warnings.append("Checkpoint selected by held-out denoising MSE; validation detector/utility curves are descriptive only.")
+        warnings.append("Ranks/scopes share step budgets, not equal trainable parameters or FLOPs; inspect adapter_audit.json.")
     result = {"threshold": threshold, "tables": tables, "paired_effects": effects, "warnings": warnings,
-              "utility": utility, "selection": "fixed final epoch, no detector-guided selection",
+              "utility": utility, "selection": ("minimum held-out denoising MSE, earlier-step tie break" if selections
+                                                  else "fixed final epoch, no detector-guided selection"),
+              "selected_checkpoints": selections,
               "config": c, "source_sha256": sha256(Path(__file__).with_name("vendor") / "provenance.json")}
     write_json(run / "result/radioactivity.json", result)
     for convention, table in tables.items():
@@ -136,10 +151,14 @@ def summarize(run):
             w = csv.DictWriter(f, fieldnames=list(table[0]))
             w.writeheader()
             w.writerows(table)
-    lines = ["# BitMark → SD2.1: LoRA radioactivity", "", "Primary metric: |z| at frozen 1% target FPR.", "",
+    lines = ["# BitMark → SD2.1: LoRA radioactivity", "", f"Primary metric: |z| at frozen {100*c['fpr']:g}% target teacher FPR.", "",
              "| Branch | Detected | Rate | 95% Wilson CI |", "|---|---:|---:|---:|"]
     for r in tables["absolute_z"]:
         lines.append(f"| {r['branch']} | {r['detected']}/{r['n']} | {100*r['detection_rate']:.2f}% | {100*r['ci95_low']:.2f}–{100*r['ci95_high']:.2f}% |")
+    if selections:
+        lines += ["", "## Validation-selected checkpoints", "", "See checkpoint_metrics.csv for all milestones; test images never select checkpoints.", ""]
+        for name, selected in selections.items():
+            lines.append(f"- {name}: step {selected['selected_step']}; held-out MSE {selected['denoising_mse']:.8f}.")
     interpretation = ("Positive full-minus-LoRA interaction means stronger transfer under full adaptation after subtracting clean controls."
                       if has_clean_controls else
                       "Full-minus-LoRA is the paired detection-rate difference on watermarked-trained students; no clean-trained adjustment is available.")

@@ -17,3 +17,4 @@ __pycache__/
 /bitmark_lora/.venv.lock
 /bitmark_lora/cache/
 /bitmark_lora/runs/
+/run_bitmark_*/

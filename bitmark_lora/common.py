@@ -19,9 +19,14 @@ def is_colab():
 
 
 def runtime_root():
-    """Drive may hold source code; local POSIX storage holds executable/run data."""
+    """Local POSIX storage for environments and model caches, not experiment results."""
     return Path(os.environ.get('BITMARK_RUNTIME_ROOT',
                               '/content/bitmark_runtime' if is_colab() else str(HERE))).expanduser().resolve()
+
+
+def results_root():
+    """Persist runs beside the repository's launchers (including mounted Drive)."""
+    return Path(os.environ.get('BITMARK_RESULTS_ROOT', str(HERE.parent))).expanduser().resolve()
 
 
 def require_local_runtime_path(path):

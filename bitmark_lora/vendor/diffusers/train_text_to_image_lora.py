@@ -428,6 +428,8 @@ def parse_args():
         help="The image interpolation method to use for resizing images.",
     )
 
+    parser.add_argument("--snapshot_steps", type=int, nargs="+", default=[])
+    parser.add_argument("--adapter_scope", choices=["attention", "attention_conv"], default="attention")
     args = parser.parse_args()
     env_local_rank = int(os.environ.get("LOCAL_RANK", -1))
     if env_local_rank != -1 and env_local_rank != args.local_rank:
@@ -443,6 +445,15 @@ def parse_args():
 DATASET_NAME_MAPPING = {
     "lambdalabs/naruto-blip-captions": ("image", "text"),
 }
+
+
+def save_native_adapter(unet, directory):
+    """PEFT-native names support mixed Linear/Conv2d adapters without conversion ambiguity."""
+    from safetensors.torch import save_file
+    os.makedirs(directory, exist_ok=True)
+    state = {k: v.detach().float().cpu().contiguous() for k,v in get_peft_model_state_dict(unet).items()}
+    save_file(state, os.path.join(directory, "adapter_model.safetensors"))
+    unet.peft_config["default"].save_pretrained(directory)
 
 
 def main():
@@ -524,11 +535,19 @@ def main():
     elif accelerator.mixed_precision == "bf16":
         weight_dtype = torch.bfloat16
 
+    attention_targets = ["to_k", "to_q", "to_v", "to_out.0"]
+    targets = [name for name, layer in unet.named_modules()
+               if any(name.endswith("." + target) for target in attention_targets)]
+    if args.adapter_scope == "attention_conv":
+        targets += [name for name, layer in unet.named_modules()
+                    if isinstance(layer, torch.nn.Conv2d) and layer.groups == 1]
+    if not targets:
+        raise RuntimeError("No adapter targets found")
     unet_lora_config = LoraConfig(
         r=args.rank,
         lora_alpha=args.rank,
         init_lora_weights="gaussian",
-        target_modules=["to_k", "to_q", "to_v", "to_out.0"],
+        target_modules=sorted(set(targets)),
     )
 
     # Move unet, vae and text_encoder to device and cast to weight_dtype
@@ -556,6 +575,13 @@ def main():
             raise ValueError("xformers is not available. Make sure it is installed correctly")
 
     lora_layers = list(filter(lambda p: p.requires_grad, unet.parameters()))
+    if accelerator.is_main_process:
+        import json
+        with open(os.path.join(args.output_dir, "adapter_audit.json"), "w") as f:
+            json.dump({"scope": args.adapter_scope, "rank": args.rank,
+                       "targets": sorted(set(targets)),
+                       "trainable_parameters": sum(p.numel() for p in lora_layers),
+                       "total_parameters": sum(p.numel() for p in unet.parameters())}, f, indent=2)
 
     if args.gradient_checkpointing:
         unet.enable_gradient_checkpointing()
@@ -881,6 +907,12 @@ def main():
                 accelerator.log({"train_loss": train_loss}, step=global_step)
                 train_loss = 0.0
 
+                if global_step in args.snapshot_steps:
+                    if accelerator.is_main_process:
+                        snapshot = os.path.join(args.output_dir, f"snapshot-{global_step}")
+                        save_native_adapter(unwrap_model(unet), snapshot)
+                        logger.info(f"Saved inference snapshot at step {global_step}: {snapshot}")
+
                 if global_step % args.checkpointing_steps == 0:
                     if accelerator.is_main_process:
                         # _before_ saving state, check if this save would set us over the `checkpoints_total_limit`
@@ -946,6 +978,7 @@ def main():
         unet = unet.to(torch.float32)
 
         unwrapped_unet = unwrap_model(unet)
+        save_native_adapter(unwrapped_unet, args.output_dir)
         unet_lora_state_dict = convert_state_dict_to_diffusers(get_peft_model_state_dict(unwrapped_unet))
         StableDiffusionPipeline.save_lora_weights(
             save_directory=args.output_dir,

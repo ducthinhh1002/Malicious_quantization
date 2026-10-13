@@ -1,6 +1,6 @@
 # Hướng dẫn chạy thí nghiệm malicious quantization cho watermark diffusion
 
-## BitMark → LoRA radioactivity (12/10/2026)
+## BitMark → LoRA radioactivity (13/10/2026)
 
 Thí nghiệm riêng dựa trên protocol SERUM, dùng source/checkpoint BitMark chính
 thức: so sánh LoRA và full fine-tune SD2.1 trên dữ liệu watermarked, kèm unadapted
@@ -11,7 +11,10 @@ bash run_bitmark_lora.sh
 ```
 
 Code, protocol, cách resume và các giới hạn diễn giải: [bitmark_lora/README.md](bitmark_lora/README.md).
-Kết quả: `bitmark_lora/runs/run_<ngày_giờ>/result/README.md`.
+Mặc định so rank 4/16/32 × attention hoặc attention+convolution, cùng 5.000 bước.
+Đo MSE/detection/CLIP/FID/KID ở 1.250/2.500/5.000; chọn checkpoint bằng validation MSE,
+đánh giá cuối trên test riêng. Kết quả và log nằm cạnh code (trên Drive nếu code ở Drive):
+`run_bitmark_<ngày_giờ>/result/README.md`; đường cong: `result/checkpoint_metrics.csv`.
 
 ## SleeperMark: quality-constrained public-trigger W4 control (01/10/2026)
 
