@@ -20,15 +20,15 @@ class ValidationTests(unittest.TestCase):
         bs = branches(c)
         lora = [b for b in bs if b['kind'] == 'lora']
         self.assertEqual({(b['rank'], b['scope']) for b in lora},
-                         {(r,s) for r in [4,16,32] for s in ['attention','attention_conv']})
+                         {(r,s) for r in [16,32] for s in ['attention','attention_conv']})
         for b in bs:
             cmd = training_command(c, {'student': '/base'}, Path('/run'), b)
-            self.assertEqual(cmd[cmd.index('--max_train_steps')+1], '5000')
-            self.assertEqual(cmd[cmd.index('--snapshot_steps')+1:cmd.index('--snapshot_steps')+4], ['1250','2500','5000'])
+            self.assertEqual(cmd[cmd.index('--max_train_steps')+1], '7500')
+            self.assertEqual(cmd[cmd.index('--snapshot_steps')+1:cmd.index('--snapshot_steps')+4], ['2500','5000','7500'])
         self.assertEqual(c['validation_draws'], 2)
 
     def test_budget_overrides_and_final_snapshot(self):
-        self.assertEqual(parse_args(['--max-train-steps','2600']).checkpoint_steps, [1250,2500,2600])
+        self.assertEqual(parse_args(['--max-train-steps','2600']).checkpoint_steps, [2500,2600])
         self.assertEqual(parse_args(['--epochs','5']).max_train_steps, 1250)
         with contextlib.redirect_stderr(io.StringIO()), self.assertRaises(SystemExit):
             parse_args(['--epochs','5','--max-train-steps','5000'])

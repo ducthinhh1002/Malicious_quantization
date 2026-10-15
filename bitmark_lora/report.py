@@ -37,11 +37,22 @@ def paired_ci(differences, seed=0, repeats=2000):
     return [samples[int(.025*repeats)], samples[min(repeats-1, int(.975*repeats))]]
 
 
+def detector_value(row, convention):
+    if convention.startswith("serum_score"):
+        return row["score"]
+    return abs(row["z_score"]) if convention == "absolute_z" else row["z_score"]
+
+
+def conventions(threshold):
+    return ("serum_score", "serum_score_student_calibrated") if threshold.get("primary") == "serum_score" else ("absolute_z", "signed_z")
+
+
 def scores(run, label, n):
     rows = read_json(run / "scores" / f"{label}.json")
     if len(rows) != n or [r["file"] for r in rows] != [image_name(i) for i in range(n)]:
         raise ValueError(f"Incomplete/unaligned score rows: {label}")
-    values = [r["z_score"] for r in rows]
+    key = "score" if read_json(run / "config.json").get("watermark_method") == "serum" else "z_score"
+    values = [r[key] for r in rows]
     finite(values)
     for r in rows:
         if sha256(run / "images" / label / r["file"]) != r["sha256"]:
@@ -52,17 +63,28 @@ def scores(run, label, n):
 def freeze_threshold(run):
     c = read_json(run / "config.json")
     rows = scores(run, "teacher_clean_calibration", c["calibration_n"])
-    z = [r["z_score"] for r in rows]
-    result = {"source": "disjoint clean Infinity calibration; never student test data",
-              "calibration_score_sha256": sha256(run / "scores/teacher_clean_calibration.json"),
-              "n": len(z), "target_fpr": c["fpr"], "comparison": ">= threshold",
-              "absolute_z": calibrate([abs(v) for v in z], c["fpr"]),
-              "signed_z": calibrate(z, c["fpr"]),
-              "primary": "absolute_z", "note": "Paper describes |z|; upstream ROC script uses signed z. Both reported."}
+    if c.get("watermark_method") == "serum":
+        student_rows = scores(run, "unadapted_calibration", c["calibration_n"])
+        result = {"source": "disjoint clean SERUM SD2.1 teacher calibration; no test data",
+                  "calibration_score_sha256": sha256(run / "scores/teacher_clean_calibration.json"),
+                  "student_calibration_score_sha256": sha256(run / "scores/unadapted_calibration.json"),
+                  "student_source": "unadapted SD1.4 on held-out calibration prompts, no adaptation/test data",
+                  "n": len(rows), "target_fpr": c["fpr"], "comparison": ">= threshold",
+                  "serum_score": calibrate([r["score"] for r in rows], c["fpr"]),
+                  "serum_score_student_calibrated": calibrate([r["score"] for r in student_rows], c["fpr"]),
+                  "primary": "serum_score", "note": "Author learned detector probability; no message bit accuracy. Secondary threshold accounts for clean student domain shift."}
+    else:
+        z = [r["z_score"] for r in rows]
+        result = {"source": "disjoint clean Infinity calibration; never student test data",
+                  "calibration_score_sha256": sha256(run / "scores/teacher_clean_calibration.json"),
+                  "n": len(z), "target_fpr": c["fpr"], "comparison": ">= threshold",
+                  "absolute_z": calibrate([abs(v) for v in z], c["fpr"]),
+                  "signed_z": calibrate(z, c["fpr"]),
+                  "primary": "absolute_z", "note": "Paper describes |z|; upstream ROC script uses signed z. Both reported."}
     freeze(run / "result/threshold.json", result)
     if (run / "scores/teacher_wm_test.json").exists():
         reference = scores(run, "teacher_wm_test", c["test_n"])
-        detected = sum(abs(r["z_score"]) >= result["absolute_z"] for r in reference)
+        detected = sum(detector_value(r, result["primary"]) >= result[result["primary"]] for r in reference)
         rate = detected / len(reference)
         write_json(run / "result/teacher_validation.json", {
             "detected": detected, "n": len(reference), "detection_rate": rate,
@@ -78,18 +100,19 @@ def summarize(run):
     labels = ["teacher_clean_test", "teacher_wm_test", "unadapted"] + [b["name"] for b in branches(c)]
     rows_by_label = {label: scores(run, label, c["test_n"]) for label in labels}
     tables, effects = {}, {}
-    for convention in ("absolute_z", "signed_z"):
+    for convention in conventions(threshold):
         table, indicators = [], {}
         for label in labels:
             rows = rows_by_label[label]
-            values = [abs(r["z_score"]) if convention == "absolute_z" else r["z_score"] for r in rows]
+            values = [detector_value(r, convention) for r in rows]
             detected = [int(v >= threshold[convention]) for v in values]
             indicators[label] = detected
             count = sum(detected)
             table.append({"branch": label, "detected": count, "n": len(rows), "detection_rate": count/len(rows),
                           "ci95_low": wilson(count, len(rows))[0], "ci95_high": wilson(count, len(rows))[1],
-                          "mean_z": statistics.mean(r["z_score"] for r in rows),
-                          "mean_green_fraction": statistics.mean(r["green_fraction"] for r in rows)})
+                          **({"mean_score": statistics.mean(r["score"] for r in rows)} if c.get("watermark_method") == "serum" else
+                             {"mean_z": statistics.mean(r["z_score"] for r in rows),
+                              "mean_green_fraction": statistics.mean(r["green_fraction"] for r in rows)})})
         comparisons = {}
         def effect(name, diff):
             comparisons[name] = {"estimate_pp": 100*statistics.mean(diff),
@@ -118,7 +141,14 @@ def summarize(run):
                 "Matched full controls have no EMA, matching LoRA. Not an exact reproduction of the paper's full+EMA run.",
                 "Clean calibration uses generated Infinity images, not natural COCO images; inspect clean student false-positive rates.",
                 "Green fraction is NOT message bit accuracy: BitMark tests bit-pattern bias."]
-    primary = {r["branch"]: r for r in tables["absolute_z"]}
+    if c.get("watermark_method") == "serum":
+        warnings = [warnings[0],
+                    "Teacher SD2.1 and student SD1.4 differ; this is a new capacity/scope experiment, not the BitMark setup.",
+                    "Full control uses a separately declared learning rate; parameter count and compute are not matched to LoRA.",
+                    "Teacher and clean student thresholds are both frozen on calibration, never test; compare within one threshold convention.",
+                    "SERUM scores are learned watermark probabilities, NOT decoded bit accuracy."]
+    primary_key = threshold["primary"]
+    primary = {r["branch"]: r for r in tables[primary_key]}
     full_effect = "full_clean_adjusted_transfer" if has_clean_controls else "full_wm_minus_unadapted"
     if not has_clean_controls:
         warnings.append("No clean-trained controls: contrasts use the unadapted baseline and cannot isolate generic fine-tuning effects.")
@@ -126,11 +156,17 @@ def summarize(run):
         warnings.append("Teacher positive control is weak: investigate generation/detection before attributing weak transfer to LoRA.")
     if c["lora_only"]:
         warnings.append("No matched full controls: cannot attribute low transfer specifically to LoRA.")
-    elif effects["absolute_z"][full_effect]["paired_bootstrap_ci95_pp"][0] <= 0:
+    elif effects[primary_key][full_effect]["paired_bootstrap_ci95_pp"][0] <= 0:
         warnings.append("Matched full positive control has not established transfer; LoRA-weakness hypothesis remains inconclusive.")
     for label in ["unadapted"] + [b["name"] for b in branches(c) if b["condition"] == "clean"]:
         if primary[label]["ci95_low"] > c["fpr"]:
             warnings.append(f"{label}: clean detection exceeds nominal FPR; raw TPR alone is insufficient evidence of transfer.")
+    if c.get("watermark_method") == "serum":
+        secondary = {r["branch"]: r for r in tables["serum_score_student_calibrated"]}
+        if secondary["unadapted"]["ci95_low"] > c["fpr"]:
+            warnings.append("Clean-student calibrated threshold still exceeds target FPR on independent clean test; inspect domain/generalization before interpreting detection.")
+        if threshold["serum_score"] > 1 or threshold["serum_score_student_calibrated"] > 1:
+            warnings.append("SERUM calibration scores saturate at 1: a frozen threshold is unattainable. Zero detection under that convention does not demonstrate absent radioactivity.")
     utility = read_json(run / "result/utility.json") if (run / "result/utility.json").exists() else None
     if not utility:
         warnings.append("Utility metrics unavailable; no image-quality preservation claim can be made.")
@@ -151,10 +187,16 @@ def summarize(run):
             w = csv.DictWriter(f, fieldnames=list(table[0]))
             w.writeheader()
             w.writerows(table)
-    lines = ["# BitMark → SD2.1: LoRA radioactivity", "", f"Primary metric: |z| at frozen {100*c['fpr']:g}% target teacher FPR.", "",
+    title = "SERUM SD2.1 → SD1.4: LoRA radioactivity" if c.get("watermark_method") == "serum" else "BitMark → SD2.1: LoRA radioactivity"
+    lines = ["# " + title, "", f"Primary metric: {primary_key} at frozen {100*c['fpr']:g}% target teacher FPR.", "",
              "| Branch | Detected | Rate | 95% Wilson CI |", "|---|---:|---:|---:|"]
-    for r in tables["absolute_z"]:
+    for r in tables[primary_key]:
         lines.append(f"| {r['branch']} | {r['detected']}/{r['n']} | {100*r['detection_rate']:.2f}% | {100*r['ci95_low']:.2f}–{100*r['ci95_high']:.2f}% |")
+    if c.get("watermark_method") == "serum":
+        lines += ["", "## Secondary: frozen clean-student calibration", "",
+                  "| Branch | Detected | Rate | 95% Wilson CI |", "|---|---:|---:|---:|"]
+        for r in tables["serum_score_student_calibrated"]:
+            lines.append(f"| {r['branch']} | {r['detected']}/{r['n']} | {100*r['detection_rate']:.2f}% | {100*r['ci95_low']:.2f}–{100*r['ci95_high']:.2f}% |")
     if selections:
         lines += ["", "## Validation-selected checkpoints", "", "See checkpoint_metrics.csv for all milestones; test images never select checkpoints.", ""]
         for name, selected in selections.items():
@@ -163,7 +205,7 @@ def summarize(run):
                       if has_clean_controls else
                       "Full-minus-LoRA is the paired detection-rate difference on watermarked-trained students; no clean-trained adjustment is available.")
     lines += ["", interpretation, ""]
-    for name, e in effects["absolute_z"].items():
+    for name, e in effects[primary_key].items():
         low, high = e["paired_bootstrap_ci95_pp"]
         lines.append(f"- {name}: {e['estimate_pp']:.2f} pp; paired CI [{low:.2f}, {high:.2f}] pp.")
     lines += ["", "## Interpretation limits", ""] + [f"- {w}" for w in warnings]

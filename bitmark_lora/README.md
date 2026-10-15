@@ -70,7 +70,7 @@ does not install packages or change the active environment.
 
 Thiết kế đủ để làm pilot kiểm tra **radioactivity phụ thuộc cách adaptation**.
 BitMark đã báo cáo truyền watermark sang SD2.1 full fine-tune, nên full là positive
-control thích hợp cho việc so với LoRA trên cùng dữ liệu. Mặc định rank 4/16/32, một seed
+control thích hợp cho việc so với LoRA trên cùng dữ liệu. Mặc định rank 16/32, một seed
 và một ngân sách chưa đủ để khẳng định LoRA là điểm yếu chung hoặc đủ novelty cho
 một bài top conference. SERUM đã báo cáo radioactivity qua LoRA; không nên đặt giả
 thuyết tuyệt đối rằng LoRA không truyền watermark.
@@ -99,16 +99,16 @@ Mục tiêu: với dữ liệu BitMark, LoRA có truyền tín hiệu watermark 
 fine-tune hay không? Đây là **thí nghiệm truyền watermark qua adaptation**,
 không phải quantization attack, không phải thêm watermark trực tiếp vào SD2.1.
 
-Mặc định chạy **6 LoRA + 1 full UNet**, cùng unadapted baseline; không train C00/C01:
+Mặc định chạy **4 LoRA + 1 full UNet**, cùng unadapted baseline; không train C00/C01:
 
 | Nhánh | Adaptation | Dữ liệu train |
 |---|---|---|
 | `unadapted` | Không | Không |
-| `lora_r{4,16,32}_wm` | Attention q/k/v/out | Infinity BitMark |
-| `lora_r{4,16,32}_conv_wm` | Attention + tất cả UNet Conv2d groups=1 | Cùng dữ liệu |
+| `lora_r{16,32}_wm` | Attention q/k/v/out | Infinity BitMark |
+| `lora_r{16,32}_conv_wm` | Attention + tất cả UNet Conv2d groups=1 | Cùng dữ liệu |
 | `full_wm` | Toàn UNet, VAE/text encoder frozen | Cùng dữ liệu |
 
-Cùng SD2.1, 1.000 ảnh train, **5.000 optimizer steps mỗi student**, batch 4,
+Cùng SD2.1, 1.000 ảnh train, **7.500 optimizer steps mỗi student**, batch 4,
 LR 1e-4, AdamW, clipping 1.0, FP16, resolution 512, không EMA/random flip.
 Đây là cùng step budget, **không cùng số tham số hoặc FLOPs**; xem
 `students/<branch>/adapter_audit.json` để biết targets và số tham số thực tế.
@@ -121,7 +121,7 @@ Chạy tuần tự nên thời gian mặc định dài hơn bản chỉ train ra
   đo detection, CLIP/FID/KID. Clean teacher validation làm reference chất lượng.
 - Mỗi ảnh validation có một VAE posterior sample cố định. Mỗi checkpoint dùng
   cùng hai noise/timestep draws mỗi ảnh; MSE FP32 hỗ trợ cả epsilon/v-prediction.
-- Export snapshots ở **1.250, 2.500, 5.000** bước. Mốc cuối luôn được thêm nếu đổi budget.
+- Export snapshots ở **2.500, 5.000, 7.500** bước. Mốc cuối luôn được thêm nếu đổi budget.
   Chỉ lưu inference weights, không nhân bản optimizer state cho mỗi mốc.
 - Sau khi train xong một branch, lần lượt reload snapshots để đo MSE, sinh ảnh
   validation, chạy detector chính thức và đo chất lượng. Đây là post-training
@@ -261,21 +261,21 @@ Inception/CLIP lỗi. CI ảnh không bao gồm biến thiên seed huấn luyệ
 ## Chạy mở rộng và resume
 
 ```bash
-# Mặc định đã so rank 4/16/32 và attention/convolution.
+# Mặc định đã so rank 16/32 và attention/convolution.
 # Mở rộng ngân sách, giữ cùng mốc cho mọi student:
-bash run_bitmark_lora.sh --max-train-steps 10000 --checkpoint-steps 1250 2500 5000 10000
+bash run_bitmark_lora.sh --max-train-steps 10000 --checkpoint-steps 2500 5000 7500 10000
 
 # Run riêng để kiểm tra cường độ nhúng (không đổi student loss):
 bash run_bitmark_lora.sh --watermark-delta 3
 
-# Chỉ attention rank 4 cho một pilot ngắn hơn:
-bash run_bitmark_lora.sh --ranks 4 --adapter-scopes attention --lora-only
+# Chỉ attention rank 16:
+bash run_bitmark_lora.sh --ranks 16 --adapter-scopes attention --lora-only
 
 # Thêm đối chứng full+EMA gần recipe paper, tách khỏi matched full controls:
 bash run_bitmark_lora.sh --paper-full-ema
 
 # Pilot mở rộng để kiểm tra capacity và ảnh hưởng fine-tuning nói chung:
-bash run_bitmark_lora.sh --ranks 4 16 64 --train-clean-controls --paper-full-ema
+bash run_bitmark_lora.sh --ranks 16 32 64 --train-clean-controls --paper-full-ema
 
 # Chạy seed khác độc lập:
 bash run_bitmark_lora.sh --seed 1
@@ -306,3 +306,85 @@ Các thay đổi so với paper cần ghi khi viết báo cáo: fixed seed/promp
 pipeline này, paired δ=0 sampler, clean-generated calibration, không xFormers
 (dùng Torch SDPA), matched controls không EMA, có cả absolute/signed scoring.
 Không được gọi kết quả đó là tái hiện chính xác TPR=98.9% của paper.
+
+
+## SERUM diffusion teacher
+
+```bash
+bash run_serum.sh
+```
+
+Root launcher gọi `bitmark_lora/run_serum.py` và dùng chung trainer, validation,
+checkpoint reload, utility và reporter đã kiểm thử. `serum/` giữ nguyên thí nghiệm
+cũ để đối chiếu; không chạy các script có đường dẫn `/root/workspace` của run cũ.
+Luồng mới không nhập code Infinity hay tải T5/BitMark checkpoints.
+
+| Thành phần | Mặc định mới |
+|---|---|
+| Teacher | SD2.1-base cache gốc + watermark/detector SERUM epoch 50, alpha 0.5 |
+| Student | CompVis SD1.4, pinned revision `133a221b8aa7292a167afc5127cb63fb5005638b` |
+| Nhánh train | Attention rank 16/32, attention + Conv2d rank 16/32, full UNet |
+| Ngân sách | 7.500 optimizer steps/nhánh; snapshots 2.500, 5.000, 7.500 |
+| Training | 5.000 ảnh teacher watermark, batch 8, AdamW, LoRA LR 1e-5, full LR 5e-6 |
+| Validation MSE | 1.000 ảnh watermark rời train/test, 2 fixed noise/timestep draws/ảnh |
+| Validation generation | 128 prompt đầu của validation; detection, CLIP/FID/KID ở từng mốc |
+| Calibration | 5.000 prompt rời train/validation/test; cả clean teacher và unadapted student |
+| Test cuối | 1.000 prompt riêng; mỗi nhánh dùng checkpoint validation MSE tốt nhất |
+
+Đây là cải tiến thực nghiệm về capacity/scope và chọn checkpoint, **không bảo đảm
+TPR tăng**. Attention+convolution tốt hơn trong run BitMark trước chỉ là động lực
+kiểm tra giả thuyết tương tự ở SERUM. Full control có LR riêng đã khai báo;
+không gọi đây là so sánh bằng FLOPs, parameter count hay LR. Mặc định không train
+C00/C01. Có thể bật `--train-clean-controls` cho nghiên cứu tách ảnh hưởng generic
+fine-tuning; khi không bật, báo cáo chỉ trừ baseline unadapted.
+
+**Chọn checkpoint và tránh leakage:** chỉ MSE validation chọn checkpoint, hòa thì
+lấy bước sớm hơn. Detector và FID/KID chỉ báo cáo. Mọi selection được đóng băng
+trước khi sinh ảnh test của student đã train. Chất lượng/TPR thấp sinh cảnh báo,
+không dừng thí nghiệm; checkpoint sai hash, dữ liệu hỏng hoặc NaN vẫn phải dừng.
+Không đánh đồng SERUM probability score với bit accuracy (detector này không giải mã thông điệp bit).
+
+**Hai ngưỡng đã chốt trước:** `detection_serum_score.csv` dùng clean teacher
+calibration, để đối chiếu protocol cũ. `detection_serum_score_student_calibrated.csv`
+dùng clean unadapted SD1.4 calibration để kiểm tra domain shift. Cả hai dùng cùng
+learned detector/VAE SD2.1, không fit trên student test hay student đã fine-tune.
+Báo cáo Wilson CI, paired contrasts và FPR của ảnh sạch. Ngưỡng teacher có thể có
+FPR cao trên student; không dùng riêng raw TPR đó làm bằng chứng radioactivity.
+Chạy nhiều seed độc lập trước khi kết luận tổng quát; CI theo ảnh không bao hàm
+biến thiên của quá trình train.
+
+**Nguồn thật:** [tác giả cung cấp checkpoint và cache SD2.1](https://github.com/Hubizon/SERUM/issues/1#issuecomment-4963328577).
+`serum_assets.py` pin SHA256 checkpoint
+`e991a694342545fa4f59cc5b3c94b6e3a93bf831dd4d507207f52d1c167c05c4`
+và archive
+`95877f6ab0305b92897c5f6fdba7fcd373b9031728f3e69599ffebfb6d2bc593`,
+theo manifest của run SERUM gốc trong repo. Verify trước `torch.load(weights_only=True)`;
+không tự thay bằng watermark ngẫu nhiên hoặc checkpoint mirror.
+`vendor/serum` giữ forward Watermark/WatermarkScoreModel chính thức, commit
+`02f4929e30cd976c5cfe65a45ef1bc4ac79bdfed`; chỉ chỉnh đường import config/cleanup.
+VAE posterior sampling dùng RNG theo image index, chung giữa các nhánh; không
+sao chép threshold cũ vì batching/RNG protocol đã được khai báo lại.
+
+Google Drive có thể giới hạn tải hoặc bị chặn trên một số máy. Nếu đã tải artifact
+chính thức về, truyền `--serum-checkpoint /path/latest_checkpoint.pt` và
+`--serum-cache-archive /path/sd21_original_cache.zip`; SHA256 vẫn được kiểm tra.
+Không tắt checksum khi download lỗi. Cache/env ở local runtime, kết quả ở cạnh repo:
+
+```bash
+# Chạy mới đầy đủ, kết quả persist cạnh code trên Drive:
+bash run_serum.sh
+# Tiếp tục đúng cấu hình đã ghi; không ghép các override mới:
+bash run_serum.sh --resume /path/to/run_serum_YYYYMMDD_HHMMSS_microseconds
+# Chỉ xem kế hoạch (lệnh này không train):
+bash run_serum.sh --plan-only
+# Dùng Python environment hiện có khác:
+SERUM_PYTHON=/path/to/python bash run_serum.sh
+```
+
+SERUM dùng lại các dependency ML trong `requirements.txt`, nhưng không cần
+FlashAttention. Launcher không cài/gỡ package trong job. Toàn trình mặc định gồm
+nhiều lượt sinh ảnh calibration/validation/test và 5 lượt train nên cần GPU và thời
+gian đáng kể. Mỗi stage in tiến độ và lưu `logs/`, `run.log` trong thư mục run.
+Bộ kiểm tra hiện có: 37 protocol tests; CPU tiny diffusion train/reload/inference
+cho attention, attention+conv và full; smoke forward SERUM với **synthetic weights**.
+Đây không thay cho chạy checkpoint tác giả và đo radioactivity thật trên GPU.

@@ -68,6 +68,26 @@
     "bitmark/helper.py": "c867f2a69a2c93a677b31b3e1c462d65816daf95cbb5b6931c6c402904ff2241",
     "diffusers/LICENSE": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
     "diffusers/train_text_to_image.py": "a8c0f3e01f59f0eb40cabaa34620a283a47df5704c3a17480e7246cea00f1bec",
-    "diffusers/train_text_to_image_lora.py": "c42fdf1a61f897139e27b2bf60ecff0ff114cfc799b1d209dd3aca6087733df8"
+    "diffusers/train_text_to_image_lora.py": "c42fdf1a61f897139e27b2bf60ecff0ff114cfc799b1d209dd3aca6087733df8",
+    "serum/watermark.py": "f36e6f2553b136cc4ec8f8d075d1a68dc35ab414720ebcc385b1011d5c226086",
+    "serum/config.py": "76ba6defacc7806581fafb3ee22f02d561e363443afc976aba0c26ff6f06fcc4",
+    "serum/__init__.py": "855cf431720505996c5d617141a3d5af9730c04587cb1f711877c5456bd82a27",
+    "serum/score_model.py": "c3593dd4cca9a6cd66b4db473fef10d10a575e8c2218ed5834d3d1c3d0463615",
+    "serum/cleanup.py": "689b643bd4d6b9c662aa07586b4e9919a11f820a2e567e08280af8f2d085f0bd",
+    "serum/config_sd21.yaml": "34aebdf2414f39e37278dce60758665467d3b6b27450b3e3b8938c2452668e65"
+  },
+  "serum": {
+    "repository": "https://github.com/Hubizon/SERUM",
+    "commit": "02f4929e30cd976c5cfe65a45ef1bc4ac79bdfed",
+    "original_sha256": {
+      "src/models/watermark.py": "62eacdb9cd757f26d7317cf2116634471548a00662341e747d74c674e53d90b3",
+      "src/models/score_model.py": "80cf8ee202a1eaa0a1f045ab8b0061cde74f8007a55ad61f13b14775397dbcdf",
+      "src/utils/config.py": "f36531dca42b74ece58147c7e0e5576f91b6f60957f1da76c879a213678e1637"
+    },
+    "patches": [
+      "Only redirect config/cleanup imports to avoid optional training dependencies. Watermark and detector forward methods unchanged.",
+      "Author SD2.1 configuration copied from verified prior experiment; runtime paths overridden.",
+      "Strip trailing whitespace from vendored Python files; no semantic changes."
+    ]
   }
 }

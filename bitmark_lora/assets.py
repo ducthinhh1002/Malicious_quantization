@@ -93,26 +93,30 @@ def hub_snapshot(repo, revision, cache, keep):
     return str(folder)
 
 
-def prepare(config, run):
+def prepare_prompts(config, run, cache):
     import hashlib
+    archive = cache / "annotations_trainval2014.zip"
+    if not archive.exists():
+        download(COCO_URL, archive)
+    if hashlib.md5(archive.read_bytes()).hexdigest() != COCO_MD5:
+        raise RuntimeError(f"COCO annotation checksum mismatch: {archive}")
+    with zipfile.ZipFile(archive) as z:
+        anns = json.loads(z.read("annotations/captions_val2014.json"))["annotations"]
+    counts = {"train": config["train_n"], "calibration": config["calibration_n"], "test": config["test_n"]}
+    if config.get("validation_n"):
+        counts["validation"] = config["validation_n"]
+    prompts = split_prompts(anns, config["seed"], counts)
+    freeze(run / "prompts.json", prompts)
+    print("Disjoint COCO splits: " + ", ".join(f"{k}={len(v)}" for k, v in prompts.items()), flush=True)
+    return {"coco_url": COCO_URL, "coco_sha256": sha256(archive)}
+
+
+def prepare(config, run):
     cache = Path(config["cache"])
     cache.mkdir(parents=True, exist_ok=True)
     with (cache / "assets.lock").open("w") as lock:
         fcntl.flock(lock, fcntl.LOCK_EX)
-        archive = cache / "annotations_trainval2014.zip"
-        if not archive.exists():
-            download(COCO_URL, archive)
-        if hashlib.md5(archive.read_bytes()).hexdigest() != COCO_MD5:
-            raise RuntimeError(f"COCO annotation checksum mismatch: {archive}")
-        with zipfile.ZipFile(archive) as z:
-            anns = json.loads(z.read("annotations/captions_val2014.json"))["annotations"]
-        counts = {"train": config["train_n"], "calibration": config["calibration_n"], "test": config["test_n"]}
-        if config.get("validation_n"):
-            counts["validation"] = config["validation_n"]
-        prompts = split_prompts(anns, config["seed"], counts)
-        freeze(run / "prompts.json", prompts)
-        print("Disjoint COCO splits: " + ", ".join(f"{k}={len(v)}" for k, v in prompts.items()), flush=True)
-        result = {"coco_url": COCO_URL, "coco_sha256": sha256(archive)}
+        result = prepare_prompts(config, run, cache)
         result["infinity"] = hub_snapshot("FoundationVision/Infinity", INFINITY_REV, cache,
                                           lambda n: n in INFINITY_HASHES)
         result["t5"] = hub_snapshot("google/flan-t5-xl", T5_REV, cache,

@@ -158,7 +158,7 @@ def evaluate(run, name):
 
 
 def select(run, name):
-    from report import scores, wilson
+    from report import scores, wilson, detector_value
     c = read_json(run/'config.json')
     rows = [read_json(run/'validation'/f'{validation_label(name, step)}.json') for step in c['checkpoint_steps']]
     winner = choose_checkpoint(rows)
@@ -170,7 +170,9 @@ def select(run, name):
                  'test_used_for_selection': False, 'detector_used_for_selection': False,
                  'utility_used_for_selection': False}
     freeze(run/'result/selection'/f'{name}.json', selection)
-    threshold = read_json(run/'result/threshold.json')['absolute_z']
+    thresholds = read_json(run/'result/threshold.json')
+    convention = thresholds.get('primary', 'absolute_z')
+    threshold = thresholds[convention]
     utility_path = run/'result/validation_utility.json'
     utility = read_json(utility_path)['branches'] if utility_path.exists() else {}
     audit_path = run/'students'/name/'adapter_audit.json'
@@ -179,7 +181,7 @@ def select(run, name):
     for row in rows:
         label = validation_label(name, row['step'])
         z = scores(run, label, c['validation_generation_n'])
-        count = sum(abs(r['z_score']) >= threshold for r in z)
+        count = sum(detector_value(r, convention) >= threshold for r in z)
         quality = utility.get(label, {})
         if not c['skip_utility'] and not quality:
             raise ValueError(f'Missing requested validation utility for {label}')
@@ -189,7 +191,9 @@ def select(run, name):
             'clip_score': quality.get('clip_score'), 'fid': quality.get('frechet_inception_distance'),
             'kid': quality.get('kernel_inception_distance_mean'),
             'trainable_parameters': adapter.get('trainable_parameters'),
-            'quality_status': 'measured' if quality else 'explicitly_skipped'})
+            'quality_status': 'measured' if quality else 'explicitly_skipped',
+            **({'student_calibrated_detection_rate': sum(r['score'] >= thresholds['serum_score_student_calibrated'] for r in z)/len(z)}
+               if c.get('watermark_method') == 'serum' else {})})
     write_json(run/'result/validation'/f'{name}.json', {'selection': selection, 'milestones': table})
     all_rows = []
     for b in branches(c):

@@ -37,7 +37,7 @@ def training_command(config, assets, run, branch):
            "--output_dir", str(run / "students" / branch["name"]),
            "--resolution", "512", "--center_crop", "--train_batch_size", str(config["batch_size"]),
            "--gradient_accumulation_steps", "1", "--gradient_checkpointing",
-           "--num_train_epochs", str(config.get("epochs") or 5), "--learning_rate", str(config["learning_rate"]),
+           "--num_train_epochs", str(config.get("epochs") or 5), "--learning_rate", str(config.get("full_learning_rate", config["learning_rate"]) if branch["kind"] == "full" else config["learning_rate"]),
            "--mixed_precision", config["precision"], "--lr_scheduler", "constant", "--lr_warmup_steps", "0",
            "--checkpointing_steps", "1000000000", "--report_to", "none", "--seed", str(config["seed"]),
            "--dataloader_num_workers", "0", "--max_grad_norm", "1.0"]
@@ -185,7 +185,7 @@ def generate_images(run, name, pipe, checkpoint, split="test", label=None):
         batch = prompts[start:start+config["inference_batch"]]
         paths = [out / image_name(start+j) for j in range(len(batch))]
         if not all(valid_image(p, (512, 512)) for p in paths):
-            generators = [torch.Generator("cuda").manual_seed(config["seed"] * 1000000 + (700000 if split == "validation" else 500000) + start+j)
+            generators = [torch.Generator("cuda").manual_seed(config["seed"] * 1000000 + ({"test":500000,"validation":700000,"calibration":850000}[split]) + start+j)
                           for j in range(len(batch))]
             with torch.inference_mode():
                 images = pipe([r["text"] for r in batch], height=512, width=512, generator=generators,
@@ -198,9 +198,12 @@ def generate_images(run, name, pipe, checkpoint, split="test", label=None):
     freeze(out / "image_hashes.json", [{"file": p.name, "sha256": sha256(p)} for p in sorted(out.glob("sample_*.png"))])
 
 
-def generate(run, name):
+def generate(run, name, split="test"):
+    if split == "calibration" and name != "unadapted":
+        raise ValueError("Calibration generations must use the unadapted clean student")
     pipe, checkpoint = load_pipeline(run, name)
-    generate_images(run, name, pipe, checkpoint)
+    generate_images(run, name, pipe, checkpoint, split=split,
+                    label="unadapted_calibration" if split == "calibration" else name)
 
 
 if __name__ == "__main__":
@@ -208,5 +211,9 @@ if __name__ == "__main__":
     p.add_argument("--run", type=Path, required=True)
     p.add_argument("--stage", choices=["train", "generate"], required=True)
     p.add_argument("--branch", required=True)
+    p.add_argument("--split", choices=["test", "calibration"], default="test")
     a = p.parse_args()
-    (train if a.stage == "train" else generate)(a.run.resolve(), a.branch)
+    if a.stage == "train":
+        train(a.run.resolve(), a.branch)
+    else:
+        generate(a.run.resolve(), a.branch, a.split)

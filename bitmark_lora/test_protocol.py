@@ -31,7 +31,7 @@ class ProtocolTests(unittest.TestCase):
             cmd = training_command(c, {'student': '/pinned/model'}, Path('/run'), b)
             self.assertEqual(cmd[cmd.index('--learning_rate')+1], '0.0001')
             self.assertEqual(cmd[cmd.index('--num_train_epochs')+1], '5')
-            self.assertEqual(cmd[cmd.index('--max_train_steps')+1], '5000')
+            self.assertEqual(cmd[cmd.index('--max_train_steps')+1], '7500')
             self.assertNotIn('--use_ema', cmd)
             self.assertFalse(any('scores' in x or 'test' in x for x in cmd))
             self.assertNotIn('--push_to_hub', cmd)

@@ -20,16 +20,16 @@ from common import HERE, freeze, read_json, sha256, verify_vendor, write_json, r
 from student import branches, training_command
 
 
-def parse_args(argv=None):
+def parse_args(argv=None, method="bitmark"):
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--seed", type=int, default=0)
-    p.add_argument("--ranks", type=int, nargs="+", default=[4, 16, 32])
+    p.add_argument("--ranks", type=int, nargs="+", default=[16, 32])
     p.add_argument("--train-n", type=int, default=1000)
     p.add_argument("--calibration-n", type=int, default=5000)
     p.add_argument("--test-n", type=int, default=1000)
     p.add_argument("--epochs", type=int, help="Legacy budget override; cannot accompany --max-train-steps")
-    p.add_argument("--max-train-steps", type=int, default=None, help="Shared optimizer budget; default 5000")
-    p.add_argument("--checkpoint-steps", type=int, nargs="+", default=[1250, 2500, 5000])
+    p.add_argument("--max-train-steps", type=int, default=None, help="Shared optimizer budget; default 7500")
+    p.add_argument("--checkpoint-steps", type=int, nargs="+", default=[2500, 5000, 7500])
     p.add_argument("--adapter-scopes", nargs="+", choices=["attention", "attention_conv"],
                    default=["attention", "attention_conv"])
     p.add_argument("--validation-n", type=int, default=256)
@@ -52,7 +52,22 @@ def parse_args(argv=None):
     p.add_argument("--min-free-gb", type=float, default=70)
     p.add_argument("--plan-only", action="store_true", help="Print protocol only; default without this flag executes the experiment")
     p.add_argument("--analyze", type=Path, help="Recompute reports from an existing complete run; no GPU required")
+    p.set_defaults(watermark_method=method)
+    if method == "serum":
+        p.description = "SERUM SD2.1 diffusion teacher -> SD1.4 LoRA/full adaptation"
+        p.set_defaults(train_n=5000, validation_n=1000, batch_size=8, learning_rate=1e-5)
+        p.add_argument("--serum-alpha", type=float, default=.5)
+        p.add_argument("--serum-checkpoint", type=Path, help="Optional local copy of pinned author epoch-50 checkpoint")
+        p.add_argument("--serum-cache-archive", type=Path, help="Optional local copy of pinned author SD2.1 cache ZIP")
+        p.add_argument("--teacher-batch", type=int, default=4)
+        p.add_argument("--score-batch", type=int, default=16)
+        p.add_argument("--full-learning-rate", type=float, default=5e-6)
     a = p.parse_args(argv)
+    if method == "serum":
+        if not math.isfinite(a.serum_alpha) or not 0 < a.serum_alpha < 1:
+            p.error("SERUM alpha must lie strictly between 0 and 1")
+        if min(a.teacher_batch, a.score_batch) < 1 or not math.isfinite(a.full_learning_rate) or a.full_learning_rate <= 0:
+            p.error("Invalid SERUM batch size/full learning rate")
     if a.epochs is not None and a.max_train_steps is not None:
         p.error("Choose --epochs or --max-train-steps, not both")
     if a.epochs is not None and a.epochs <= 0:
@@ -60,7 +75,7 @@ def parse_args(argv=None):
     if a.batch_size <= 0:
         p.error("--batch-size must be positive")
     if a.max_train_steps is None:
-        a.max_train_steps = (math.ceil(a.train_n / a.batch_size) * a.epochs if a.epochs else 5000)
+        a.max_train_steps = (math.ceil(a.train_n / a.batch_size) * a.epochs if a.epochs else 7500)
     if any(x <= 0 for x in a.checkpoint_steps):
         p.error("Checkpoint steps must be positive")
     a.checkpoint_steps = sorted(set(x for x in a.checkpoint_steps if x <= a.max_train_steps) | {a.max_train_steps})
@@ -126,27 +141,34 @@ def stage(run, label, command):
 
 def preflight(a):
     require_local_runtime_path(a.cache)
-    from check_runtime import check_model_imports
+    if getattr(a, "watermark_method", "bitmark") == "serum":
+        from serum_teacher import check_imports as check_model_imports
+    else:
+        from check_runtime import check_model_imports
     try:
         check_model_imports()
     except Exception as exc:
         raise RuntimeError(
             f"Existing Python environment cannot import pipeline models: {sys.executable}. "
-            "Run that interpreter with bitmark_lora/check_runtime.py to see the original error. "
-            "Select a working existing interpreter with BITMARK_PYTHON; no automatic installation."
+            "See the chained import error above for the missing/incompatible dependency. "
+            "Select a working existing interpreter with SERUM_PYTHON/ BITMARK_PYTHON; no automatic installation."
         ) from exc
     import torch
-    import flash_attn
     if not torch.cuda.is_available():
-        raise RuntimeError("BitMark official Infinity needs CUDA. Run this experiment on the GPU server.")
+        raise RuntimeError("This experiment requires a CUDA GPU")
     major, _ = torch.cuda.get_device_capability()
-    if major < 8:
-        raise RuntimeError("Official Infinity/FlashAttention requires an Ampere-or-newer GPU")
-    # Exercise actual CUDA kernels before model downloads or long generation.
-    q = torch.randn(1, 16, 2, 64, device="cuda", dtype=torch.bfloat16)
-    result = flash_attn.flash_attn_func(q, q, q)
-    if not torch.isfinite(result).all():
-        raise RuntimeError("FlashAttention CUDA smoke check returned nonfinite values")
+    if getattr(a, "watermark_method", "bitmark") == "bitmark":
+        import flash_attn
+        if major < 8:
+            raise RuntimeError("Official Infinity/FlashAttention requires an Ampere-or-newer GPU")
+        q = torch.randn(1, 16, 2, 64, device="cuda", dtype=torch.bfloat16)
+        result = flash_attn.flash_attn_func(q, q, q)
+        if not torch.isfinite(result).all():
+            raise RuntimeError("FlashAttention CUDA smoke check returned nonfinite values")
+    else:
+        x = torch.randn(16,16,device="cuda")
+        if not torch.isfinite(x @ x).all():
+            raise RuntimeError("CUDA matrix smoke check returned nonfinite values")
     torch.cuda.synchronize()
     print(f"GPU: {torch.cuda.get_device_name()}; torch={torch.__version__}", flush=True)
     for path in [a.cache, (a.output or results_root())]:
@@ -186,8 +208,8 @@ def persistent_log(run):
                 raise
 
 
-def main(argv=None):
-    a = parse_args(argv)
+def main(argv=None, method="bitmark"):
+    a = parse_args(argv, method)
     if a.analyze:
         from report import summarize
         summarize(a.analyze.resolve())
@@ -201,21 +223,28 @@ def main(argv=None):
         if any(x.split("=")[0] not in allowed for x in supplied if x.startswith("--")):
             raise ValueError("--resume loads the frozen config; only --min-free-gb/--plan-only may accompany it")
         c = read_json(a.resume.resolve() / "config.json")
+        a.watermark_method = c.get("watermark_method", "bitmark")
         a.cache = Path(c["cache"])
         a.output = a.resume.resolve()
+    carrier = c.get("watermark_method", "bitmark")
+    teacher_file = "serum_teacher.py" if carrier == "serum" else "teacher.py"
+    assets_file = "serum_assets.py" if carrier == "serum" else "assets.py"
     if a.plan_only:
         print(json.dumps({"config": c, "students": branches(c),
-              "baseline": "unadapted SD2.1", "teacher": f"official Infinity-2B / BitMark delta={c.get('watermark_delta',2)}, all scales, G=01,10",
+              "baseline": "unadapted SD1.4" if carrier == "serum" else "unadapted SD2.1",
+              "teacher": (f"author SD2.1 / SERUM alpha={c['serum_alpha']}" if carrier == "serum" else
+                          f"official Infinity-2B / BitMark delta={c.get('watermark_delta',2)}, all scales, G=01,10"),
               "training": "fixed step budget; minimum held-out denoising MSE, earlier step breaks ties; detector/utility excluded",
               "results_root": str(results_root()),
               "expected_updates_per_student": c.get("max_train_steps") or math.ceil(c["train_n"]/c["batch_size"])*c["epochs"],
-              "detection": "official tokenizer+detector, frozen clean threshold; |z| primary + signed-z secondary",
-              "execute": "bash run_bitmark_lora.sh (omit --plan-only)"}, indent=2))
+              "detection": ("author SERUM detector; separate frozen teacher and student clean-calibration thresholds"
+                            if carrier == "serum" else "official tokenizer+detector; |z| primary + signed-z secondary"),
+              "execute": "bash run_serum.sh" if carrier == "serum" else "bash run_bitmark_lora.sh"}, indent=2))
         return
     if a.resume:
         run = a.resume.resolve()
     else:
-        run = a.output.resolve() if a.output else results_root() / datetime.datetime.now(ZoneInfo("Asia/Vientiane")).strftime("run_bitmark_%Y%m%d_%H%M%S_%f")
+        run = a.output.resolve() if a.output else results_root() / datetime.datetime.now(ZoneInfo("Asia/Vientiane")).strftime(f"run_{carrier}_%Y%m%d_%H%M%S_%f")
         run.mkdir(parents=True, exist_ok=False)
     # Drive FUSE may not support flock; synchronize same-host launches on local storage.
     import hashlib
@@ -232,17 +261,23 @@ def main(argv=None):
         source_files["requirements.txt"] = sha256(HERE / "requirements.txt")
         freeze(run / "code_manifest.json", source_files)
         versions = {p: importlib.metadata.version(p) for p in (
-            "torch", "torchvision", "diffusers", "transformers", "peft", "accelerate", "flash-attn",
+            "torch", "torchvision", "diffusers", "transformers", "peft", "accelerate",
             "datasets", "pyarrow", "numpy", "scipy", "torch-fidelity", "huggingface-hub")}
+        if carrier == "bitmark":
+            versions["flash-attn"] = importlib.metadata.version("flash-attn")
         freeze(run / "environment.json", {"packages": versions, "hardware": hardware})
         print(f"Run: {run}\nDefault mode EXECUTES training and evaluation, not plan-only.", flush=True)
         py = sys.executable
         def call(file, label, *args):
             stage(run, label, [py, str(HERE / file), "--run", str(run), *args])
-        call("assets.py", "01_assets")
-        call("teacher.py", "02_teacher", "--stage", "generate")
-        call("teacher.py", "03_teacher_scores", "--stage", "score", "--directories",
+        call(assets_file, "01_assets")
+        call(teacher_file, "02_teacher", "--stage", "generate")
+        call(teacher_file, "03_teacher_scores", "--stage", "score", "--directories",
              "teacher_clean_calibration", "teacher_clean_test", "teacher_wm_test")
+        if carrier == "serum":
+            call("student.py", "03b_student_calibration_images", "--stage", "generate", "--branch", "unadapted",
+                 "--split", "calibration")
+            call(teacher_file, "03c_student_calibration_scores", "--stage", "score", "--directories", "unadapted_calibration")
         call("report.py", "04_freeze_threshold", "--calibrate-only")
         if c.get("checkpoint_steps"):
             call("validation.py", "04b_validation_cache", "--stage", "cache")
@@ -253,14 +288,14 @@ def main(argv=None):
                 from validation import validation_label
                 call("validation.py", f"validate_{b['name']}", "--stage", "evaluate", "--branch", b["name"])
                 labels = [validation_label(b["name"], step) for step in c["checkpoint_steps"]]
-                call("teacher.py", f"validation_scores_{b['name']}", "--stage", "score", "--directories", *labels)
+                call(teacher_file, f"validation_scores_{b['name']}", "--stage", "score", "--directories", *labels)
                 if not c["skip_utility"]:
                     call("utility.py", f"validation_quality_{b['name']}", "--split", "validation", "--labels", *labels)
                 call("validation.py", f"select_{b['name']}", "--stage", "select", "--branch", b["name"])
         # Final test is generated only after every branch has frozen its selection.
         for b in branches(c):
             call("student.py", f"generate_{b['name']}", "--stage", "generate", "--branch", b["name"])
-        call("teacher.py", "06_student_scores", "--stage", "score", "--directories",
+        call(teacher_file, "06_student_scores", "--stage", "score", "--directories",
              "unadapted", *[b["name"] for b in branches(c)])
         # Always publish detector results before optional heavyweight utility evaluation.
         call("report.py", "07_radioactivity")

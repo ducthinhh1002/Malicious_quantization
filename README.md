@@ -1,18 +1,36 @@
 # Hướng dẫn chạy thí nghiệm malicious quantization cho watermark diffusion
 
+## SERUM: diffusion teacher → diffusion student (15/10/2026)
+
+```bash
+bash run_serum.sh
+```
+
+Lệnh này **chạy thí nghiệm thật**, không phải plan-only. Dùng Python/environment
+đã chạy BitMark; không cần Infinity/FlashAttention cho nhánh SERUM. Teacher là
+SD2.1 + checkpoint watermark/detector SERUM của tác giả, student là SD1.4.
+Mặc định bốn LoRA **rank 16/32 × attention/attention+convolution**, thêm full UNet;
+**7.500 bước**, đánh giá snapshots **2.500 / 5.000 / 7.500**, không chạy rank 4
+hay mốc 1.250 trong cấu hình mặc định mới.
+
+Logs, ảnh, checkpoints và báo cáo lưu cạnh repo trong
+`run_serum_<ngày_giờ>/`; nếu repo ở Drive thì kết quả cũng ở Drive.
+Xem `result/README.md`, `result/checkpoint_metrics.csv`, `result/radioactivity.json`
+và `result/utility.json`. [Protocol, nguồn checkpoint và resume](bitmark_lora/README.md#serum-diffusion-teacher).
+
 ## BitMark → LoRA radioactivity (13/10/2026)
 
 Thí nghiệm riêng dựa trên protocol SERUM, dùng source/checkpoint BitMark chính
 thức: so sánh LoRA và full fine-tune SD2.1 trên dữ liệu watermarked, kèm unadapted
-baseline. Không chạy các nhánh train clean kiểu C00/C01. Chạy toàn trình trong Conda env riêng:
+baseline. Không chạy các nhánh train clean kiểu C00/C01. Chạy toàn trình bằng Python environment đã chuẩn bị:
 
 ```bash
 bash run_bitmark_lora.sh
 ```
 
 Code, protocol, cách resume và các giới hạn diễn giải: [bitmark_lora/README.md](bitmark_lora/README.md).
-Mặc định so rank 4/16/32 × attention hoặc attention+convolution, cùng 5.000 bước.
-Đo MSE/detection/CLIP/FID/KID ở 1.250/2.500/5.000; chọn checkpoint bằng validation MSE,
+Mặc định so rank 16/32 × attention hoặc attention+convolution, cùng 7.500 bước.
+Đo MSE/detection/CLIP/FID/KID ở 2.500/5.000/7.500; chọn checkpoint bằng validation MSE,
 đánh giá cuối trên test riêng. Kết quả và log nằm cạnh code (trên Drive nếu code ở Drive):
 `run_bitmark_<ngày_giờ>/result/README.md`; đường cong: `result/checkpoint_metrics.csv`.
 
