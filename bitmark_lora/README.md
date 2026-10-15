@@ -323,7 +323,7 @@ Luồng mới không nhập code Infinity hay tải T5/BitMark checkpoints.
 |---|---|
 | Teacher | SD2.1-base cache gốc + watermark/detector SERUM epoch 50, alpha 0.5 |
 | Student | CompVis SD1.4, pinned revision `133a221b8aa7292a167afc5127cb63fb5005638b` |
-| Nhánh train | Attention rank 16/32, attention + Conv2d rank 16/32, full UNet |
+| Nhánh train | Attention rank 16/32, attention + Conv2d rank 16/32, DoRA attention+conv rank 32, full UNet |
 | Ngân sách | 7.500 optimizer steps/nhánh; snapshots 2.500, 5.000, 7.500 |
 | Training | 5.000 ảnh teacher watermark, batch 8, AdamW, LoRA LR 1e-5, full LR 5e-6 |
 | Validation MSE | 1.000 ảnh watermark rời train/test, 2 fixed noise/timestep draws/ảnh |
@@ -383,8 +383,45 @@ SERUM_PYTHON=/path/to/python bash run_serum.sh
 
 SERUM dùng lại các dependency ML trong `requirements.txt`, nhưng không cần
 FlashAttention. Launcher không cài/gỡ package trong job. Toàn trình mặc định gồm
-nhiều lượt sinh ảnh calibration/validation/test và 5 lượt train nên cần GPU và thời
+nhiều lượt sinh ảnh calibration/validation/test và 6 lượt train nên cần GPU và thời
 gian đáng kể. Mỗi stage in tiến độ và lưu `logs/`, `run.log` trong thư mục run.
-Bộ kiểm tra hiện có: 37 protocol tests; CPU tiny diffusion train/reload/inference
+Bộ kiểm tra hiện có: 38 protocol tests; CPU tiny diffusion train/reload/inference
 cho attention, attention+conv và full; smoke forward SERUM với **synthetic weights**.
 Đây không thay cho chạy checkpoint tác giả và đo radioactivity thật trên GPU.
+
+
+### Nhánh thử nghiệm DoRA cho SERUM
+
+`bash run_serum.sh` giờ chạy thêm **`dora_r32_conv_wm`** bên cạnh
+`lora_r32_conv_wm`. DoRA dùng PEFT `use_dora=True`, học độ lớn trọng số riêng cùng
+hướng cập nhật low-rank. Không đổi watermark/detector tác giả, không lấy score
+watermark làm loss train. Giả thuyết: thêm khả năng điều chỉnh magnitude có thể
+thu hẹp khoảng cách full UNet–LoRA trong việc học tín hiệu SERUM.
+
+Nguồn: [DoRA, ICML 2024](https://proceedings.mlr.press/v235/liu24bn.html),
+[code tác giả](https://github.com/NVlabs/DoRA),
+[PEFT 0.17 hỗ trợ Linear và Conv2d](https://huggingface.co/docs/peft/v0.17.0/package_reference/lora).
+Tác giả cũng ghi rõ DoRA trên diffusion còn mang tính thử nghiệm và có thể cần
+hyperparameter khác. Đây là một ablation có căn cứ, **không phải thuật toán mới
+hay kết quả radioactivity đã được chứng minh**.
+
+- Mặc định rank 32, cùng attention+conv scope, LR 1e-5, 7.500 bước, dữ liệu,
+  prompt/seed và quy tắc chọn validation checkpoint với LoRA tương ứng.
+- Nếu đổi `--ranks`, DoRA dùng rank lớn nhất trong danh sách. `--no-dora` tắt
+  nhánh này. BitMark vẫn mặc định tắt DoRA; có thể bật bằng `--dora`.
+- Thêm parameters magnitude và chi phí tính toán; không tuyên bố bằng FLOPs.
+  `adapter_audit.json` ghi method, tổng trainable và `magnitude_parameters`.
+- `result/radioactivity.json` có `dora_minus_lora_conv_r32` và paired bootstrap CI
+  theo cả hai ngưỡng. So cùng `utility.json`, checkpoint MSE và FPR sạch trước
+  khi kết luận DoRA tốt hơn. CI theo ảnh không thay cho nhiều training seed.
+- Native PEFT checkpoints giữ cả A/B và magnitude. CPU smoke kiểm tra magnitude
+  đổi qua các bước, reload tái tạo dự đoán, rồi sinh ảnh bằng model nhỏ.
+- Run cũ không có trường `dora` vẫn giữ nguyên các nhánh cũ khi đọc config;
+  thay đổi code không tự thêm DoRA vào run đã đóng băng. Chạy thư mục mới để thử
+  mặc định mới; không sửa manifest của run đang chạy.
+
+Lệnh chạy toàn bộ nhánh mới:
+
+```bash
+bash run_serum.sh
+```

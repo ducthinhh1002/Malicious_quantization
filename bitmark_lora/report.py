@@ -136,6 +136,12 @@ def summarize(run):
             conv, attention = f"lora_r{rank}_conv_wm", f"lora_r{rank}_wm"
             if conv in indicators and attention in indicators:
                 effect(f"conv_minus_attention_r{rank}", [a-b for a,b in zip(indicators[conv], indicators[attention])])
+        for b in branches(c):
+            if b.get("use_dora") and b["condition"] == "wm":
+                baseline = f"lora_r{b['rank']}_conv_wm"
+                if baseline in indicators:
+                    effect(f"dora_minus_lora_conv_r{b['rank']}",
+                           [a-bb for a,bb in zip(indicators[b['name']], indicators[baseline])])
         tables[convention], effects[convention] = table, comparisons
     warnings = ["Single training seed; image bootstrap does not capture training-seed variance.",
                 "Matched full controls have no EMA, matching LoRA. Not an exact reproduction of the paper's full+EMA run.",
@@ -147,6 +153,10 @@ def summarize(run):
                     "Full control uses a separately declared learning rate; parameter count and compute are not matched to LoRA.",
                     "Teacher and clean student thresholds are both frozen on calibration, never test; compare within one threshold convention.",
                     "SERUM scores are learned watermark probabilities, NOT decoded bit accuracy."]
+    if c.get("dora"):
+        warnings.append("DoRA is an exploratory magnitude/direction adapter, not an established radioactivity improvement. Same steps/LR/scope as LoRA do not equalize FLOPs or parameter count.")
+        if not any(b["name"] == f"lora_r{max(c['ranks'])}_conv_wm" for b in branches(c)):
+            warnings.append("No same-rank convolution LoRA comparator for DoRA in this run.")
     primary_key = threshold["primary"]
     primary = {r["branch"]: r for r in tables[primary_key]}
     full_effect = "full_clean_adjusted_transfer" if has_clean_controls else "full_wm_minus_unadapted"

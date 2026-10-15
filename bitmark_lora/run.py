@@ -23,6 +23,8 @@ from student import branches, training_command
 def parse_args(argv=None, method="bitmark"):
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--seed", type=int, default=0)
+    p.add_argument("--dora", action=argparse.BooleanOptionalAction, default=method == "serum",
+                   help="Add one attention+convolution DoRA branch at the largest requested rank (SERUM default on)")
     p.add_argument("--ranks", type=int, nargs="+", default=[16, 32])
     p.add_argument("--train-n", type=int, default=1000)
     p.add_argument("--calibration-n", type=int, default=5000)

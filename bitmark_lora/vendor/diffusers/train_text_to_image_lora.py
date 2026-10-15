@@ -429,6 +429,7 @@ def parse_args():
     )
 
     parser.add_argument("--snapshot_steps", type=int, nargs="+", default=[])
+    parser.add_argument("--use_dora", action="store_true", help="Use PEFT magnitude/direction adaptation")
     parser.add_argument("--adapter_scope", choices=["attention", "attention_conv"], default="attention")
     args = parser.parse_args()
     env_local_rank = int(os.environ.get("LOCAL_RANK", -1))
@@ -546,6 +547,7 @@ def main():
     unet_lora_config = LoraConfig(
         r=args.rank,
         lora_alpha=args.rank,
+        use_dora=args.use_dora,
         init_lora_weights="gaussian",
         target_modules=sorted(set(targets)),
     )
@@ -579,6 +581,8 @@ def main():
         import json
         with open(os.path.join(args.output_dir, "adapter_audit.json"), "w") as f:
             json.dump({"scope": args.adapter_scope, "rank": args.rank,
+                       "method": "dora" if args.use_dora else "lora",
+                       "magnitude_parameters": sum(p.numel() for n,p in unet.named_parameters() if p.requires_grad and "lora_magnitude_vector" in n),
                        "targets": sorted(set(targets)),
                        "trainable_parameters": sum(p.numel() for p in lora_layers),
                        "total_parameters": sum(p.numel() for p in unet.parameters())}, f, indent=2)

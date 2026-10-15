@@ -21,6 +21,11 @@ def branches(config):
                 prefix = f"lora_r{rank}" + ("_conv" if scope == "attention_conv" else "")
                 result.append({"name": f"{prefix}_{condition}", "kind": "lora", "rank": rank,
                                "scope": scope, "condition": condition})
+    if config.get("dora", False):
+        rank = max(config["ranks"])
+        for condition in training_conditions(config):
+            result.append({"name": f"dora_r{rank}_conv_{condition}", "kind": "lora", "rank": rank,
+                           "scope": "attention_conv", "condition": condition, "use_dora": True})
     if not config["lora_only"]:
         for condition in training_conditions(config):
             result.append({"name": f"full_{condition}", "kind": "full", "condition": condition})
@@ -43,6 +48,8 @@ def training_command(config, assets, run, branch):
            "--dataloader_num_workers", "0", "--max_grad_norm", "1.0"]
     if branch["kind"] == "lora":
         cmd += ["--rank", str(branch["rank"]), "--adapter_scope", branch.get("scope", "attention")]
+    if branch.get("use_dora"):
+        cmd += ["--use_dora"]
     if config.get("max_train_steps"):
         cmd += ["--max_train_steps", str(config["max_train_steps"])]
     if config.get("checkpoint_steps"):

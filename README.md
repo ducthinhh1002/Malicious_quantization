@@ -9,7 +9,7 @@ bash run_serum.sh
 Lệnh này **chạy thí nghiệm thật**, không phải plan-only. Dùng Python/environment
 đã chạy BitMark; không cần Infinity/FlashAttention cho nhánh SERUM. Teacher là
 SD2.1 + checkpoint watermark/detector SERUM của tác giả, student là SD1.4.
-Mặc định bốn LoRA **rank 16/32 × attention/attention+convolution**, thêm full UNet;
+Mặc định bốn LoRA **rank 16/32 × attention/attention+convolution**, thêm full UNet và **DoRA rank 32 attention+convolution** thử nghiệm;
 **7.500 bước**, đánh giá snapshots **2.500 / 5.000 / 7.500**, không chạy rank 4
 hay mốc 1.250 trong cấu hình mặc định mới.
 

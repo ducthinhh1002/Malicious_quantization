@@ -22,13 +22,18 @@ class SerumTests(unittest.TestCase):
         self.assertEqual(c['checkpoint_steps'], [2500,5000,7500])
         self.assertEqual(c['max_train_steps'], 7500)
         self.assertEqual(c['train_n'], 5000)
-        self.assertEqual(len(branches(c)), 5)
+        self.assertEqual(len(branches(c)), 6)
         for b in branches(c):
             cmd = training_command(c, {'student':'/sd14'}, Path('/run'), b)
             self.assertEqual(cmd[cmd.index('--max_train_steps')+1], '7500')
             self.assertEqual(cmd[cmd.index('--learning_rate')+1], '5e-06' if b['kind']=='full' else '1e-05')
             self.assertFalse(any('scores' in x or 'test' in x for x in cmd))
             self.assertNotEqual(b.get('rank'), 4)
+            self.assertEqual('--use_dora' in cmd, b.get('use_dora', False))
+        self.assertEqual(branches(c)[-2]['name'], 'dora_r32_conv_wm')
+        old = dict(c); old.pop('dora')
+        self.assertFalse(any(b.get('use_dora') for b in branches(old)))
+        self.assertEqual(len(branches(config_from_args(parse_args(['--no-dora'], method='serum')))), 5)
 
     def test_orchestration_uses_diffusion_and_calibrates_before_training(self):
         import run as runner
@@ -62,7 +67,7 @@ class SerumTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as d, contextlib.redirect_stdout(io.StringIO()):
             run=Path(d)
             c=config_from_args(parse_args(['--ranks','16','--adapter-scopes','attention','--lora-only',
-                '--test-n','10','--calibration-n','100','--max-train-steps','2','--checkpoint-steps','1','2',
+                '--no-dora','--test-n','10','--calibration-n','100','--max-train-steps','2','--checkpoint-steps','1','2',
                 '--validation-generation-n','2','--skip-utility'],method='serum'))
             write_json(run/'config.json',c)
             for label,values in {'teacher_clean_calibration':[.1]*100,'unadapted_calibration':[.4]*100,
@@ -90,6 +95,23 @@ class SerumTests(unittest.TestCase):
             self.assertEqual(freeze_threshold(run),threshold)
             self.write_scores(run,'unadapted_calibration',[.6]*100)
             with self.assertRaises(RuntimeError): freeze_threshold(run)
+
+    def test_dora_paired_report_under_both_thresholds(self):
+        with tempfile.TemporaryDirectory() as d, contextlib.redirect_stdout(io.StringIO()):
+            run = Path(d)
+            c = config_from_args(parse_args(['--ranks','32','--adapter-scopes','attention_conv',
+                '--lora-only','--test-n','10','--calibration-n','100','--skip-utility'],method='serum'))
+            c.pop('checkpoint_steps')
+            write_json(run/'config.json',c)
+            for label,values in {'teacher_clean_calibration':[.1]*100,'unadapted_calibration':[.2]*100,
+                    'teacher_wm_test':[.95]*10,'teacher_clean_test':[.1]*10,'unadapted':[.1]*10,
+                    'lora_r32_conv_wm':[.9]*3+[.1]*7,'dora_r32_conv_wm':[.9]*8+[.1]*2}.items():
+                self.write_scores(run,label,values)
+            summarize(run)
+            report = read_json(run/'result/radioactivity.json')
+            for mode in ('serum_score','serum_score_student_calibrated'):
+                self.assertAlmostEqual(report['paired_effects'][mode]['dora_minus_lora_conv_r32']['estimate_pp'],50.)
+            self.assertIn('dora_r32_conv_wm',(run/'result/detection_serum_score.csv').read_text())
 
     def test_reject_bad_artifacts_and_zip_traversal(self):
         with tempfile.TemporaryDirectory() as d:

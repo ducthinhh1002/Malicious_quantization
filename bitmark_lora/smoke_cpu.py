@@ -73,8 +73,8 @@ def main():
                 f.write(json.dumps({'file_name': f'{i}.png', 'text': 'a test'})+'\n')
         env = os.environ.copy()
         env.update(OMP_NUM_THREADS='2', MKL_NUM_THREADS='2', CUDA_VISIBLE_DEVICES='', TOKENIZERS_PARALLELISM='false')
-        for kind in ('lora', 'lora_conv', 'full'):
-            is_lora = kind.startswith('lora')
+        for kind in ('lora', 'lora_conv', 'dora_conv', 'full'):
+            is_lora = kind != 'full'
             name = 'train_text_to_image_lora.py' if is_lora else 'train_text_to_image.py'
             out = root/kind
             cmd = [sys.executable, str(HERE/'vendor/diffusers'/name),
@@ -84,7 +84,9 @@ def main():
                    '--learning_rate', '0.0001', '--mixed_precision', 'no', '--report_to', 'none',
                    '--checkpointing_steps', '1000000', '--snapshot_steps', '1', '2', '--seed', '0']
             if is_lora:
-                cmd += ['--rank', '4', '--adapter_scope', 'attention_conv' if kind == 'lora_conv' else 'attention']
+                cmd += ['--rank', '4', '--adapter_scope', 'attention_conv' if kind.endswith('_conv') else 'attention']
+            if kind == 'dora_conv':
+                cmd += ['--use_dora']
             subprocess.run(cmd, check=True, env=env)
             model = StableDiffusionPipeline.from_pretrained(base if is_lora else out)
             if is_lora:
@@ -99,10 +101,17 @@ def main():
             if is_lora:
                 snap = load_file(str(snapshot/'adapter_model.safetensors'))
                 assert all(torch.equal(t, snap[k]) for k,t in tensors.items())
-                if kind == 'lora_conv':
+                if kind.endswith('_conv'):
                     assert any(t.ndim == 4 and t.abs().max().item() > 0 for k,t in snap.items() if 'lora_B' in k)
                 audit = json.loads((out/'adapter_audit.json').read_text())
                 assert audit['trainable_parameters'] > 0
+                if kind == 'dora_conv':
+                    assert audit['method'] == 'dora' and audit['magnitude_parameters'] > 0
+                    assert json.loads((out/'adapter_config.json').read_text())['use_dora'] is True
+                    assert any('lora_magnitude_vector' in k for k in snap)
+                    # Ensure learned magnitude is preserved, not just A/B matrices.
+                    first_snapshot = load_file(str(out/'snapshot-1/adapter_model.safetensors'))
+                    assert any(not torch.equal(t, first_snapshot[k]) for k,t in snap.items() if 'lora_magnitude_vector' in k)
                 reloaded = StableDiffusionPipeline.from_pretrained(base)
                 load_adapter(reloaded.unet, snapshot, reloaded)
             else:
@@ -111,11 +120,11 @@ def main():
             # Exercise the production selection loader, not just direct PEFT/Diffusers APIs.
             from common import write_json
             from student import checkpoint_hashes, load_pipeline
-            branch_name = {'lora': 'lora_r4_wm', 'lora_conv': 'lora_r4_conv_wm', 'full': 'full_wm'}[kind]
+            branch_name = {'lora': 'lora_r4_wm', 'lora_conv': 'lora_r4_conv_wm', 'full': 'full_wm', 'dora_conv':'dora_r4_conv_wm'}[kind]
             (root/'students').mkdir(exist_ok=True)
             (root/'students'/branch_name).symlink_to(out, target_is_directory=True)
             write_json(root/'config.json', {'ranks':[4], 'adapter_scopes':['attention','attention_conv'],
-                'train_clean_controls':False, 'lora_only':False, 'paper_full_ema':False, 'checkpoint_steps':[1,2]})
+                'dora':kind == 'dora_conv', 'train_clean_controls':False, 'lora_only':False, 'paper_full_ema':False, 'checkpoint_steps':[1,2]})
             write_json(root/'assets.json', {'student':str(base)})
             write_json(out/'complete.json', {'checkpoints':checkpoint_hashes(out)})
             write_json(root/'result/selection'/f'{branch_name}.json',
