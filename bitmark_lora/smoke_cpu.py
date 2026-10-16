@@ -62,6 +62,10 @@ def main():
              feature_extractor=None, requires_safety_checker=False)
         base = root/'base'
         pipe.save_pretrained(base)
+        # Reproduce SD1.4 metadata referencing an intentionally uncached safety checker.
+        metadata = json.loads((base/'model_index.json').read_text())
+        metadata['safety_checker'] = ['stable_diffusion', 'StableDiffusionSafetyChecker']
+        (base/'model_index.json').write_text(json.dumps(metadata))
         data = root/'data'
         data.mkdir()
         (data/'generation.json').write_text('{"test": true}')
@@ -88,7 +92,7 @@ def main():
             if kind == 'dora_conv':
                 cmd += ['--use_dora']
             subprocess.run(cmd, check=True, env=env)
-            model = StableDiffusionPipeline.from_pretrained(base if is_lora else out)
+            model = StableDiffusionPipeline.from_pretrained(base if is_lora else out, safety_checker=None)
             if is_lora:
                 tensors = load_file(str(out/'adapter_model.safetensors'))
                 assert any(t.abs().max().item() > 0 for k, t in tensors.items() if 'lora_B' in k)
@@ -112,10 +116,10 @@ def main():
                     # Ensure learned magnitude is preserved, not just A/B matrices.
                     first_snapshot = load_file(str(out/'snapshot-1/adapter_model.safetensors'))
                     assert any(not torch.equal(t, first_snapshot[k]) for k,t in snap.items() if 'lora_magnitude_vector' in k)
-                reloaded = StableDiffusionPipeline.from_pretrained(base)
+                reloaded = StableDiffusionPipeline.from_pretrained(base, safety_checker=None)
                 load_adapter(reloaded.unet, snapshot, reloaded)
             else:
-                reloaded = StableDiffusionPipeline.from_pretrained(base)
+                reloaded = StableDiffusionPipeline.from_pretrained(base, safety_checker=None)
                 reloaded.unet = UNet2DConditionModel.from_pretrained(snapshot/'unet')
             # Exercise the production selection loader, not just direct PEFT/Diffusers APIs.
             from common import write_json

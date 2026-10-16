@@ -20,7 +20,8 @@
       "Inference-only snapshots at predeclared steps; no detector feedback in trainer.",
       "Configurable attention / attention+Conv2d PEFT LoRA targets and parameter audit.",
       "Save PEFT-native adapter state/config for reliable mixed Linear+Conv2d reload.",
-      "Optional PEFT use_dora for Linear+Conv2d magnitude/direction adaptation; audit magnitude parameter count. Native PEFT serialization preserved."
+      "Optional PEFT use_dora for Linear+Conv2d magnitude/direction adaptation; audit magnitude parameter count. Native PEFT serialization preserved.",
+      "Full trainer final export explicitly disables optional safety_checker and uses local cache, matching experiment inference."
     ]
   },
   "files": {
@@ -68,7 +69,7 @@
     "bitmark/extended_watermark_processor.py": "6feb414b41a9cbc488050be3943c44e4e163e6fbfdc2a60d4438e264447df69c",
     "bitmark/helper.py": "c867f2a69a2c93a677b31b3e1c462d65816daf95cbb5b6931c6c402904ff2241",
     "diffusers/LICENSE": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
-    "diffusers/train_text_to_image.py": "a8c0f3e01f59f0eb40cabaa34620a283a47df5704c3a17480e7246cea00f1bec",
+    "diffusers/train_text_to_image.py": "7973d4683f714d2b2ebf0dced77431013c0c5840a7b05d56ab5e6a814aa00a7f",
     "diffusers/train_text_to_image_lora.py": "6af5e094d9b13713b21d4d9f6de8c3dc76c4135f0f4d608252563d783f8fcfd1",
     "serum/watermark.py": "f36e6f2553b136cc4ec8f8d075d1a68dc35ab414720ebcc385b1011d5c226086",
     "serum/config.py": "76ba6defacc7806581fafb3ee22f02d561e363443afc976aba0c26ff6f06fcc4",

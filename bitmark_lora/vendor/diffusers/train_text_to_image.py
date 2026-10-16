@@ -1139,6 +1139,8 @@ def main():
             text_encoder=text_encoder,
             vae=vae,
             unet=unet,
+            safety_checker=None,  # Experiment cache deliberately excludes this optional model.
+            local_files_only=True,
             revision=args.revision,
             variant=args.variant,
         )

@@ -425,3 +425,29 @@ Lệnh chạy toàn bộ nhánh mới:
 ```bash
 bash run_serum.sh
 ```
+
+
+### Khôi phục lỗi full UNet train xong nhưng export pipeline thất bại
+
+Nếu log đã tới 7.500/7.500 rồi báo thiếu `pytorch_model.bin`/`model.safetensors`
+ở bước cuối `train_text_to_image.py`, nguyên nhân đã sửa là pipeline export cố
+nạp safety checker vốn không có trong cache thí nghiệm. Không xóa thư mục run.
+
+```bash
+git pull origin main
+bash run_serum.sh --resume /path/to/run_serum_YYYYMMDD_HHMMSS_microseconds --recover-full-export
+```
+
+Lệnh recovery kiểm tra protocol/dữ liệu train và **tất cả snapshot đã khai báo**,
+kiểm tra keys/shapes/finite so với base UNet và xác nhận trọng số đã đổi. Sau đó
+khôi phục export UNet từ snapshot đúng `max_train_steps`, tiếp tục validation,
+selection và test; không gọi trainer. Chọn checkpoint vẫn bằng MSE trên toàn bộ
+milestones, không tự chọn snapshot cuối làm kết quả test.
+
+Đây là chế độ sửa export riêng: không vượt qua `code_manifest.json` một cách im
+lặng hay sửa provenance gốc. Thay đổi source được ghi riêng trong `recovery/`,
+khôi phục weights ghi trong `students/full_wm/export_recovery.json`. Nếu nhánh
+khác chưa train xong, thiếu snapshot hoặc tensor hỏng, lệnh báo lỗi rõ ràng;
+không giả vờ hoàn thành và không tự train lại. Log tiếp tục lưu trong run cũ.
+Bộ kiểm tra: 39 tests trong ML environment; tiny diffusion smoke dùng metadata
+khai báo safety checker nhưng không tải checkpoint đó để tái hiện tình huống này.
