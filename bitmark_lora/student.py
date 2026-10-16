@@ -9,11 +9,24 @@ from common import HERE, freeze, image_name, read_json, sha256, verify_vendor, w
 
 
 def training_conditions(config):
+    if config.get("watermark_method") == "new_watermark":
+        return tuple(dict.fromkeys(b["condition"] for b in branches(config)))
     # Missing field denotes the original protocol, retained for analysis of old runs.
     return ("clean", "wm") if config.get("train_clean_controls", True) else ("wm",)
 
 
 def branches(config):
+    if config.get("watermark_method") == "new_watermark":
+        result = config["student_branches"]
+        names = [b["name"] for b in result]
+        if not result or len(set(names)) != len(names):
+            raise ValueError("Empty/duplicate carrier student branches")
+        for b in result:
+            if (not b["name"].replace("_", "").isalnum() or b["kind"] != "lora"
+                    or b["condition"] not in {"clean", "wm", "fixed"}
+                    or b["scope"] not in {"attention", "attention_conv"} or b["rank"] < 1):
+                raise ValueError("Invalid carrier student branch")
+        return result
     result = []
     for scope in config.get("adapter_scopes", ["attention"]):
         for rank in config["ranks"]:
@@ -108,8 +121,11 @@ def train(run, name):
             raise RuntimeError("Full UNet did not change during training")
     for step in config.get("checkpoint_steps", []):
         checkpoint_hashes(out / f"snapshot-{step}")
+    audit_path = out / "optimization_audit.json"
+    audit = read_json(audit_path) if audit_path.exists() else None
     write_json(out / "complete.json", {"checkpoints": checkpoint_hashes(out), "finite_weights": True,
-                                       "actual_updates_verified": True})
+                                       "weights_changed_verified": True,
+                                       "optimizer_update_counts": audit})
 
 
 def load_adapter(unet, directory, pipe=None):
@@ -192,7 +208,9 @@ def generate_images(run, name, pipe, checkpoint, split="test", label=None):
         batch = prompts[start:start+config["inference_batch"]]
         paths = [out / image_name(start+j) for j in range(len(batch))]
         if not all(valid_image(p, (512, 512)) for p in paths):
-            generators = [torch.Generator("cuda").manual_seed(config["seed"] * 1000000 + ({"test":500000,"validation":700000,"calibration":850000}[split]) + start+j)
+            generators = [torch.Generator("cuda").manual_seed(config["seed"] * 1000000 +
+                          (batch[j]["image_id"] if config.get("watermark_method") == "new_watermark" else
+                           {"test":500000,"validation":700000,"calibration":850000}[split] + start+j))
                           for j in range(len(batch))]
             with torch.inference_mode():
                 images = pipe([r["text"] for r in batch], height=512, width=512, generator=generators,

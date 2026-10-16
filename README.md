@@ -1491,3 +1491,14 @@ kết quả này. Latent tái sinh có thể lệch số học do CUDA/OOM/batch
 ảnh float trước làm tròn PNG. Bốn mẫu là diagnostic pilot, không đại diện toàn bộ
 test set. Các CI theo ảnh là pointwise, có điều kiện theo model/key, không phải
 CI đồng thời cho nhiều phương pháp.
+
+
+## Experimental watermark embedded in diffusion UNet weights
+
+`bash run_new.sh` runs the new teacher training, merged-model export, LoRA transfer
+pilots, fresh rank-16/32 students and final evaluation. Native teacher strength is
+required (default TPR >=95%, Wilson lower bound >=90%); failure is reported without
+mislabeling weak-watermark inheritance as success. This is an unproven research
+method, with CPU integration validation but no completed full GPU efficacy result.
+See [new_watermark/README.md](new_watermark/README.md) for the exact protocol, runtime
+requirements, meta-learning approximation, controls and result paths.

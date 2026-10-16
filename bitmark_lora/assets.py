@@ -75,7 +75,7 @@ def hub_snapshot(repo, revision, cache, keep):
     if info.sha != revision:
         raise RuntimeError(f"Hub revision changed: {repo}")
     selected = [s for s in info.siblings if keep(s.rfilename)]
-    if not any(s.rfilename.endswith((".safetensors", ".pth")) for s in selected):
+    if not any(s.rfilename.endswith((".safetensors", ".pth", ".bin")) for s in selected):
         raise RuntimeError(f"No checkpoint found for {repo}; no fallback model will be substituted")
     records = []
     folder = cache / repo.replace("/", "--") / revision

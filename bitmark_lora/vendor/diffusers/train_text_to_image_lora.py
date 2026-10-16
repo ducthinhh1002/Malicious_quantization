@@ -457,6 +457,17 @@ def save_native_adapter(unet, directory):
     unet.peft_config["default"].save_pretrained(directory)
 
 
+def save_update_audit(directory, attempted, skipped, global_step):
+    import json
+    os.makedirs(directory, exist_ok=True)
+    path = os.path.join(directory, "optimization_audit.json")
+    with open(path + ".partial", "w") as f:
+        json.dump({"attempted": attempted, "applied": attempted - skipped, "skipped": skipped,
+                   "global_step": global_step, "scope": "this trainer invocation only",
+                   "source": "Accelerator.optimizer_step_was_skipped at sync boundaries"}, f, indent=2)
+    os.replace(path + ".partial", path)
+
+
 def main():
     args = parse_args()
     if args.report_to == "wandb" and args.hub_token is not None:
@@ -791,6 +802,7 @@ def main():
     logger.info(f"  Gradient Accumulation steps = {args.gradient_accumulation_steps}")
     logger.info(f"  Total optimization steps = {args.max_train_steps}")
     global_step = 0
+    attempted_updates, skipped_updates = 0, 0
     first_epoch = 0
 
     # Potentially load in the weights and states from a previous save
@@ -908,6 +920,10 @@ def main():
             if accelerator.sync_gradients:
                 progress_bar.update(1)
                 global_step += 1
+                attempted_updates += 1
+                skipped_updates += int(accelerator.optimizer_step_was_skipped)
+                if accelerator.is_main_process and (global_step % 100 == 0 or global_step == args.max_train_steps):
+                    save_update_audit(args.output_dir, attempted_updates, skipped_updates, global_step)
                 accelerator.log({"train_loss": train_loss}, step=global_step)
                 train_loss = 0.0
 
@@ -915,6 +931,7 @@ def main():
                     if accelerator.is_main_process:
                         snapshot = os.path.join(args.output_dir, f"snapshot-{global_step}")
                         save_native_adapter(unwrap_model(unet), snapshot)
+                        save_update_audit(snapshot, attempted_updates, skipped_updates, global_step)
                         logger.info(f"Saved inference snapshot at step {global_step}: {snapshot}")
 
                 if global_step % args.checkpointing_steps == 0:
@@ -983,6 +1000,7 @@ def main():
 
         unwrapped_unet = unwrap_model(unet)
         save_native_adapter(unwrapped_unet, args.output_dir)
+        save_update_audit(args.output_dir, attempted_updates, skipped_updates, global_step)
         unet_lora_state_dict = convert_state_dict_to_diffusers(get_peft_model_state_dict(unwrapped_unet))
         StableDiffusionPipeline.save_lora_weights(
             save_directory=args.output_dir,

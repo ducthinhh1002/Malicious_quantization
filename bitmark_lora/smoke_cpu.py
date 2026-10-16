@@ -92,6 +92,11 @@ def main():
             if kind == 'dora_conv':
                 cmd += ['--use_dora']
             subprocess.run(cmd, check=True, env=env)
+            if is_lora:
+                updates = json.loads((out/'optimization_audit.json').read_text())
+                assert updates['attempted'] == updates['applied'] == 2 and updates['skipped'] == 0
+                snapshot_updates = json.loads((out/'snapshot-1/optimization_audit.json').read_text())
+                assert snapshot_updates['applied'] == 1
             model = StableDiffusionPipeline.from_pretrained(base if is_lora else out, safety_checker=None)
             if is_lora:
                 tensors = load_file(str(out/'adapter_model.safetensors'))
