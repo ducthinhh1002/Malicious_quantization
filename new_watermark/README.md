@@ -64,7 +64,7 @@ bilevel optimization. It uses posterior mode and one example per inner rollout,
 FP32, and smoothed AdamW `sqrt(v+1e-24)` to avoid undefined hypergradients at zero.
 Actual final students use ordinary image training with sampled VAE posteriors,
 batch 4, and AdamW. The approximation is validated by full sampling pilots, not
-assumed equivalent to 7,500-step training. Math attention is used for the surrogate
+assumed equivalent to 10,000-step training. Math attention is used for the surrogate
 because CUDA flash attention can lack the required double backward.
 
 ## Complete default protocol
@@ -77,17 +77,25 @@ because CUDA flash attention can lack the required double backward.
    verify each export. The first checkpoint is the predeclared warmup control.
 4. Train 500-step pilot students from the CLEAN base on each candidate's images,
    plus a matched clean-trained pilot. Select teacher using pilot scores and gates.
-5. Generate final datasets from selected/fixed/clean teachers. Fresh rank-16 and
-   rank-32 attention+convolution students train for **one 7,500-step trajectory each**,
-   with snapshots at 2,500/5,000/7,500 (six final students). No pilot state transfers.
+5. Generate the selected teacher's final train/validation/test datasets. Train only
+   **two** fresh attention+convolution students: ranks **16 and 32**, each for one
+   **10,000-step trajectory**, saving 2,500/5,000/7,500/10,000 checkpoints.
+   No final clean-trained or fixed-teacher students are trained. Clean teacher
+   test images and the unadapted student remain inference-only references.
 6. Select each student by held-out denoising MSE only; evaluate detection and CLIP
    at milestones. Final test follows frozen selection; FID/KID run by default.
 
-The fixed teacher control has only the warmup budget; it does not isolate the effect
-of meta-learning at equal teacher compute. Use the separate `--meta-weight 0` run
-with the same teacher budget for that ablation. Additional pilot/meta compute is
-recorded in configuration, training logs and stage timing. One seed is not enough
-for a paper-level conclusion.
+Final training totals **20,000 steps**, plus the separate teacher and short pilot
+budgets. Pilot training remains necessary to select the teacher.
+LR is **1e-4** for both ranks, AdamW, constant schedule, batch 4, gradient clipping
+1.0. See [LR_DECISION.md](LR_DECISION.md) for evidence and limitations.
+
+Without final clean-trained controls, detection differences versus unadapted cannot
+isolate generic fine-tuning effects. There is also no final fixed-teacher ablation
+to establish the benefit of selection. Use a separate equal-budget
+`--meta-weight 0` run for a teacher-only comparison. One seed is not enough for a
+paper-level conclusion. Existing frozen runs cannot resume with changed code/config;
+start a new run for this protocol.
 
 ## Teacher strength is an explicit requirement
 
@@ -96,9 +104,10 @@ At the **frozen detector threshold**, default design and final-test checks requi
 - Teacher TPR >= **95%** and its 95% Wilson lower bound >= **90%**.
 - Teacher paired PSNR >= 25 dB; semantic CLIP drop <= 0.03.
 - Clean false positives <= 3% as a validity guard (the calibration target is still 1%).
-- Pilot/student detection >= 20% and above the matched clean-trained control.
-  Final claims also require a positive lower paired-bootstrap bound for that effect.
-- Student semantic CLIP drop versus the clean-trained counterpart <= 0.03.
+- Pilot detection >= 20% and above its matched clean-trained pilot.
+- Final student detection >= 20% and positive paired-bootstrap lower bound versus
+  the unadapted reference; these are descriptive checks, not causal proof.
+- Student semantic CLIP drop versus the unadapted reference <= 0.03.
 
 These are predeclared experiment gates, **not promises that training reaches them**.
 If no teacher qualifies, the strongest teacher positive control is used to continue
@@ -114,7 +123,7 @@ rows explicitly identified as false-positive rates. Other useful files:
 
 - `result/teacher_strength.json`: native teacher requirements, measurements and validity.
 - `result/teacher_selection.json`: all candidate native/pilot scores and selection status.
-- `result/summary.csv`, `report.json`: absolute detection, CI and clean-adjusted effects.
+- `result/summary.csv`, `report.json`: absolute detection, CI and differences versus unadapted.
 - `result/checkpoint_metrics.csv`: MSE, detection and semantic CLIP at each milestone.
 - `result/wrong_key_controls.csv`: eight independent direction controls, not a security proof.
 - `result/utility.json`: final FID/KID/CLIP with common clean-teacher reference.

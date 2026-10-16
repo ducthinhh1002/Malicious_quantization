@@ -16,9 +16,21 @@ class Protocol(unittest.TestCase):
         self.assertGreater(c['meta_weight'],0)
         self.assertEqual(c['gates']['min_teacher_tpr'],.95)
         self.assertEqual(c['gates']['min_teacher_ci_low'],.90)
-        self.assertEqual(c['checkpoint_steps'],[2500,5000,7500])
-        self.assertEqual(len(c['student_branches']),6)
-        self.assertTrue(all(b['condition'] in ('wm','clean','fixed') for b in c['student_branches']))
+        self.assertEqual(c['checkpoint_steps'],[2500,5000,7500,10000])
+        self.assertEqual(len(c['student_branches']),2)
+        self.assertTrue(all(b['condition']=='wm' for b in c['student_branches']))
+
+    def test_final_training_commands_use_same_lr_and_full_horizon(self):
+        from student import training_command, training_conditions
+        c=config(arguments([]))
+        self.assertEqual(training_conditions(c),('wm',))
+        self.assertFalse(c['train_clean_controls'])
+        for branch in c['student_branches']:
+            cmd=training_command(c,{'student':'/base'},Path('/run'),branch)
+            for flag,value in [('--learning_rate','0.0001'),('--max_train_steps','10000'),
+                               ('--lr_scheduler','constant'),('--train_batch_size','4')]:
+                self.assertEqual(cmd[cmd.index(flag)+1],value)
+            self.assertNotIn('--scale_lr',cmd)
 
     def test_strong_teacher_required_even_if_pilot_perfect(self):
         gates=config(arguments([]))['gates']
@@ -135,9 +147,27 @@ class Reporting(unittest.TestCase):
                 summarize(run)
             report=read_json(run/'result/report.json')
             self.assertFalse(report['teacher_valid'])
+            self.assertFalse(report['clean_trained_controls'])
+            self.assertFalse(report['causal_inheritance_established'])
+            self.assertIn('r16_wm_minus_unadapted',report['effects'])
             self.assertFalse(report['claim_checks']['16']['declared_gates_passed'])
             self.assertTrue(report['claim_checks']['16']['student_detection_floor_passed'])
             self.assertFalse(read_json(run/'result/teacher_strength.json')['valid'])
+
+    def test_clean_reference_does_not_generate_unused_training_data(self):
+        from unittest.mock import patch
+        from new_watermark.stages import final_teacher_images
+        c=config(arguments([]))
+        selection={'detector_sha256':'hash','selected_step':1000,'selected_model_export_sha256':'export'}
+        def read(path):
+            return {'config.json':c,'teacher_selection.json':selection,'assets.json':{'base_revision':'base'}}[path.name]
+        with patch('new_watermark.stages.read_json',side_effect=read),              patch('new_watermark.stages.sha256',return_value='hash'),              patch('new_watermark.stages.verify_export',return_value='export'),              patch('new_watermark.stages.load_base'),              patch('new_watermark.stages.generate') as generate:
+            final_teacher_images(Path('/run'),'clean')
+            self.assertEqual([x.args[2] for x in generate.call_args_list],['teacher_clean_test'])
+            generate.reset_mock()
+            final_teacher_images(Path('/run'),'wm')
+            self.assertEqual([x.args[2] for x in generate.call_args_list],
+                             ['teacher_wm_train','teacher_wm_validation','teacher_wm_test'])
 
     def test_launcher_includes_all_training_and_evaluation_stages(self):
         from unittest.mock import patch
@@ -148,8 +178,10 @@ class Reporting(unittest.TestCase):
         labels=[x[0] for x in calls]
         self.assertEqual(labels[-1],'report')
         self.assertIn('utility',labels)
+        self.assertNotIn('final_teacher_fixed',labels)
+        self.assertFalse(any(x.endswith('_clean') or x.endswith('_fixed') for x in labels if x.startswith('train_lora_')))
         self.assertIn('select_teacher',labels)
-        self.assertEqual(len([x for x in labels if x.startswith('train_lora_')]),6)
+        self.assertEqual(len([x for x in labels if x.startswith('train_lora_')]),2)
         self.assertLess(labels.index('select_teacher'),labels.index('final_teacher_wm'))
         self.assertTrue(all(Path(cmd[2]).is_file() for _,cmd in calls))
 

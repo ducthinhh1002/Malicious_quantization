@@ -25,7 +25,7 @@ def arguments(argv=None):
     p.add_argument('--ranks',type=int,nargs='+',default=[16,32])
     p.add_argument('--student-scope',choices=['attention','attention_conv'],default='attention_conv')
     p.add_argument('--teacher-checkpoints',type=int,nargs='+',default=[250,500,1000])
-    p.add_argument('--checkpoint-steps',type=int,nargs='+',default=[2500,5000,7500])
+    p.add_argument('--checkpoint-steps',type=int,nargs='+',default=[2500,5000,7500,10000])
     p.add_argument('--teacher-rank',type=int,default=32); p.add_argument('--teacher-lr',type=float,default=1e-4)
     p.add_argument('--learning-rate',type=float,default=1e-4); p.add_argument('--batch-size',type=int,default=4)
     p.add_argument('--precision',choices=['fp16','bf16','no'],default='fp16')
@@ -76,9 +76,9 @@ def config(a):
     c.update(watermark_method='new_watermark',max_train_steps=max(a.checkpoint_steps),
         loss_weights={'watermark':a.teacher_watermark_weight,'prior':1.,'pixels':.1,'semantic':.1},
         gates={k:c[k] for k in ('min_teacher_tpr','min_teacher_ci_low','min_student_tpr','min_psnr','max_clip_drop','max_clean_fpr')},
-        lora_only=True,paper_full_ema=False,train_clean_controls=True)
+        lora_only=True,paper_full_ema=False,train_clean_controls=False)
     c['student_branches']=[{'name':f'lora_r{r}_{cond}','kind':'lora','rank':r,'scope':a.student_scope,'condition':cond}
-                           for r in a.ranks for cond in ('clean','fixed','wm')]
+                           for r in a.ranks for cond in ('wm',)]
     return c
 
 
@@ -104,7 +104,7 @@ def execute(run,c):
         shared('student.py','train_pilot_'+ident,'--stage','train','--branch',name,subrun=run/'pilots'/ident)
         own('pilot_generate',name=ident)
     own('select_teacher')
-    for condition in ('clean','fixed','wm'): own('final_teacher',name=condition)
+    for condition in ('clean','wm'): own('final_teacher',name=condition)
     shared('validation.py','validation_cache','--stage','cache')
     for b in branches(c):
         name=b['name']
@@ -114,7 +114,7 @@ def execute(run,c):
     own('final_student',name='unadapted')
     for b in branches(c): own('final_student',name=b['name'])
     if not c['skip_utility']:
-        shared('utility.py','utility','--labels','teacher_clean_test','teacher_wm_test','teacher_fixed_test','unadapted',*[b['name'] for b in branches(c)])
+        shared('utility.py','utility','--labels','teacher_clean_test','teacher_wm_test','unadapted',*[b['name'] for b in branches(c)])
     own('report')
     print(f'Finished. Results: {run}/result/README.md',flush=True)
 

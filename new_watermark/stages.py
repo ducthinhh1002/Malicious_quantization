@@ -108,7 +108,7 @@ def final_teacher_images(run,condition):
     identity=read_json(run/'assets.json')['base_revision'] if model is None else verify_export(model)
     if condition=='wm' and identity!=selection['selected_model_export_sha256']: raise RuntimeError('Selected teacher changed')
     pipe=load_base(run,model)
-    for split in ('train','validation','test'):
+    for split in (('test',) if condition=='clean' else ('train','validation','test')):
         generate(run,pipe,f'teacher_{condition}_{split}',split,identity)
 
 
@@ -140,7 +140,7 @@ def summarize(run):
     detector=read_json(run/'result/detector.json'); selection=read_json(run/'result/teacher_selection.json')
     if sha256(run/'result/detector.json')!=selection['detector_sha256']: raise RuntimeError('Changed detector after selection')
     reader=FeatureReader(run)
-    labels=['teacher_clean_test','teacher_wm_test','teacher_fixed_test','unadapted']+[b['name'] for b in branches(c)]
+    labels=['teacher_clean_test','teacher_wm_test','unadapted']+[b['name'] for b in branches(c)]
     utility_path=run/'result/utility.json'
     utility=read_json(utility_path)['branches'] if utility_path.exists() else {}
     table=[]; indicators={}; wrong=[]
@@ -157,12 +157,11 @@ def summarize(run):
         write_json(run/'scores'/f'{label}.json',{'scores':scores.tolist(),'image_hashes':data['identity']['images']})
     effects={}
     for rank in c['ranks']:
-        names={condition:f'lora_r{rank}_{condition}' for condition in ('clean','wm','fixed')}
-        for a,b in [('wm','clean'),('fixed','clean'),('wm','fixed')]:
-            diff=[x-y for x,y in zip(indicators[names[a]],indicators[names[b]])]
-            effects[f'r{rank}_{a}_minus_{b}']={'estimate_pp':100*float(np.mean(diff)),
-                'paired_ci95_pp':[100*x for x in paired_ci(diff,c['seed'])],
-                'scope':'image bootstrap conditional on one training seed; no training-seed uncertainty'}
+        diff=[x-y for x,y in zip(indicators[f'lora_r{rank}_wm'],indicators['unadapted'])]
+        effects[f'r{rank}_wm_minus_unadapted']={'estimate_pp':100*float(np.mean(diff)),
+            'paired_ci95_pp':[100*x for x in paired_ci(diff,c['seed'])],
+            'scope':'image bootstrap conditional on one training seed; no training-seed uncertainty',
+            'clean_trained_adjustment':False}
     milestones=[]
     for b in branches(c):
         chosen=read_json(run/'result/selection'/f"{b['name']}.json")
@@ -181,15 +180,11 @@ def summarize(run):
               'Wrong keys are a finite negative-control audit, not a security guarantee.',
               'All final students start from the CLEAN base, not the marked teacher; no key or detector loss in student training.']
     if selection['warning']: warnings.append(selection['warning'])
-    if selection['selected_step']==c['teacher_checkpoints'][0]:
-        warnings.append('Selected and fixed teacher coincide; their student comparison is a duplicate-control check, not evidence that selection helps.')
+    warnings.append('No final clean-trained or fixed-teacher students: differences versus unadapted cannot isolate watermark inheritance from generic fine-tuning effects or establish a selection benefit.')
     if c['skip_utility']: warnings.append('FID/KID explicitly skipped; no distributional quality conclusion.')
     by={r['model']:r for r in table}
     if by['teacher_wm_test']['detection_rate']<c['gates']['min_teacher_tpr']:
         warnings.append('Teacher watermark failed held-out positive control; low student detection cannot isolate a LoRA transmission failure.')
-    for rank in c['ranks']:
-        if by[f'lora_r{rank}_clean']['detection_rate']>c['gates']['max_clean_fpr']:
-            warnings.append(f'Rank {rank} clean-trained false positives exceed declared guard; attribution is unreliable.')
     teacher_row=by['teacher_wm_test']
     teacher_psnr=paired_psnr(run/'images/teacher_clean_test',run/'images/teacher_wm_test',c['test_n'])
     teacher_valid=(teacher_row['detection_rate']>=c['gates']['min_teacher_tpr']
@@ -199,12 +194,12 @@ def summarize(run):
         and by['teacher_clean_test']['semantic_clip']-teacher_row['semantic_clip']<=c['gates']['max_clip_drop'])
     status={}
     for rank in c['ranks']:
-        effect=effects[f'r{rank}_wm_minus_clean']
+        effect=effects[f'r{rank}_wm_minus_unadapted']
         status[str(rank)]={'teacher_valid':teacher_valid,'design_selection_valid':selection['valid_design_winner'],
             'student_detection_floor_passed':by[f'lora_r{rank}_wm']['detection_rate']>=c['gates']['min_student_tpr'],
-            'positive_clean_adjusted_ci':effect['paired_ci95_pp'][0]>0,
-            'clean_fpr_valid':by[f'lora_r{rank}_clean']['detection_rate']<=c['gates']['max_clean_fpr'],
-            'student_clip_gate_passed':by[f'lora_r{rank}_clean']['semantic_clip']-by[f'lora_r{rank}_wm']['semantic_clip']<=c['gates']['max_clip_drop']}
+            'positive_difference_vs_unadapted_ci':effect['paired_ci95_pp'][0]>0,
+            'unadapted_fpr_valid':by['unadapted']['detection_rate']<=c['gates']['max_clean_fpr'],
+            'student_clip_gate_vs_unadapted':by['unadapted']['semantic_clip']-by[f'lora_r{rank}_wm']['semantic_clip']<=c['gates']['max_clip_drop']}
         status[str(rank)]['declared_gates_passed']=all(status[str(rank)].values())
     write_json(run/'result/teacher_strength.json', {'valid':teacher_valid,'requirements':c['gates'],'measurement':teacher_row,
         'clean_fpr':by['teacher_clean_test']['detection_rate'],'paired_psnr':teacher_psnr,
@@ -213,6 +208,7 @@ def summarize(run):
     updates={b['name']:read_json(run/'students'/b['name']/'complete.json').get('optimizer_update_counts') for b in branches(c)}
     write_json(run/'result/report.json',{'method':'transfer-selected semantic UNet watermark pilot','teacher_selection':selection,
         'results':table,'effects':effects,'warnings':warnings,'optimizer_updates':updates,'teacher_test_psnr':teacher_psnr,'teacher_valid':teacher_valid,'claim_checks':status,
+        'clean_trained_controls':False,'causal_inheritance_established':False,
         'test_used_for_selection':False,'checkpoint_selection':'validation denoising MSE only'})
     csv_file(run/'result/summary.csv',table); csv_file(run/'result/checkpoint_metrics.csv',milestones)
     csv_file(run/'result/wrong_key_controls.csv',wrong)
@@ -221,7 +217,7 @@ def summarize(run):
         '| Model | Detected | Rate | 95% Wilson CI | FID | KID |', '|---|---:|---:|---:|---:|---:|']
     for r in table:
         lines.append(f"| {r['model']} | {r['detected']}/{r['n']} | {r['detection_rate']:.1%} | {r['ci95_low']:.1%}–{r['ci95_high']:.1%} | {r['fid']} | {r['kid']} |")
-    lines+=['','Clean-adjusted and selected-minus-fixed effects: see report.json.','',*['- '+w for w in warnings]]
+    lines+=['','Differences versus unadapted (not clean-trained adjusted): see report.json. Passing gates is descriptive, not proof of causal inheritance.','',*['- '+w for w in warnings]]
     (run/'result/README.md').write_text('\n'.join(lines)+'\n')
     print('\n'.join(lines),flush=True)
 

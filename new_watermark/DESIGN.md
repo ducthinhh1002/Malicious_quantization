@@ -107,6 +107,11 @@ clean-trained FPR, and wrong-key controls are additional constraints/audits, not
 substitutes for this target. Smooth scores are training surrogates; final reporting
 uses frozen-threshold detection rates and confidence intervals.
 
+The current reduced final protocol trains only marked-data students at ranks 16/32.
+Matched clean rollouts and pilots remain, but final clean-trained/fixed-teacher
+students are omitted. Thus it measures descriptive transfer, not the full ideal
+clean-adjusted objective below at the final training horizon.
+
 ## Gates before claiming improvement
 
 - Merged teacher must pass fresh ordinary-pipeline reload and native generation.
@@ -121,7 +126,7 @@ uses frozen-threshold detection rates and confidence intervals.
 - Report validation MSE and detection/quality per training milestone; select final
   student checkpoints by declared validation rule, never final test detection.
 - No single-seed result establishes reliable radioactivity or novelty. A short
-  surrogate update can improve while 7,500-step student transfer fails.
+  surrogate update can improve while 10,000-step student transfer fails.
 
 ## Implemented approximation and remaining scientific validation
 
