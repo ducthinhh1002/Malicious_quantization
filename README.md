@@ -1502,3 +1502,9 @@ mislabeling weak-watermark inheritance as success. This is an unproven research
 method, with CPU integration validation but no completed full GPU efficacy result.
 See [new_watermark/README.md](new_watermark/README.md) for the exact protocol, runtime
 requirements, meta-learning approximation, controls and result paths.
+
+`bash run_native_unet.sh` instead runs the native UNet experiment with the frozen
+**8-bit LALT reader** from the vm_4 study, on-policy DDIM teacher training, merged
+UNet export and attention+convolution rank-16/32 students at 10,000 steps. See
+[new_watermark/NATIVE_UNET.md](new_watermark/NATIVE_UNET.md). Its H200 smoke test
+completed training, merge/reload and student evaluation; full-run efficacy is pending.

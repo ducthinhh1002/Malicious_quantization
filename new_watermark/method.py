@@ -28,6 +28,11 @@ def make_detector(features, key_seed, wrong_keys=8):
 def score_features(features, detector):
     import numpy as np
     x = np.asarray(features, dtype=np.float64)
+    if detector.get('type')=='frozen_lalt_reader_8bit':
+        if x.ndim!=2 or x.shape[1]!=9 or not np.isfinite(x).all():
+            raise ValueError('Expected finite presence + 8 bit logits')
+        codes=np.asarray([[(k>>i)&1 for i in range(8)] for k in detector['keys']])
+        return -np.logaddexp(0,-x[:,:1])-np.logaddexp(0,-x[:,None,1:]*(2*codes[None]-1)).sum(-1)/np.sqrt(8)
     w = np.asarray(detector['directions'])
     if x.ndim != 2 or x.shape[1] != w.shape[1] or not np.isfinite(x).all():
         raise ValueError('Invalid feature shape/values')

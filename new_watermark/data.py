@@ -23,6 +23,14 @@ def prepare(run):
             raise RuntimeError('COCO annotation checksum mismatch')
         with zipfile.ZipFile(archive) as z:
             annotations = json.loads(z.read('annotations/captions_val2014.json'))['annotations']
+        excluded=None
+        if c.get('exclude_prior_prompts'):
+            prior=Path(c['exclude_prior_prompts']); previous=read_json(prior)
+            ids={r['image_id'] for rows in previous.values() if isinstance(rows,list) for r in rows if isinstance(r,dict) and 'image_id' in r}
+            if not ids: raise ValueError('Prior prompt manifest contains no image IDs')
+            annotations=[r for r in annotations if r['image_id'] not in ids]
+            excluded={'sha256':sha256(prior),'image_ids':sorted(ids),'policy':'all prior splits excluded before new split allocation'}
+            freeze(run/'prior_prompt_exclusion.json',excluded)
         counts = {k: c[k+'_n'] for k in ('design_fit','teacher_train','meta_probe','calibration','pilot_train','pilot_eval','train','validation','test')}
         freeze(run/'prompts.json', split_prompts(annotations, c['seed'], counts))
         base = hub_snapshot('CompVis/stable-diffusion-v1-4', STUDENT_REV, cache,
@@ -52,6 +60,9 @@ def load_base(run, model=None, dtype=None):
     assets = read_json(run/'assets.json')
     pipe = StableDiffusionPipeline.from_pretrained(str(model or assets['student']),
         torch_dtype=dtype or torch.float16, safety_checker=None, local_files_only=True).to('cuda')
+    if read_json(run/'config.json').get('native_reader'):
+        from diffusers import DDIMScheduler
+        pipe.scheduler=DDIMScheduler.from_config(pipe.scheduler.config,clip_sample=False)
     pipe.set_progress_bar_config(disable=True)
     pipe.unet.eval(); pipe.vae.eval(); pipe.text_encoder.eval()
     return pipe
@@ -90,6 +101,7 @@ def generate(run, pipe, label, split, model_identity, rows=None):
 class FeatureReader:
     def __init__(self, run):
         self.run, self.model, self.tokenizer = run, None, None
+        self.native_reader=None
 
     def load(self):
         if self.model is None:
@@ -109,11 +121,18 @@ class FeatureReader:
         identity={'images':[r['sha256'] for r in entries], 'prompts':rows,
                   'clip_revision':read_json(self.run/'assets.json')['clip_revision'],
                   'preprocess':'RGB /255; bicubic antialias square 224; clamp; official CLIP normalization'}
+        native=read_json(self.run/'config.json').get('native_reader')
+        if native:
+            identity['reader_sha256']=read_json(self.run/'config.json')['owner_sha256']
+            identity['detector_preprocess']='original LALT RGB views 256/512; presence + 8 logits'
         if path.exists():
             saved=read_json(path)
             if saved['identity']!=identity: raise RuntimeError(f'Changed feature inputs: {label}')
             return saved
         model=self.load(); features=[]; clip=[]
+        if native:
+            from new_watermark.native_unet import load_reader, reader_features
+            if self.native_reader is None: self.native_reader=load_reader(self.run)
         for start in range(0,len(rows),16):
             pixels=[]
             for i in range(start,min(start+16,len(rows))):
@@ -125,7 +144,8 @@ class FeatureReader:
                 feats=image_features(model,x)
                 text=torch.nn.functional.normalize(model.get_text_features(**tokens),dim=-1)
                 clip.extend((2.5*(feats*text).sum(-1).clamp_min(0)).cpu().tolist())
-            features.extend(feats.cpu().tolist())
+                measured=reader_features(self.native_reader,x) if native else feats
+            features.extend(measured.cpu().tolist())
             print(f'Features {label}: {start+len(pixels)}/{len(rows)}', flush=True)
         result={'identity':identity,'features':features,'clip_per_image':clip,'clip_mean':sum(clip)/len(clip)}
         write_json(path,result); return result

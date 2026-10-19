@@ -29,6 +29,17 @@ def arguments(argv=None):
     p.add_argument('--teacher-rank',type=int,default=32); p.add_argument('--teacher-lr',type=float,default=1e-4)
     p.add_argument('--learning-rate',type=float,default=1e-4); p.add_argument('--batch-size',type=int,default=4)
     p.add_argument('--precision',choices=['fp16','bf16','no'],default='fp16')
+    p.add_argument('--owner-checkpoint',type=Path,help='Frozen 8-bit LALT reader checkpoint; enables native UNet experiment')
+    p.add_argument('--owner-sha256',help='Required pinned hash of owner checkpoint')
+    p.add_argument('--owner-key',type=int,default=221)
+    p.add_argument('--owner-wrong-key',type=int,default=34)
+    p.add_argument('--exclude-prior-prompts',type=Path,help='Exclude every image ID in an earlier study from all new splits')
+    p.add_argument('--teacher-tail-steps',type=int,default=4)
+    p.add_argument('--teacher-accumulation',type=int,default=2)
+    p.add_argument('--teacher-lr-floor',type=float,default=.1)
+    p.add_argument('--teacher-pixel-budget',type=float,default=.001)
+    p.add_argument('--teacher-lpips-budget',type=float,default=.1)
+    p.add_argument('--native-cycle-weight',type=float,default=.25)
     for name,n in [('design-fit',256),('teacher-train',512),('meta-probe',128),('calibration',1000),
                    ('pilot-train',512),('pilot-eval',256),('train',5000),('validation',256),('test',1000)]:
         p.add_argument('--'+name+'-n',type=int,default=n)
@@ -52,6 +63,18 @@ def arguments(argv=None):
     p.add_argument('--skip-utility',action='store_true')
     p.add_argument('--min-free-gb',type=float,default=100.)
     a=p.parse_args(argv)
+    if a.owner_checkpoint:
+        if not a.owner_sha256 or len(a.owner_sha256)!=64 or any(v not in '0123456789abcdef' for v in a.owner_sha256):
+            p.error('Native reader requires a pinned lowercase SHA256')
+        if not 0<=a.owner_key<256 or not 0<=a.owner_wrong_key<256 or a.owner_key==a.owner_wrong_key:
+            p.error('Distinct 8-bit owner and wrong keys required')
+        if not 1<=a.teacher_tail_steps<=a.inference_steps or a.teacher_accumulation<1:
+            p.error('Invalid native trajectory/accumulation')
+        if (not all(math.isfinite(v) for v in (a.teacher_lr_floor,a.teacher_pixel_budget,a.teacher_lpips_budget,a.native_cycle_weight))
+                or not 0<a.teacher_lr_floor<=1 or min(a.teacher_pixel_budget,a.teacher_lpips_budget)<=0 or a.native_cycle_weight<0):
+            p.error('Invalid native quality or scheduler settings')
+        if math.ceil((a.calibration_n+1)*(1-a.fpr/2))>a.calibration_n:
+            p.error('Too few calibration images for the native two-key FPR')
     if a.resume and a.output: p.error('Choose output or resume')
     positive=[v for k,v in vars(a).items() if k.endswith('_n')]+[a.teacher_rank,a.meta_rank,a.meta_steps,a.meta_every,
         a.pilot_rank,a.pilot_steps,a.batch_size,a.inference_batch,a.inference_steps,a.validation_draws,*a.ranks,*a.checkpoint_steps,*a.teacher_checkpoints]
@@ -73,7 +96,7 @@ def arguments(argv=None):
 
 def config(a):
     c={k:str(v.resolve()) if isinstance(v,Path) else v for k,v in vars(a).items() if k not in ('output','resume','plan_only','min_free_gb')}
-    c.update(watermark_method='new_watermark',max_train_steps=max(a.checkpoint_steps),
+    c.update(watermark_method='new_watermark',native_reader=bool(a.owner_checkpoint),max_train_steps=max(a.checkpoint_steps),
         loss_weights={'watermark':a.teacher_watermark_weight,'prior':1.,'pixels':.1,'semantic':.1},
         gates={k:c[k] for k in ('min_teacher_tpr','min_teacher_ci_low','min_student_tpr','min_psnr','max_clip_drop','max_clean_fpr')},
         lora_only=True,paper_full_ema=False,train_clean_controls=False)
@@ -83,7 +106,7 @@ def config(a):
 
 
 def code_manifest():
-    files=list(HERE.glob('*.py'))+list(SHARED.glob('*.py'))+[SHARED/'vendor/provenance.json',ROOT/'run_new.sh']
+    files=list(HERE.glob('*.py'))+list(SHARED.glob('*.py'))+[SHARED/'vendor/provenance.json',ROOT/'run_new.sh',ROOT/'run_native_unet.sh']
     return {str(p.relative_to(ROOT)):sha256(p) for p in sorted(files)}
 
 

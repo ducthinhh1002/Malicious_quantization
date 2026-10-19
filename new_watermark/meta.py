@@ -88,7 +88,7 @@ def fresh_parameters(model,seed):
 
 
 def transfer_loss(model,vae,clip,detector,marked_pixels,clean_pixels,train_text,
-                  probe_latent,probe_text,scheduler,seed,steps,lr,margin,target):
+                  probe_latent,probe_text,scheduler,seed,steps,lr,margin,target,score_fn=None):
     device=marked_pixels.device
     rng=torch.Generator('cpu').manual_seed(seed)
     # Real image -> VAE encoding bridge; student never receives teacher internal x0.
@@ -110,7 +110,7 @@ def transfer_loss(model,vae,clip,detector,marked_pixels,clean_pixels,train_text,
         u,v=functional_prediction(model,params,noisy.repeat(2,1,1,1),t,probe_text).chunk(2)
         x0=predict_x0(noisy,u+7.5*(v-u),alpha,scheduler.config.prediction_type)
         pixels=(vae.decode(x0/vae.config.scaling_factor).sample/2+.5).clamp(0,1)
-        return torch_scores(image_features(clip,pixels),detector)
+        return score_fn(pixels) if score_fn is not None else torch_scores(image_features(clip,pixels),detector)
     with torch.no_grad(): clean_score=score(clean_params)
     marked_score=score(marked_params)
     # Absolute detection and clean-adjusted transfer both matter.

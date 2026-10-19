@@ -21,6 +21,10 @@ def clean_design(run):
 
 def detector_stage(run):
     c=read_json(run/'config.json'); prompts=read_json(run/'prompts.json'); reader=FeatureReader(run)
+    if c.get('native_reader'):
+        from new_watermark.native_unet import calibrate_native
+        calibrate_native(run,reader.read('clean_calibration',prompts['calibration']))
+        return
     fit=reader.read('clean_design_fit',prompts['design_fit'])
     cal=reader.read('clean_calibration',prompts['calibration'])
     detector=make_detector(fit['features'],c['key_seed'])
@@ -149,6 +153,7 @@ def summarize(run):
         detected=(scores[:,0]>=detector['thresholds'][0]).astype(int).tolist(); indicators[label]=detected
         n=len(detected); k=sum(detected); ci=wilson(k,n); quality=utility.get(label,{})
         table.append({'model':label,'detected':k,'n':n,'detection_rate':k/n,'ci95_low':ci[0],'ci95_high':ci[1],
+            'bit_accuracy':float(((np.asarray(data['features'])[:,1:]>0)==np.asarray([(c['owner_key']>>i)&1 for i in range(8)])).mean()) if c.get('native_reader') else None,
             'semantic_clip':data['clip_mean'],'fid':quality.get('frechet_inception_distance'),
             'kid':quality.get('kernel_inception_distance_mean'),
             'meaning':'false-positive rate' if label in ['teacher_clean_test','unadapted'] or label.endswith('_clean') else 'watermark detection rate'})
@@ -172,10 +177,11 @@ def summarize(run):
             loss=read_json(run/'validation'/f'{label}.json')['denoising_mse']
             milestones.append({'branch':b['name'],'step':step,'selected':chosen['selected_step']==step,'denoising_mse':loss,
                 'detection_rate':float((values>=detector['thresholds'][0]).mean()),'semantic_clip':data['clip_mean'],
+                'bit_accuracy':float(((np.asarray(data['features'])[:,1:]>0)==np.asarray([(c['owner_key']>>i)&1 for i in range(8)])).mean()) if c.get('native_reader') else None,
                 'detector_used_for_selection':False})
-    warnings=['Experimental zero-bit detector, not multi-bit decoding or cryptographic ownership proof.',
+    warnings=[('Frozen 8-bit LALT reader reused; known key221 is a development choice, not an unseen-key generalization result.' if c.get('native_reader') else 'Experimental zero-bit detector, not multi-bit decoding or cryptographic ownership proof.'),
               'One seed; pilot search cost is additional compute. Repeat seeds and independent keys before paper claims.',
-              'Teacher is trained with a one-step denoising proxy; actual generation and transfer can fail.',
+              ('Teacher uses on-policy DDIM with truncated tail gradients; transfer uses a short predicted-x0 proxy, not full student training.' if c.get('native_reader') else 'Teacher is trained with a one-step denoising proxy; actual generation and transfer can fail.'),
               'Semantic shifts can alter content; inspect images and quality metrics, not just TPR.',
               'Wrong keys are a finite negative-control audit, not a security guarantee.',
               'All final students start from the CLEAN base, not the marked teacher; no key or detector loss in student training.']
@@ -206,7 +212,7 @@ def summarize(run):
         'threshold':detector['thresholds'][0],'calibration_target_fpr':c['fpr'],'test_used_to_change_threshold':False})
     if not teacher_valid: warnings.append('TEACHER_INVALID: teacher detection/CI/quality/FPR guard failed; no successful inheritance claim.')
     updates={b['name']:read_json(run/'students'/b['name']/'complete.json').get('optimizer_update_counts') for b in branches(c)}
-    write_json(run/'result/report.json',{'method':'transfer-selected semantic UNet watermark pilot','teacher_selection':selection,
+    write_json(run/'result/report.json',{'method':'native UNet with frozen LALT reader' if c.get('native_reader') else 'transfer-selected semantic UNet watermark pilot','teacher_selection':selection,
         'results':table,'effects':effects,'warnings':warnings,'optimizer_updates':updates,'teacher_test_psnr':teacher_psnr,'teacher_valid':teacher_valid,'claim_checks':status,
         'clean_trained_controls':False,'causal_inheritance_established':False,
         'test_used_for_selection':False,'checkpoint_selection':'validation denoising MSE only'})
@@ -214,9 +220,10 @@ def summarize(run):
     csv_file(run/'result/wrong_key_controls.csv',wrong)
     lines=['# Experimental UNet watermark results','',
         'One fixed detector threshold. Clean rows measure false positives; marked rows measure detection.', '',
-        '| Model | Detected | Rate | 95% Wilson CI | FID | KID |', '|---|---:|---:|---:|---:|---:|']
+        '| Model | Detected | Rate | Bit accuracy | 95% Wilson CI | FID | KID |', '|---|---:|---:|---:|---:|---:|---:|']
     for r in table:
-        lines.append(f"| {r['model']} | {r['detected']}/{r['n']} | {r['detection_rate']:.1%} | {r['ci95_low']:.1%}–{r['ci95_high']:.1%} | {r['fid']} | {r['kid']} |")
+        bit='N/A' if r['bit_accuracy'] is None else f"{r['bit_accuracy']:.2%}"
+        lines.append(f"| {r['model']} | {r['detected']}/{r['n']} | {r['detection_rate']:.1%} | {bit} | {r['ci95_low']:.1%}–{r['ci95_high']:.1%} | {r['fid']} | {r['kid']} |")
     lines+=['','Differences versus unadapted (not clean-trained adjusted): see report.json. Passing gates is descriptive, not proof of causal inheritance.','',*['- '+w for w in warnings]]
     (run/'result/README.md').write_text('\n'.join(lines)+'\n')
     print('\n'.join(lines),flush=True)
@@ -230,6 +237,9 @@ if __name__=='__main__':
         'setup_pilots','pilot_generate','select_teacher','final_teacher','select_student','final_student','report'])
     p.add_argument('--step',type=int); p.add_argument('--name')
     a=p.parse_args(); r=a.run.resolve()
+    if a.stage=='teacher_train' and read_json(r/'config.json').get('native_reader'):
+        from new_watermark.native_unet import train_native
+        train_teacher=train_native
     simple={'assets':prepare,'clean_design':clean_design,'detector':detector_stage,'encode':encode_training,
             'teacher_train':train_teacher,'setup_pilots':setup_pilots,'select_teacher':select_teacher,'report':summarize}
     if a.stage in simple: simple[a.stage](r)

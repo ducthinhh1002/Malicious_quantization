@@ -183,6 +183,9 @@ def load_pipeline(run, name, checkpoint_dir=None, device="cuda", dtype=None):
             pipe.unet = UNet2DConditionModel.from_pretrained(directory / "unet", torch_dtype=dtype,
                                                             local_files_only=True)
     pipe.to(device=device, dtype=dtype)
+    if config.get('native_reader'):
+        from diffusers import DDIMScheduler
+        pipe.scheduler=DDIMScheduler.from_config(pipe.scheduler.config,clip_sample=False)
     pipe.unet.eval()
     pipe.vae.eval()
     pipe.text_encoder.eval()

@@ -1,5 +1,9 @@
 # Watermark in diffusion weights, evaluated through fresh LoRA students
 
+For the new native-UNet experiment that reuses the **existing 8-bit LALT reader**,
+see [NATIVE_UNET.md](NATIVE_UNET.md) and run `bash run_native_unet.sh` on vm_4.
+The semantic zero-bit protocol below remains available through `run_new.sh`.
+
 Experimental implementation. **No successful full GPU run or improved radioactivity
 has yet been established.** This is a zero-bit ownership detector, not message-bit
 recovery. It is not a reproduction of HMark, SERUM, or AquaLoRA.
