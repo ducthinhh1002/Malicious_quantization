@@ -6,6 +6,19 @@ from paths import freeze, read_json, write_json, sha256, image_name
 from new_watermark.method import image_features
 
 
+def prior_prompt_exclusion(c):
+    paths=([c['exclude_prior_prompts']] if c.get('exclude_prior_prompts') else [])+c.get('exclude_additional_prompts',[])
+    ids=set(); sources=[]
+    for name in dict.fromkeys(paths):
+        prior=Path(name); previous=read_json(prior)
+        found={r['image_id'] for rows in previous.values() if isinstance(rows,list)
+               for r in rows if isinstance(r,dict) and 'image_id' in r}
+        if not found: raise ValueError(f'Prior prompt manifest contains no image IDs: {prior}')
+        ids.update(found)
+        sources.append({'path':str(prior),'sha256':sha256(prior),'image_id_count':len(found)})
+    return ids,{'sources':sources,'image_ids':sorted(ids),'policy':'union of all prior splits excluded before new split allocation'}
+
+
 def prepare(run):
     import fcntl
     import hashlib
@@ -23,13 +36,9 @@ def prepare(run):
             raise RuntimeError('COCO annotation checksum mismatch')
         with zipfile.ZipFile(archive) as z:
             annotations = json.loads(z.read('annotations/captions_val2014.json'))['annotations']
-        excluded=None
-        if c.get('exclude_prior_prompts'):
-            prior=Path(c['exclude_prior_prompts']); previous=read_json(prior)
-            ids={r['image_id'] for rows in previous.values() if isinstance(rows,list) for r in rows if isinstance(r,dict) and 'image_id' in r}
-            if not ids: raise ValueError('Prior prompt manifest contains no image IDs')
+        ids,excluded=prior_prompt_exclusion(c)
+        if ids:
             annotations=[r for r in annotations if r['image_id'] not in ids]
-            excluded={'sha256':sha256(prior),'image_ids':sorted(ids),'policy':'all prior splits excluded before new split allocation'}
             freeze(run/'prior_prompt_exclusion.json',excluded)
         counts = {k: c[k+'_n'] for k in ('design_fit','teacher_train','meta_probe','calibration','pilot_train','pilot_eval','train','validation','test')}
         freeze(run/'prompts.json', split_prompts(annotations, c['seed'], counts))

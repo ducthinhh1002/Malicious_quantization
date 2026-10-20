@@ -34,12 +34,21 @@ def arguments(argv=None):
     p.add_argument('--owner-key',type=int,default=221)
     p.add_argument('--owner-wrong-key',type=int,default=34)
     p.add_argument('--exclude-prior-prompts',type=Path,help='Exclude every image ID in an earlier study from all new splits')
-    p.add_argument('--teacher-tail-steps',type=int,default=4)
+    p.add_argument('--exclude-additional-prompts',type=Path,nargs='*',default=[],
+                   help='Also exclude these development runs, without replacing the original reader study')
+    p.add_argument('--teacher-tail-steps',type=int,default=4,help='0 backpropagates the full sampling trajectory')
     p.add_argument('--teacher-accumulation',type=int,default=2)
     p.add_argument('--teacher-lr-floor',type=float,default=.1)
     p.add_argument('--teacher-pixel-budget',type=float,default=.001)
     p.add_argument('--teacher-lpips-budget',type=float,default=.1)
     p.add_argument('--native-cycle-weight',type=float,default=.25)
+    p.add_argument('--native-prior-weight',type=float,default=0.,
+                   help='Clean denoiser preservation; 0 reproduces the earlier objective')
+    p.add_argument('--native-prior-budget',type=float,default=.01,
+                   help='Allowed relative prediction MSE before the stronger prior penalty')
+    p.add_argument('--teacher-warmup-steps',type=int,default=0)
+    p.add_argument('--native-bit-tail-weight',type=float,default=0.,
+                   help='Extra smooth worst-bit BCE; does not change the frozen detection score')
     for name,n in [('design-fit',256),('teacher-train',512),('meta-probe',128),('calibration',1000),
                    ('pilot-train',512),('pilot-eval',256),('train',5000),('validation',256),('test',1000)]:
         p.add_argument('--'+name+'-n',type=int,default=n)
@@ -68,11 +77,16 @@ def arguments(argv=None):
             p.error('Native reader requires a pinned lowercase SHA256')
         if not 0<=a.owner_key<256 or not 0<=a.owner_wrong_key<256 or a.owner_key==a.owner_wrong_key:
             p.error('Distinct 8-bit owner and wrong keys required')
-        if not 1<=a.teacher_tail_steps<=a.inference_steps or a.teacher_accumulation<1:
+        if not 0<=a.teacher_tail_steps<=a.inference_steps or a.teacher_accumulation<1:
             p.error('Invalid native trajectory/accumulation')
         if (not all(math.isfinite(v) for v in (a.teacher_lr_floor,a.teacher_pixel_budget,a.teacher_lpips_budget,a.native_cycle_weight))
                 or not 0<a.teacher_lr_floor<=1 or min(a.teacher_pixel_budget,a.teacher_lpips_budget)<=0 or a.native_cycle_weight<0):
             p.error('Invalid native quality or scheduler settings')
+        if (not math.isfinite(a.native_bit_tail_weight) or a.native_bit_tail_weight<0
+                or not math.isfinite(a.native_prior_weight) or a.native_prior_weight<0
+                or not math.isfinite(a.native_prior_budget) or a.native_prior_budget<=0
+                or not 0<=a.teacher_warmup_steps<max(a.teacher_checkpoints)):
+            p.error('Invalid native prior or warmup settings')
         if math.ceil((a.calibration_n+1)*(1-a.fpr/2))>a.calibration_n:
             p.error('Too few calibration images for the native two-key FPR')
     if a.resume and a.output: p.error('Choose output or resume')
@@ -95,13 +109,21 @@ def arguments(argv=None):
 
 
 def config(a):
-    c={k:str(v.resolve()) if isinstance(v,Path) else v for k,v in vars(a).items() if k not in ('output','resume','plan_only','min_free_gb')}
+    def serial(v):
+        if isinstance(v,Path): return str(v.resolve())
+        if isinstance(v,list): return [serial(x) for x in v]
+        return v
+    c={k:serial(v) for k,v in vars(a).items() if k not in ('output','resume','plan_only','min_free_gb')}
     c.update(watermark_method='new_watermark',native_reader=bool(a.owner_checkpoint),max_train_steps=max(a.checkpoint_steps),
         loss_weights={'watermark':a.teacher_watermark_weight,'prior':1.,'pixels':.1,'semantic':.1},
         gates={k:c[k] for k in ('min_teacher_tpr','min_teacher_ci_low','min_student_tpr','min_psnr','max_clip_drop','max_clean_fpr')},
         lora_only=True,paper_full_ema=False,train_clean_controls=False)
     c['student_branches']=[{'name':f'lora_r{r}_{cond}','kind':'lora','rank':r,'scope':a.student_scope,'condition':cond}
                            for r in a.ranks for cond in ('wm',)]
+    if c['native_reader']:
+        c['loss_weights']={'bit_bce':1.,'bit_tail':a.native_bit_tail_weight,'detection_margin':1.,
+                          'specificity':.5,'prior':a.native_prior_weight,'cycle':a.native_cycle_weight,
+                          'meta':a.meta_weight,'quality_linear':.005,'pixel_excess':.2,'lpips_excess':.6}
     return c
 
 

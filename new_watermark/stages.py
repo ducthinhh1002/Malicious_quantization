@@ -147,11 +147,14 @@ def summarize(run):
     labels=['teacher_clean_test','teacher_wm_test','unadapted']+[b['name'] for b in branches(c)]
     utility_path=run/'result/utility.json'
     utility=read_json(utility_path)['branches'] if utility_path.exists() else {}
-    table=[]; indicators={}; wrong=[]
+    table=[]; indicators={}; wrong=[]; reader_audit={}
     for label in labels:
         data=reader.read(label,prompts['test']); scores=score_features(data['features'],detector)
         detected=(scores[:,0]>=detector['thresholds'][0]).astype(int).tolist(); indicators[label]=detected
         n=len(detected); k=sum(detected); ci=wilson(k,n); quality=utility.get(label,{})
+        if c.get('native_reader'):
+            from new_watermark.native_unet import reader_diagnostics
+            reader_audit[label]=reader_diagnostics(data['features'],detector['keys'])
         table.append({'model':label,'detected':k,'n':n,'detection_rate':k/n,'ci95_low':ci[0],'ci95_high':ci[1],
             'bit_accuracy':float(((np.asarray(data['features'])[:,1:]>0)==np.asarray([(c['owner_key']>>i)&1 for i in range(8)])).mean()) if c.get('native_reader') else None,
             'semantic_clip':data['clip_mean'],'fid':quality.get('frechet_inception_distance'),
@@ -181,7 +184,7 @@ def summarize(run):
                 'detector_used_for_selection':False})
     warnings=[('Frozen 8-bit LALT reader reused; known key221 is a development choice, not an unseen-key generalization result.' if c.get('native_reader') else 'Experimental zero-bit detector, not multi-bit decoding or cryptographic ownership proof.'),
               'One seed; pilot search cost is additional compute. Repeat seeds and independent keys before paper claims.',
-              ('Teacher uses on-policy DDIM with truncated tail gradients; transfer uses a short predicted-x0 proxy, not full student training.' if c.get('native_reader') else 'Teacher is trained with a one-step denoising proxy; actual generation and transfer can fail.'),
+              (f"Teacher uses on-policy DDIM with {'full' if not c['teacher_tail_steps'] else 'truncated tail'} gradients; any enabled transfer proxy uses predicted-x0, not full student training." if c.get('native_reader') else 'Teacher is trained with a one-step denoising proxy; actual generation and transfer can fail.'),
               'Semantic shifts can alter content; inspect images and quality metrics, not just TPR.',
               'Wrong keys are a finite negative-control audit, not a security guarantee.',
               'All final students start from the CLEAN base, not the marked teacher; no key or detector loss in student training.']
@@ -211,6 +214,14 @@ def summarize(run):
         'clean_fpr':by['teacher_clean_test']['detection_rate'],'paired_psnr':teacher_psnr,
         'threshold':detector['thresholds'][0],'calibration_target_fpr':c['fpr'],'test_used_to_change_threshold':False})
     if not teacher_valid: warnings.append('TEACHER_INVALID: teacher detection/CI/quality/FPR guard failed; no successful inheritance claim.')
+    if c.get('native_reader'):
+        from new_watermark.training_audit import audit_training
+        audit=audit_training(run/'teacher/training.jsonl',c)
+        write_json(run/'result/teacher_training_audit.json',audit)
+        write_json(run/'result/reader_diagnostics.json',reader_audit)
+        warnings.extend(audit['warnings'])
+        if reader_audit['teacher_wm_test']['exact_message_accuracy']==0:
+            warnings.append('No teacher test image decodes the complete key; inspect reader_diagnostics.json even if presence scores improve.')
     updates={b['name']:read_json(run/'students'/b['name']/'complete.json').get('optimizer_update_counts') for b in branches(c)}
     write_json(run/'result/report.json',{'method':'native UNet with frozen LALT reader' if c.get('native_reader') else 'transfer-selected semantic UNet watermark pilot','teacher_selection':selection,
         'results':table,'effects':effects,'warnings':warnings,'optimizer_updates':updates,'teacher_test_psnr':teacher_psnr,'teacher_valid':teacher_valid,'claim_checks':status,

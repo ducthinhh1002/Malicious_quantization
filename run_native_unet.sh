@@ -7,10 +7,12 @@ HASH="${NATIVE_OWNER_SHA256:-bce50d0a1a450ae315a90c4bfcfafe22c93b6bb79ceea85980a
 exec bash "$ROOT_DIR/run_new.sh" \
   --owner-checkpoint "$OWNER" --owner-sha256 "$HASH" \
   --exclude-prior-prompts "${NATIVE_PRIOR_PROMPTS:-/root/logs/results/lalt_stable_reader_20261018_111112Z/prompts.json}" \
-  --teacher-checkpoints 500 1000 2000 --teacher-lr 5e-5 \
-  --teacher-tail-steps 4 --teacher-accumulation 2 \
+  --exclude-additional-prompts "${NATIVE_DEVELOPMENT_PROMPTS:-/root/logs/results/native_unet_20261019_162350_r16r32/prompts.json}" \
+  --teacher-checkpoints 500 1000 2000 --teacher-lr 1e-5 \
+  --teacher-warmup-steps 100 --teacher-tail-steps 4 --teacher-accumulation 2 \
+  --native-prior-weight 1 --native-prior-budget 0.01 --native-bit-tail-weight 1 \
   --inference-steps 20 --inference-batch 4 \
-  --meta-rank 16 --meta-every 25 --meta-warmup 250 --meta-weight 0.1 \
+  --meta-rank 16 --meta-every 25 --meta-warmup 250 --meta-weight 0 \
   --score-margin 0.25 --transfer-margin 0.25 \
   --student-scope attention_conv --ranks 16 32 --learning-rate 1e-4 \
   --precision bf16 \

@@ -3,7 +3,8 @@
 Run `bash run_native_unet.sh` in the prepared environment. On vm_4 the wrapper
 uses the recorded step-20,000 LALT checkpoint, pinned SHA256
 `bce50d0a1a450ae315a90c4bfcfafe22c93b6bb79ceea85980a9ddef357e8eb0`.
-On another machine override `NATIVE_OWNER_CHECKPOINT` and `NATIVE_PRIOR_PROMPTS`.
+On another machine override `NATIVE_OWNER_CHECKPOINT`, `NATIVE_PRIOR_PROMPTS`
+and `NATIVE_DEVELOPMENT_PROMPTS` with local copies of the recorded artifacts.
 The reader architecture is kept exactly compatible with `TransportReader` in the
 server snapshot `lalt_stable_reader_20261018_111112Z/…/latent_transport.py`.
 The old latent transport weights are **not** loaded into the new teacher.
@@ -16,23 +17,40 @@ The old latent transport weights are **not** loaded into the new teacher.
   frozen, not retrained on generated students. This is not unseen-key evidence.
 - Exclude all COCO image IDs in the prior study's prompt manifest from every new
   split. Train/selection/calibration/test splits are distinct; captions/noise paired
-  across compared outputs. The old reader still carries prior-study knowledge.
+  across compared outputs. The wrapper also excludes the October 19 run now
+  used for development, through `--exclude-additional-prompts`.
+  The old reader still carries prior-study knowledge.
 - Teacher samples the complete current-adapter DDIM trajectory (20 steps); only
   the last four steps retain gradients. Its prefix is recomputed, not taken from
   cached clean-model latents. This is biased truncated backprop, not full BPTT.
+  `--teacher-tail-steps 0` enables a full-gradient ablation; this is not assumed
+  superior (DRaFT reports exploding full-chain gradients).
 - Loss: bit BCE + softplus margin above the frozen detection threshold + .5
   correct-vs-wrong-key margin + paired clean-image MSE/LPIPS quality budgets.
   Quality uses .001 MSE and .1 LPIPS budgets, small in-budget penalties and stronger
   per-example penalties when exceeded. Inputs use an RGB8 straight-through view.
+  The updated wrapper adds a smooth worst-bit BCE (weight 1, temperature .25,
+  symmetric across bit positions), so easy bits cannot entirely mask difficult
+  ones. This changes training only, never the calibrated detection score.
+- A clean-denoiser trust region samples a uniform DDPM timestep and compares
+  both unconditional/conditional predictions to the frozen base at the SAME
+  noisy clean latent. Relative prediction MSE is normalized per branch. For
+  `r = relative_MSE / .01`, the penalty is `.01*r + .1*relu(r-1)^2`, weight 1.
+  It is backpropagated separately after the sampling loss to limit peak memory.
+  This is ordinary preservation regularization, not AquaLoRA's shifted-latent PPFT.
 - Every fourth update adds .25 watermark loss through a stochastic VAE posterior
   round trip. This only addresses the VAE bottleneck, not complete student learning.
-- After 250 warmup updates, every 25th update adds .1 short-horizon LoRA-transfer
+- Optional `--meta-weight 0.1`: after 250 updates, every 25th update adds short-horizon LoRA-transfer
   loss through two ordinary AdamW denoising updates of a fresh rank-16
   attention+convolution surrogate. The clean rollout uses the same initialization
   and noise. The disjoint predicted-x0 probe is explicitly an approximation.
+  Default is now **0**: the completed experiment's 70 proxy evaluations had
+  mean gain only .000698 and all three real 500-step pilots detected 0/256.
+  This is not evidence that meta-learning in general fails.
 - Teacher 2,000 updates, snapshots 500/1,000/2,000; FP32, two microbatches of one,
-  norm clipping 1. LR cosine 5e-5 -> 5e-6. This is a conservative starting choice
-  for native UNet changes, not an experimentally established optimum.
+  norm clipping 1. LR warms up for 100 steps to 1e-5, then cosine to 1e-6.
+  This lower LR and the regularizer are hypotheses motivated by observed drift,
+  not experimentally established improvements.
 - Three 500-step marked-data pilot students + one matched clean pilot select the
   teacher by transfer under native teacher/quality checks. Failed checks still
   select a diagnostic fallback and run final students. Corrupt assets/runtime
@@ -51,6 +69,9 @@ Reports live in `RUN/result/README.md`, `summary.csv`, `report.json`,
 `checkpoint_metrics.csv`, `teacher_selection.json`, and `teacher_strength.json`.
 Per-update losses, applied/skipped updates and GPU peak are in
 `RUN/teacher/training.jsonl`. Export validation is `RUN/models/teacher_STEP/export.json`.
+`result/teacher_training_audit.json` reports loss windows, clipping, skipped
+updates and proxy gains. `result/reader_diagnostics.json` separates presence
+logits, per-bit accuracy and exact-message accuracy. Neither file changes selection.
 Weak metrics never stop the study. A completed run does not mean successful transfer.
 
 ## Evidence behind the optimization choices
@@ -62,6 +83,28 @@ are this experiment's choices, not a claimed reproduction or proof of radioactiv
 [Diffusers LoRA documentation](https://huggingface.co/docs/diffusers/main/training/lora)
 uses 1e-4 as the student LR default; it does not establish optimality for this dataset,
 convolution scope, or watermark. All extra teacher/pilot compute must be reported.
+
+[DRaFT](https://arxiv.org/html/2309.17400v2) supports both full and truncated
+sampling gradients and specifically warns that the full gradient can explode.
+[AquaLoRA's official PPFT implementation](https://github.com/Georgefwt/AquaLoRA/blob/master/train/ppft_train.py)
+provides a useful example of preserving base predictions while implanting a
+watermark, but uses shifted latent inputs and a pretrained watermark encoder.
+Our same-input regularizer does not reproduce that mechanism.
+
+For an ablation against the October 19 optimization settings (use a new output):
+
+```bash
+bash run_native_unet.sh --teacher-lr 5e-5 --teacher-warmup-steps 0 \
+  --native-prior-weight 0 --native-bit-tail-weight 0 --meta-weight 0.1
+```
+
+Change one factor at a time for causal comparisons. Reusing the old test for
+development makes it unsuitable as the final independent test of improvements.
+The launcher already supports a new `--seed` and `--exclude-prior-prompts`.
+`--exclude-additional-prompts path1 path2` unions further manifests with the
+original `--exclude-prior-prompts` manifest. The wrapper already includes the
+October 19 run. This changes the new data splits as well as the optimization:
+compare ablations within the new splits, not as a paired old-vs-new test.
 
 CPU tests verify score compatibility, calibration ties, differentiable frozen-reader
 loss, and current-adapter use in the no-grad prefix. The GPU smoke protocol uses
