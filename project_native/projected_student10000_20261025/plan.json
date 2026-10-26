@@ -1,0 +1,33 @@
+{
+  "order": [
+    "student10000",
+    "resume_original_balanced_native_queue"
+  ],
+  "source_provenance": {
+    "config.json": "5d0ff8ec02287d463d6ad962e7888fcf5b4dcef12003b00a48f8d85c277e3e18",
+    "prompts.json": "c9593dcf889f3d630ff71c974bb7385964ea8bfe120e260ecaee538527c3d866",
+    "assets.json": "669b0f51cc983358f0f6c8d63f728854211715bf9b401357c87b65b817250035",
+    "carrier/complete.json": "1f517f4dcbcc565bb4cb308eafbdd713aa6303565af2dfc8fa5df80bb2d8af09",
+    "result/threshold_student.json": "77727987bff46e79b384d5761597cd7bab71267acb5da8842a105038d0e4f57a",
+    "result/threshold_teacher.json": "7da9b2877ab8c1237305e1665aff8d47b1817db0f60830ba94afb654362ff8d5",
+    "result/student_summary.json": "a44d6edcd33a051f333201b89716b5b63408e60e7c842e7d05a1d270f2f12ca2",
+    "images/teacher_wm_train/image_hashes.json": "48fda8637a0d2c9ded4aebd0495e7ae2462d287400b80670b337a8ecbefaa135",
+    "students/lora_r32_conv_wm/snapshot-7500/adapter_model.safetensors": "2ee42c8bffb5c3c6b7ba7f39208554d07e5ca12dbdc16789c1b99fd52a38e19d"
+  },
+  "source": "/root/logs/threshold_quality_20261022/pareto_quality_20261025/projected_native",
+  "source_reference_adapter": "students/lora_r32_conv_wm/snapshot-7500/adapter_model.safetensors",
+  "request": "Train projected_native student through10000, then balanced_native",
+  "training": "same frozen upstream trainer, clean SD1.4 initialization, identical seed/data/LR/batch; uninterrupted optimizer to10000",
+  "reason_for_replay": "Source inference snapshots contain no optimizer/RNG; exact state resume unavailable",
+  "teacher_unchanged": true,
+  "final_student_objective_unchanged": true,
+  "evaluation": "fixed10000 endpoint, existing paired1000-image validation/test; compare original7500 separately",
+  "full_state_checkpoints": [
+    2500,
+    5000,
+    7500,
+    10000
+  ],
+  "selection": "fixed10000 requested exposure budget; no selection on test/detector",
+  "limitations": "Adaptive extension after seeing7500 test; one training seed. Replay equality audited at7500."
+}

@@ -1,0 +1,29 @@
+{
+  "order": [
+    "projected_native",
+    "balanced_native"
+  ],
+  "dependency": "/root/logs/threshold_quality_20261022/native_quality_20261025",
+  "source_run": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/source",
+  "source_adapter_sha256": "8e0a5d658d5dace6b22256c66a4c912992e732ee57afc7b41574123383339540",
+  "student_threshold_sha256": "77727987bff46e79b384d5761597cd7bab71267acb5da8842a105038d0e4f57a",
+  "calibration_target_sha256": "97977453cc2d10f8fbb9b788235107d95d793e39e4e6d0801f79bd55f0778a54",
+  "baseline_provenance": {
+    "teacher_choice.json": "fab2003be7a349f6cb6e17d736f8e7cfa6dc63cf58db14fa98a6a96afc5ed157",
+    "images/teacher_wm_train/generation.json": "6477e1b53c6f732fa128a87d7026aded6bbc8eb9f47100a0af46361591b84074",
+    "images/teacher_wm_train/image_hashes.json": "c12a73a898dce27097261f49f7ae45dee2b96d24bce3504ca73b9f5712cd1095"
+  },
+  "original_teacher_loss_unchanged": true,
+  "final_student_unchanged": true,
+  "sampler": "original PNDM50 CFG7.5, 51 forward calls; backward last10 calls only",
+  "precision": "BF16 training denoiser, FP32 sampler; original FP16 merged production",
+  "gradient_method": "balanced objective gradients; projected branch corrects actual AdamW displacement",
+  "constraints": "local original loss, negative native teacher score, native LPIPS+0.1pixel",
+  "limitations": "Truncated gradients, first-order approximation, per-prompt teacher constraints do not guarantee student detection. Adam moments retain proposal history.",
+  "selection": "teacher fixed final600; student min validation MSE at2500/5000/7500",
+  "gates": "numerical/integrity/resources only; never stop due to poor scientific metrics",
+  "student": "ordinary SD1.4 rank32 attention_conv, 5000train/1000val/1000test,7500updates,batch4",
+  "reuse": "hard-linked clean and unadapted references plus baseline training images; no new reference generation",
+  "evaluation": "same fixed threshold; detection, paired LPIPS, FID/KID/CLIP, visual diagnostic/panel",
+  "test_caveat": "existing repeatedly viewed exploratory test; fresh holdout/multiple seeds needed for final claims"
+}

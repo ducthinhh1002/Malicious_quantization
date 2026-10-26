@@ -1,0 +1,38 @@
+{
+  "results": {
+    "unrefined_scale100": {
+      "detection": 0.75,
+      "lpips": 0.5504472542703152,
+      "selected_step": 7500,
+      "frechet_inception_distance": 54.444238035640296,
+      "kernel_inception_distance_mean": 0.0016665101051330567,
+      "clip_score": 0.7876814897656441
+    },
+    "unrefined_scale085": {
+      "detection": 0.427,
+      "lpips": 0.5336590380966664,
+      "selected_step": 7500,
+      "frechet_inception_distance": 54.563047155012214,
+      "kernel_inception_distance_mean": 0.0014637446403503419,
+      "clip_score": 0.7874364616274834
+    },
+    "projected_native": {
+      "detection": 0.792,
+      "lpips": 0.5222192376106978,
+      "selected_step": 7500,
+      "frechet_inception_distance": 53.35773761761027,
+      "kernel_inception_distance_mean": 0.0007949566841125488,
+      "clip_score": 0.7853350944519043
+    },
+    "balanced_native": {
+      "detection": 0.802,
+      "lpips": 0.5173000426590443,
+      "selected_step": 7500,
+      "frechet_inception_distance": 52.79152158941349,
+      "kernel_inception_distance_mean": 0.0006899333000183105,
+      "clip_score": 0.7840426752567291
+    }
+  },
+  "test_used_for_selection": false,
+  "limitation": "One seed, adaptive exploratory test reuse, extra teacher compute vs unrefined controls"
+}

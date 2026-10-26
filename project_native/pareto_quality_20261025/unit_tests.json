@@ -1,0 +1,8 @@
+{
+  "passed": true,
+  "manifest_sha256": "77841d3ef2ae4fd7520eec8a359ccda37d20351d7de655238bef7d679512ce5d",
+  "test_command": "python -m unittest pareto_quality_tests -v",
+  "test_count": 7,
+  "actual_gpu_smoke": "queued before each teacher; not yet run",
+  "created": "2026-10-25T09:46:12.050081+00:00"
+}

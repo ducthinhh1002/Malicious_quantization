@@ -1,0 +1,46 @@
+{
+  "results": {
+    "unrefined_scale100": {
+      "detection": 0.75,
+      "lpips": 0.5504472542703152,
+      "selected_step": 7500,
+      "frechet_inception_distance": 54.444238035640296,
+      "kernel_inception_distance_mean": 0.0016665101051330567,
+      "clip_score": 0.7876814897656441
+    },
+    "unrefined_scale085": {
+      "detection": 0.427,
+      "lpips": 0.5336590380966664,
+      "selected_step": 7500,
+      "frechet_inception_distance": 54.563047155012214,
+      "kernel_inception_distance_mean": 0.0014637446403503419,
+      "clip_score": 0.7874364616274834
+    },
+    "clean_control": {
+      "detection": 0.002,
+      "lpips": 0.5155891261026263,
+      "selected_step": 7500,
+      "frechet_inception_distance": 51.9506299361654,
+      "kernel_inception_distance_mean": 0.0007751870155334472,
+      "clip_score": 0.7855231147408486
+    },
+    "native_full": {
+      "detection": 0.805,
+      "lpips": 0.5440963394492865,
+      "selected_step": 7500,
+      "frechet_inception_distance": 54.60549023854537,
+      "kernel_inception_distance_mean": 0.0012649369239807128,
+      "clip_score": 0.7868892865777015
+    },
+    "continuation": {
+      "detection": 0.823,
+      "lpips": 0.5502182115614415,
+      "selected_step": 7500,
+      "frechet_inception_distance": 54.88688155248991,
+      "kernel_inception_distance_mean": 0.001414821147918701,
+      "clip_score": 0.7864287422299385
+    }
+  },
+  "test_used_for_selection": false,
+  "limitation": "One seed, adaptive exploratory test reuse, extra teacher compute vs unrefined controls"
+}

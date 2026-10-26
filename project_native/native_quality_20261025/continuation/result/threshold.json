@@ -1,0 +1,31 @@
+{
+  "primary": "semantic_score",
+  "semantic_score": 0.8541307449340821,
+  "semantic_score_teacher": 0.8509314060211183,
+  "semantic_score_student": 0.8541307449340821,
+  "teacher": {
+    "family": "teacher",
+    "source": "teacher_clean_calibration",
+    "threshold": 0.8509314060211183,
+    "n": 5000,
+    "target_fpr": 0.01,
+    "empirical_fpr": 0.01,
+    "comparison": ">= threshold",
+    "score_sha256": "381ef494818b7c920a9a9ca74370796e42ae7ef6dcdf499724d7f2ba34659039",
+    "carrier_sha256": "1f517f4dcbcc565bb4cb308eafbdd713aa6303565af2dfc8fa5df80bb2d8af09",
+    "test_used": false
+  },
+  "student": {
+    "family": "student",
+    "source": "unadapted_calibration",
+    "threshold": 0.8541307449340821,
+    "n": 5000,
+    "target_fpr": 0.01,
+    "empirical_fpr": 0.01,
+    "comparison": ">= threshold",
+    "score_sha256": "80a32773a5135c3a43f216559ad1899154073d05af53ed5107e155fe22bb364b",
+    "carrier_sha256": "1f517f4dcbcc565bb4cb308eafbdd713aa6303565af2dfc8fa5df80bb2d8af09",
+    "test_used": false
+  },
+  "note": "Identical fixed semantic score; separate clean family nulls"
+}

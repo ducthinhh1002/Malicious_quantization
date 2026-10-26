@@ -1,0 +1,5 @@
+{
+  "state": "failed",
+  "error": "Command '['/root/logs/gate_env/bin/python', '/root/logs/threshold_quality_20261022/native_quality_refine.py', '--run', '/root/logs/threshold_quality_20261022/native_quality_20261025/native_full']' returned non-zero exit status 1.",
+  "updated": "2026-10-25T03:40:14.689993+00:00"
+}
