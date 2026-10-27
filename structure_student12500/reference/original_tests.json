@@ -1,0 +1,9 @@
+{
+  "passed": true,
+  "count": 4,
+  "manifest_sha256": "3798ce399b08e69623a410f5e5cfc56ff62869910a62ab013e1732fbe0507972",
+  "log_sha256": "67e6887724b2b605a3b11dbf18e47a42b573e406b8d4437b25758aa92ca1c26f",
+  "cpu_exact_resume": true,
+  "gpu_fp16_exact_resume": true,
+  "scope": "small stochastic model, separate processes; real SD1.4 smoke is mandatory before main train"
+}
