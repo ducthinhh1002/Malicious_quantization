@@ -1,0 +1,31 @@
+{
+  "method": "stable_signature_independent_lora_transfer",
+  "seed": 2310,
+  "resolution": 512,
+  "sampling_steps": 20,
+  "guidance": 7.5,
+  "vram_limit_gb": 32.0,
+  "probe_steps": 2,
+  "probe_batch": 2,
+  "probe_accumulation": 2,
+  "student_lr": 1e-05,
+  "smoke": true,
+  "matrix": [
+    {
+      "rank": 4,
+      "scope": "attention"
+    },
+    {
+      "rank": 4,
+      "scope": "attention_conv"
+    },
+    {
+      "rank": 16,
+      "scope": "attention"
+    },
+    {
+      "rank": 16,
+      "scope": "attention_conv"
+    }
+  ]
+}

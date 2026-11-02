@@ -1,0 +1,135 @@
+{
+  "rows": {
+    "teacher": {
+      "score": "s(owner)-s(complement); presence cancels exactly",
+      "threshold": 0.8802838325500488,
+      "calibration_source": "unadapted_calibration",
+      "nominal_image_fpr": 0.01,
+      "detection": {
+        "n": 128,
+        "detected": 80,
+        "detection_rate": 0.625,
+        "ci95_image_conditional": [
+          0.5386400519080884,
+          0.7040757090235344
+        ],
+        "mean_score": 0.941638296470046,
+        "threshold": 0.8802838325500488,
+        "comparison": ">"
+      },
+      "matched_clean": {
+        "n": 128,
+        "detected": 1,
+        "detection_rate": 0.0078125,
+        "ci95_image_conditional": [
+          0.0013804318928742412,
+          0.04292625943886061
+        ],
+        "mean_score": -0.1547318808734417,
+        "threshold": 0.8802838325500488,
+        "comparison": ">"
+      },
+      "auroc": 0.96893310546875,
+      "paired_win_rate": 1.0,
+      "paired_gain_std": 0.3948537711842218,
+      "mean_gain": 1.0963701773434877,
+      "paired_mean_ci95_image_conditional": [
+        1.0267244822578505,
+        1.1627573107602074
+      ],
+      "nonoverlapping_group_paired_means": {
+        "16": [
+          1.2091078460216522,
+          1.1079893708229065,
+          1.307827927172184,
+          1.1464450135827065,
+          1.0986224710941315,
+          0.9639235138893127,
+          1.0043645724654198,
+          0.9326807036995888
+        ],
+        "32": [
+          1.1585486084222794,
+          1.2271364703774452,
+          1.031272992491722,
+          0.9685226380825043
+        ],
+        "64": [
+          1.1928425393998623,
+          0.9998978152871132
+        ],
+        "128": [
+          1.0963701773434877
+        ]
+      }
+    },
+    "marked": {
+      "score": "s(owner)-s(complement); presence cancels exactly",
+      "threshold": 0.7444758415222168,
+      "calibration_source": "clean_calibration",
+      "nominal_image_fpr": 0.01,
+      "detection": {
+        "n": 128,
+        "detected": 5,
+        "detection_rate": 0.0390625,
+        "ci95_image_conditional": [
+          0.016798610797803704,
+          0.08818702076683686
+        ],
+        "mean_score": 0.026665440760552883,
+        "threshold": 0.7444758415222168,
+        "comparison": ">"
+      },
+      "matched_clean": {
+        "n": 128,
+        "detected": 2,
+        "detection_rate": 0.015625,
+        "ci95_image_conditional": [
+          0.004295449710144082,
+          0.055180976679817195
+        ],
+        "mean_score": -0.27688751835376024,
+        "threshold": 0.7444758415222168,
+        "comparison": ">"
+      },
+      "auroc": 0.74029541015625,
+      "paired_win_rate": 0.8828125,
+      "paired_gain_std": 0.28688143180424813,
+      "mean_gain": 0.3035529591143131,
+      "paired_mean_ci95_image_conditional": [
+        0.25287923130672424,
+        0.3542197130620479
+      ],
+      "nonoverlapping_group_paired_means": {
+        "16": [
+          0.257351815700531,
+          0.274762362241745,
+          0.37253689020872116,
+          0.290290042757988,
+          0.34005025029182434,
+          0.25856126844882965,
+          0.2477046549320221,
+          0.3871663883328438
+        ],
+        "32": [
+          0.266057088971138,
+          0.33141346648335457,
+          0.299305759370327,
+          0.31743552163243294
+        ],
+        "64": [
+          0.2987352777272463,
+          0.30837064050137997
+        ],
+        "128": [
+          0.3035529591143131
+        ]
+      }
+    }
+  },
+  "known_owner": true,
+  "wrong_key_is_control": true,
+  "model_level_fpr": null,
+  "independent_negative_models": 0,
+  "caveat": "Paired image evidence conditional on these trained models. Aggregates/bootstrap do not calibrate model attribution; an independent negative-model bank is required."
+}

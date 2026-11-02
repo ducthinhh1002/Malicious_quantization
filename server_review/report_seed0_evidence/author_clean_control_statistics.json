@@ -1,0 +1,28 @@
+{
+  "branch": "author detector, corrected clipping, clean controls only",
+  "bootstrap_seed": 20261011,
+  "bootstrap_resamples": 1000,
+  "n": 5000,
+  "threshold": 0.06189660727977753,
+  "C00_rate": 0.022,
+  "C00_rate_ci95": [
+    0.0182,
+    0.026204999999999996
+  ],
+  "C01_strong_rate": 0.019,
+  "C01_strong_rate_ci95": [
+    0.0154,
+    0.0228
+  ],
+  "C01_minus_C00_rate": -0.002999999999999999,
+  "paired_rate_difference_ci95": [
+    -0.0074,
+    0.0012
+  ],
+  "C01_minus_C00_clipscore": -0.004265982282161713,
+  "paired_clipscore_difference_ci95": [
+    -0.005464099126756191,
+    -0.0029883557605743416
+  ],
+  "relative_clipscore_change_pct": -0.5258081710796318
+}

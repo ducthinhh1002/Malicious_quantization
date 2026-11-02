@@ -1,0 +1,14 @@
+{
+  "rows": [
+    {
+      "key": 221,
+      "checkpoints": 5,
+      "horizons": [
+        8,
+        32
+      ],
+      "spearman": 0.3,
+      "interpretation": "descriptive short-horizon agreement; checkpoints are dependent; no long-student validation"
+    }
+  ]
+}

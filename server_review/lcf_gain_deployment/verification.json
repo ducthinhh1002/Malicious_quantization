@@ -1,0 +1,9 @@
+{
+  "checked_at_utc": "2026-10-18T02:24:25.268730+00:00",
+  "tests_passed": 16,
+  "gpu_end_to_end_smoke": "complete",
+  "smoke_is_scientific_result": false,
+  "diagnostic_512": "running",
+  "diagnostic_stage": "teacher bootstrap",
+  "efficacy_not_yet_established": true
+}

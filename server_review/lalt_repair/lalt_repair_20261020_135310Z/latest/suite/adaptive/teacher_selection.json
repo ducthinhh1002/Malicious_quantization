@@ -1,0 +1,53 @@
+{
+  "step": 20256,
+  "checkpoint": "/root/logs/runtime/lcf_artifacts/adaptive_9ae90cb4/teacher_selected.pt",
+  "checkpoint_sha256": "08d54e3dee222d34dc936dfb0af5dd8db542481b1150f82beb742efe4a2ca774",
+  "repair_step": 256,
+  "validation": [
+    {
+      "key": 221,
+      "split": "teacher_validation",
+      "tpr": 0.859375,
+      "clean_fpr": 0.0,
+      "bit_accuracy": 0.71484375,
+      "psnr": 30.514588102698326,
+      "psnr_p05": 27.62315454483032,
+      "lpips": 0.05583464016672224,
+      "lpips_p95": 0.08283044174313545,
+      "clip_drop": -0.004238233203068376,
+      "diversity_ratio": 0.9796004915438163,
+      "mean_gain": 6.20166006591171,
+      "threshold": -2.003749370574951,
+      "calibration_split": "calibration",
+      "score_scale": 4.586277696921764,
+      "passes": false,
+      "auroc": 0.99383544921875,
+      "paired_win_rate": 0.984375,
+      "paired_gain_std": 4.447738028290284
+    },
+    {
+      "key": 34,
+      "split": "teacher_validation",
+      "tpr": 0.71875,
+      "clean_fpr": 0.0,
+      "bit_accuracy": 0.734375,
+      "psnr": 28.917069286108017,
+      "psnr_p05": 26.211078643798828,
+      "lpips": 0.06469550199108198,
+      "lpips_p95": 0.09980118796229362,
+      "clip_drop": 1.5922822058200836e-05,
+      "diversity_ratio": 0.9879999983661344,
+      "mean_gain": 5.929138111881912,
+      "threshold": -1.9297184944152832,
+      "calibration_split": "calibration",
+      "score_scale": 4.504950071526921,
+      "passes": false,
+      "auroc": 0.98248291015625,
+      "paired_win_rate": 0.9765625,
+      "paired_gain_std": 4.4589201590234895
+    }
+  ],
+  "original_teacher_preserved": true,
+  "official_gate_passed": false,
+  "selection": "Known-owner development validation; original-teacher preservation; no final test"
+}

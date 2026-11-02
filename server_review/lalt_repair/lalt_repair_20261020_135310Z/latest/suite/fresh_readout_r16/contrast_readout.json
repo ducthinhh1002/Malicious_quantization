@@ -1,0 +1,72 @@
+{
+  "rows": {
+    "marked": {
+      "score": "s(owner)-s(complement); presence cancels exactly",
+      "threshold": 0.8161571025848389,
+      "calibration_source": "clean_calibration",
+      "nominal_image_fpr": 0.01,
+      "detection": {
+        "n": 128,
+        "detected": 9,
+        "detection_rate": 0.0703125,
+        "ci95_image_conditional": [
+          0.03742976830393997,
+          0.12823480349360633
+        ],
+        "mean_score": 0.038346631452441216,
+        "threshold": 0.8161571025848389,
+        "comparison": ">"
+      },
+      "matched_clean": {
+        "n": 128,
+        "detected": 1,
+        "detection_rate": 0.0078125,
+        "ci95_image_conditional": [
+          0.0013804318928742412,
+          0.04292625943886061
+        ],
+        "mean_score": -0.2561565265059471,
+        "threshold": 0.8161571025848389,
+        "comparison": ">"
+      },
+      "auroc": 0.72528076171875,
+      "paired_win_rate": 0.8828125,
+      "paired_gain_std": 0.3188402632947576,
+      "mean_gain": 0.29450315795838833,
+      "paired_mean_ci95_image_conditional": [
+        0.2395962342619896,
+        0.3502011676784605
+      ],
+      "nonoverlapping_group_paired_means": {
+        "16": [
+          0.1934097409248352,
+          0.3484620898962021,
+          0.3256121724843979,
+          0.3941270038485527,
+          0.31501248478889465,
+          0.2674969360232353,
+          0.2537037953734398,
+          0.258201040327549
+        ],
+        "32": [
+          0.27093591541051865,
+          0.3598695881664753,
+          0.291254710406065,
+          0.2559524178504944
+        ],
+        "64": [
+          0.31540275178849697,
+          0.2736035641282797
+        ],
+        "128": [
+          0.29450315795838833
+        ]
+      }
+    }
+  },
+  "known_owner": true,
+  "wrong_key_is_control": true,
+  "model_level_fpr": null,
+  "independent_negative_models": 0,
+  "caveat": "Paired image evidence conditional on these trained models. Aggregates/bootstrap do not calibrate model attribution; an independent negative-model bank is required."
+}

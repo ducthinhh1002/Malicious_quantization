@@ -1,0 +1,1538 @@
+[
+  {
+    "image_id": 66798,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/66798.safetensors",
+    "sha256": "637446cee4f1ba2ea86e8c70760fd8d1caebc3a5807368335df3b0eb10f556eb",
+    "reused": true
+  },
+  {
+    "image_id": 451090,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/451090.safetensors",
+    "sha256": "e3e5da3629579b2a64227946c5014cacfd969a5d8731c2947d9600358f0fb087",
+    "reused": true
+  },
+  {
+    "image_id": 137085,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/137085.safetensors",
+    "sha256": "ac071b130d16a692c761e98df5aa80e586311f328e959a8cba29cc4fe3cfe37f",
+    "reused": true
+  },
+  {
+    "image_id": 363830,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/363830.safetensors",
+    "sha256": "2df66a9333e9e383b19edb8165518da7916d0cfd2b27dc0cb0e1a8657a611917",
+    "reused": true
+  },
+  {
+    "image_id": 1818,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/1818.safetensors",
+    "sha256": "1404f4427c9a38110a4313274a0a9ceef336ee6e72114152c34b289539362f63",
+    "reused": true
+  },
+  {
+    "image_id": 454741,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/454741.safetensors",
+    "sha256": "4aaed3a729c0c97dae5a6a1a94bab7bf6ca904a957276252e5a21938a5ce3468",
+    "reused": true
+  },
+  {
+    "image_id": 435270,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/435270.safetensors",
+    "sha256": "0417da3d059ba1065a11d7a7650ca2e9e7134411b279aebcd32fc147acacac8c",
+    "reused": true
+  },
+  {
+    "image_id": 243134,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/243134.safetensors",
+    "sha256": "cdb90caef18d4dc7ed2e35714be658420d75f2aeb0778e08405634fedcab53db",
+    "reused": true
+  },
+  {
+    "image_id": 389116,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/389116.safetensors",
+    "sha256": "b85078caf52ac809050d73bd5742a42d9aea0527ca2efbaee65595d36443350c",
+    "reused": true
+  },
+  {
+    "image_id": 484754,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/484754.safetensors",
+    "sha256": "06a9adcd9f5a4102c5cf97571ff8b3ab6afe7899b832c85ed42dec6b0dad05c3",
+    "reused": true
+  },
+  {
+    "image_id": 477195,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/477195.safetensors",
+    "sha256": "e414d5d26645367854f86918b8e2c853cc326d9c8230c8516efc6ce958d030c6",
+    "reused": true
+  },
+  {
+    "image_id": 90501,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/90501.safetensors",
+    "sha256": "3093c8082c1aa81e6de030a370465fcbc9960f66d1fed42d02848abc1244f8f7",
+    "reused": true
+  },
+  {
+    "image_id": 346965,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/346965.safetensors",
+    "sha256": "5f2bf597853ddc797574ec278a85a129a9816df667f8901800ead7e0b715b1b3",
+    "reused": true
+  },
+  {
+    "image_id": 132084,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/132084.safetensors",
+    "sha256": "a0c8c2be108f294dd711c91964768ef64f83f1b052ae83d29199945161813722",
+    "reused": true
+  },
+  {
+    "image_id": 392753,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/392753.safetensors",
+    "sha256": "a020fbcc59b048ae4768038325d531dd6a163469e1df5b3fdcdde3fcf5a13128",
+    "reused": true
+  },
+  {
+    "image_id": 550521,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/550521.safetensors",
+    "sha256": "22d052ea86b0bf30639b104a246c1c72a3cf25aeba587fb5c929f2120e2caee7",
+    "reused": true
+  },
+  {
+    "image_id": 67563,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/67563.safetensors",
+    "sha256": "2a885308537f72039067fdee4cebc8b0e425fbb3f874764fca4bcd8554315692",
+    "reused": true
+  },
+  {
+    "image_id": 137727,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/137727.safetensors",
+    "sha256": "7ec69907d6c5d8997ab614ac0ab51e4925f40d7c9ab165428f298ab4bd63d13b",
+    "reused": true
+  },
+  {
+    "image_id": 285646,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/285646.safetensors",
+    "sha256": "ac6524680aa67d49968b063fb73310147ece34110b928b1a94f7496e66f01e60",
+    "reused": true
+  },
+  {
+    "image_id": 540159,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/540159.safetensors",
+    "sha256": "196ac794f57e484f3f658964f9a44763eac56298e1c133ee6129f16a15f3a5ba",
+    "reused": true
+  },
+  {
+    "image_id": 102555,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/102555.safetensors",
+    "sha256": "2a4cf18f99ab345cfbfceff7d5538c420bdfb2ae82052dcde5c15569375c8aa9",
+    "reused": true
+  },
+  {
+    "image_id": 78113,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/78113.safetensors",
+    "sha256": "e96bf8ae1f044c5fe3ce21bf09f0bad64885478b52b44d3a0f792f68d978f859",
+    "reused": true
+  },
+  {
+    "image_id": 275754,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/275754.safetensors",
+    "sha256": "3fcdcd98310cc5fbfcc58c6ec66ad1dacb51874b09e33995a981da4b8289a562",
+    "reused": true
+  },
+  {
+    "image_id": 242968,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/242968.safetensors",
+    "sha256": "d1b05b5e99bea7814684f16ef373faf24cc3ec3cfe9719be1fadca0879d5d45d",
+    "reused": true
+  },
+  {
+    "image_id": 139140,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/139140.safetensors",
+    "sha256": "030d04537707f90bf8998da03ff825870bba6e38a5a8dde0bcc659e6efb4549b",
+    "reused": true
+  },
+  {
+    "image_id": 444703,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/444703.safetensors",
+    "sha256": "44905615b47eeb5742ca225fd158427a5d925507691b368d9a90e9c936617510",
+    "reused": true
+  },
+  {
+    "image_id": 210002,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/210002.safetensors",
+    "sha256": "84eaae4ec5153b4d981a86be7703f2569bb15a9b8da6d49cfea1d92aa0358539",
+    "reused": true
+  },
+  {
+    "image_id": 394133,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/394133.safetensors",
+    "sha256": "1044116313bb13583874fab7658a137f27cc756ae173c5af3d63e25a84f2a727",
+    "reused": true
+  },
+  {
+    "image_id": 524247,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/524247.safetensors",
+    "sha256": "a068f04f1bed12236fea1d5c33899093f9cd781ed4d3719e6afedadbb1bb35b6",
+    "reused": true
+  },
+  {
+    "image_id": 522137,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/522137.safetensors",
+    "sha256": "3dddd4527c14d64ee55a717ee1a44cc976dfd3276cb2e52c8fc7ff7225bf45c0",
+    "reused": true
+  },
+  {
+    "image_id": 402528,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/402528.safetensors",
+    "sha256": "6be86c4eb255293f0770267dd0d5924047308b82451e19c22d36bbf4dd4cdac4",
+    "reused": true
+  },
+  {
+    "image_id": 179045,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/179045.safetensors",
+    "sha256": "5aece3db813741c32144e0360686962c56aec6f50b5a119a76728da77a26162a",
+    "reused": true
+  },
+  {
+    "image_id": 205035,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/205035.safetensors",
+    "sha256": "043ecf67952561739499705bb6ba79885d6ea7394c6d45404fb7c7ec4f815447",
+    "reused": true
+  },
+  {
+    "image_id": 333321,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/333321.safetensors",
+    "sha256": "1d0ceb3bec1996beb4fec9665d5c7ec893ecb298d6d5bce02970985e4e6e0112",
+    "reused": true
+  },
+  {
+    "image_id": 261182,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/261182.safetensors",
+    "sha256": "a11d8f09cf76f7229595e297a3427dca13a91413c5156c7445956dce02189d57",
+    "reused": true
+  },
+  {
+    "image_id": 378894,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/378894.safetensors",
+    "sha256": "718f6a6c2569a84ee771ed5f6e5383356e1f5d6f4c27577744a311d7c604bfd8",
+    "reused": true
+  },
+  {
+    "image_id": 364166,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/364166.safetensors",
+    "sha256": "04c1140ac830fd3853106e8b14930e5a0f176b11efc00caabc39396c8da12943",
+    "reused": true
+  },
+  {
+    "image_id": 291791,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/291791.safetensors",
+    "sha256": "4dc9805be6228f0d9e8d44f25309d618b55c6193a4d0525de9b36ef020d02ee4",
+    "reused": true
+  },
+  {
+    "image_id": 209441,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/209441.safetensors",
+    "sha256": "53732da6c217daaf1c7badc804e04d88a78d5c55d7bdc7bbd2f9eef10b64dec0",
+    "reused": true
+  },
+  {
+    "image_id": 301402,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/301402.safetensors",
+    "sha256": "dfc8f03dd8f725c473c0380648b0c673454ab5fe33e2ad771ba8edeb99d4b4b9",
+    "reused": true
+  },
+  {
+    "image_id": 44612,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/44612.safetensors",
+    "sha256": "7414428fd1cdbcc5739378d2ba899254372df5cfb2a5ffc89250da48d3dab415",
+    "reused": true
+  },
+  {
+    "image_id": 317410,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/317410.safetensors",
+    "sha256": "7d06bf33c85970b3942e5c182c576e9865c6364f5b99762a8863ae1ce839bd00",
+    "reused": true
+  },
+  {
+    "image_id": 64736,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/64736.safetensors",
+    "sha256": "fbcfd39c167e2df50aa3a804dd626b4f90329a809cc1537fb545a8af6d899227",
+    "reused": true
+  },
+  {
+    "image_id": 307573,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/307573.safetensors",
+    "sha256": "812f512153fce8f6964dbdd43087a8abd8812662d0f18bac5d05d6f40e1150c3",
+    "reused": true
+  },
+  {
+    "image_id": 482720,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/482720.safetensors",
+    "sha256": "21b0839423353082d987309a08860775009afbe093af85392b3d74fb6d71e048",
+    "reused": true
+  },
+  {
+    "image_id": 363134,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/363134.safetensors",
+    "sha256": "63f4325bacef87e794d7acbf43e3088f43b555bcdcaa87096b95d2cd7a229436",
+    "reused": true
+  },
+  {
+    "image_id": 175604,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/175604.safetensors",
+    "sha256": "c352830b20712998f5d4308a67652358f3fdd5af6f509eee240515d62b7c8d15",
+    "reused": true
+  },
+  {
+    "image_id": 273494,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/273494.safetensors",
+    "sha256": "855a6c50ae5054760b31a55bc17ff3125328e53f2fed60dca95b5e087d58d500",
+    "reused": true
+  },
+  {
+    "image_id": 178361,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/178361.safetensors",
+    "sha256": "b4bb13e142049ed4c9f680fd3e6fbaba46b9c5dd45e9aa6426a2d27148b51be8",
+    "reused": true
+  },
+  {
+    "image_id": 514376,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/514376.safetensors",
+    "sha256": "10a90a1371e7410c855d43e7aebf609ab4cb17ffff8fc6b28f2b3d427baf53ce",
+    "reused": true
+  },
+  {
+    "image_id": 569319,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/569319.safetensors",
+    "sha256": "afa7708a41454fe15abcf7ba56e1b0d0b332462d6afd81b73ab2d289481e6da4",
+    "reused": true
+  },
+  {
+    "image_id": 567686,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/567686.safetensors",
+    "sha256": "da3ace8230ef1ed6a80b118abac887045308038cb1d8157700ad30e1b1043e46",
+    "reused": true
+  },
+  {
+    "image_id": 538465,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/538465.safetensors",
+    "sha256": "013e5ae4d14f0e0ba84bbb967459520e8267705504bb2074c4668abe8ed4c034",
+    "reused": true
+  },
+  {
+    "image_id": 69670,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/69670.safetensors",
+    "sha256": "5404ad5c92adcf83421b9a5e3e5e1a0b15559d03b2130f3e20b8cf94505f48c1",
+    "reused": true
+  },
+  {
+    "image_id": 403038,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/403038.safetensors",
+    "sha256": "a0034ba336ca2b08237a838043ad44aa26f1cee3ae6bd94cf3d1ce75d0dafef8",
+    "reused": true
+  },
+  {
+    "image_id": 225693,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/225693.safetensors",
+    "sha256": "9546252dd41a5a05e9c216d55ef6099295e22f9f82d76957be7b73f4207b9f23",
+    "reused": true
+  },
+  {
+    "image_id": 436164,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/436164.safetensors",
+    "sha256": "62605b7bbbd2f927cf7fc91443630951420a5fdb3eaab9185393da0c8c79fb3a",
+    "reused": true
+  },
+  {
+    "image_id": 122166,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/122166.safetensors",
+    "sha256": "38f121c3ee02bfae8065912393dd212a390360b6f1aea6c372da4da17ee1acf1",
+    "reused": true
+  },
+  {
+    "image_id": 568426,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/568426.safetensors",
+    "sha256": "45d735579c26e8332378dd8d99106f7817b643aeb6f5c24b06557eed525d767f",
+    "reused": true
+  },
+  {
+    "image_id": 290289,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/290289.safetensors",
+    "sha256": "642961a5cccdd3c49e971e4c41c4d9de5177e10627bc42fa6e34055276c36ceb",
+    "reused": true
+  },
+  {
+    "image_id": 135681,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/135681.safetensors",
+    "sha256": "1dfcb9c8eb1fed0df9a5571d4c8b24dc647c04a781486fea6e851217bba7c60a",
+    "reused": true
+  },
+  {
+    "image_id": 301333,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/301333.safetensors",
+    "sha256": "baab32679b021339636d923a58503fd929b33b66d9fefe794a5f98106fc534f5",
+    "reused": true
+  },
+  {
+    "image_id": 415179,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/415179.safetensors",
+    "sha256": "5942947c29317b0d3d52ed0ec293cab4624e29f4f675883abce266f99296543f",
+    "reused": true
+  },
+  {
+    "image_id": 255631,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/255631.safetensors",
+    "sha256": "3003b48236c83003a501c5a39a75cdaada0471319ba475b605c5630f37681314",
+    "reused": true
+  },
+  {
+    "image_id": 9603,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/9603.safetensors",
+    "sha256": "ceb9c0cea774378a45550a96be16295936b716a2b35923e8f5e77bdd7dd0c4ff",
+    "reused": true
+  },
+  {
+    "image_id": 36861,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/36861.safetensors",
+    "sha256": "7541e4df2f0cf40b829e7efd9dda983685ecc16b008b8799bdf28be171cae1a9",
+    "reused": true
+  },
+  {
+    "image_id": 306247,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/306247.safetensors",
+    "sha256": "384f2737646452f2382f26573df26ce57d74b8b516dc5fc2e124498d1485fdb5",
+    "reused": true
+  },
+  {
+    "image_id": 264660,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/264660.safetensors",
+    "sha256": "7d0df7106275e1ab032fb4c06429366eed173e8516914afb1d837641825684b3",
+    "reused": true
+  },
+  {
+    "image_id": 331280,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/331280.safetensors",
+    "sha256": "c4219278181af676220258e22a67b5a259f00e34c6c474cae9e76834a2823c36",
+    "reused": true
+  },
+  {
+    "image_id": 170190,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/170190.safetensors",
+    "sha256": "1f7016639e8f11927dfbcc9d05b1d606f3783561967115efcb8d16012b29920d",
+    "reused": true
+  },
+  {
+    "image_id": 325831,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/325831.safetensors",
+    "sha256": "384e36161b7e71bbb19ccf506015ff1535945666c7527871e8b39c1a96e16c13",
+    "reused": true
+  },
+  {
+    "image_id": 96991,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/96991.safetensors",
+    "sha256": "8d8c91377682a7e8608255bec6bb485a52a6a7e9c178a7354f24929eb2b66f16",
+    "reused": true
+  },
+  {
+    "image_id": 279279,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/279279.safetensors",
+    "sha256": "c6348a6a35e800560d132048f96a23fafe364e44e8bfef470622058613f8aa8d",
+    "reused": true
+  },
+  {
+    "image_id": 109750,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/109750.safetensors",
+    "sha256": "600071c13fef9300bf92df2af0b1192a783edb2ea5d1c67ce6f4fbf83d129bd8",
+    "reused": true
+  },
+  {
+    "image_id": 154263,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/154263.safetensors",
+    "sha256": "af75412e7643a3492ad9909df0b4617228cfeead16a5f5303a1643c906e0c021",
+    "reused": true
+  },
+  {
+    "image_id": 170099,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/170099.safetensors",
+    "sha256": "b75f02b0493e11e52d3dcba1982b9d2537bae778ca00eef61ec591cecd545373",
+    "reused": true
+  },
+  {
+    "image_id": 76918,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/76918.safetensors",
+    "sha256": "65eb900544904e4c0514a06e3b76acd35219a2dcf8a39c83446a4065fe8e9e68",
+    "reused": true
+  },
+  {
+    "image_id": 498339,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/498339.safetensors",
+    "sha256": "f9eee9b98f918f464bdb196e66d42990e1b7ab8bc280a6a65e8bf6b64b6b603a",
+    "reused": true
+  },
+  {
+    "image_id": 92634,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/92634.safetensors",
+    "sha256": "7bdc2334e9830d746a6a31a1a5714b00b8acabe8a771ac33e5d2757e625e5720",
+    "reused": true
+  },
+  {
+    "image_id": 373655,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/373655.safetensors",
+    "sha256": "42dabc0ca899049f71c460f9f02fe01a8aba60196d0dc48e1f0837cbfdde35e9",
+    "reused": true
+  },
+  {
+    "image_id": 366830,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/366830.safetensors",
+    "sha256": "9a8e3fc4050b250925a9329720ffe22b13b33cdccfb68afcf8ef5c88ab57315c",
+    "reused": true
+  },
+  {
+    "image_id": 510842,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/510842.safetensors",
+    "sha256": "90f5b2a893ab970d26ee77e2040d210fc7c0ff5ad02cc5493fde65682626404d",
+    "reused": true
+  },
+  {
+    "image_id": 51355,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/51355.safetensors",
+    "sha256": "5d6d32d174962bbbb8a450eae2b36fbc218f27fcd2d58d59c8ebd910c0670fa4",
+    "reused": true
+  },
+  {
+    "image_id": 365068,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/365068.safetensors",
+    "sha256": "49abf379a77c218431477418632731e6823ce91a6e14ed456c78282a44358f08",
+    "reused": true
+  },
+  {
+    "image_id": 322031,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/322031.safetensors",
+    "sha256": "27a83dae7a81d74964a13baa0aaa342ec162ed5b4f1d3d830372a75479e887ce",
+    "reused": true
+  },
+  {
+    "image_id": 60610,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/60610.safetensors",
+    "sha256": "2c6b5906ad231cf6cbe7ea385cd905df03540eefe03e15e1696a31409185826c",
+    "reused": true
+  },
+  {
+    "image_id": 523883,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/523883.safetensors",
+    "sha256": "be8b89f573a1ccc7089573a00def05f7f69c99bff12213061a4af3233c07ca37",
+    "reused": true
+  },
+  {
+    "image_id": 526321,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/526321.safetensors",
+    "sha256": "5d3504165d0725beda9171cc9d0573f059f9c56eb2ddb04a7909f7eada258611",
+    "reused": true
+  },
+  {
+    "image_id": 229647,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/229647.safetensors",
+    "sha256": "96577a1ed1fd5bc5021c80b88130cb436dbb3b71e4b250d75c810f8171ff6aa2",
+    "reused": true
+  },
+  {
+    "image_id": 223804,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/223804.safetensors",
+    "sha256": "499ba90248c0091e85b1ae3c07c55e1584de83a12cbe0e0f9183f46bedab62fb",
+    "reused": true
+  },
+  {
+    "image_id": 313246,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/313246.safetensors",
+    "sha256": "0d8b5acee2ea53579f84ca47d46434ab831ab0b7289efb8a6aac7fec2fdec2ff",
+    "reused": true
+  },
+  {
+    "image_id": 106901,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/106901.safetensors",
+    "sha256": "bedb318ab0dfbd09528f7b3292589917463b9a7a27bb4df9df9f6ae855953381",
+    "reused": true
+  },
+  {
+    "image_id": 138246,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/138246.safetensors",
+    "sha256": "880592c6d32d865f397fb5e2aa19db9fe05ad078cc3608573077b555c7180528",
+    "reused": true
+  },
+  {
+    "image_id": 438364,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/438364.safetensors",
+    "sha256": "e4c91e148086271cf8a1c9dcafc3da6cfe293c51ac236ad51c824f7d2f3358fc",
+    "reused": true
+  },
+  {
+    "image_id": 152598,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/152598.safetensors",
+    "sha256": "539afc140263e6c8ea1e387b5636ed5591f7fefe6f1595129d3b01d52f98b624",
+    "reused": true
+  },
+  {
+    "image_id": 21645,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/21645.safetensors",
+    "sha256": "07c75a8ca5291077ca2ab09496c2e81316a92d2b323368bbe79bf28a374c69c6",
+    "reused": true
+  },
+  {
+    "image_id": 217064,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/217064.safetensors",
+    "sha256": "5bf62c3af5881dfbc77cde2c4dc8558ea5ce1d14d7e9a01a9e7e98e6083e91c9",
+    "reused": true
+  },
+  {
+    "image_id": 281722,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/281722.safetensors",
+    "sha256": "4d508ef6929d9b04045b158adf5836a0048a3ce470e6b66b7149ad5ba90a987c",
+    "reused": true
+  },
+  {
+    "image_id": 580542,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/580542.safetensors",
+    "sha256": "fff40180c12eba573a246a5a8c463bff85dbddad29e55a129a777c9e61d99ee8",
+    "reused": true
+  },
+  {
+    "image_id": 362712,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/362712.safetensors",
+    "sha256": "299e914305857f5ee12e247adcff5a27e54b3f178f990b3dddec1a299e2b757c",
+    "reused": true
+  },
+  {
+    "image_id": 468178,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/468178.safetensors",
+    "sha256": "2849cd9ea070936c4d2b3ab14ef08c7ad499d2fe969b6b049cffc0e60e8bdd1f",
+    "reused": true
+  },
+  {
+    "image_id": 136552,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/136552.safetensors",
+    "sha256": "7ad5a869299edbaee29359472160f1449872b20d62e05f49e9a63ca0eda57cdc",
+    "reused": true
+  },
+  {
+    "image_id": 398818,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/398818.safetensors",
+    "sha256": "ddb9bd714dc1d4b5ccf26bb98d47762eae1eccc7cf8bfb4843d91bcafe9df7ee",
+    "reused": true
+  },
+  {
+    "image_id": 388988,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/388988.safetensors",
+    "sha256": "73cb820bee6a42ddbad007ca9ac433e812ddb19a4066adfcd3b687ff38429360",
+    "reused": true
+  },
+  {
+    "image_id": 8350,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/8350.safetensors",
+    "sha256": "dfef6431459b34d914222984d792dca3489ccea1bdd6b88dbbdebadb5328aa1b",
+    "reused": true
+  },
+  {
+    "image_id": 528351,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/528351.safetensors",
+    "sha256": "42289ece21975cdfc8000d211b60d8ee85f6d394f237308d4950629cadb1e19a",
+    "reused": true
+  },
+  {
+    "image_id": 358039,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/358039.safetensors",
+    "sha256": "59a9b850fa39db7e5f69d5c99a78eb5779d6c51e504986a31bfade0654c1b92a",
+    "reused": true
+  },
+  {
+    "image_id": 537025,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/537025.safetensors",
+    "sha256": "052a4bbfa4231e42c199a5c980e60ebb229cd1eb604043c28a905854d938be60",
+    "reused": true
+  },
+  {
+    "image_id": 259858,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/259858.safetensors",
+    "sha256": "32b03dbdf22c4706577465d03331d47b783a81cca6f6c78229ee55f75fb93aae",
+    "reused": true
+  },
+  {
+    "image_id": 14226,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/14226.safetensors",
+    "sha256": "12dcac08c7648d7a912b645631cb52f57c7782a53885226dd6de26cb7adae556",
+    "reused": true
+  },
+  {
+    "image_id": 56714,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/56714.safetensors",
+    "sha256": "ed794ef4277c63b93a56cd4d1ff8da249aa917c6ef83a9c8a7ce9a3a5b200bcb",
+    "reused": true
+  },
+  {
+    "image_id": 167235,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/167235.safetensors",
+    "sha256": "114b31f8b89fcf1e2d473b6da5a0180f9e876e65ade6dc8ae381cc7ac72af1c3",
+    "reused": true
+  },
+  {
+    "image_id": 442761,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/442761.safetensors",
+    "sha256": "b382f6e6070d71240221600a3e8f604c285b16fb6505a395568fbeba754c238f",
+    "reused": true
+  },
+  {
+    "image_id": 186956,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/186956.safetensors",
+    "sha256": "3beb82fb7262c0558e064f5a8f52da31d7c3a0051f0e15b78de2405969ff97a7",
+    "reused": true
+  },
+  {
+    "image_id": 543041,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/543041.safetensors",
+    "sha256": "91eeb4870f8bcf8b615f449e506186ce706c8822455ab8526bdc71a7a9987ceb",
+    "reused": true
+  },
+  {
+    "image_id": 308996,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/308996.safetensors",
+    "sha256": "993f2cb41ea57304506b13c5f51834f48cfe82d7944f2ab1283f018451f80bfc",
+    "reused": true
+  },
+  {
+    "image_id": 106216,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/106216.safetensors",
+    "sha256": "81f020e408a416e6c8d0adfd93ed62a6c65c6a6dda487129dbc7015dc744eafd",
+    "reused": true
+  },
+  {
+    "image_id": 566524,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/566524.safetensors",
+    "sha256": "1d8dcef7b0fdc6cef734864bfba48b9cb294e804efff8897999c7842d4ca343e",
+    "reused": true
+  },
+  {
+    "image_id": 568358,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/568358.safetensors",
+    "sha256": "4d858c951e3c592f3538d7fca7d5f42ff226d96668de5604c6d4364ca1a47560",
+    "reused": true
+  },
+  {
+    "image_id": 308883,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/308883.safetensors",
+    "sha256": "67bca1698605318221ab553fecc9e75f4db22d6f3630e0b874b6336e5068e733",
+    "reused": true
+  },
+  {
+    "image_id": 152774,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/152774.safetensors",
+    "sha256": "d30c40a593d95a4aed427b1f90d11d0bf077fb96a846ded9ab59264e91434fe3",
+    "reused": true
+  },
+  {
+    "image_id": 106722,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/106722.safetensors",
+    "sha256": "2c4cf0d3a8f51b7e362caedc8bbc9e8ec3a90728b8a7e2df1fac09c4754be733",
+    "reused": true
+  },
+  {
+    "image_id": 549167,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/549167.safetensors",
+    "sha256": "373805e55efd9c5c85be32f9f1a66971da0ac03ddc31bd09f1a7b0e414f3887e",
+    "reused": true
+  },
+  {
+    "image_id": 262162,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/262162.safetensors",
+    "sha256": "f011d3e2ade0bb8ee18fff392ad3d4d305b8925ed6bda9848231b6f47690068f",
+    "reused": true
+  },
+  {
+    "image_id": 51008,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/51008.safetensors",
+    "sha256": "f62725febc1522649ab597bc1321fe6d260910b6becfa82352ef6129514cad10",
+    "reused": true
+  },
+  {
+    "image_id": 294053,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/294053.safetensors",
+    "sha256": "24485ec2c1a99fba00436f287a00c7882dbffa6e362806b3ac9ae3eda9dbd028",
+    "reused": true
+  },
+  {
+    "image_id": 282878,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/282878.safetensors",
+    "sha256": "5ee978d631b72605f3a78cf934127c5f08b2fd6bf6c5d1b489f7015f326b8524",
+    "reused": true
+  },
+  {
+    "image_id": 21361,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/21361.safetensors",
+    "sha256": "eb218e6ea7209fb1c9601e6945d87d5024ed4671135fc6e736b8ef05e8d76c1d",
+    "reused": true
+  },
+  {
+    "image_id": 333290,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/333290.safetensors",
+    "sha256": "cbaa5c0055abfdafecc3b55d0790ae25c9f54b5f20a05b79e90bba1ac4437953",
+    "reused": true
+  },
+  {
+    "image_id": 127520,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/127520.safetensors",
+    "sha256": "7a6554b1668b96b7344df24c488e53a5dd2baef0cc40c3d68eeec5049e6abcb4",
+    "reused": true
+  },
+  {
+    "image_id": 428452,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/428452.safetensors",
+    "sha256": "4b248dd3df752810ca0a8ef9f19ee697917c3ba95d603198f87468c097476191",
+    "reused": true
+  },
+  {
+    "image_id": 323576,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/323576.safetensors",
+    "sha256": "d022a7c9481d5add21acb3e8e49cf2bfef40277066497812f778d28d05ef2101",
+    "reused": true
+  },
+  {
+    "image_id": 6896,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/6896.safetensors",
+    "sha256": "f633749aa5851829a5a8e7951e635c61346fd86d5440db729aefabf19b5165f4",
+    "reused": true
+  },
+  {
+    "image_id": 336777,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/336777.safetensors",
+    "sha256": "8244dbec00dd6be3ab91080961f0f63d158be68d6f5ecc3de783ae90899d9ea3",
+    "reused": true
+  },
+  {
+    "image_id": 373374,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/373374.safetensors",
+    "sha256": "5a6856f3cbb54456ffe727887c6dcf758c82eed4ff197655427bdc7a3affc1f4",
+    "reused": true
+  },
+  {
+    "image_id": 291588,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/291588.safetensors",
+    "sha256": "c5a6d9c664a4a2de40481acf255285bc1ac5c386fda941ea54413a3865100967",
+    "reused": true
+  },
+  {
+    "image_id": 288955,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/288955.safetensors",
+    "sha256": "3a63fdcc99c684a1cbb165aeec6f0fde92437a952f2a6cb35ab7b86e72adaa2e",
+    "reused": true
+  },
+  {
+    "image_id": 168096,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/168096.safetensors",
+    "sha256": "26d6c77d5a112afe96214f52bfb8996d0bf4eb25c12c10134079b066f99b542a",
+    "reused": true
+  },
+  {
+    "image_id": 579900,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/579900.safetensors",
+    "sha256": "dfb13c894e628979958e9829dcf34377262be330db0b9305a92abfb0c51fd1d6",
+    "reused": true
+  },
+  {
+    "image_id": 491497,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/491497.safetensors",
+    "sha256": "966cd35927fec1c7356e9515d6694c8c898d50dfbc9345009557bb812a2b65eb",
+    "reused": true
+  },
+  {
+    "image_id": 218736,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/218736.safetensors",
+    "sha256": "a3adefe024d997fa8a303e53cf154b826f654919d8cb8853d8e870ab1b383b2f",
+    "reused": true
+  },
+  {
+    "image_id": 396580,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/396580.safetensors",
+    "sha256": "1acbe310c840d6bf882c62f54539f536c66f0f887536664d4e5c0f38576960af",
+    "reused": true
+  },
+  {
+    "image_id": 31625,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/31625.safetensors",
+    "sha256": "60831880a6b1dc2a616532ccf805f4f5ebb7c82a1109df4fc0527b2d45fef354",
+    "reused": true
+  },
+  {
+    "image_id": 443361,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/443361.safetensors",
+    "sha256": "525443dead4423785f29b7c6a1036aea723c7b6ae2dc25c6e989da4b89d95bfb",
+    "reused": true
+  },
+  {
+    "image_id": 163759,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/163759.safetensors",
+    "sha256": "3bfbf8831ebcd0918dfae2cd348a0c95035845d7bb648bc69d0efdb081c2d4c1",
+    "reused": true
+  },
+  {
+    "image_id": 333135,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/333135.safetensors",
+    "sha256": "2381bb0cf1242a012a3102e264fe90f78f978db6af9cf74acfd280427365d8d7",
+    "reused": true
+  },
+  {
+    "image_id": 54520,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/54520.safetensors",
+    "sha256": "06d3521e3bdf55ebce1c768f170bf2a146d6321b9773c696e4356075ab7ebc84",
+    "reused": true
+  },
+  {
+    "image_id": 163339,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/163339.safetensors",
+    "sha256": "b29538931c31604fdd5f5bbeb18272673692f78e2192461d34c00c2cf3c56e9b",
+    "reused": true
+  },
+  {
+    "image_id": 130522,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/130522.safetensors",
+    "sha256": "cc07b0601b44a7805cee43651b205820b88c9aec13adc8b149774497775ef97e",
+    "reused": true
+  },
+  {
+    "image_id": 478858,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/478858.safetensors",
+    "sha256": "48ede7d3baef1ecfb63e1d18683364e02019580c90e9bad8d7c61d4669a810bf",
+    "reused": true
+  },
+  {
+    "image_id": 43944,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/43944.safetensors",
+    "sha256": "9725a8fc17f36b5c680766e93f758c7e32db9da070b641a73d4c5e8b310de7af",
+    "reused": true
+  },
+  {
+    "image_id": 318854,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/318854.safetensors",
+    "sha256": "a780da76c2681aac4c5f19c86790706fe0714b7743a1c7715cfcd3d226ccac3b",
+    "reused": true
+  },
+  {
+    "image_id": 581560,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/581560.safetensors",
+    "sha256": "1a498f280bdaa279b7691c45087f8207c2779d12b05c133061e6b7e0469d0469",
+    "reused": true
+  },
+  {
+    "image_id": 88225,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/88225.safetensors",
+    "sha256": "99db56a5045e208bd9c30c112e23ca9a99257f1d0c1462dbd6977eb367582538",
+    "reused": true
+  },
+  {
+    "image_id": 553248,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/553248.safetensors",
+    "sha256": "c56609dd31fc74a541873147feabfacda6da9b3affab2eef6d02b9ddf5161a6d",
+    "reused": true
+  },
+  {
+    "image_id": 142246,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/142246.safetensors",
+    "sha256": "352874f260bdde507057604468316e1269ce255adb052e9f41fd546e462a7885",
+    "reused": true
+  },
+  {
+    "image_id": 364586,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/364586.safetensors",
+    "sha256": "a862094f64d0c85ca5efd10dc0d910aad9b6c2eecd2f238a62d3aa50374b0712",
+    "reused": true
+  },
+  {
+    "image_id": 241517,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/241517.safetensors",
+    "sha256": "2bf54ec6ff73be972462ab4f465a9b551e9fd3f3e2180d962b9f48f93d6467f8",
+    "reused": true
+  },
+  {
+    "image_id": 430973,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/430973.safetensors",
+    "sha256": "a0157b61d0cba9857a99f90c9adc7e2484955a1f79fd6cb5b1e84bc53862a3ac",
+    "reused": true
+  },
+  {
+    "image_id": 124911,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/124911.safetensors",
+    "sha256": "76c93ef8b29c347a6d77158e90859dce94db8bb4beb24912536f3a811836163d",
+    "reused": true
+  },
+  {
+    "image_id": 280911,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/280911.safetensors",
+    "sha256": "e81d86ab7bdfe6f379bf0c2c13554380f2672c62ff13556b465d7f9c382d4b83",
+    "reused": true
+  },
+  {
+    "image_id": 581394,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/581394.safetensors",
+    "sha256": "a752878256c06fb0336ee6422934e480ab14567739ef8e2fe1d2eccc61645e7e",
+    "reused": true
+  },
+  {
+    "image_id": 123642,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/123642.safetensors",
+    "sha256": "23dc0b4db95dcdee375f594c422cf9b148bb57c8b649b8e5b57ee45772b0e7d8",
+    "reused": true
+  },
+  {
+    "image_id": 511658,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/511658.safetensors",
+    "sha256": "52e9909a620f4e7862bf97c9e70bd53d635ad04809dcce5c504f1528079e8bac",
+    "reused": true
+  },
+  {
+    "image_id": 264392,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/264392.safetensors",
+    "sha256": "afa7f4b8c0e33948aaa6f3032c5cafb7639d0bb100e0529a1518d3346be54465",
+    "reused": true
+  },
+  {
+    "image_id": 473110,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/473110.safetensors",
+    "sha256": "c52625ee7e9c3d68575f86fd2f07b3ad33386f3718a1f77c024bf608e531872e",
+    "reused": true
+  },
+  {
+    "image_id": 251794,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/251794.safetensors",
+    "sha256": "7300f2e435b76d5b3168cdefa72c238736732febc99fbf21e7d311e0487509e0",
+    "reused": true
+  },
+  {
+    "image_id": 365945,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/365945.safetensors",
+    "sha256": "12fccb170fbfc6ad038a17c62b352aad2257fb83eff804a517382cb76122bcb5",
+    "reused": true
+  },
+  {
+    "image_id": 277592,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/277592.safetensors",
+    "sha256": "fc85c71b72816d90fc9e1be135025a4421255f4bbd49f59e537ae3acf5619014",
+    "reused": true
+  },
+  {
+    "image_id": 500703,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/500703.safetensors",
+    "sha256": "a4de0d2f4b10b1c8a0bbfd96cfce36b3db43a3e255a682b9ce94034e847e952d",
+    "reused": true
+  },
+  {
+    "image_id": 124262,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/124262.safetensors",
+    "sha256": "aff6b1b6c3b415beef6b2492c86d4954c7b37316d73714a8371bfc07eadef83b",
+    "reused": true
+  },
+  {
+    "image_id": 244571,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/244571.safetensors",
+    "sha256": "13b1b99e4856fdfe28700f9de3814b19c64e67ca10b671c364e9b930c425edf8",
+    "reused": true
+  },
+  {
+    "image_id": 391825,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/391825.safetensors",
+    "sha256": "979483bcf0e54a6926eea265459a1d16d4e757bdd68f1a097a4e511002718d1f",
+    "reused": true
+  },
+  {
+    "image_id": 335119,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/335119.safetensors",
+    "sha256": "4bd608d8a9ba1d672a45ed26b62d05ec0fbf5a230f467193ce94c4f4e65b3ec5",
+    "reused": true
+  },
+  {
+    "image_id": 516641,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/516641.safetensors",
+    "sha256": "d4f190807d657800be5ca44a32df1eefe52804fa5c0fd82c631e1ff1039b937c",
+    "reused": true
+  },
+  {
+    "image_id": 505977,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/505977.safetensors",
+    "sha256": "8dc09f03fc5d940606dec55e25c7d758dc5eb939c3cc99325d33099459788ab9",
+    "reused": true
+  },
+  {
+    "image_id": 18553,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/18553.safetensors",
+    "sha256": "4a83cea62a29d97ed8e1f50096e5a9c3d94a45458ab32c98e195f692f5dbeaca",
+    "reused": true
+  },
+  {
+    "image_id": 411875,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/411875.safetensors",
+    "sha256": "bc7d222deec8242f173a3b93abd07679ef5064794bc4ee54a2a228bf15e21b2b",
+    "reused": true
+  },
+  {
+    "image_id": 43753,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/43753.safetensors",
+    "sha256": "909622c483015e72edfbc76f2feb168dd3e57c7d1267f9f995d18c08e8ed0a19",
+    "reused": true
+  },
+  {
+    "image_id": 31248,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/31248.safetensors",
+    "sha256": "0e1ce6da993f70c40e32a6c32802ae2617cf793a3bab87b5007b3ec39854d755",
+    "reused": true
+  },
+  {
+    "image_id": 426714,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/426714.safetensors",
+    "sha256": "9e069b3eb7070b669b554a58af1533df0ee00626a585620a2f2d00f134cb0e47",
+    "reused": true
+  },
+  {
+    "image_id": 452321,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/452321.safetensors",
+    "sha256": "93abd959a9377845fc4b944a6b1b4475e5985c74e26e7ed007899cd3fe75131a",
+    "reused": true
+  },
+  {
+    "image_id": 564337,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/564337.safetensors",
+    "sha256": "ddf48bbfaa9adb6398c7b2af9a4a46efd103b16cbd04f9e0ebf68bf897d933a9",
+    "reused": true
+  },
+  {
+    "image_id": 5816,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/5816.safetensors",
+    "sha256": "35d88db1b43bcec1884885d79169cb5c37e1f6693e612a7564598d018c094292",
+    "reused": true
+  },
+  {
+    "image_id": 578131,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/578131.safetensors",
+    "sha256": "eebe8756f5898c378421b88d3a92b5a4420db432266f67cc766075bc04cdbedf",
+    "reused": true
+  },
+  {
+    "image_id": 229096,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/229096.safetensors",
+    "sha256": "51069678869b73846a59c93c1b1e42bab21ae3cb4cc76484d0585719b3a207a5",
+    "reused": true
+  },
+  {
+    "image_id": 467578,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/467578.safetensors",
+    "sha256": "c3f96885f2489f04e7fe1827fdcb4282a34db00151dee008248be09d7121f39a",
+    "reused": true
+  },
+  {
+    "image_id": 541664,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/541664.safetensors",
+    "sha256": "e0a282afe56ce581ecb3b083de3f2a9f9f238b10d1446a12d5b839f757626ade",
+    "reused": true
+  },
+  {
+    "image_id": 380106,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/380106.safetensors",
+    "sha256": "22826dfaa1f8238f9bb441fb06363df61847ca06c03f776e6c806d3630111de6",
+    "reused": true
+  },
+  {
+    "image_id": 220732,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/220732.safetensors",
+    "sha256": "ebb8c2f5f4996865a59a50c317f78aa6165422a31bc8d84e3d30076ff2000413",
+    "reused": true
+  },
+  {
+    "image_id": 107020,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/107020.safetensors",
+    "sha256": "73a02cac988cd6f8135c92ca9bdc3c79c41f5a3fd1e914ea87af8246f5420af1",
+    "reused": true
+  },
+  {
+    "image_id": 374241,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/374241.safetensors",
+    "sha256": "7bcf5dcb6b6edc3b6293b49a61cd6de1db63ca98c2cf1528d41a973cd8e13b59",
+    "reused": true
+  },
+  {
+    "image_id": 408336,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/408336.safetensors",
+    "sha256": "893f2cebd2e3e237112e938b382356b2ea633dc1f98ce89d4a2336055ab7754a",
+    "reused": true
+  },
+  {
+    "image_id": 237568,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/237568.safetensors",
+    "sha256": "adcf724840cd2250f221d5c2997c033b1e87ee5a411891dcbab43671ba3e980d",
+    "reused": true
+  },
+  {
+    "image_id": 165009,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/165009.safetensors",
+    "sha256": "ba05d18a37649acfdae27f904a75d2c29f81d66102179545a3f62a7c81dc8ed8",
+    "reused": true
+  },
+  {
+    "image_id": 5804,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/5804.safetensors",
+    "sha256": "1475e2a45899df43c82b3308592812fad1cf4ca14bd230a2673fafb7ebb8c4b4",
+    "reused": true
+  },
+  {
+    "image_id": 366157,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/366157.safetensors",
+    "sha256": "583983e04fbbd03c2ab3574e3e3c7c99981b2af450fd15121f28f48b2db59901",
+    "reused": true
+  },
+  {
+    "image_id": 345560,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/345560.safetensors",
+    "sha256": "ebce92d5c55b79f035700665636c7a1e34ae072814d2e75b36e914019e1a4665",
+    "reused": true
+  },
+  {
+    "image_id": 8473,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/8473.safetensors",
+    "sha256": "340bd17ceb20609bc737e6b0108ab52818676918d35bd09882c55497d82bbbba",
+    "reused": true
+  },
+  {
+    "image_id": 25896,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/25896.safetensors",
+    "sha256": "9551da09c103fb3b20d636ff35c31799d8af3ce8bc62e53ddf80cbd5bc8ad149",
+    "reused": true
+  },
+  {
+    "image_id": 371117,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/371117.safetensors",
+    "sha256": "66896119515f5ab7e85745ec24319f182a309deb926bf24eb1ffd8434531388b",
+    "reused": true
+  },
+  {
+    "image_id": 455943,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/455943.safetensors",
+    "sha256": "94bd95984404ac30a3faeb1256ac2456e0858f6c3462ca335122ed324c9fe1c9",
+    "reused": true
+  },
+  {
+    "image_id": 513060,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/513060.safetensors",
+    "sha256": "e1c0ec871fa03f5ca7b4db9537ffc5534d0cffc97610a30955904b8c5e40e967",
+    "reused": true
+  },
+  {
+    "image_id": 172006,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/172006.safetensors",
+    "sha256": "a9333ec614078ad8840be38368c9dd3a0ed597642bfcafa650e43c0f86a7df17",
+    "reused": true
+  },
+  {
+    "image_id": 147629,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/147629.safetensors",
+    "sha256": "4f062db2baaa658a5f84a29abe9ae893411851bc22ffe9f1fa5f546eaf151c5f",
+    "reused": true
+  },
+  {
+    "image_id": 174987,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/174987.safetensors",
+    "sha256": "973978eda2664c5fa9c8ed5e818404296050cc3261e6d3ef8a8055651cb5c90b",
+    "reused": true
+  },
+  {
+    "image_id": 131361,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/131361.safetensors",
+    "sha256": "0a67c312ce993f31f57e66754c64023afe4e152fe18ff9ed3f0ce4ecb6093a0e",
+    "reused": true
+  },
+  {
+    "image_id": 188109,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/188109.safetensors",
+    "sha256": "f74677130306ac63ec20f698af7f7661683c6e23dc3543c9b2c00792d303097e",
+    "reused": true
+  },
+  {
+    "image_id": 216273,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/216273.safetensors",
+    "sha256": "658a3047e038c65e5b22e3f109ac9db529d634f6dafcfefc49fb60cc50baf60f",
+    "reused": true
+  },
+  {
+    "image_id": 121503,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/121503.safetensors",
+    "sha256": "d78ca6e1726f7366b16a6ff36ce0d7e76ae5dc4b9fcbb2de903df395a52c1e32",
+    "reused": true
+  },
+  {
+    "image_id": 539566,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/539566.safetensors",
+    "sha256": "cc0ad3c1ffc41e6d1c8524bb18e5e31a44da45c7a3815a86ab826ceb192e7e46",
+    "reused": true
+  },
+  {
+    "image_id": 355908,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/355908.safetensors",
+    "sha256": "26ee5bb44b31e5760718843ffd546f8c4e2dda30a6e18a00679fb0070aaf278b",
+    "reused": true
+  },
+  {
+    "image_id": 377060,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/377060.safetensors",
+    "sha256": "309f46369987dfc78c86705560f3b6768fe332eb052929bb650c80a9a7125e27",
+    "reused": true
+  },
+  {
+    "image_id": 320482,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/320482.safetensors",
+    "sha256": "dfa473e5c872431e91b6bcd89b1d8e8f355fcb24d60a4198280336406780a79c",
+    "reused": true
+  },
+  {
+    "image_id": 45574,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/45574.safetensors",
+    "sha256": "885a195c12e203c3d70f5ea6b8195374d8e65225eb383e90c37bb69dc8a5d82e",
+    "reused": true
+  },
+  {
+    "image_id": 374576,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/374576.safetensors",
+    "sha256": "b5374b1d97aa955978195375154bc19cf0cce7c18d7019851f1f166d74f12f27",
+    "reused": true
+  },
+  {
+    "image_id": 208549,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/208549.safetensors",
+    "sha256": "d62fc31491fa871a175066085f7df1e2637ed9143eac7c849efd197b889765c4",
+    "reused": true
+  },
+  {
+    "image_id": 218224,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/218224.safetensors",
+    "sha256": "e071ee465b57e520e1a1aed041d00bd7fce81997d1cc0d69975ee893a2c3577b",
+    "reused": true
+  },
+  {
+    "image_id": 139953,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/139953.safetensors",
+    "sha256": "31c6b933d3b1c7bd3b3c3c3dcaeab6677232f57c29c0fa753550928500faa49f",
+    "reused": true
+  },
+  {
+    "image_id": 3217,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/3217.safetensors",
+    "sha256": "646e7776cf5fa90581377e32df9114ae4362b6353e5531362f2018b9b29b0e60",
+    "reused": true
+  },
+  {
+    "image_id": 143825,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/143825.safetensors",
+    "sha256": "6771deb3a28ff141bc06e6e252d78b72c1b48ed3cd19dd68f7cf2bd2df83ecba",
+    "reused": true
+  },
+  {
+    "image_id": 365709,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/365709.safetensors",
+    "sha256": "453ce7d47e267cb583734642c0a497e8e82eeefb10c8ac22fcc47cd10b706dae",
+    "reused": true
+  },
+  {
+    "image_id": 308101,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/308101.safetensors",
+    "sha256": "3e82f83cac5294ce19bccfe5af52072e545ffdc781bf83a4de63a19b12a3e951",
+    "reused": true
+  },
+  {
+    "image_id": 315962,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/315962.safetensors",
+    "sha256": "43d21fac29f0476fc9751b7d35f46e9bea6117cfeb535344a90343d0567c7d5a",
+    "reused": true
+  },
+  {
+    "image_id": 158494,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/158494.safetensors",
+    "sha256": "9c98e279d55f111aa05df223df6fead44a26a66e14af3e606ae380ac3693da47",
+    "reused": true
+  },
+  {
+    "image_id": 308362,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/308362.safetensors",
+    "sha256": "d88a3a59599cc04ef254a548fb3840ca0560b13996730fd4d11040e6088cccf3",
+    "reused": true
+  },
+  {
+    "image_id": 387567,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/387567.safetensors",
+    "sha256": "0edd342111d90f4a2e940588300e56aed62f93b516c77d47ad921042bfd5db64",
+    "reused": true
+  },
+  {
+    "image_id": 220176,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/220176.safetensors",
+    "sha256": "bead737e26f39e8124ddfb323a67b928e6cda9bb26f1c540b2115f0f893863c1",
+    "reused": true
+  },
+  {
+    "image_id": 180830,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/180830.safetensors",
+    "sha256": "3441145ee7ca2ef0333397e8b897beff16bf745b7ac663cc0c80c0eb3da9b7a0",
+    "reused": true
+  },
+  {
+    "image_id": 200162,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/200162.safetensors",
+    "sha256": "9135b1871d26467286ed9783d475a1f105c86afa41fed69003c8766c80909780",
+    "reused": true
+  },
+  {
+    "image_id": 321332,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/321332.safetensors",
+    "sha256": "79481d1226039dca8fa205e6d97efccfabf84bc2f3b8e2b8877ff6fc6cd056d3",
+    "reused": true
+  },
+  {
+    "image_id": 567657,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/567657.safetensors",
+    "sha256": "ea8a4fa879d7a6e7bf4d91242c10d18cdb3553edd5edca822c82bc0d14b49d6e",
+    "reused": true
+  },
+  {
+    "image_id": 84929,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/84929.safetensors",
+    "sha256": "1bf40d88f6a504685de521fbff6b08407d959b9b61fc0ebbe7c54d095b1af061",
+    "reused": true
+  },
+  {
+    "image_id": 471446,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/471446.safetensors",
+    "sha256": "4724e4eac1d146c5fa5bdcbcd62c71bf7a00adc31640bb65db2893e132a40b0a",
+    "reused": true
+  },
+  {
+    "image_id": 302643,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/302643.safetensors",
+    "sha256": "10e02319a71b076239fc3e242cedc07bae30581c902987e098c98e84974dfe16",
+    "reused": true
+  },
+  {
+    "image_id": 32610,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/32610.safetensors",
+    "sha256": "10d5b39f033b907e5ca4fe394bc11ed97407f8db7f59f8a87fbae4262ade6de3",
+    "reused": true
+  },
+  {
+    "image_id": 393805,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/393805.safetensors",
+    "sha256": "f41d0e9eb79db820ca9a1e2b7270b0ebc3f7004a37f7e786981dc5e69fa1f383",
+    "reused": true
+  },
+  {
+    "image_id": 465664,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/465664.safetensors",
+    "sha256": "8dcc68397d2a876dd965a4040fc570b71d4f2316e6be973efcc534f7b52ded15",
+    "reused": true
+  },
+  {
+    "image_id": 283168,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/283168.safetensors",
+    "sha256": "2cca4e57c1658883907774a1743bbb742208847d70af8a5091f355b62c0bb374",
+    "reused": true
+  },
+  {
+    "image_id": 411727,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/411727.safetensors",
+    "sha256": "7b22116c13bb7df049181644016e83e5e997efb5c0a4e5c821954e170ef3bc9b",
+    "reused": true
+  },
+  {
+    "image_id": 97610,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/97610.safetensors",
+    "sha256": "a7c92954f3de0eeb2e5b1b2e260fe6d80f10ad66e6850c79d1126d285c4882d6",
+    "reused": true
+  },
+  {
+    "image_id": 336695,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/336695.safetensors",
+    "sha256": "71636f5d424288782aa397e065d5c4cfd2ac9579076304b1b986096d86441456",
+    "reused": true
+  },
+  {
+    "image_id": 447736,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/447736.safetensors",
+    "sha256": "7e299782e7014617979d98dbefe462c509343b6b9ac72cdb8b49cce615ace6f0",
+    "reused": true
+  },
+  {
+    "image_id": 20481,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/20481.safetensors",
+    "sha256": "70430c2cd6ee6a6c6d3966a6800ded918686db5c354c9b1f0b9023672c21701e",
+    "reused": true
+  },
+  {
+    "image_id": 569841,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/569841.safetensors",
+    "sha256": "b428b7e1a3667efc99c94046ed30dab10660574b5cd2944251ba570cc67c668b",
+    "reused": true
+  },
+  {
+    "image_id": 236161,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/236161.safetensors",
+    "sha256": "1bd9a08347d5e0b4973b339e76eb5ce40953383d0934d135ede07157383db181",
+    "reused": true
+  },
+  {
+    "image_id": 193605,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/193605.safetensors",
+    "sha256": "23badb3be523fc8ae1c6968e4710fee8b3a13cf7d77b31d2ac40f350ea33ec30",
+    "reused": true
+  },
+  {
+    "image_id": 97561,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/97561.safetensors",
+    "sha256": "bd4fb6186290cccbeabad814e60b6edaf745ad4cb5801de90ff84447a3cd06e0",
+    "reused": true
+  },
+  {
+    "image_id": 267434,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/267434.safetensors",
+    "sha256": "d23e5cbbd0e493feeb533ea0c67e996e5ec8c6851f339bf23d0e70bfe83ad0f6",
+    "reused": true
+  },
+  {
+    "image_id": 144715,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/144715.safetensors",
+    "sha256": "08414470731f3a2b00d5bb698c684edec4fe61365830ece089a045d01a732c4a",
+    "reused": true
+  },
+  {
+    "image_id": 499313,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/499313.safetensors",
+    "sha256": "3e70e027eddc62199e7de4487622e41c56fcd08d28f267fc645b70f8f2e38c3d",
+    "reused": true
+  },
+  {
+    "image_id": 60448,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/60448.safetensors",
+    "sha256": "689ae9254dec3887dd9a60bb38c4eb03cc678a83b2e294f8813e65d08e3e6449",
+    "reused": true
+  },
+  {
+    "image_id": 345434,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/345434.safetensors",
+    "sha256": "f996068629a172b3c219d1b88d7c1f9d264e2ef9888433176e91a1ca1cbe298e",
+    "reused": true
+  },
+  {
+    "image_id": 303704,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/303704.safetensors",
+    "sha256": "4581ac5749075b8c7f25d87e6aa7009191989e95360278980a2fb78570756f16",
+    "reused": true
+  },
+  {
+    "image_id": 400139,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/400139.safetensors",
+    "sha256": "ad815780d61dce9f01f6e2195cb6163ba0b51d4ea6412f470cd1fd410735f8cb",
+    "reused": true
+  },
+  {
+    "image_id": 160498,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_94c0989d/design_latents/160498.safetensors",
+    "sha256": "3272387491b1206c31aecd91f8edce2777963537cc78663691f8fa2a112fa0d7",
+    "reused": true
+  }
+]

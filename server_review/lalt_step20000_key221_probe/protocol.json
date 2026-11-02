@@ -1,0 +1,38 @@
+{
+  "owner_step": 20000,
+  "owner_sha256": "bce50d0a1a450ae315a90c4bfcfafe22c93b6bb79ceea85980a9ddef357e8eb0",
+  "model": "SD1.4",
+  "resolution": 512,
+  "rank": 4,
+  "embedded_key": 221,
+  "evaluated_keys": [
+    221,
+    34
+  ],
+  "key_selection": "User selected key221 with 83.59375% teacher validation TPR at step20000; development selection, not final test",
+  "train_images": 2048,
+  "distinct_train_prompts": 2048,
+  "query_images": 128,
+  "calibration_images": 512,
+  "steps": 5000,
+  "batch": 2,
+  "accumulation": 2,
+  "learning_rate": 1e-05,
+  "precision": "FP32; TF32 disabled",
+  "objective": "ordinary upstream denoising MSE; no fingerprint loss/key/latent input to student",
+  "branches": [
+    "clean",
+    "marked"
+  ],
+  "checkpoint_selection": "fixed final step; no watermark feedback",
+  "query_pool": "meta_eval development prompts; fresh salted noise",
+  "calibration_pool": "owner calibration captions; fresh salted model-specific clean-student outputs",
+  "final_student_splits_used": false,
+  "final_keys_used": false,
+  "final_rank8_rank16_used": false,
+  "interpretation": "development probe; not final heldout learner/test evidence",
+  "memory_cap_gib": 32,
+  "minimum_free_before_start_gib": 48,
+  "source_cache_read_only": true,
+  "owner_training_modified": false
+}

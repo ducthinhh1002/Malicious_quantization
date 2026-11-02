@@ -1,0 +1,12 @@
+{
+  "max_error": 0.0,
+  "coefficients": [
+    0.001,
+    0.0
+  ],
+  "no_lora_or_hooks": true,
+  "hashes": {
+    "unet/config.json": "fcf9c1546cacb78e7ab411a039a642b1d7fb155c69ba284dce7d4341c3aae327",
+    "unet/diffusion_pytorch_model.safetensors": "af239ed4b5b37ba0a433462157bc773a18cf78f262ff2ab629470c7216fd27cb"
+  }
+}

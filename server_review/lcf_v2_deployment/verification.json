@@ -1,0 +1,27 @@
+{
+  "checked_at_utc": "2026-10-18T00:12:52.906160+00:00",
+  "smoke_status": {
+    "status": "complete",
+    "students_run": true,
+    "scientific_result": false,
+    "summary": "/root/logs/results/lcf_v2_20261018_000900Z_smoke/summary.json"
+  },
+  "smoke_summary": {
+    "available": true,
+    "passed": null
+  },
+  "gradient_audit": {
+    "transfer_gradient_norm": 0.0059568979777395725,
+    "independent_of_teacher_loss": true,
+    "inner_updates": 2
+  },
+  "probe_check": {
+    "available": true,
+    "passed": true
+  },
+  "diagnostic_status": {
+    "status": "running",
+    "arm": "spatial"
+  },
+  "unit_tests_passed": true
+}

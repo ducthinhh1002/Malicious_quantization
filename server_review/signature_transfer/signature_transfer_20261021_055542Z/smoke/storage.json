@@ -1,0 +1,5 @@
+{
+  "reports": "/root/logs/results/signature_transfer_20261021_055542Z_smoke",
+  "artifacts": "/root/logs/runtime/signature_transfer_artifacts/signature_transfer_20261021_055542Z_smoke_fdd1c4d8",
+  "images": "/root/logs/output_image/signature_transfer/signature_transfer_20261021_055542Z_smoke_fdd1c4d8"
+}

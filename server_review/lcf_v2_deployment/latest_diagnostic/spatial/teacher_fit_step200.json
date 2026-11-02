@@ -1,0 +1,48 @@
+{
+  "rows": [
+    {
+      "key": 22,
+      "split": "teacher_train",
+      "tpr": 0.125,
+      "clean_fpr": 0.125,
+      "bit_accuracy": 0.4609375,
+      "psnr": 63.317357778549194,
+      "psnr_p05": 59.30815410614014,
+      "lpips": 1.4827489764002166e-05,
+      "lpips_p95": 2.4513231437595095e-05,
+      "clip_drop": -2.034008502960205e-06,
+      "diversity_ratio": 0.9999140152368735,
+      "mean_gain": -2.652406692504883e-06,
+      "threshold": -2.621825695037842,
+      "calibration_split": "calibration",
+      "score_scale": 0.05,
+      "passes": false,
+      "auroc": 0.49609375,
+      "paired_win_rate": 0.4375,
+      "paired_gain_std": 8.501918861672069e-06
+    },
+    {
+      "key": 233,
+      "split": "teacher_train",
+      "tpr": 0.0,
+      "clean_fpr": 0.0,
+      "bit_accuracy": 0.5390625,
+      "psnr": 63.32006478309631,
+      "psnr_p05": 59.26837635040283,
+      "lpips": 1.4850266026655845e-05,
+      "lpips_p95": 2.580485534053878e-05,
+      "clip_drop": 9.411945939064026e-06,
+      "diversity_ratio": 0.9999577019602478,
+      "mean_gain": 5.632638931274414e-06,
+      "threshold": -2.6193583011627197,
+      "calibration_split": "calibration",
+      "score_scale": 0.05,
+      "passes": false,
+      "auroc": 0.51171875,
+      "paired_win_rate": 0.6875,
+      "paired_gain_std": 1.1488669653897117e-05
+    }
+  ],
+  "used_for_selection": false,
+  "explanation": "Seen-prompt/seen-key diagnostic only"
+}

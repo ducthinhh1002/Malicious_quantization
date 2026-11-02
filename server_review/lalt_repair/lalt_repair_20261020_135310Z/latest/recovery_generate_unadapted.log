@@ -1,0 +1,13 @@
+Probe GPU budget: {'gpu': 'NVIDIA H200', 'total_gb': 139.80072021484375, 'free_gb': 132.79840087890625, 'process_limit_gb': 32.0, 'precision': 'FP32; TF32 disabled', 'higher_order_math_attention': False}
+Loading pipeline components...:   0%|          | 0/6 [00:00<?, ?it/s]Loading pipeline components...:  33%|███▎      | 2/6 [00:00<00:00, 17.38it/s]Loading pipeline components...:  83%|████████▎ | 5/6 [00:00<00:00, 24.13it/s]Loading pipeline components...: 100%|██████████| 6/6 [00:00<00:00, 18.44it/s]
+You have disabled the safety checker for <class 'diffusers.pipelines.stable_diffusion.pipeline_stable_diffusion.StableDiffusionPipeline'> by passing `safety_checker=None`. Ensure that you abide to the conditions of the Stable Diffusion license and do not expose unfiltered results in services or applications open to the public. Both the diffusers team and Hugging Face strongly recommend to keep the safety filter enabled in all public facing circumstances, disabling it only for use-cases that involve analyzing network behavior or auditing its results. For more information, please have a look at https://github.com/huggingface/diffusers/pull/254 .
+Probe generation unadapted/calibration: 2/512
+Probe generation unadapted/calibration: 66/512
+Probe generation unadapted/calibration: 130/512
+Probe generation unadapted/calibration: 194/512
+Probe generation unadapted/calibration: 258/512
+Probe generation unadapted/calibration: 322/512
+Probe generation unadapted/calibration: 386/512
+Probe generation unadapted/calibration: 450/512
+Probe generation unadapted/query: 2/128
+Probe generation unadapted/query: 66/128

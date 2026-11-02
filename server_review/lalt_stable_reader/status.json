@@ -1,0 +1,6 @@
+{
+  "status": "teacher_gate_failed",
+  "students_run": false,
+  "reason": "heldout_teacher_gate_failed",
+  "explanation": "Inspect gain_selection, reader_fit_gate, or teacher_validation reports"
+}

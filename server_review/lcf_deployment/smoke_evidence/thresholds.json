@@ -1,0 +1,42 @@
+{
+  "unadapted": {
+    "keys": [
+      41,
+      95,
+      193,
+      210
+    ],
+    "thresholds": [
+      -2.873624324798584,
+      -2.5041697025299072,
+      -2.6379542350769043,
+      -2.884178400039673
+    ],
+    "comparison": ">",
+    "calibration_source": "unadapted/student_calibration",
+    "per_key_fpr": 0.125,
+    "total_keyset_fpr": 0.5,
+    "method": "split-conformal order statistic + Bonferroni",
+    "caveat": "conditional on this clean-trained model; no calibrated across-model FPR claim"
+  },
+  "r8_clean": {
+    "keys": [
+      41,
+      95,
+      193,
+      210
+    ],
+    "thresholds": [
+      -2.873318672180176,
+      -2.5026416778564453,
+      -2.6351139545440674,
+      -2.8841419219970703
+    ],
+    "comparison": ">",
+    "calibration_source": "r8_clean/student_calibration",
+    "per_key_fpr": 0.125,
+    "total_keyset_fpr": 0.5,
+    "method": "split-conformal order statistic + Bonferroni",
+    "caveat": "conditional on this clean-trained model; no calibrated across-model FPR claim"
+  }
+}

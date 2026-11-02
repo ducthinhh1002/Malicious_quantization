@@ -1,0 +1,81 @@
+{
+  "checkpoint": 500,
+  "protocol": {
+    "snapshot": "/root/logs/results/native_unet_20261019_162350_r16r32/teacher/snapshot-500",
+    "hashes": {
+      "adapter_model.safetensors": "9dead8a268c9f36fbfc58eedc570c08241df25f87050a39075c4c56e7390778e",
+      "adapter_config.json": "7cfe34d5f3d161cbfc29eb701e0f3785d695486b05c773712ef48320396690c4"
+    },
+    "detector_sha256": "9bcedc429fd74b667a643c55e5e49b8b671e56be9f9f791d6f49e0197d272065",
+    "split": "pilot_eval",
+    "n": 256,
+    "test_used": false,
+    "reader_or_threshold_updated": false,
+    "train_meta_overlap": false,
+    "clean_generation_sha256": "b4f47011339540c440d5ebca4b1c44ed09a7871ccf55afd77a856bb54afbe3a0",
+    "note": "Development validation; batch 1 vs cached clean batch 4 may cause minor floating point differences.",
+    "representation": "base + original trained adapter, not fused export"
+  },
+  "total_keyset_nominal_fpr": 0.01,
+  "nominal_per_key_fpr": 0.005,
+  "detection": [
+    {
+      "branch": "teacher",
+      "key": 221,
+      "correct_key": true,
+      "n": 256,
+      "detected": 1,
+      "rate": 0.00390625,
+      "ci95": [
+        0.0006898821669617927,
+        0.021790975380582514
+      ],
+      "threshold": -1.8832511608130547
+    },
+    {
+      "branch": "clean",
+      "key": 221,
+      "correct_key": true,
+      "n": 256,
+      "detected": 0,
+      "rate": 0.0,
+      "ci95": [
+        0.0,
+        0.01478385642587143
+      ],
+      "threshold": -1.8832511608130547
+    },
+    {
+      "branch": "teacher",
+      "key": 34,
+      "correct_key": false,
+      "n": 256,
+      "detected": 0,
+      "rate": 0.0,
+      "ci95": [
+        0.0,
+        0.01478385642587143
+      ],
+      "threshold": -1.7411006734352195
+    },
+    {
+      "branch": "clean",
+      "key": 34,
+      "correct_key": false,
+      "n": 256,
+      "detected": 0,
+      "rate": 0.0,
+      "ci95": [
+        0.0,
+        0.01478385642587143
+      ],
+      "threshold": -1.7411006734352195
+    }
+  ],
+  "means": {
+    "psnr": 19.246287621759777,
+    "lpips": 0.3084216399875004,
+    "bit_accuracy": 0.39111328125,
+    "clean_bit_accuracy": 0.3271484375
+  }
+}

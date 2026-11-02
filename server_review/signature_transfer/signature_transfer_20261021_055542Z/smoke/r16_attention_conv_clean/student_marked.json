@@ -1,0 +1,4 @@
+{
+  "weights": "/root/logs/runtime/signature_transfer_students/r16_attention_conv_clean_18ebe234/student_marked/adapter_model.safetensors",
+  "sha256": "421d559c71ad319ae7883042106a7aaae650fb6088049616d5f3b84051e79038"
+}

@@ -1,0 +1,26 @@
+{
+  "folder": "/root/logs/lcf_candidate_20261017_191721Z",
+  "session": "lcf_20261017_191721Z",
+  "smoke": "/root/logs/results/lcf_20261017_191721Z_smoke",
+  "pilot": "/root/logs/results/lcf_20261017_191721Z_pilot",
+  "script": "/root/logs/lcf_20261017_191721Z.sh",
+  "tests_log": "/root/logs/lcf_20261017_191721Z_tests.log",
+  "smoke_log": "/root/logs/lcf_20261017_191721Z_smoke.log",
+  "pilot_log": "/root/logs/lcf_20261017_191721Z_pilot.log",
+  "pilot_requires_smoke_success": true,
+  "supersedes": {
+    "folder": "/root/logs/lcf_candidate_20261017_191031Z",
+    "session": "lcf_20261017_191031Z",
+    "smoke": "/root/logs/results/lcf_20261017_191031Z_smoke",
+    "pilot": "/root/logs/results/lcf_20261017_191031Z_pilot",
+    "script": "/root/logs/lcf_20261017_191031Z.sh",
+    "tests_log": "/root/logs/lcf_20261017_191031Z_tests.log",
+    "smoke_log": "/root/logs/lcf_20261017_191031Z_smoke.log",
+    "pilot_log": "/root/logs/lcf_20261017_191031Z_pilot.log",
+    "pilot_requires_smoke_success": true,
+    "memory_check": "/root/logs/results/lcf_20261017_191031Z_memory512",
+    "memory_log": "/root/logs/lcf_20261017_191031Z_memory.log"
+  },
+  "memory_check": "/root/logs/results/lcf_20261017_191031Z_memory512",
+  "memory_log": "/root/logs/lcf_20261017_191031Z_memory.log"
+}

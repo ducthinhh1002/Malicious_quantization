@@ -1,0 +1,2 @@
+{"step": 1, "samples_seen": 4, "transport_loss": 1187.203323841095, "gradient_norm": 1096.5350341796875, "seconds": 2.192134315147996, "allocated_gib": 9.904170989990234, "accepted_targets": 2}
+{"step": 2, "samples_seen": 8, "transport_loss": 459.2539372444153, "gradient_norm": 686.692626953125, "seconds": 3.347070613177493, "allocated_gib": 9.904170989990234, "accepted_targets": 2}

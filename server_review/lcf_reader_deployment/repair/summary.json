@@ -1,0 +1,636 @@
+{
+  "rows": [
+    {
+      "stage": "before_validation",
+      "mode": "native512",
+      "key": 22,
+      "n": 32,
+      "effective_reader_grid": 512,
+      "bit_accuracy": 0.42578125,
+      "bit_accuracy_ci95": [
+        0.27333984375,
+        0.59375
+      ],
+      "auroc_ci95": [
+        0.4892578125,
+        0.5419921875
+      ],
+      "key_margin": -0.8651632163673639,
+      "auroc": 0.5126953125,
+      "paired_win_rate": 0.59375,
+      "paired_gain_std": 0.3186564113214406,
+      "mean_gain": 0.12354678753763437
+    },
+    {
+      "stage": "before_validation",
+      "mode": "native512",
+      "key": 233,
+      "n": 32,
+      "effective_reader_grid": 512,
+      "bit_accuracy": 0.60546875,
+      "bit_accuracy_ci95": [
+        0.44130859375,
+        0.76171875
+      ],
+      "auroc_ci95": [
+        0.490234375,
+        0.5537109375
+      ],
+      "key_margin": 0.9601899981498718,
+      "auroc": 0.517578125,
+      "paired_win_rate": 0.5625,
+      "paired_gain_std": 0.34642246785088265,
+      "mean_gain": 0.08193034119904041
+    },
+    {
+      "stage": "before_validation",
+      "mode": "small256",
+      "key": 22,
+      "n": 32,
+      "effective_reader_grid": 256,
+      "bit_accuracy": 0.33203125,
+      "bit_accuracy_ci95": [
+        0.17958984375,
+        0.4805664062499999
+      ],
+      "auroc_ci95": [
+        0.4667724609375,
+        0.5126953125
+      ],
+      "key_margin": -1.587586552836001,
+      "auroc": 0.494140625,
+      "paired_win_rate": 0.34375,
+      "paired_gain_std": 0.201459114435649,
+      "mean_gain": -0.05708522582426667
+    },
+    {
+      "stage": "before_validation",
+      "mode": "small256",
+      "key": 233,
+      "n": 32,
+      "effective_reader_grid": 256,
+      "bit_accuracy": 0.68359375,
+      "bit_accuracy_ci95": [
+        0.53515625,
+        0.83984375
+      ],
+      "auroc_ci95": [
+        0.4755859375,
+        0.521484375
+      ],
+      "key_margin": 1.640104113263078,
+      "auroc": 0.498046875,
+      "paired_win_rate": 0.5,
+      "paired_gain_std": 0.20581069966355783,
+      "mean_gain": 0.032907839864492416
+    },
+    {
+      "stage": "before_validation",
+      "mode": "small256_restore512",
+      "key": 22,
+      "n": 32,
+      "effective_reader_grid": 512,
+      "bit_accuracy": 0.2421875,
+      "bit_accuracy_ci95": [
+        0.1171875,
+        0.38671875
+      ],
+      "auroc_ci95": [
+        0.4912109375,
+        0.541015625
+      ],
+      "key_margin": -1.7992699388414621,
+      "auroc": 0.5107421875,
+      "paired_win_rate": 0.65625,
+      "paired_gain_std": 0.11799976830439557,
+      "mean_gain": 0.042061697691679
+    },
+    {
+      "stage": "before_validation",
+      "mode": "small256_restore512",
+      "key": 233,
+      "n": 32,
+      "effective_reader_grid": 512,
+      "bit_accuracy": 0.7265625,
+      "bit_accuracy_ci95": [
+        0.58203125,
+        0.859375
+      ],
+      "auroc_ci95": [
+        0.466796875,
+        0.515625
+      ],
+      "key_margin": 1.799514432437718,
+      "auroc": 0.4921875,
+      "paired_win_rate": 0.46875,
+      "paired_gain_std": 0.08308407122326379,
+      "mean_gain": -0.015673421323299408
+    },
+    {
+      "stage": "continuation_control_train",
+      "mode": "native512",
+      "key": 22,
+      "n": 64,
+      "effective_reader_grid": 512,
+      "bit_accuracy": 0.97265625,
+      "bit_accuracy_ci95": [
+        0.93359375,
+        0.998046875
+      ],
+      "auroc_ci95": [
+        0.9892578125,
+        1.0
+      ],
+      "key_margin": 4.089599295050903,
+      "auroc": 0.995849609375,
+      "paired_win_rate": 1.0,
+      "paired_gain_std": 2.3316421545442325,
+      "mean_gain": 2.674521545411153
+    },
+    {
+      "stage": "continuation_control_train",
+      "mode": "native512",
+      "key": 233,
+      "n": 64,
+      "effective_reader_grid": 512,
+      "bit_accuracy": 0.947265625,
+      "bit_accuracy_ci95": [
+        0.888623046875,
+        0.9921875
+      ],
+      "auroc_ci95": [
+        0.971923828125,
+        0.997808837890625
+      ],
+      "key_margin": 3.0489483140408993,
+      "auroc": 0.98779296875,
+      "paired_win_rate": 1.0,
+      "paired_gain_std": 2.0618425250928194,
+      "mean_gain": 1.9226178489625454
+    },
+    {
+      "stage": "continuation_control_train",
+      "mode": "small256",
+      "key": 22,
+      "n": 64,
+      "effective_reader_grid": 256,
+      "bit_accuracy": 0.970703125,
+      "bit_accuracy_ci95": [
+        0.943359375,
+        0.994140625
+      ],
+      "auroc_ci95": [
+        0.908935546875,
+        0.978271484375
+      ],
+      "key_margin": 2.967927304954742,
+      "auroc": 0.9482421875,
+      "paired_win_rate": 1.0,
+      "paired_gain_std": 3.0805194177516904,
+      "mean_gain": 2.049696765766953
+    },
+    {
+      "stage": "continuation_control_train",
+      "mode": "small256",
+      "key": 233,
+      "n": 64,
+      "effective_reader_grid": 256,
+      "bit_accuracy": 0.84375,
+      "bit_accuracy_ci95": [
+        0.763671875,
+        0.921875
+      ],
+      "auroc_ci95": [
+        0.914544677734375,
+        0.979254150390625
+      ],
+      "key_margin": 2.190468486478494,
+      "auroc": 0.949462890625,
+      "paired_win_rate": 0.984375,
+      "paired_gain_std": 2.831057293705247,
+      "mean_gain": 1.7998556737657054
+    },
+    {
+      "stage": "continuation_control_train",
+      "mode": "small256_restore512",
+      "key": 22,
+      "n": 64,
+      "effective_reader_grid": 512,
+      "bit_accuracy": 0.56640625,
+      "bit_accuracy_ci95": [
+        0.455029296875,
+        0.67578125
+      ],
+      "auroc_ci95": [
+        0.52122802734375,
+        0.572515869140625
+      ],
+      "key_margin": 0.7388959695235826,
+      "auroc": 0.538330078125,
+      "paired_win_rate": 0.765625,
+      "paired_gain_std": 1.1562187382297555,
+      "mean_gain": 0.34592360869282857
+    },
+    {
+      "stage": "continuation_control_train",
+      "mode": "small256_restore512",
+      "key": 233,
+      "n": 64,
+      "effective_reader_grid": 512,
+      "bit_accuracy": 0.486328125,
+      "bit_accuracy_ci95": [
+        0.376904296875,
+        0.607421875
+      ],
+      "auroc_ci95": [
+        0.50830078125,
+        0.543951416015625
+      ],
+      "key_margin": -0.052859518909826875,
+      "auroc": 0.520751953125,
+      "paired_win_rate": 0.734375,
+      "paired_gain_std": 0.4940475344565342,
+      "mean_gain": 0.13209395646117628
+    },
+    {
+      "stage": "continuation_control_validation",
+      "mode": "native512",
+      "key": 22,
+      "n": 32,
+      "effective_reader_grid": 512,
+      "bit_accuracy": 0.5,
+      "bit_accuracy_ci95": [
+        0.34375,
+        0.6875
+      ],
+      "auroc_ci95": [
+        0.474609375,
+        0.546875
+      ],
+      "key_margin": 0.04930446913931519,
+      "auroc": 0.5107421875,
+      "paired_win_rate": 0.5,
+      "paired_gain_std": 0.6309044424457758,
+      "mean_gain": 0.24344930410734378
+    },
+    {
+      "stage": "continuation_control_validation",
+      "mode": "native512",
+      "key": 233,
+      "n": 32,
+      "effective_reader_grid": 512,
+      "bit_accuracy": 0.53125,
+      "bit_accuracy_ci95": [
+        0.37421875000000004,
+        0.6875
+      ],
+      "auroc_ci95": [
+        0.470703125,
+        0.5400390625
+      ],
+      "key_margin": 0.09343042966793291,
+      "auroc": 0.501953125,
+      "paired_win_rate": 0.59375,
+      "paired_gain_std": 0.8480466402109021,
+      "mean_gain": 0.10189824737608433
+    },
+    {
+      "stage": "continuation_control_validation",
+      "mode": "small256",
+      "key": 22,
+      "n": 32,
+      "effective_reader_grid": 256,
+      "bit_accuracy": 0.4921875,
+      "bit_accuracy_ci95": [
+        0.3240234375,
+        0.63671875
+      ],
+      "auroc_ci95": [
+        0.4677734375,
+        0.517578125
+      ],
+      "key_margin": -0.4069577276241034,
+      "auroc": 0.49609375,
+      "paired_win_rate": 0.40625,
+      "paired_gain_std": 0.3820163618989506,
+      "mean_gain": -0.04838601061783265
+    },
+    {
+      "stage": "continuation_control_validation",
+      "mode": "small256",
+      "key": 233,
+      "n": 32,
+      "effective_reader_grid": 256,
+      "bit_accuracy": 0.546875,
+      "bit_accuracy_ci95": [
+        0.3943359375,
+        0.71484375
+      ],
+      "auroc_ci95": [
+        0.4814453125,
+        0.5361328125
+      ],
+      "key_margin": 0.4971285234641982,
+      "auroc": 0.5078125,
+      "paired_win_rate": 0.5625,
+      "paired_gain_std": 0.4795569888936968,
+      "mean_gain": 0.013403208460658789
+    },
+    {
+      "stage": "continuation_control_validation",
+      "mode": "small256_restore512",
+      "key": 22,
+      "n": 32,
+      "effective_reader_grid": 512,
+      "bit_accuracy": 0.41796875,
+      "bit_accuracy_ci95": [
+        0.25,
+        0.59375
+      ],
+      "auroc_ci95": [
+        0.486328125,
+        0.5234375
+      ],
+      "key_margin": -1.7949648218927905,
+      "auroc": 0.50390625,
+      "paired_win_rate": 0.5625,
+      "paired_gain_std": 0.23900977924204717,
+      "mean_gain": 0.07154422509483993
+    },
+    {
+      "stage": "continuation_control_validation",
+      "mode": "small256_restore512",
+      "key": 233,
+      "n": 32,
+      "effective_reader_grid": 512,
+      "bit_accuracy": 0.59375,
+      "bit_accuracy_ci95": [
+        0.40625,
+        0.75
+      ],
+      "auroc_ci95": [
+        0.474609375,
+        0.5127197265625
+      ],
+      "key_margin": 1.7557131180656143,
+      "auroc": 0.49609375,
+      "paired_win_rate": 0.4375,
+      "paired_gain_std": 0.14603885885068602,
+      "mean_gain": -0.031362039502710104
+    },
+    {
+      "stage": "resize_restore_train",
+      "mode": "native512",
+      "key": 22,
+      "n": 64,
+      "effective_reader_grid": 512,
+      "bit_accuracy": 0.966796875,
+      "bit_accuracy_ci95": [
+        0.919921875,
+        1.0
+      ],
+      "auroc_ci95": [
+        0.984857177734375,
+        1.0
+      ],
+      "key_margin": 4.384974916490819,
+      "auroc": 0.993896484375,
+      "paired_win_rate": 1.0,
+      "paired_gain_std": 2.6220571826364782,
+      "mean_gain": 3.0744231911628503
+    },
+    {
+      "stage": "resize_restore_train",
+      "mode": "native512",
+      "key": 233,
+      "n": 64,
+      "effective_reader_grid": 512,
+      "bit_accuracy": 0.96875,
+      "bit_accuracy_ci95": [
+        0.927734375,
+        0.998046875
+      ],
+      "auroc_ci95": [
+        0.98387451171875,
+        0.999267578125
+      ],
+      "key_margin": 3.356514618964866,
+      "auroc": 0.992919921875,
+      "paired_win_rate": 1.0,
+      "paired_gain_std": 2.2791299162129968,
+      "mean_gain": 2.215528463246301
+    },
+    {
+      "stage": "resize_restore_train",
+      "mode": "small256",
+      "key": 22,
+      "n": 64,
+      "effective_reader_grid": 512,
+      "bit_accuracy": 0.845703125,
+      "bit_accuracy_ci95": [
+        0.763623046875,
+        0.921875
+      ],
+      "auroc_ci95": [
+        0.906494140625,
+        0.973638916015625
+      ],
+      "key_margin": 0.9893200458027422,
+      "auroc": 0.9423828125,
+      "paired_win_rate": 0.96875,
+      "paired_gain_std": 1.5150113400447482,
+      "mean_gain": 1.1123035759665072
+    },
+    {
+      "stage": "resize_restore_train",
+      "mode": "small256",
+      "key": 233,
+      "n": 64,
+      "effective_reader_grid": 512,
+      "bit_accuracy": 0.921875,
+      "bit_accuracy_ci95": [
+        0.859375,
+        0.978515625
+      ],
+      "auroc_ci95": [
+        0.8779296875,
+        0.959979248046875
+      ],
+      "key_margin": 0.9304056307300925,
+      "auroc": 0.91943359375,
+      "paired_win_rate": 0.953125,
+      "paired_gain_std": 0.9648865805418065,
+      "mean_gain": 0.6791800996288657
+    },
+    {
+      "stage": "resize_restore_train",
+      "mode": "small256_restore512",
+      "key": 22,
+      "n": 64,
+      "effective_reader_grid": 512,
+      "bit_accuracy": 0.845703125,
+      "bit_accuracy_ci95": [
+        0.763623046875,
+        0.921875
+      ],
+      "auroc_ci95": [
+        0.906494140625,
+        0.973638916015625
+      ],
+      "key_margin": 0.9893200458027422,
+      "auroc": 0.9423828125,
+      "paired_win_rate": 0.96875,
+      "paired_gain_std": 1.5150113400447482,
+      "mean_gain": 1.1123035759665072
+    },
+    {
+      "stage": "resize_restore_train",
+      "mode": "small256_restore512",
+      "key": 233,
+      "n": 64,
+      "effective_reader_grid": 512,
+      "bit_accuracy": 0.921875,
+      "bit_accuracy_ci95": [
+        0.859375,
+        0.978515625
+      ],
+      "auroc_ci95": [
+        0.8779296875,
+        0.959979248046875
+      ],
+      "key_margin": 0.9304056307300925,
+      "auroc": 0.91943359375,
+      "paired_win_rate": 0.953125,
+      "paired_gain_std": 0.9648865805418065,
+      "mean_gain": 0.6791800996288657
+    },
+    {
+      "stage": "resize_restore_validation",
+      "mode": "native512",
+      "key": 22,
+      "n": 32,
+      "effective_reader_grid": 512,
+      "bit_accuracy": 0.4375,
+      "bit_accuracy_ci95": [
+        0.28125,
+        0.625
+      ],
+      "auroc_ci95": [
+        0.4882568359375,
+        0.5459228515625
+      ],
+      "key_margin": -0.15735464036697522,
+      "auroc": 0.5146484375,
+      "paired_win_rate": 0.59375,
+      "paired_gain_std": 0.6734333973961526,
+      "mean_gain": 0.2583341272402322
+    },
+    {
+      "stage": "resize_restore_validation",
+      "mode": "native512",
+      "key": 233,
+      "n": 32,
+      "effective_reader_grid": 512,
+      "bit_accuracy": 0.5625,
+      "bit_accuracy_ci95": [
+        0.375,
+        0.71875
+      ],
+      "auroc_ci95": [
+        0.478515625,
+        0.54296875
+      ],
+      "key_margin": 0.4098879006050993,
+      "auroc": 0.5068359375,
+      "paired_win_rate": 0.59375,
+      "paired_gain_std": 0.7822706475089535,
+      "mean_gain": 0.13407706748694181
+    },
+    {
+      "stage": "resize_restore_validation",
+      "mode": "small256",
+      "key": 22,
+      "n": 32,
+      "effective_reader_grid": 512,
+      "bit_accuracy": 0.46484375,
+      "bit_accuracy_ci95": [
+        0.30078125,
+        0.6290039062499999
+      ],
+      "auroc_ci95": [
+        0.4873046875,
+        0.5302734375
+      ],
+      "key_margin": -2.0060628976207227,
+      "auroc": 0.5068359375,
+      "paired_win_rate": 0.5625,
+      "paired_gain_std": 0.17101218225961992,
+      "mean_gain": 0.055173652013763785
+    },
+    {
+      "stage": "resize_restore_validation",
+      "mode": "small256",
+      "key": 233,
+      "n": 32,
+      "effective_reader_grid": 512,
+      "bit_accuracy": 0.51953125,
+      "bit_accuracy_ci95": [
+        0.35517578125000004,
+        0.6797851562499999
+      ],
+      "auroc_ci95": [
+        0.4677734375,
+        0.5224609375
+      ],
+      "key_margin": 2.0104926691856235,
+      "auroc": 0.494140625,
+      "paired_win_rate": 0.5,
+      "paired_gain_std": 0.1384793580582252,
+      "mean_gain": 0.004058280028402805
+    },
+    {
+      "stage": "resize_restore_validation",
+      "mode": "small256_restore512",
+      "key": 22,
+      "n": 32,
+      "effective_reader_grid": 512,
+      "bit_accuracy": 0.46484375,
+      "bit_accuracy_ci95": [
+        0.30078125,
+        0.6290039062499999
+      ],
+      "auroc_ci95": [
+        0.4873046875,
+        0.5302734375
+      ],
+      "key_margin": -2.0060628976207227,
+      "auroc": 0.5068359375,
+      "paired_win_rate": 0.5625,
+      "paired_gain_std": 0.17101218225961992,
+      "mean_gain": 0.055173652013763785
+    },
+    {
+      "stage": "resize_restore_validation",
+      "mode": "small256_restore512",
+      "key": 233,
+      "n": 32,
+      "effective_reader_grid": 512,
+      "bit_accuracy": 0.51953125,
+      "bit_accuracy_ci95": [
+        0.35517578125000004,
+        0.6797851562499999
+      ],
+      "auroc_ci95": [
+        0.4677734375,
+        0.5224609375
+      ],
+      "key_margin": 2.0104926691856235,
+      "auroc": 0.494140625,
+      "paired_win_rate": 0.5,
+      "paired_gain_std": 0.1384793580582252,
+      "mean_gain": 0.004058280028402805
+    }
+  ],
+  "final_test_used": false,
+  "student_transfer_measured": false
+}

@@ -1,0 +1,9 @@
+{
+  "carrier_sha256": "1f517f4dcbcc565bb4cb308eafbdd713aa6303565af2dfc8fa5df80bb2d8af09",
+  "prompt_sha256": "c9593dcf889f3d630ff71c974bb7385964ea8bfe120e260ecaee538527c3d866",
+  "reference_assets_sha256": "669b0f51cc983358f0f6c8d63f728854211715bf9b401357c87b65b817250035",
+  "batch_size": 8,
+  "dtype": "float32",
+  "probe_timestep": 0,
+  "posterior": "mean"
+}

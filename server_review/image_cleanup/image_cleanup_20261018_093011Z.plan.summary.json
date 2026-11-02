@@ -1,0 +1,9 @@
+{
+  "deleted_images": 22618,
+  "logical_bytes": 10100040838,
+  "retained_examples": 1550,
+  "pruned_sets": 125,
+  "available_before": 292448804864,
+  "available_after": 302578249728,
+  "observed_free_change": 10129444864
+}

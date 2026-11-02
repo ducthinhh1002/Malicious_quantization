@@ -1,0 +1,8 @@
+{
+  "mode": "frozen",
+  "start_step": 2000,
+  "evaluated_step": 20000,
+  "reader_sha256": "136ef3db2352568194c53263d4ca61b528500c8f90262038e39039f77e76f85d",
+  "expected_sha256": "136ef3db2352568194c53263d4ca61b528500c8f90262038e39039f77e76f85d",
+  "frozen_unchanged": true
+}

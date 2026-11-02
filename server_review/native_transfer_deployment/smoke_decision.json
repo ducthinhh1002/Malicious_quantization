@@ -1,0 +1,15 @@
+{
+  "status": "integration_smoke_passed",
+  "scientific_result": false,
+  "checks": [
+    "native perturbation/reset",
+    "full generation and clean features",
+    "calibration",
+    "native export/reload",
+    "LPIPS GPU",
+    "three ordinary two-step LoRA runs",
+    "heldout denoising utility",
+    "full student generation",
+    "signed transfer measurement"
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "threshold": 0.04637297987937927,
+  "C10_rate": 0.0324,
+  "controls": {
+    "SD14_unadapted": {
+      "num_images": 5000,
+      "positives": 48,
+      "rate": 0.0096,
+      "rate_ci95": [
+        0.0070865259622987795,
+        0.012708273873810938
+      ],
+      "C10_minus_control_percentage_points": 2.2800000000000002,
+      "C10_only_positive": 138,
+      "control_only_positive": 24,
+      "paired_exact_mcnemar_p_two_sided": 1.182276844628418e-20
+    },
+    "C00_seed0": {
+      "num_images": 5000,
+      "positives": 46,
+      "rate": 0.0092,
+      "rate_ci95": [
+        0.006743206465196469,
+        0.012252642411306462
+      ],
+      "C10_minus_control_percentage_points": 2.32,
+      "C10_only_positive": 131,
+      "control_only_positive": 15,
+      "paired_exact_mcnemar_p_two_sided": 2.6797697811173543e-24
+    }
+  },
+  "interpretation_rule": "Assess C10 against clean student controls; frozen teacher threshold is unchanged. Statistical significance alone does not establish a useful radioactivity baseline."
+}

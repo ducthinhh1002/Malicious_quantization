@@ -1,0 +1,72 @@
+{
+  "rows": {
+    "marked": {
+      "score": "s(owner)-s(complement); presence cancels exactly",
+      "threshold": 0.7950172424316406,
+      "calibration_source": "clean_calibration",
+      "nominal_image_fpr": 0.01,
+      "detection": {
+        "n": 128,
+        "detected": 6,
+        "detection_rate": 0.046875,
+        "ci95_image_conditional": [
+          0.021657844171923776,
+          0.09849752245094322
+        ],
+        "mean_score": -0.0034011630341410637,
+        "threshold": 0.7950172424316406,
+        "comparison": ">"
+      },
+      "matched_clean": {
+        "n": 128,
+        "detected": 1,
+        "detection_rate": 0.0078125,
+        "ci95_image_conditional": [
+          0.0013804318928742412,
+          0.04292625943886061
+        ],
+        "mean_score": -0.24879650864750147,
+        "threshold": 0.7950172424316406,
+        "comparison": ">"
+      },
+      "auroc": 0.7056884765625,
+      "paired_win_rate": 0.859375,
+      "paired_gain_std": 0.2958709968625463,
+      "mean_gain": 0.2453953456133604,
+      "paired_mean_ci95_image_conditional": [
+        0.19496311757247894,
+        0.29658259795978664
+      ],
+      "nonoverlapping_group_paired_means": {
+        "16": [
+          0.18801195919513702,
+          0.2480539157986641,
+          0.28869087994098663,
+          0.39303678274154663,
+          0.24176257848739624,
+          0.19824890047311783,
+          0.16395024955272675,
+          0.24140749871730804
+        ],
+        "32": [
+          0.21803293749690056,
+          0.34086383134126663,
+          0.22000573948025703,
+          0.2026788741350174
+        ],
+        "64": [
+          0.2794483844190836,
+          0.21134230680763721
+        ],
+        "128": [
+          0.2453953456133604
+        ]
+      }
+    }
+  },
+  "known_owner": true,
+  "wrong_key_is_control": true,
+  "model_level_fpr": null,
+  "independent_negative_models": 0,
+  "caveat": "Paired image evidence conditional on these trained models. Aggregates/bootstrap do not calibrate model attribution; an independent negative-model bank is required."
+}

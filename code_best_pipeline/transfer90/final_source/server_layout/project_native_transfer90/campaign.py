@@ -1,0 +1,305 @@
+"""Isolated transfer90 pilot, queued after the preserved structure experiment."""
+import bootstrap as b
+import argparse
+import datetime
+import fcntl
+import os
+from pathlib import Path
+import shutil
+import subprocess
+import sys
+import time
+from bootstrap import HERE, ROOT, HARNESS, read_json, write_json, freeze, sha256
+
+SOURCE=ROOT/'pareto_quality_20261025/projected_native'
+PROXY=ROOT/'projected_student10000_20261025/student10000'
+DEPENDENCY=ROOT/'structure_margin_20261026'
+BRANCH='lora_r32_conv_wm'
+SPEC=dict(teacher_steps=800,checkpoint_every=200,teacher_lr=5e-6,
+    transfer=False,native_every=2,backward_calls=10,native_batch=4,native_micro_batch=1,
+    quality_fraction=1.,score_fraction=1.5,max_gradient_gain=100.,pixel_weight=.1,
+    structure_weight=.25,project_step=True,margin_ramp_steps=200,
+    channel_timesteps=[50,150,300],bit_margin_weight=.1)
+
+
+def now():return datetime.datetime.now(datetime.timezone.utc).isoformat()
+
+
+def share(src,dst):
+    # Read-only inputs only. Never hard-link mutable results/configuration.
+    from research_queue import share as old_share
+    old_share(src,dst)
+
+
+def initialize():
+    if not (SOURCE/'complete.json').exists() or not (PROXY/'complete.json').exists():
+        raise RuntimeError('Completed Projected native and historical proxy are required')
+    stamp=datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=7))).strftime('%Y%m%d_%H%M%S_%f')
+    queue=HERE/'runs'/('run_'+stamp);queue.mkdir(parents=True,exist_ok=False)
+    run=queue/'transfer90';run.mkdir()
+    c=read_json(SOURCE/'config.json')
+    c.update(teacher_lr=SPEC['teacher_lr'],teacher_train_steps=SPEC['teacher_steps'],
+        teacher_checkpoint_every=SPEC['checkpoint_every'],teacher_micro_batch=4,
+        max_train_steps=15000,checkpoint_steps=[7500,10000,12500,15000])
+    freeze(run/'config.json',c);freeze(run/'refine_spec.json',SPEC)
+    for rel in ['assets.json','prompts.json','carrier','teacher_fp/calibration_target.json',
+        'result/threshold_teacher.json','result/threshold_student.json','result/threshold.json',
+        'images/teacher_clean_train','images/teacher_clean_validation','images/teacher_clean_test',
+        'images/unadapted','scores/unadapted.json']:
+        share(SOURCE/rel,run/rel)
+    share(SOURCE/'images/teacher_wm_train',run/'images/baseline_wm_train')
+    teacher=SOURCE/'teacher_fp/refined'
+    freeze(run/'teacher_choice.json',dict(method='projected_native_transfer90',
+        source_checkpoint=str(teacher),source_adapter_sha256=sha256(teacher/'adapter_model.safetensors'),
+        teacher_kappa=1.,refinement_steps=800,teacher_selection='fixed final800',
+        test_used_for_selection=False,quality_stopping_gates=False,
+        student_trainer='ordinary SD1.4 rank32 attention+conv; 15000 steps; no ownership loss/key',
+        student_selection='minimum validation denoising MSE; no detector or test selection'))
+    proxy=PROXY/'students'/BRANCH/'snapshot-10000'
+    freeze(run/'channel_proxy.json',dict(directory=str(proxy),
+        files={n:sha256(proxy/n) for n in ['adapter_model.safetensors','adapter_config.json']},
+        training_source=str(PROXY/'images/teacher_wm_train'),
+        training_image_manifest_sha256=sha256(PROXY/'images/teacher_wm_train/image_hashes.json'),
+        role='frozen owner-side channel surrogate; not the final independently initialized student',
+        test_scores_read_by_teacher=False,proxy_updates=False))
+    freeze(queue/'code_manifest.json',{p.name:sha256(p) for p in HERE.iterdir()
+        if p.is_file() and p.suffix in ('.py','.sh','.md')})
+    # Pin all dependency code as used, without changing its original manifests.
+    dependency_files=list(ROOT.glob('*.py'))+list(HARNESS.glob('*.py'))+list((HARNESS/'vendor/diffusers').glob('*.py'))
+    freeze(queue/'dependency_code_manifest.json',{str(p):sha256(p) for p in dependency_files})
+    freeze(queue/'input_manifest.json',{str(p):sha256(p) for p in [
+        SOURCE/'config.json',SOURCE/'prompts.json',SOURCE/'assets.json',
+        SOURCE/'result/threshold_student.json',SOURCE/'result/threshold_teacher.json',
+        SOURCE/'carrier/complete.json',SOURCE/'teacher_fp/calibration_target.json',
+        teacher/'adapter_model.safetensors',teacher/'adapter_config.json',
+        proxy/'adapter_model.safetensors',proxy/'adapter_config.json',
+        SOURCE/'images/teacher_wm_train/image_hashes.json',
+        SOURCE/'images/teacher_clean_train/image_hashes.json',
+        PROXY/'images/teacher_wm_train/image_hashes.json',
+        SOURCE/'result/threshold.json', *[p for p in (SOURCE/'carrier').iterdir() if p.is_file()]]})
+    freeze(queue/'plan.json',dict(created=now(),dependency=str(DEPENDENCY),run=str(run),
+        target='individual-image TPR >= .90 at frozen student threshold, target FPR .01',
+        primary_threshold=read_json(run/'result/threshold_student.json')['threshold'],
+        verifier='unchanged clean SD2.1 semantic extractor, frozen PCA/8-bit key/score',
+        teacher=SPEC,student_steps=15000,student_lr='1e-4 to10000; cosine decay to2e-5 at15000',
+        checkpoint_selection='minimum validation denoising MSE; ties earlier; detector excluded',
+        selection_steps=c['checkpoint_steps'],calibration_n=5000,validation_n=1000,test_n=1000,
+        scientific_failure_policy='report all metrics, never stop solely on quality/TPR',
+        target_status='hypothesis, not guaranteed',
+        limitations=['Single training seed; existing exploratory test was viewed in earlier development.',
+            'Frozen learned channel is a surrogate, not a differentiated full student training trajectory.',
+            'Teacher, student budget and LR change together; this pilot cannot isolate causal contributions.',
+            'FPR .01 is calibration target; independent empirical controls and Wilson intervals are reported.',
+            'Passing 90% point estimate is not a lower confidence bound of90%.'],
+        reused_training_images=False,train_prompts_unchanged=True,
+        cancelled_predecessor='margin_native',result_directory=str(run/'result')))
+    write_json(HERE/'active_run.json',dict(queue=str(queue),created=now()))
+    write_json(queue/'status.json',dict(state='initialized',updated=now()))
+    return queue
+
+
+def verify(queue):
+    for manifest in ['code_manifest.json','dependency_code_manifest.json','input_manifest.json']:
+        for name,digest in read_json(queue/manifest).items():
+            path=HERE/name if manifest=='code_manifest.json' else Path(name)
+            actual=sha256(path)
+            if actual!=digest and (manifest=='input_manifest.json' or not b.approved_relocation(path,digest,actual)):
+                raise RuntimeError('Pinned source/input changed: '+str(path))
+    from common import verify_vendor
+    verify_vendor()
+
+
+def train_student(run):
+    from student import training_command,branches,checkpoint_hashes
+    import torch
+    from safetensors.torch import load_file
+    c,a=read_json(run/'config.json'),read_json(run/'assets.json')
+    branch=next(x for x in branches(c) if x['name']==BRANCH)
+    out=run/'students'/BRANCH;out.mkdir(parents=True,exist_ok=True)
+    if (out/'complete.json').exists():
+        if read_json(out/'complete.json')['checkpoints']!=checkpoint_hashes(out):
+            raise RuntimeError('Student checkpoint changed')
+        return
+    if list(out.glob('checkpoint-*')) or list(out.glob('snapshot-*')):
+        raise RuntimeError('Interrupted student state exists; preserve and inspect before explicit resume')
+    entries=read_json(run/'images/teacher_wm_train/image_hashes.json')
+    if len(entries)!=c['train_n'] or any(sha256(run/'images/teacher_wm_train'/e['file_name'])!=e['sha256'] for e in entries):
+        raise RuntimeError('Training image integrity mismatch')
+    cmd=training_command(c,a,run,branch)
+    cmd[cmd.index('--checkpointing_steps')+1]='2500'
+    trainer=Path(cmd[1])
+    command=[sys.executable,str(HERE/'student_driver.py'),'--trainer',str(trainer),
+        '--trainer-sha256',sha256(trainer),*cmd[2:]]
+    freeze(out/'protocol.json',dict(command=command,branch=branch,
+        image_manifest_sha256=sha256(run/'images/teacher_wm_train/image_hashes.json'),
+        ownership_loss=False,secret_supplied=False,lr='plateau1e-4 to10000, cosine2e-5 at15000',
+        state='compact trainable tensors + optimizer/scheduler/scaler/RNG every2500; pinned base',
+        selection='minimum validation denoising MSE, detector excluded'))
+    subprocess.run(command,cwd=HARNESS,check=True)
+    state=load_file(str(out/'adapter_model.safetensors'))
+    if any(not torch.isfinite(x).all() for x in state.values()):raise RuntimeError('Nonfinite student')
+    for step in [2500,5000,7500,10000,12500,15000]:
+        directory=out/f'checkpoint-{step}'
+        required=['trainable.safetensors','optimizer.bin','scheduler.bin','scaler.pt','random_states_0.pkl']
+        if any(not (directory/name).exists() for name in required):
+            raise RuntimeError('Missing compact student state at '+str(step))
+    audit=read_json(out/'optimization_audit.json')
+    if audit['global_step']!=15000:raise RuntimeError('Unexpected final step')
+    # Skipped AMP updates are a scientific diagnostic, not hidden as full training.
+    freeze(out/'complete.json',dict(checkpoints=checkpoint_hashes(out),finite_weights=True,
+        optimizer_update_counts=audit,warning=None if audit['skipped']==0 else 'AMP skipped some updates; inspect applied count'))
+
+
+def verify_images(run):
+    c=read_json(run/'config.json')
+    for split,count in [('train',c['train_n']),('validation',c['validation_n']),('test',c['test_n'])]:
+        directory=run/'images'/('teacher_wm_'+split)
+        entries=read_json(directory/'image_hashes.json')
+        if len(entries)!=count or any(sha256(directory/e['file_name'])!=e['sha256'] for e in entries):
+            raise RuntimeError('Changed/incomplete generated images: '+split)
+
+
+def data(run):
+    from semantic_teacher_train import merge_teacher
+    from semantic_teacher import load_native,generate_set
+    if (run/'data_complete.json').exists():
+        if read_json(run/'data_complete.json')['adapter_sha256']!=sha256(run/'teacher_fp/refined/adapter_model.safetensors'):
+            raise RuntimeError('Changed generated teacher')
+        verify_images(run)
+        return
+    # Disposable merged model only; every image/result/adapter stays on disk.
+    stage=Path('/dev/shm')/('pn90_'+run.parent.name)
+    if stage.is_symlink():raise RuntimeError('Unexpected staging symlink')
+    stage.mkdir(exist_ok=True)
+    folder=run/'teacher_fp/refined'
+    for name in ['adapter_model.safetensors','adapter_config.json']:
+        if (stage/name).exists() and sha256(stage/name)!=sha256(folder/name):raise RuntimeError('Stale staging adapter')
+        if not (stage/name).exists():shutil.copy2(folder/name,stage/name)
+    model=merge_teacher(run,stage)
+    freeze(folder/'merge_audit.json',read_json(stage/'merge_test.json'))
+    pipe=load_native(model)
+    for split in ['train','validation','test']:
+        generate_set(run,model,split,'teacher_wm_'+split,pipe)
+    verify_images(run)
+    freeze(run/'data_complete.json',dict(adapter_sha256=sha256(folder/'adapter_model.safetensors')))
+    del pipe
+    if stage.parent!=Path('/dev/shm') or not stage.name.startswith('pn90_'):raise RuntimeError('Unsafe stage path')
+    shutil.rmtree(stage)
+
+
+def wait_resources(queue,label):
+    need=80000 if label in ['00_smoke','01_teacher'] else 65000
+    disk=10 if label in ['00_smoke','01_teacher','02_data'] else 2.5
+    while True:
+        free=int(subprocess.check_output(['nvidia-smi','--id=0','--query-gpu=memory.free','--format=csv,noheader,nounits'],text=True).strip())
+        free_disk=shutil.disk_usage(HERE).free/2**30
+        ram_ready=label!='02_data' or shutil.disk_usage('/dev/shm').free>10*2**30
+        if free>=need and free_disk>=disk and ram_ready:return
+        write_json(queue/'status.json',dict(state='waiting_for_resources',stage=label,
+            free_gpu_mib=free,required_gpu_mib=need,free_disk_gib=free_disk,required_disk_gib=disk,updated=now()))
+        time.sleep(30)
+
+
+def call(queue,label,script,*args):
+    run=queue/'transfer90';marker=run/'stages'/(label+'.json')
+    if marker.exists():return
+    verify(queue);wait_resources(queue,label)
+    write_json(queue/'status.json',dict(state='running',stage=label,pid=os.getpid(),updated=now()))
+    log=run/'logs'/(label+'.log');log.parent.mkdir(parents=True,exist_ok=True)
+    command=[sys.executable,str(script),'--run',str(run),*map(str,args)]
+    print('STAGE',label,'LOG',log,flush=True)
+    with log.open('a') as stream:
+        subprocess.run(command,stdout=stream,stderr=subprocess.STDOUT,cwd=HERE,check=True)
+    freeze(marker,dict(completed=now(),command=command,log=str(log)))
+
+
+def supervise(queue):
+    with (queue/'lock').open('w') as lock:
+        fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
+        try:
+            verify(queue)
+            while True:
+                status=read_json(DEPENDENCY/'status.json')
+                if status['state']=='completed':break
+                if status['state']=='failed':raise RuntimeError('Preserved structure run failed; inspect its technical error')
+                launcher=read_json(DEPENDENCY/'replacement_launcher.json')
+                proc=Path('/proc')/str(launcher['pid'])/'cmdline'
+                if not proc.exists() or b'preserve_current.py' not in proc.read_bytes():
+                    raise RuntimeError('Preserved experiment supervisor disappeared')
+                write_json(queue/'status.json',dict(state='waiting_for_dependency',
+                    dependency=str(DEPENDENCY),dependency_stage=status.get('stage'),updated=now(),pid=os.getpid()))
+                time.sleep(30)
+            run=queue/'transfer90'
+            call(queue,'00_smoke',HERE/'refine_teacher.py','--smoke')
+            call(queue,'01_teacher',HERE/'refine_teacher.py')
+            call(queue,'02_data',Path(__file__),'--operation','data')
+            call(queue,'03_teacher_score',HARNESS/'semantic_teacher.py','--stage','score','--directories','teacher_wm_validation')
+            call(queue,'04_teacher_quality',Path(__file__),'--operation','teacher_report')
+            call(queue,'05_cache',HARNESS/'validation.py','--stage','cache')
+            call(queue,'06_student',Path(__file__),'--operation','student')
+            call(queue,'07_validation',HARNESS/'validation.py','--stage','evaluate','--branch',BRANCH)
+            labels=[f'validation_{BRANCH}_step{s}' for s in read_json(run/'config.json')['checkpoint_steps']]
+            call(queue,'08_validation_score',HARNESS/'semantic_teacher.py','--stage','score','--directories',*labels)
+            call(queue,'09_validation_quality',HARNESS/'utility.py','--split','validation','--labels',*labels)
+            call(queue,'10_select',HARNESS/'validation.py','--stage','select','--branch',BRANCH)
+            call(queue,'11_test',HARNESS/'student.py','--stage','generate','--branch',BRANCH)
+            call(queue,'12_score',HARNESS/'semantic_teacher.py','--stage','score','--directories',BRANCH,'teacher_wm_test')
+            call(queue,'13_quality',HARNESS/'utility.py','--labels','teacher_clean_test','teacher_wm_test','unadapted',BRANCH)
+            call(queue,'14_summary',Path(__file__),'--operation','summary')
+            call(queue,'15_verification',HERE/'verification.py')
+            write_json(queue/'status.json',dict(state='completed',updated=now(),report=str(run/'result/verification.json')))
+        except Exception as exc:
+            write_json(queue/'status.json',dict(state='failed',error=str(exc),updated=now()));raise
+
+
+def main():
+    p=argparse.ArgumentParser()
+    p.add_argument('--initialize',action='store_true');p.add_argument('--supervise',action='store_true')
+    p.add_argument('--prepare-only',action='store_true')
+    p.add_argument('--queue',type=Path);p.add_argument('--run',type=Path)
+    p.add_argument('--operation',choices=['data','student','teacher_report','summary'])
+    a=p.parse_args()
+    if a.operation:
+        verify(a.run.parent)
+        if a.operation=='data':data(a.run)
+        elif a.operation=='student':train_student(a.run)
+        elif a.operation=='teacher_report':
+            from transfer_campaign import teacher_report
+            teacher_report(a.run)
+        elif a.operation=='summary':
+            from manojb_5k_campaign import student_summary
+            student_summary(a.run)
+        return
+    queue=a.queue or (Path(read_json(HERE/'active_run.json')['queue']) if (HERE/'active_run.json').exists() else None)
+    if a.initialize or queue is None:
+        with (HERE/'initialize.lock').open('w') as lock:
+            fcntl.flock(lock,fcntl.LOCK_EX)
+            if not a.initialize and (HERE/'active_run.json').exists():
+                queue=Path(read_json(HERE/'active_run.json')['queue'])
+            else:queue=initialize()
+    verify(queue)
+    if a.prepare_only:print('PREPARED',queue);return
+    if a.supervise:supervise(queue);return
+    proof=read_json(HERE/'test_results.json')
+    expected={name:digest for name,digest in read_json(queue/'code_manifest.json').items() if name.endswith('.py')}
+    if not proof.get('passed') or proof.get('python_sources')!=expected:
+        raise RuntimeError('Passing tests must cover the exact frozen Python sources')
+    # Default one command queues the complete run. Lock prevents duplicate launch races.
+    with (queue/'launch.lock').open('w') as lock:
+        fcntl.flock(lock,fcntl.LOCK_EX)
+        if (queue/'launcher.json').exists():
+            pid=read_json(queue/'launcher.json')['pid'];proc=Path(f'/proc/{pid}/cmdline')
+            if proc.exists() and str(HERE/'campaign.py').encode() in proc.read_bytes():
+                print('Already queued',pid,queue);return
+        if read_json(queue/'status.json')['state']=='completed':print('Already completed',queue);return
+        env=dict(os.environ,PN90_BASE_ROOT=str(ROOT),BITMARK_RUNTIME_ROOT=str(HERE.parent/'runtime'),
+            CUDA_VISIBLE_DEVICES='0',HF_HUB_OFFLINE='1',TRANSFORMERS_OFFLINE='1',PYTHONUNBUFFERED='1',
+            OMP_NUM_THREADS='8',MKL_NUM_THREADS='8',TOKENIZERS_PARALLELISM='false')
+        with (queue/'supervisor.log').open('a') as stream:
+            child=subprocess.Popen([sys.executable,str(Path(__file__)),'--queue',str(queue),'--supervise'],
+                cwd=HERE,env=env,stdin=subprocess.DEVNULL,stdout=stream,stderr=subprocess.STDOUT,start_new_session=True)
+        write_json(queue/'launcher.json',dict(pid=child.pid,queued=now()))
+        print('QUEUED',child.pid,queue)
+
+
+if __name__=='__main__':main()

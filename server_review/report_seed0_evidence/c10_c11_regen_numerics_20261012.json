@@ -1,0 +1,52 @@
+{
+  "regen_scheduler": {
+    "class": "UniPCMultistepScheduler",
+    "t0": 999,
+    "alpha_bar": 0.00466009508818388,
+    "signal_coefficient": 0.06826488913185079,
+    "noise_coefficient": 0.9976672315515911,
+    "config": {
+      "num_train_timesteps": 1000,
+      "beta_start": 0.00085,
+      "beta_end": 0.012,
+      "beta_schedule": "scaled_linear",
+      "trained_betas": null,
+      "solver_order": 2,
+      "prediction_type": "epsilon",
+      "thresholding": false,
+      "dynamic_thresholding_ratio": 0.995,
+      "sample_max_value": 1.0,
+      "predict_x0": true,
+      "solver_type": "bh2",
+      "lower_order_final": true,
+      "disable_corrector": [],
+      "solver_p": null,
+      "use_karras_sigmas": false,
+      "timestep_spacing": "linspace",
+      "steps_offset": 1,
+      "final_sigmas_type": "zero",
+      "rescale_betas_zero_snr": false,
+      "_use_default_values": [
+        "solver_p",
+        "predict_x0",
+        "final_sigmas_type",
+        "use_karras_sigmas",
+        "rescale_betas_zero_snr",
+        "timestep_spacing",
+        "disable_corrector"
+      ],
+      "_class_name": "UniPCMultistepScheduler",
+      "_diffusers_version": "0.16.1",
+      "algorithm_type": "deis",
+      "clip_sample": false,
+      "clip_sample_range": 1.0,
+      "set_alpha_to_one": false
+    }
+  },
+  "prepare_latents_source": "    def prepare_latents(self, image, timestep, batch_size, num_images_per_prompt, dtype, device, generator=None):\n        if not isinstance(image, (torch.Tensor, PIL.Image.Image, list)):\n            raise ValueError(\n                f\"`image` has to be of type `torch.Tensor`, `PIL.Image.Image` or list but is {type(image)}\"\n            )\n\n        image = image.to(device=device, dtype=dtype)\n\n        batch_size = batch_size * num_images_per_prompt\n\n        if image.shape[1] == 4:\n            init_latents = image\n\n        else:\n            if isinstance(generator, list) and len(generator) != batch_size:\n                raise ValueError(\n                    f\"You have passed a list of generators of length {len(generator)}, but requested an effective batch\"\n                    f\" size of {batch_size}. Make sure the batch size matches the length of the generators.\"\n                )\n\n            elif isinstance(generator, list):\n                if image.shape[0] < batch_size and batch_size % image.shape[0] == 0:\n                    image = torch.cat([image] * (batch_size // image.shape[0]), dim=0)\n                elif image.shape[0] < batch_size and batch_size % image.shape[0] != 0:\n                    raise ValueError(\n                        f\"Cannot duplicate `image` of batch size {image.shape[0]} to effective batch_size {batch_size} \"\n                    )\n\n                init_latents = [\n                    retrieve_latents(self.vae.encode(image[i : i + 1]), generator=generator[i])\n                    for i in range(batch_size)\n                ]\n                init_latents = torch.cat(init_latents, dim=0)\n            else:\n                init_latents = retrieve_latents(self.vae.encode(image), generator=generator)\n\n            init_latents = self.vae.config.scaling_factor * init_latents\n\n        if batch_size > init_latents.shape[0] and batch_size % init_latents.shape[0] == 0:\n            # expand init_latents for batch_size\n            deprecation_message = (\n                f\"You have passed {batch_size} text prompts (`prompt`), but only {init_latents.shape[0]} initial\"\n                \" images (`image`). Initial images are now duplicating to match the number of text prompts. Note\"\n                \" that this behavior is deprecated and will be removed in a version 1.0.0. Please make sure to update\"\n                \" your script to pass as many initial images as text prompts to suppress this warning.\"\n            )\n            deprecate(\"len(prompt) != len(image)\", \"1.0.0\", deprecation_message, standard_warn=False)\n            additional_image_per_prompt = batch_size // init_latents.shape[0]\n            init_latents = torch.cat([init_latents] * additional_image_per_prompt, dim=0)\n        elif batch_size > init_latents.shape[0] and batch_size % init_latents.shape[0] != 0:\n            raise ValueError(\n                f\"Cannot duplicate `image` of batch size {init_latents.shape[0]} to {batch_size} text prompts.\"\n            )\n        else:\n            init_latents = torch.cat([init_latents], dim=0)\n\n        shape = init_latents.shape\n        noise = randn_tensor(shape, generator=generator, device=device, dtype=dtype)\n\n        # get latents\n        init_latents = self.scheduler.add_noise(init_latents, noise, timestep)\n        latents = init_latents\n\n        return latents\n",
+  "get_timesteps_source": "    def get_timesteps(self, num_inference_steps, strength, device):\n        # get the original timestep using init_timestep\n        init_timestep = min(int(num_inference_steps * strength), num_inference_steps)\n\n        t_start = max(num_inference_steps - init_timestep, 0)\n        timesteps = self.scheduler.timesteps[t_start * self.scheduler.order :]\n        if hasattr(self.scheduler, \"set_begin_index\"):\n            self.scheduler.set_begin_index(t_start * self.scheduler.order)\n\n        return timesteps, num_inference_steps - t_start\n",
+  "versions": {
+    "torch": "2.11.0+cu128",
+    "diffusers": "0.30.2"
+  }
+}

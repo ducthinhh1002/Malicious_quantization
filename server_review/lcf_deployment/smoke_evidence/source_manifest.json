@@ -1,0 +1,22 @@
+{
+  "new_watermark/learning_channel/run.py": "b7fe13426eb536ee18b98b3322a749a22b0d898824b3a5cc232848adbf4d969a",
+  "new_watermark/learning_channel/train.py": "2e9b0935e6b98436410e15ced084155529677fd36e46e2dfa3926255cb7d8957",
+  "new_watermark/learning_channel/sampling.py": "c24270e847c6574e8b1b26daadb5d7ce9a5a896cffbad4f5f9cc66c0c7d44f28",
+  "new_watermark/learning_channel/__init__.py": "f32a422d28f1a0660527996922d91bc2e6ec859a3db29b80e6fbc15b0befafca",
+  "new_watermark/learning_channel/carrier.py": "ff1f56922ecd062bd285994949a5623e28ec37fae992528d5b4ff7aa65255717",
+  "new_watermark/learning_channel/test_learning_channel.py": "326de49689435adda9aa5503d8ae0a06ec9d54f5a38943f1332e8034e4319542",
+  "new_watermark/learning_channel/reader.py": "3c2fc4b323353db359f0991c2a5bf3f012203c0983898fa6b3582c411a5dcab0",
+  "new_watermark/learning_channel/learner.py": "fe20af7f7568edc79fddfac3a807faa8109ecaffc099f2c898f50edf47cbd3c9",
+  "new_watermark/learning_channel/evaluate.py": "89652956639c8d392905c78ae30e1a1aa8321de003b8e489037800a5ec780632",
+  "new_watermark/learning_channel/runtime.py": "929b7b65893f13798ccb98b8ede93f25142284a05225822763edaa33405bd545",
+  "new_watermark/learning_channel/objective.py": "7482b0498b31619695dc682e97a8beff33f80400eb06d90750d5e70588fcd0e8",
+  "run_learning_channel_gate.sh": "1e04b54ba3cad67000414f009488ee2a7c46f714d193341e4e4f617d8202797f",
+  "requirements-learning-channel.txt": "4fcad97ce6b7e550d638968237a570e1fdfd9a476a776b1ba2c0764de362c12e",
+  "bitmark_lora/vendor/provenance.json": "2a1a7b0c69796e0a3d6093834357342918bb01a44d71bcebcacf590f5c309258",
+  "new_watermark/method.py": "e7fa487e3fd4adc035d74631641e20a59417c2c01bc6f6dd649fb5ab7a246a9d",
+  "bitmark_lora/common.py": "0c50e6747c4c8863afdd62912746552f041d4e08bbd6e48d280e9ca419a3a1d6",
+  "bitmark_lora/assets.py": "15faa6f85ceaa3eb92c2e9673a825e598f176a118371b972e59d5633ab3a4c77",
+  "bitmark_lora/serum_assets.py": "52149b82bddc4c00c090e3a0917c0ea421f155e5a35f4c26953c799531e683b4",
+  "bitmark_lora/utility.py": "ec20d13d2530713b23f80bc4578c25be8503aa6a4067002b8c86f7f9e4d08164",
+  "bitmark_lora/student.py": "c3e7f18d70c1b85b4a7ccfabfa1716dad41c10c42386d3578c6c6b887ec7072b"
+}

@@ -1,0 +1,2818 @@
+{
+  "66798": {
+    "row": {
+      "image_id": 1000133596,
+      "caption_id": 212947,
+      "text": "A tall zebra standing in a lush green field.",
+      "source_image_id": 66798,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000133596.safetensors",
+    "sha256": "d7329f90a0afaeaaa90fc77bc1615fd204b48986ed7ac144386f89cd5db200e2"
+  },
+  "451090": {
+    "row": {
+      "image_id": 1000902180,
+      "caption_id": 99192,
+      "text": "a white boat some green hills and water",
+      "source_image_id": 451090,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000902180.safetensors",
+    "sha256": "41b5f80cbc44db2c840a82323e7d5d12fb1ad28d675d2437830b509f09070688"
+  },
+  "137085": {
+    "row": {
+      "image_id": 1000274170,
+      "caption_id": 620862,
+      "text": "Three pedestal plates holding oranges on a table.",
+      "source_image_id": 137085,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000274170.safetensors",
+    "sha256": "2b5412098986c0a9530035dd4d596783bd2cdae1850138c6ddb9ea4b102b80f4"
+  },
+  "363830": {
+    "row": {
+      "image_id": 1000727660,
+      "caption_id": 527592,
+      "text": "A big bathroom with a couch a bathtub in the middle of the room.",
+      "source_image_id": 363830,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000727660.safetensors",
+    "sha256": "a1593df9e6c8e0dc1f06533abdf65bd72a9b75e6de1287bb3d40a63c67c48cf5"
+  },
+  "1818": {
+    "row": {
+      "image_id": 1000003636,
+      "caption_id": 288157,
+      "text": "A zebra in the grass who is cleaning himself.",
+      "source_image_id": 1818,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000003636.safetensors",
+    "sha256": "a2b4187caf5348f16fefd3dba0072eef002db13a19ec2c57cdfc2d4bc58bfcf2"
+  },
+  "454741": {
+    "row": {
+      "image_id": 1000909482,
+      "caption_id": 798609,
+      "text": "A bus with a red stripe is parked on the street.",
+      "source_image_id": 454741,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000909482.safetensors",
+    "sha256": "45adcc2554f1944bbf115481473081341f1233261cf839847e759c38672ba7b9"
+  },
+  "435270": {
+    "row": {
+      "image_id": 1000870540,
+      "caption_id": 623849,
+      "text": "A tray topped with breakfast muffin sandwiches on a table .",
+      "source_image_id": 435270,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000870540.safetensors",
+    "sha256": "551b8d73c40ff1ffbb67784db8afb889a4b18accd16aaa2487b9b4c30edded54"
+  },
+  "243134": {
+    "row": {
+      "image_id": 1000486268,
+      "caption_id": 417872,
+      "text": "A living room with two couches and several chairs.",
+      "source_image_id": 243134,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000486268.safetensors",
+    "sha256": "3286fddc70b821c37091d5b51e02ceba71a90e08f499f1d1e0a411de91800b4c"
+  },
+  "389116": {
+    "row": {
+      "image_id": 1000778232,
+      "caption_id": 405174,
+      "text": "A picture of a man with his cow named Elsie.",
+      "source_image_id": 389116,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000778232.safetensors",
+    "sha256": "d5b4de2151870e46882b314823c29074490f1284a4fa4e3d88bb9c6fc8c0dc6b"
+  },
+  "484754": {
+    "row": {
+      "image_id": 1000969509,
+      "caption_id": 331877,
+      "text": "An image of a car in a side mirror.",
+      "source_image_id": 484754,
+      "noise_variant": 1
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000969509.safetensors",
+    "sha256": "db9b183181c394826c6cf0a1dbf0d0879e7797fdc3e7c59696fe83ce155f3427"
+  },
+  "477195": {
+    "row": {
+      "image_id": 1000954390,
+      "caption_id": 692631,
+      "text": "A pizza with pepperoni and spinach leaves by a beer.",
+      "source_image_id": 477195,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000954390.safetensors",
+    "sha256": "72a2b9f6983d3662cab9a274a49511a7e48bd9be3ba30ad13b84efafd4c1c12e"
+  },
+  "90501": {
+    "row": {
+      "image_id": 1000181002,
+      "caption_id": 478814,
+      "text": "A wooden bench sitting in front of a white building.",
+      "source_image_id": 90501,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000181002.safetensors",
+    "sha256": "12a9a4a38f32f93338d5f3df5f6f11e8d73739780054c55de24e266ec16e70f7"
+  },
+  "346965": {
+    "row": {
+      "image_id": 1000693930,
+      "caption_id": 527042,
+      "text": "A man in a black shirt holding a dog with its hand in the air.",
+      "source_image_id": 346965,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000693930.safetensors",
+    "sha256": "0737eaa1a34324a770ac79076068de4017438f9839e513909e38e38734e572dc"
+  },
+  "132084": {
+    "row": {
+      "image_id": 1000264168,
+      "caption_id": 802810,
+      "text": "A motorcycle rests against the side of a deserted road near a kangaroo crossing sign.",
+      "source_image_id": 132084,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000264168.safetensors",
+    "sha256": "7b7bf13ca6192a6775c62d239907807d4d519f4b2c87d58ae10460d836c04546"
+  },
+  "392753": {
+    "row": {
+      "image_id": 1000785506,
+      "caption_id": 230872,
+      "text": "a close up of a sandwich and a cup of food",
+      "source_image_id": 392753,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000785506.safetensors",
+    "sha256": "4b793ddaf6661c7e0d296d6bb8c656345e09eda26cc67798442ae531058df403"
+  },
+  "550521": {
+    "row": {
+      "image_id": 1001101042,
+      "caption_id": 38311,
+      "text": "The reflection of a man in barbers chair getting a trim",
+      "source_image_id": 550521,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1001101042.safetensors",
+    "sha256": "1a4912471fab5d66b352fb11a3b17ba946883cc2132b25afac51bd2a8250d9d2"
+  },
+  "67563": {
+    "row": {
+      "image_id": 1000135126,
+      "caption_id": 424766,
+      "text": "A group of elephants by some buildings on the water.",
+      "source_image_id": 67563,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000135126.safetensors",
+    "sha256": "de0090a275472beadc01f4686d599b192cd658f2843ba3a33d05c2cec5fdc18f"
+  },
+  "137727": {
+    "row": {
+      "image_id": 1000275454,
+      "caption_id": 156105,
+      "text": "A motorized cart fills a train with luggage",
+      "source_image_id": 137727,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000275454.safetensors",
+    "sha256": "4b389c6ff9f1d0218c04997771fa6f1116f361dbfc3be1255eeaa1d544fb2446"
+  },
+  "285646": {
+    "row": {
+      "image_id": 1000571292,
+      "caption_id": 439490,
+      "text": "Apples on a tree that need longer to ripen.",
+      "source_image_id": 285646,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000571292.safetensors",
+    "sha256": "50bec26aa526306b4de278f2d3b5a7638ff34307d3636a42bc338d35048f77c4"
+  },
+  "540159": {
+    "row": {
+      "image_id": 1001080318,
+      "caption_id": 525537,
+      "text": "A very nice looking living room with a couch.",
+      "source_image_id": 540159,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1001080318.safetensors",
+    "sha256": "16a7947ab974421ead2b8192ce4fd834ddd7f18946088272ecdfa0742b962d4a"
+  },
+  "102555": {
+    "row": {
+      "image_id": 1000205110,
+      "caption_id": 51062,
+      "text": "A man kneeling down to pet a small dog.",
+      "source_image_id": 102555,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000205110.safetensors",
+    "sha256": "0f9900cb22e61805cbd6e1c199ad3758cc33e3a83e25f079c257ab85bbe2de97"
+  },
+  "78113": {
+    "row": {
+      "image_id": 1000156226,
+      "caption_id": 802053,
+      "text": "a fire truck on a city street",
+      "source_image_id": 78113,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000156226.safetensors",
+    "sha256": "4a95a4fba384d66b36c2bd333c2836135b3f1fe2a5369f317625acbc45685303"
+  },
+  "275754": {
+    "row": {
+      "image_id": 1000551508,
+      "caption_id": 297605,
+      "text": "A small child in pajamas is holding bananas.",
+      "source_image_id": 275754,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000551508.safetensors",
+    "sha256": "e0b451ec735f9fe851dfa64e665d32f49084eb4d7a664d855a6e7caeff112794"
+  },
+  "242968": {
+    "row": {
+      "image_id": 1000485936,
+      "caption_id": 427777,
+      "text": "A vase filled with pens with fake sunflowers attached on a desk that says \"Visitors must sign in\".",
+      "source_image_id": 242968,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000485936.safetensors",
+    "sha256": "2669a67a4fc84a872e96f7d0fdfdc03281aaf83fc647014fe0d59c6d7f50f49c"
+  },
+  "139140": {
+    "row": {
+      "image_id": 1000278280,
+      "caption_id": 36215,
+      "text": "A young woman lays a hand on the neck of the horse she is riding.",
+      "source_image_id": 139140,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000278280.safetensors",
+    "sha256": "834ca431c4606c1f174346c5ef574a1b052c7fc53f5ef271e965a6b756475249"
+  },
+  "444703": {
+    "row": {
+      "image_id": 1000889406,
+      "caption_id": 338284,
+      "text": "A street filled with lots of double decker buses.",
+      "source_image_id": 444703,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000889406.safetensors",
+    "sha256": "d8264d6ab377acbec282041a502f9c96d219fe5b372da65324b5f2f58aede372"
+  },
+  "210002": {
+    "row": {
+      "image_id": 1000420004,
+      "caption_id": 690566,
+      "text": "A person holding a white plate topped with a sandwich.",
+      "source_image_id": 210002,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000420004.safetensors",
+    "sha256": "89409cfb097f8997175b79a6500305aefa6cbd15cc157c8602c1d9dd49ddeef4"
+  },
+  "394133": {
+    "row": {
+      "image_id": 1000788266,
+      "caption_id": 13572,
+      "text": "A bedroom with a bed and chair along with a nightstand with lamp on top of it.",
+      "source_image_id": 394133,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000788266.safetensors",
+    "sha256": "b82e803a461b011616443b9166aec3582cf7476b4d7ca33b70ecb9c09d998403"
+  },
+  "524247": {
+    "row": {
+      "image_id": 1001048494,
+      "caption_id": 283506,
+      "text": "Zebras and rhinos grazing together at the zoo.",
+      "source_image_id": 524247,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1001048494.safetensors",
+    "sha256": "9b66d364350dc7a69682443bbaaee79395951a9a6ba7e1e1a05f59a43c05b970"
+  },
+  "522137": {
+    "row": {
+      "image_id": 1001044274,
+      "caption_id": 30487,
+      "text": "Three Mercedes Benz on the top of a train as cargo",
+      "source_image_id": 522137,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1001044274.safetensors",
+    "sha256": "795e68d27b801e8ceec655dc7b752d95e5e6ccf55c55dbad2b2d0040fc18f855"
+  },
+  "402528": {
+    "row": {
+      "image_id": 1000805056,
+      "caption_id": 586370,
+      "text": "A jar of mustard next to a small plate of a sandwich",
+      "source_image_id": 402528,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000805056.safetensors",
+    "sha256": "c3aa361cb0b3803765233fd32e05cb054327792e1c31ac3c33e3b46074906501"
+  },
+  "179045": {
+    "row": {
+      "image_id": 1000358090,
+      "caption_id": 667536,
+      "text": "A young child sitting on top of a couch.",
+      "source_image_id": 179045,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000358090.safetensors",
+    "sha256": "469dd9205b452d4fa22af5ea68dda88af8d3807d0c42b410555f36efab583068"
+  },
+  "205035": {
+    "row": {
+      "image_id": 1000410070,
+      "caption_id": 332100,
+      "text": "A man with his dog out near a lake.",
+      "source_image_id": 205035,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000410070.safetensors",
+    "sha256": "dc6bbe0abc13051c6c657563a64d609eaff4684fd3adf4f8774f9ccae7091fa3"
+  },
+  "333321": {
+    "row": {
+      "image_id": 1000666642,
+      "caption_id": 601509,
+      "text": "The sign is telling us where the train station is located.",
+      "source_image_id": 333321,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000666642.safetensors",
+    "sha256": "4fb15798c395e0debb0ef121e2e0c6795855e758b01d95e11bcd461d6895ed69"
+  },
+  "261182": {
+    "row": {
+      "image_id": 1000522364,
+      "caption_id": 131501,
+      "text": "Extremely ripe banana being put into a saucepan in a kitchen",
+      "source_image_id": 261182,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000522364.safetensors",
+    "sha256": "8351fdbd56ffb4b03fae65b7b253fe85e319197db5db570bfa785475cc3b2ff6"
+  },
+  "378894": {
+    "row": {
+      "image_id": 1000757788,
+      "caption_id": 792706,
+      "text": "a man stands on a chair looking at a computer",
+      "source_image_id": 378894,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000757788.safetensors",
+    "sha256": "873b5148944e16bff3b1c0b3865b294d105490fec278236cf4011d209dc9f0d6"
+  },
+  "364166": {
+    "row": {
+      "image_id": 1000728332,
+      "caption_id": 388098,
+      "text": "2 Zebras standing next to each other in plaines",
+      "source_image_id": 364166,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000728332.safetensors",
+    "sha256": "54d0393b4d24c4ea98749c63e624a6c21a308ae760a7cb742f0d43b9712ea62f"
+  },
+  "291791": {
+    "row": {
+      "image_id": 1000583583,
+      "caption_id": 427180,
+      "text": "A green motorcycle parked on top of a green lawn.",
+      "source_image_id": 291791,
+      "noise_variant": 1
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000583583.safetensors",
+    "sha256": "174a962c478383f346523a0aa85c54f62c8ec99c90c31ac0b28e19f83837e189"
+  },
+  "209441": {
+    "row": {
+      "image_id": 1000418882,
+      "caption_id": 120080,
+      "text": "a tub of apples and a box of bananas",
+      "source_image_id": 209441,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000418882.safetensors",
+    "sha256": "c109e8e8462f3ec0ce3f70b089ffd5d1def7b49f51ac22a478b8b1b6d04e0d1d"
+  },
+  "301402": {
+    "row": {
+      "image_id": 1000602804,
+      "caption_id": 712051,
+      "text": "A young person sitting on a chair near a table.",
+      "source_image_id": 301402,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000602804.safetensors",
+    "sha256": "9cac15148a5900786553b359350b59329d9ea610ce1323ff7d55c86d9e9f6f3b"
+  },
+  "44612": {
+    "row": {
+      "image_id": 1000089224,
+      "caption_id": 88389,
+      "text": "An older person standing next to a brown horse in a dirt field.",
+      "source_image_id": 44612,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000089224.safetensors",
+    "sha256": "c63258051eaa4f9e2482b76ebff95117428bf37f28e7c107596064ce01fe5239"
+  },
+  "317410": {
+    "row": {
+      "image_id": 1000634820,
+      "caption_id": 522947,
+      "text": "A couple of women standing in the back of a car with an open trunk.",
+      "source_image_id": 317410,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000634820.safetensors",
+    "sha256": "c2acef047af53bc6035e7abf578c00c2b27985a443770fcd6dd017c913b20af5"
+  },
+  "64736": {
+    "row": {
+      "image_id": 1000129472,
+      "caption_id": 598808,
+      "text": "a dougnut sitting on a plate next to a glass of orange juice",
+      "source_image_id": 64736,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000129472.safetensors",
+    "sha256": "bb3d5a00cacc15f440f75570d189437232296b9098ddc90843bf48864c3a1bc8"
+  },
+  "307573": {
+    "row": {
+      "image_id": 1000615146,
+      "caption_id": 552398,
+      "text": "A black chair sitting next to a refrigerator.",
+      "source_image_id": 307573,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000615146.safetensors",
+    "sha256": "41b4a7d109b10316a035134bafee69b9cd98b0010323ef1263c8a35b303b461f"
+  },
+  "482720": {
+    "row": {
+      "image_id": 1000965440,
+      "caption_id": 86343,
+      "text": "a teddy bear sitting by some blocks like he's playing with them",
+      "source_image_id": 482720,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000965440.safetensors",
+    "sha256": "2d1e2b3823df9e7feecba62067642839be4b2486167ae1529f3634f1645c98e5"
+  },
+  "363134": {
+    "row": {
+      "image_id": 1000726268,
+      "caption_id": 192349,
+      "text": "A man standing outside of a green train.",
+      "source_image_id": 363134,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000726268.safetensors",
+    "sha256": "33c4acf6b3caeb63abfb813fc4951886e06c2cb647c0d20d7900d27c8bf95cc4"
+  },
+  "175604": {
+    "row": {
+      "image_id": 1000351208,
+      "caption_id": 467909,
+      "text": "a close up of a doughnut near a drink",
+      "source_image_id": 175604,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000351208.safetensors",
+    "sha256": "4cb3584e63d43784eadfc7807213d16e711d8eb0080d0cb7c3000f88376d182f"
+  },
+  "273494": {
+    "row": {
+      "image_id": 1000546988,
+      "caption_id": 429790,
+      "text": "a hotel rooom with two beds and a food tray on one bed",
+      "source_image_id": 273494,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000546988.safetensors",
+    "sha256": "84450733ef62a13d694c04d415118db6d4e88e3b04af611875fc0781661870f8"
+  },
+  "178361": {
+    "row": {
+      "image_id": 1000356722,
+      "caption_id": 31890,
+      "text": "An adult polar bear is swimming in the icy water",
+      "source_image_id": 178361,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000356722.safetensors",
+    "sha256": "7121b3c47564eb15ae085de24fd5bb1b1d7368d6fc5d421395c715c806ab0cb0"
+  },
+  "514376": {
+    "row": {
+      "image_id": 1001028752,
+      "caption_id": 131996,
+      "text": "A trolley is going down the street while a car passes it.",
+      "source_image_id": 514376,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1001028752.safetensors",
+    "sha256": "dc41e73878b9e27a43f27dd7cb43f201b5d82be3ee3c245771d9aec3a36808fa"
+  },
+  "569319": {
+    "row": {
+      "image_id": 1001138638,
+      "caption_id": 260156,
+      "text": "A table covered with appetizers and a cake.",
+      "source_image_id": 569319,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1001138638.safetensors",
+    "sha256": "c121b9731b77139265a708fdb476af499295af212d9e98f7fe771f97f3f343d1"
+  },
+  "567686": {
+    "row": {
+      "image_id": 1001135372,
+      "caption_id": 654136,
+      "text": "A keyboard and mouse along with other items on the desk",
+      "source_image_id": 567686,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1001135372.safetensors",
+    "sha256": "04675dd565053398a4ee6ed2d610ed1aa3f580b3f49d652b116272d0339fc9ce"
+  },
+  "538465": {
+    "row": {
+      "image_id": 1001076930,
+      "caption_id": 709897,
+      "text": "Two giraffes on the grass in a fenced area.",
+      "source_image_id": 538465,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1001076930.safetensors",
+    "sha256": "f39466a24dacd5d84fadd40167301455f8177ff37247834a9a16be20a1284e91"
+  },
+  "69670": {
+    "row": {
+      "image_id": 1000139340,
+      "caption_id": 200489,
+      "text": "A motorcycle parked on a lush green field.",
+      "source_image_id": 69670,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000139340.safetensors",
+    "sha256": "cc3926ec3927db375bc9ffd0c4e11f6d24ef80cf1a0ba240ccde3e77cd93964e"
+  },
+  "403038": {
+    "row": {
+      "image_id": 1000806076,
+      "caption_id": 768725,
+      "text": "A table in the sun with a white cloth, beef sandwich, glass of beer, and bottle of wine.",
+      "source_image_id": 403038,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000806076.safetensors",
+    "sha256": "f1d53c6e1843f038389f2fc086a0a68ea6ec32cc3d6e759af4835d1fe8f66ebf"
+  },
+  "225693": {
+    "row": {
+      "image_id": 1000451386,
+      "caption_id": 567133,
+      "text": "a bed sitting inside of a bedroom on a wooden floor.",
+      "source_image_id": 225693,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000451386.safetensors",
+    "sha256": "3169226a8208ec24d5dd82b752622f2d287c1471ed2d5675a19458b0562833a6"
+  },
+  "436164": {
+    "row": {
+      "image_id": 1000872328,
+      "caption_id": 497216,
+      "text": "A white horse pulling a cart down a street.",
+      "source_image_id": 436164,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000872328.safetensors",
+    "sha256": "01e1fa8ae9211cd047e0cc1e82b427c4c861e5e3c90eb91b949da6b00cff02a8"
+  },
+  "122166": {
+    "row": {
+      "image_id": 1000244332,
+      "caption_id": 791053,
+      "text": "a person riding on a bicycle on the street in front of some cars",
+      "source_image_id": 122166,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000244332.safetensors",
+    "sha256": "a858be7fc9dbfc405a6107260a1f27aacc8f0d65371cda3ad1cedc5f8cb6b2f6"
+  },
+  "568426": {
+    "row": {
+      "image_id": 1001136852,
+      "caption_id": 759419,
+      "text": "a person at a table with a sandwich and a drink",
+      "source_image_id": 568426,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1001136852.safetensors",
+    "sha256": "410351fe87909ebd3569ff19f47933feb1428b83eb3a17a2bf6362a95cf18cdd"
+  },
+  "290289": {
+    "row": {
+      "image_id": 1000580578,
+      "caption_id": 597334,
+      "text": "A living room with many chairs and couches.",
+      "source_image_id": 290289,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000580578.safetensors",
+    "sha256": "95bd25ecd679b35c669f24755d0c5bef7c20c44baed1b0e8e9650c191db6c1c0"
+  },
+  "135681": {
+    "row": {
+      "image_id": 1000271362,
+      "caption_id": 202443,
+      "text": "Two zebra standing next to each other in a forest.",
+      "source_image_id": 135681,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000271362.safetensors",
+    "sha256": "f0ac49e4fee51126287589db05a7e4202ee9f7b75ce31bfb4b490846f3e7d828"
+  },
+  "301333": {
+    "row": {
+      "image_id": 1000602666,
+      "caption_id": 747206,
+      "text": "A train coming down the tracks in a city.",
+      "source_image_id": 301333,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000602666.safetensors",
+    "sha256": "e388f66936be2439d3534d5adb268f5628d58f31de7ac5b33e299fc291efe460"
+  },
+  "415179": {
+    "row": {
+      "image_id": 1000830358,
+      "caption_id": 599835,
+      "text": "This person is frying her bananas on the stove.",
+      "source_image_id": 415179,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000830358.safetensors",
+    "sha256": "a88eb2bc3f68c070c95738506b4470fa68e22be47176f3d12a129a07f80dc48d"
+  },
+  "255631": {
+    "row": {
+      "image_id": 1000511262,
+      "caption_id": 796833,
+      "text": "a couple of beds that are in one room",
+      "source_image_id": 255631,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000511262.safetensors",
+    "sha256": "bcb2ab1915d0f86b886761a059f11619ac34f3444602aec885922d4f2e7e70e4"
+  },
+  "9603": {
+    "row": {
+      "image_id": 1000019206,
+      "caption_id": 399220,
+      "text": "A herd of cows walking along a grass covered field.",
+      "source_image_id": 9603,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000019206.safetensors",
+    "sha256": "82325ba386fb672d186e2f66610e56d6a9134f80fd9db5953dc8df196f128026"
+  },
+  "36861": {
+    "row": {
+      "image_id": 1000073722,
+      "caption_id": 661684,
+      "text": "A parking meter on the side of the street with a ring for attaching bicycles.",
+      "source_image_id": 36861,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000073722.safetensors",
+    "sha256": "5e86a04b883ab5328f37e5c25ee1b1ba86b0ecf02b0bf9f4425b083d479275f3"
+  },
+  "306247": {
+    "row": {
+      "image_id": 1000612494,
+      "caption_id": 190149,
+      "text": "A man in glasses eating a donut out of a cup.",
+      "source_image_id": 306247,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000612494.safetensors",
+    "sha256": "8f10f7d8939dbcc778f5b5948fe005100d39e890d876741cb6cad5b9fd4199d5"
+  },
+  "264660": {
+    "row": {
+      "image_id": 1000529320,
+      "caption_id": 415778,
+      "text": "A computer is on a desk in a blue room.",
+      "source_image_id": 264660,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000529320.safetensors",
+    "sha256": "667b16632d3a63cc8baef611d9df831be48daa657e9606cf2a6d84ed56ee0e26"
+  },
+  "331280": {
+    "row": {
+      "image_id": 1000662560,
+      "caption_id": 593405,
+      "text": "A couple of women and one man kneeling down before two horses.",
+      "source_image_id": 331280,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000662560.safetensors",
+    "sha256": "ac97e65ed6836205e843d0a9b364c8a82043b6b59e6e914482ef0224441dbccb"
+  },
+  "170190": {
+    "row": {
+      "image_id": 1000340380,
+      "caption_id": 582334,
+      "text": "Red car on roadway in large city area.",
+      "source_image_id": 170190,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000340380.safetensors",
+    "sha256": "830da022f1cd823c53b1c350afe46d9f0e446f766a8bc8ca91d3a60ddf4b32bc"
+  },
+  "325831": {
+    "row": {
+      "image_id": 1000651662,
+      "caption_id": 489539,
+      "text": "A woman sharing a meal of cheese pizza with a friend at a cafe",
+      "source_image_id": 325831,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000651662.safetensors",
+    "sha256": "9ab63382d9a9f8c075e8f075b02bc591455c1961fbd5e871e51fcd1d57e50141"
+  },
+  "96991": {
+    "row": {
+      "image_id": 1000193982,
+      "caption_id": 99678,
+      "text": "THERE IS A PARK BENCH FACING A SNOW COVERED MOUNTAIN",
+      "source_image_id": 96991,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000193982.safetensors",
+    "sha256": "ee10456dd53b0c63f1c3d7f8982d710f3507eb4f352c21a41bebb181a6525be9"
+  },
+  "279279": {
+    "row": {
+      "image_id": 1000558558,
+      "caption_id": 22451,
+      "text": "Two horses nuzzling each other in a field.",
+      "source_image_id": 279279,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000558558.safetensors",
+    "sha256": "672112eadf5c38dc54a0957df3338dd7357cbc868728a317cf8e750ee54db280"
+  },
+  "109750": {
+    "row": {
+      "image_id": 1000219500,
+      "caption_id": 80609,
+      "text": "A small metal motor boat on a lake.",
+      "source_image_id": 109750,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000219500.safetensors",
+    "sha256": "4c38cd25bc748e075bd0c5bf3d5b208387ab23817de026adb878867b1b4a138c"
+  },
+  "154263": {
+    "row": {
+      "image_id": 1000308526,
+      "caption_id": 637685,
+      "text": "The man eating a sandwich is walking beside a talking woman.",
+      "source_image_id": 154263,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000308526.safetensors",
+    "sha256": "2faa28393197ce795fec798ba5c6e5787bd35792fbb9fc9224b60f236a48b4ea"
+  },
+  "170099": {
+    "row": {
+      "image_id": 1000340198,
+      "caption_id": 242989,
+      "text": "a person wearing a suit and tie next to a couch",
+      "source_image_id": 170099,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000340198.safetensors",
+    "sha256": "f4d5bd0b12157eee51cd266d63d86a43ec0236275112375d67819f3a7f9393e7"
+  },
+  "76918": {
+    "row": {
+      "image_id": 1000153836,
+      "caption_id": 317954,
+      "text": "A grey bird on beach with water and pier in the background.",
+      "source_image_id": 76918,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000153836.safetensors",
+    "sha256": "bb1c8dfbb1a459b783e9f24e7db26ba3f84e08ce9292f9ff7bbef1ffd9b327c4"
+  },
+  "498339": {
+    "row": {
+      "image_id": 1000996678,
+      "caption_id": 796158,
+      "text": "Commuter trains at station with passengers on platforms.",
+      "source_image_id": 498339,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000996678.safetensors",
+    "sha256": "a024bc17082edc64e50e403ed428c756aeddf8d8ee349e3a23384dbab803b73a"
+  },
+  "92634": {
+    "row": {
+      "image_id": 1000185269,
+      "caption_id": 221824,
+      "text": "A white plate topped with a pile of fries next to a cut in half sandwich.",
+      "source_image_id": 92634,
+      "noise_variant": 1
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000185269.safetensors",
+    "sha256": "984c081ecc59750eb4dda597e20a78defd7d011788ded0793d8c86e6b7fc1945"
+  },
+  "373655": {
+    "row": {
+      "image_id": 1000747310,
+      "caption_id": 624269,
+      "text": "a teal bed and a smaller pet bed sit on a red carpet.",
+      "source_image_id": 373655,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000747310.safetensors",
+    "sha256": "7e08cf79a116bfa718db5669c95a527f3b2215ae804ac5398c40a03f29bd6e89"
+  },
+  "366830": {
+    "row": {
+      "image_id": 1000733660,
+      "caption_id": 338365,
+      "text": "A large brown horse walking through a lush green forest.",
+      "source_image_id": 366830,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000733660.safetensors",
+    "sha256": "5f44399bb6c87fff5dc78382a487236a6e4de2235b6fbe8dcca593c466dcde85"
+  },
+  "510842": {
+    "row": {
+      "image_id": 1001021684,
+      "caption_id": 1263,
+      "text": "A bus sits next to a curb at a cross walk.",
+      "source_image_id": 510842,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1001021684.safetensors",
+    "sha256": "f78ffaa7521a12c7be06c5777c0e287fe8f41c375ed2619b63af53d553ddc7b6"
+  },
+  "51355": {
+    "row": {
+      "image_id": 1000102710,
+      "caption_id": 747831,
+      "text": "A counter top with a plate containing a slice of pizza.",
+      "source_image_id": 51355,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000102710.safetensors",
+    "sha256": "42ae2856e39489daa94d988b0d79ba8875c249b7505eca4b3c579717395a15ba"
+  },
+  "365068": {
+    "row": {
+      "image_id": 1000730136,
+      "caption_id": 272322,
+      "text": "A woman and two men sitting on a bench in front of a store.",
+      "source_image_id": 365068,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000730136.safetensors",
+    "sha256": "35a113c6f0ffd71a7ee15f441afd32564f852107ce4685cb1bb9f0db2533edbf"
+  },
+  "322031": {
+    "row": {
+      "image_id": 1000644062,
+      "caption_id": 451226,
+      "text": "A group of people looking at an elephant.",
+      "source_image_id": 322031,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000644062.safetensors",
+    "sha256": "dea176be8ccfd02bffd5bbba3b8dd03fe3de3ad2c25016fc79308bee51f273c0"
+  },
+  "60610": {
+    "row": {
+      "image_id": 1000121220,
+      "caption_id": 411954,
+      "text": "A large silver double decker bus driving down a street.",
+      "source_image_id": 60610,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000121220.safetensors",
+    "sha256": "9e937fd0f9ea1e9b9453d66ca30a9cd18a0e37489121d56a942a1a11f7cbc727"
+  },
+  "523883": {
+    "row": {
+      "image_id": 1001047766,
+      "caption_id": 465869,
+      "text": "A squash sits on top of three bananas to form a claw.",
+      "source_image_id": 523883,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1001047766.safetensors",
+    "sha256": "854bd5f96064774f72aa283949a902727f375972f72ebf471cdccde2bbb8578b"
+  },
+  "526321": {
+    "row": {
+      "image_id": 1001052642,
+      "caption_id": 36876,
+      "text": "A laptop computer sitting on a desk next to a desktop computer.",
+      "source_image_id": 526321,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1001052642.safetensors",
+    "sha256": "a72da60db2dbc3c202f69331241a0fdd24a9250abf0af4b41e81c5da5a611cb6"
+  },
+  "229647": {
+    "row": {
+      "image_id": 1000459294,
+      "caption_id": 791517,
+      "text": "The giraffes are standing in the fenced area.",
+      "source_image_id": 229647,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000459294.safetensors",
+    "sha256": "a173fdba7ef3914b1981a811bfacd3027595eb5b168a956c0590407de9676e09"
+  },
+  "223804": {
+    "row": {
+      "image_id": 1000447608,
+      "caption_id": 273535,
+      "text": "A small set of boats sitting on top of a river.",
+      "source_image_id": 223804,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000447608.safetensors",
+    "sha256": "cb231b81d69b47ae2d8579dbc63260081201648ba7dc01f5f77f0fe63b24643d"
+  },
+  "313246": {
+    "row": {
+      "image_id": 1000626492,
+      "caption_id": 76761,
+      "text": "A young man holding a cup cake with lit candles sticking out of it.",
+      "source_image_id": 313246,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000626492.safetensors",
+    "sha256": "b4a08b2004838673be691fd0682496f86801c60381333c8fdd773220ca607512"
+  },
+  "106901": {
+    "row": {
+      "image_id": 1000213802,
+      "caption_id": 334865,
+      "text": "A sign above a doorway with a bench in front",
+      "source_image_id": 106901,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000213802.safetensors",
+    "sha256": "b40aa44c51ba0decf103170603eaef4367a3604a70be3240ad2a9c4a1d06f21d"
+  },
+  "138246": {
+    "row": {
+      "image_id": 1000276492,
+      "caption_id": 149217,
+      "text": "some horses grazing in front of a church",
+      "source_image_id": 138246,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000276492.safetensors",
+    "sha256": "b5ce23a35e4ab567c176c06c6faf8aa06907d9497ac4ba138dbe9c7cb28ff838"
+  },
+  "438364": {
+    "row": {
+      "image_id": 1000876728,
+      "caption_id": 387527,
+      "text": "A red double decker bus driving down a city street.",
+      "source_image_id": 438364,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000876728.safetensors",
+    "sha256": "20f8e1e6ada88e13c0614314d6630266401ec42dd94c7455b909db27ece61986"
+  },
+  "152598": {
+    "row": {
+      "image_id": 1000305196,
+      "caption_id": 485174,
+      "text": "A man with sunglasses on with sandwich at a table.",
+      "source_image_id": 152598,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000305196.safetensors",
+    "sha256": "a375fc3a3ab15037baca426f9de9d76a07852739e06c5a391df7e5e17d9fd425"
+  },
+  "21645": {
+    "row": {
+      "image_id": 1000043290,
+      "caption_id": 285891,
+      "text": "A couch and a chair in a small living room.",
+      "source_image_id": 21645,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000043290.safetensors",
+    "sha256": "ab01a421b1bf7921dea8aa7af089aed44407460dd4368203d240365a01efc698"
+  },
+  "217064": {
+    "row": {
+      "image_id": 1000434128,
+      "caption_id": 288773,
+      "text": "A zebra walking through the grass next to a bush.",
+      "source_image_id": 217064,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000434128.safetensors",
+    "sha256": "fc76f3a1fac57579d560e370700947759f00c3cd6ccf983a0b9f35b4dfe2447a"
+  },
+  "281722": {
+    "row": {
+      "image_id": 1000563444,
+      "caption_id": 701398,
+      "text": "A blue and white boat floating on top of water.",
+      "source_image_id": 281722,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000563444.safetensors",
+    "sha256": "c6614533d5866f7c9460f3e467e992161135b0c4bfc6196891d71cb0a8eaf073"
+  },
+  "580542": {
+    "row": {
+      "image_id": 1001161084,
+      "caption_id": 585579,
+      "text": "Two girls sitting at the table with a personal sized pizza in front of them both",
+      "source_image_id": 580542,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1001161084.safetensors",
+    "sha256": "d574a1a137fa9455528d53ca9d622e14d1b8a1a804e29ec80ce0cce3cf0f68b8"
+  },
+  "362712": {
+    "row": {
+      "image_id": 1000725424,
+      "caption_id": 393590,
+      "text": "two people standing up near a couch playing nintendo wii",
+      "source_image_id": 362712,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000725424.safetensors",
+    "sha256": "30d16a22d0447271cd32df0bda06bcdd9903c030f87264498e3dee767c817d4b"
+  },
+  "468178": {
+    "row": {
+      "image_id": 1000936356,
+      "caption_id": 509768,
+      "text": "Several zebras in an open field with mountains in the background.",
+      "source_image_id": 468178,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000936356.safetensors",
+    "sha256": "fbd23403a432f398dcb47815ccc29e601eaaa0ffba95adffdb889f296a448b29"
+  },
+  "136552": {
+    "row": {
+      "image_id": 1000273104,
+      "caption_id": 756270,
+      "text": "a red double decker bus with a movie poster on the sign of it",
+      "source_image_id": 136552,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000273104.safetensors",
+    "sha256": "3002efcf4c80981b40881f4c125df3ab0afc827cf342597649738d2295715fbe"
+  },
+  "398818": {
+    "row": {
+      "image_id": 1000797636,
+      "caption_id": 665968,
+      "text": "A bunch of bananas sitting on top of a tiled floor.",
+      "source_image_id": 398818,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000797636.safetensors",
+    "sha256": "9ee9884d2c8228a27ae9da6553071035b56b3b3a8a95eabf9614055d23f5dd3f"
+  },
+  "388988": {
+    "row": {
+      "image_id": 1000777976,
+      "caption_id": 750827,
+      "text": "A green candle and a vase on a table with one chair",
+      "source_image_id": 388988,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000777976.safetensors",
+    "sha256": "518d243d61b47e48ed306c619c1b7e89428b69588b1b720b00058d66317623c7"
+  },
+  "8350": {
+    "row": {
+      "image_id": 1000016700,
+      "caption_id": 231621,
+      "text": "A large dog sitting on top of a roof.",
+      "source_image_id": 8350,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000016700.safetensors",
+    "sha256": "1bd714e8ac76a250cc35a40a2b585d5a60d07d30ea52f29a41110ee31c39261d"
+  },
+  "528351": {
+    "row": {
+      "image_id": 1001056702,
+      "caption_id": 688322,
+      "text": "A white expensive car parked on top of a cement slab.",
+      "source_image_id": 528351,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1001056702.safetensors",
+    "sha256": "c719c9fe7bddb4a27eb7d646f5bce865a4eedf795d4bc887b450362f4eac71a3"
+  },
+  "358039": {
+    "row": {
+      "image_id": 1000716078,
+      "caption_id": 347501,
+      "text": "a close up of a plate of pizza on a table",
+      "source_image_id": 358039,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000716078.safetensors",
+    "sha256": "77c7197cac99bf32c7921155038c9dbcac74a924bf282eb5cb8dba84da15c276"
+  },
+  "537025": {
+    "row": {
+      "image_id": 1001074050,
+      "caption_id": 51072,
+      "text": "Two towels shaped like swans sitting on a bed.",
+      "source_image_id": 537025,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1001074050.safetensors",
+    "sha256": "281717fa40c9623dc4c5230ded17eb7b212284b555f3390ca475511063a4f1a5"
+  },
+  "259858": {
+    "row": {
+      "image_id": 1000519716,
+      "caption_id": 222372,
+      "text": "A herd of sheep standing in a muddy pen with a chicken.",
+      "source_image_id": 259858,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000519716.safetensors",
+    "sha256": "118835dd5fdbbeb40f0a37352be8dbe1f80b1380ad11e5c46a62b8fd90283daa"
+  },
+  "14226": {
+    "row": {
+      "image_id": 1000028452,
+      "caption_id": 489866,
+      "text": "A man sitting on a train at a table using a laptop.",
+      "source_image_id": 14226,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000028452.safetensors",
+    "sha256": "24e4190948989f46ec721c4ff4b63b5b27ea4efedee0c1cd9cba4eef46e202ef"
+  },
+  "56714": {
+    "row": {
+      "image_id": 1000113428,
+      "caption_id": 95175,
+      "text": "A banana sitting next to an orange and apples on a wooden table.",
+      "source_image_id": 56714,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000113428.safetensors",
+    "sha256": "83a4d7a29857e16821a30cbbe9ac38a0ab5922ef09d8f154f1f51af4b0160a6f"
+  },
+  "167235": {
+    "row": {
+      "image_id": 1000334470,
+      "caption_id": 604683,
+      "text": "A bench that looks like a round hut.",
+      "source_image_id": 167235,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000334470.safetensors",
+    "sha256": "1e0ae05276fcd967f83f6dc5f44c03d05f7c9a62cb4d01b718a82691258788c9"
+  },
+  "442761": {
+    "row": {
+      "image_id": 1000885522,
+      "caption_id": 733236,
+      "text": "A dog and and someone's hand holding on to a frisbee",
+      "source_image_id": 442761,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000885522.safetensors",
+    "sha256": "476d1b226b5fbac5ac1f3f1b46e0065de9a01a052e4d351aa601cd4248073b12"
+  },
+  "186956": {
+    "row": {
+      "image_id": 1000373912,
+      "caption_id": 110249,
+      "text": "A train pulling into a train station next to a tall building.",
+      "source_image_id": 186956,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000373912.safetensors",
+    "sha256": "7cb8be8486c8bfded659057e972bc286d02a2658c26a75437a0504fd4ca531de"
+  },
+  "543041": {
+    "row": {
+      "image_id": 1001086082,
+      "caption_id": 683931,
+      "text": "Six donuts of varies flavors in a box",
+      "source_image_id": 543041,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1001086082.safetensors",
+    "sha256": "6840ddbac3b00335c667736916989fd3bae7f9313a38c28c38e97e199a582e9e"
+  },
+  "308996": {
+    "row": {
+      "image_id": 1000617992,
+      "caption_id": 733305,
+      "text": "a man is sitting at a computer on a desk",
+      "source_image_id": 308996,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000617992.safetensors",
+    "sha256": "a8425128b58ebffcb21bc39f65740ec18b712fd6aa6800940a106303b33a1ca8"
+  },
+  "106216": {
+    "row": {
+      "image_id": 1000212432,
+      "caption_id": 33675,
+      "text": "A couple riding on a horse drawn wagon.",
+      "source_image_id": 106216,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000212432.safetensors",
+    "sha256": "b3c478d9d943f1f827a51e1f2d14e29f44d5b3c1b26437dc7c0f3ae0bbe26f0b"
+  },
+  "566524": {
+    "row": {
+      "image_id": 1001133048,
+      "caption_id": 610186,
+      "text": "A couple of people that are standing near a train.",
+      "source_image_id": 566524,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1001133048.safetensors",
+    "sha256": "0fd91c8824eceba5a408522a521fb194392a48a61838ec798cd6f15f42edb89b"
+  },
+  "568358": {
+    "row": {
+      "image_id": 1001136716,
+      "caption_id": 535758,
+      "text": "A silver vat of donuts cooking in oil",
+      "source_image_id": 568358,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1001136716.safetensors",
+    "sha256": "a287bbc5511244b6706cb68edcf42cf686d4a235cff322645b9789a2823e9b78"
+  },
+  "308883": {
+    "row": {
+      "image_id": 1000617766,
+      "caption_id": 97293,
+      "text": "A laptop computer sitting on a bed by someones feet.",
+      "source_image_id": 308883,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000617766.safetensors",
+    "sha256": "ef5564387e111db0b3f75b0362098cebb8d79072982d09334b17228d7ecd7221"
+  },
+  "152774": {
+    "row": {
+      "image_id": 1000305548,
+      "caption_id": 149061,
+      "text": "A herd of giraffe and long horned goats laying in a zoo.",
+      "source_image_id": 152774,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000305548.safetensors",
+    "sha256": "aca8ec973746d7d2dfc7032045ac7db814869a1df827b10a94f289816a05dda9"
+  },
+  "106722": {
+    "row": {
+      "image_id": 1000213444,
+      "caption_id": 301372,
+      "text": "The large green city bus is driving on a road.",
+      "source_image_id": 106722,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000213444.safetensors",
+    "sha256": "ade0d7eb1d0545923b09d5eed3c4907b3f401af49b3d038f399d9d7fa8034465"
+  },
+  "549167": {
+    "row": {
+      "image_id": 1001098334,
+      "caption_id": 798178,
+      "text": "A modest plate with grains and broccoli and almonds",
+      "source_image_id": 549167,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1001098334.safetensors",
+    "sha256": "2423b006c77e05915706452c94d3b1cbbb8d7007b220d374e522441babdbf9db"
+  },
+  "262162": {
+    "row": {
+      "image_id": 1000524324,
+      "caption_id": 769046,
+      "text": "A small bedroom with a desk and computer in it.",
+      "source_image_id": 262162,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000524324.safetensors",
+    "sha256": "a3790d48b44c071c764d37cafa308909a7e63a090ea7e8ed45d659f8eebdde59"
+  },
+  "51008": {
+    "row": {
+      "image_id": 1000102016,
+      "caption_id": 464819,
+      "text": "A cat looking like it is using a laptop",
+      "source_image_id": 51008,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000102016.safetensors",
+    "sha256": "37034360390c2debdbd098e19e4dfed007462a84cd9badf304bb05f37ce23fbb"
+  },
+  "294053": {
+    "row": {
+      "image_id": 1000588106,
+      "caption_id": 400511,
+      "text": "A couple of trucks that are sitting on a road outside of some buildings.",
+      "source_image_id": 294053,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000588106.safetensors",
+    "sha256": "11c97214a1db6ec0cc4f8229edb4251870bd250acf21f364ac38e949160b36f1"
+  },
+  "282878": {
+    "row": {
+      "image_id": 1000565756,
+      "caption_id": 403633,
+      "text": "A table that has a plate with pieces of square cut pizza on it and a remote control behind it.",
+      "source_image_id": 282878,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000565756.safetensors",
+    "sha256": "66ca40387fdf595cdbd7822d6299f8219dc48134eabbedc10ed86195b19d30a1"
+  },
+  "21361": {
+    "row": {
+      "image_id": 1000042722,
+      "caption_id": 354632,
+      "text": "a stuffed animal sitting on a chair in front of a laptop",
+      "source_image_id": 21361,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000042722.safetensors",
+    "sha256": "8ad00ae1735e03176061d8bf578d3a75d03864053ee5ceee76e8aeb688de6803"
+  },
+  "333290": {
+    "row": {
+      "image_id": 1000666580,
+      "caption_id": 696863,
+      "text": "A group of giraffe standing on top of a dirt field.",
+      "source_image_id": 333290,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000666580.safetensors",
+    "sha256": "89df02a386dff67540bdcaca811acfa234b654e3acc8061ab13d1919c0ae9b45"
+  },
+  "127520": {
+    "row": {
+      "image_id": 1000255040,
+      "caption_id": 795944,
+      "text": "A line of buses waiting to take passengers where they need to go.",
+      "source_image_id": 127520,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000255040.safetensors",
+    "sha256": "84323994c1323d40ffb34ed598514742ec12251006324de10f1842cfa07a1449"
+  },
+  "428452": {
+    "row": {
+      "image_id": 1000856904,
+      "caption_id": 721362,
+      "text": "A cut in half bagel sandwich sitting on top of a plate.",
+      "source_image_id": 428452,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000856904.safetensors",
+    "sha256": "8097dfb0ee616f1e8890db361a86a36a5098088d23dbaefefafdd865e1734eec"
+  },
+  "323576": {
+    "row": {
+      "image_id": 1000647152,
+      "caption_id": 238200,
+      "text": "People swimming and reclining in chairs under umbrellas on a beach.",
+      "source_image_id": 323576,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000647152.safetensors",
+    "sha256": "d92dd9e3422c974857cce625266bbcaad89cb6600dee5a27e2a4a229637b3750"
+  },
+  "6896": {
+    "row": {
+      "image_id": 1000013792,
+      "caption_id": 766802,
+      "text": "Man posing in front of a pair of giraffes in background.",
+      "source_image_id": 6896,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000013792.safetensors",
+    "sha256": "1be1f7415900a2eb31daa4de827a52dd708dcc9709328229728e9ec42cdccbd6"
+  },
+  "336777": {
+    "row": {
+      "image_id": 1000673554,
+      "caption_id": 303556,
+      "text": "Many different signs cover a post next to a bus stop.",
+      "source_image_id": 336777,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000673554.safetensors",
+    "sha256": "8fb459995dc07c73a6e47be793c513dd441e8d5fbba6d898faabca597c5e28b4"
+  },
+  "373374": {
+    "row": {
+      "image_id": 1000746748,
+      "caption_id": 367447,
+      "text": "sandwich sits on plate with dipping bowl next to a cup",
+      "source_image_id": 373374,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000746748.safetensors",
+    "sha256": "951295628ab63ebce5ba3d01b6ce2e820337f254e1de1f3ebfda4893872bee26"
+  },
+  "291588": {
+    "row": {
+      "image_id": 1000583176,
+      "caption_id": 206465,
+      "text": "A woman laying in a hospital bed with a broken arm.",
+      "source_image_id": 291588,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000583176.safetensors",
+    "sha256": "5cb0298d555e92ac7a2c98e3c83d1c40a3fd344a8545f766966b1d831852e905"
+  },
+  "288955": {
+    "row": {
+      "image_id": 1000577910,
+      "caption_id": 62374,
+      "text": "Shaggy dog gets dinner served on a plate.",
+      "source_image_id": 288955,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000577910.safetensors",
+    "sha256": "d8508cbb9b544ecfa0f2fe23a792e7e54d67ce229ca919da41d21da194e9afed"
+  },
+  "168096": {
+    "row": {
+      "image_id": 1000336192,
+      "caption_id": 425677,
+      "text": "some cars on a wet street buildings and traffic lights",
+      "source_image_id": 168096,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000336192.safetensors",
+    "sha256": "6ccec386e7bf9972bc9157d378b4c9ecf791981f97687ef5b5a5cb56cbfc86a0"
+  },
+  "579900": {
+    "row": {
+      "image_id": 1001159800,
+      "caption_id": 188079,
+      "text": "A small loaded pizza on a yellow plate",
+      "source_image_id": 579900,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1001159800.safetensors",
+    "sha256": "cb553af36804cfd31d6126b55a786d5053f324b8641b889511c9cb7b9b878d17"
+  },
+  "491497": {
+    "row": {
+      "image_id": 1000982994,
+      "caption_id": 393654,
+      "text": "A fluffy white chair that faces away fro a television.",
+      "source_image_id": 491497,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000982994.safetensors",
+    "sha256": "c6b0fbcba8d29bcd9e3fc67c76727fc2b7ac9f35a2123a3ffc7434e0de425fe5"
+  },
+  "218736": {
+    "row": {
+      "image_id": 1000437472,
+      "caption_id": 408582,
+      "text": "A hot dog and soda on a table with a mushroom",
+      "source_image_id": 218736,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000437472.safetensors",
+    "sha256": "b25c852225be608d936a17e263ecac04869b43f99af781a5a4905541dbb5d514"
+  },
+  "396580": {
+    "row": {
+      "image_id": 1000793160,
+      "caption_id": 515773,
+      "text": "Very artistic photograph of a house, a lake and a wooden boat",
+      "source_image_id": 396580,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000793160.safetensors",
+    "sha256": "ee7744e46ff62650bdaf8158dd03c31e643a13d6630469c05bb8ae6c3bfc4094"
+  },
+  "31625": {
+    "row": {
+      "image_id": 1000063250,
+      "caption_id": 317391,
+      "text": "A box filled with cakes next to other boxes of cakes.",
+      "source_image_id": 31625,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000063250.safetensors",
+    "sha256": "807ff02009549e63bb4fb7f99a633a4797e182d49032c7aee24f82b029c3879c"
+  },
+  "443361": {
+    "row": {
+      "image_id": 1000886722,
+      "caption_id": 739373,
+      "text": "A couch, fireplace, and other furniture sitting in a roo",
+      "source_image_id": 443361,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000886722.safetensors",
+    "sha256": "f257da83a79497f13103db0961c63a7f63c28794adcc50ef575c5c9de978a152"
+  },
+  "163759": {
+    "row": {
+      "image_id": 1000327518,
+      "caption_id": 121075,
+      "text": "Two zebra standing next to each other in a grass covered field.",
+      "source_image_id": 163759,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000327518.safetensors",
+    "sha256": "f9959100b12ac54112dffcdaee5538f981f7240c9f7e7b25166be39e66dbaea5"
+  },
+  "333135": {
+    "row": {
+      "image_id": 1000666270,
+      "caption_id": 281281,
+      "text": "A double deck bus parked along the curb in front of a building.",
+      "source_image_id": 333135,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000666270.safetensors",
+    "sha256": "fad208bd55aca820b69198d8c3c330534f8d088c911728476a9279456f7cd874"
+  },
+  "54520": {
+    "row": {
+      "image_id": 1000109040,
+      "caption_id": 289557,
+      "text": "A thin crusted pizza dish cut into four slices",
+      "source_image_id": 54520,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000109040.safetensors",
+    "sha256": "de464382bc4d21e761d31f3f4be9cfd0ede51d439d3cc1508c6598b43d4a411c"
+  },
+  "163339": {
+    "row": {
+      "image_id": 1000326679,
+      "caption_id": 401590,
+      "text": "The decorated bench is sitting among the flowers.",
+      "source_image_id": 163339,
+      "noise_variant": 1
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000326679.safetensors",
+    "sha256": "3d8dc4cf93209cbd8bc092c9072cb7a8623971b837ae9705404776649480db1e"
+  },
+  "130522": {
+    "row": {
+      "image_id": 1000261044,
+      "caption_id": 465688,
+      "text": "a little puppy dog in some kind of bag",
+      "source_image_id": 130522,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000261044.safetensors",
+    "sha256": "15ddcdf19955696a61057b2798dc0537510e420e6bfeff9b9a89e35ec6d5ca61"
+  },
+  "478858": {
+    "row": {
+      "image_id": 1000957716,
+      "caption_id": 512650,
+      "text": "A bicycle chained to a pole in the city",
+      "source_image_id": 478858,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000957716.safetensors",
+    "sha256": "657c1e76e91ecd841db735920ee778170be97f997f5723995761fbb9a5a61906"
+  },
+  "43944": {
+    "row": {
+      "image_id": 1000087888,
+      "caption_id": 626884,
+      "text": "A plate of food with sandwiches and some fries on it.",
+      "source_image_id": 43944,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000087888.safetensors",
+    "sha256": "3e43a7ba4a9878095dbc4bbc1a7fb0c9b140d5dc43955f893a7829862dd5d145"
+  },
+  "318854": {
+    "row": {
+      "image_id": 1000637708,
+      "caption_id": 181627,
+      "text": "A woman sitting at a desk using a laptop.",
+      "source_image_id": 318854,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000637708.safetensors",
+    "sha256": "42a87e8c452dcf5905098b6eef30ae0d36a98752d38bc450d6e5f43755c8b752"
+  },
+  "581560": {
+    "row": {
+      "image_id": 1001163120,
+      "caption_id": 365607,
+      "text": "A black and white picture of a teddy bear",
+      "source_image_id": 581560,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1001163120.safetensors",
+    "sha256": "0f2bccc02dab0c091bf79a4cf0823d09558c23402a0a62893fcf776cbb82f01e"
+  },
+  "88225": {
+    "row": {
+      "image_id": 1000176450,
+      "caption_id": 680315,
+      "text": "A double decker sight seeing bus is driving on the road.",
+      "source_image_id": 88225,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000176450.safetensors",
+    "sha256": "1651fbdc6d73b6e0c6213dc4056849485508a1493b2bf4ee78b4348bfa93e852"
+  },
+  "553248": {
+    "row": {
+      "image_id": 1001106496,
+      "caption_id": 574665,
+      "text": "A slice of pizza sitting in a persons hand.",
+      "source_image_id": 553248,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1001106496.safetensors",
+    "sha256": "c06efdcbf5431420aeb8bf6e0d97f9486ef7d909af8dc6ccfebd0646ef4a9e95"
+  },
+  "142246": {
+    "row": {
+      "image_id": 1000284492,
+      "caption_id": 76777,
+      "text": "A computer on a table with four chairs in a bay window.",
+      "source_image_id": 142246,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000284492.safetensors",
+    "sha256": "37f433840acedca7d41150366e5216ae86e5fa571a3cba690f4795be9d0c2249"
+  },
+  "364586": {
+    "row": {
+      "image_id": 1000729172,
+      "caption_id": 381198,
+      "text": "A black horse that is tied up eating grass.",
+      "source_image_id": 364586,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000729172.safetensors",
+    "sha256": "fcf432eb1c7a26b1126239d78c64cc287546cda4c4b99ac5977597e11442df12"
+  },
+  "241517": {
+    "row": {
+      "image_id": 1000483034,
+      "caption_id": 736591,
+      "text": "A gold articulated bus on a rural route.",
+      "source_image_id": 241517,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000483034.safetensors",
+    "sha256": "cce48c852a917cd80fc06bedcfe7e627db2c60cd53e4ef539efd049c52b3d70c"
+  },
+  "430973": {
+    "row": {
+      "image_id": 1000861946,
+      "caption_id": 307763,
+      "text": "Large whole pizza pie with cheese and olive toppings.",
+      "source_image_id": 430973,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000861946.safetensors",
+    "sha256": "7fb4fa49eecf4a23c0703df8b8dae41770250241c78a35f04c9cbf53c294631c"
+  },
+  "124911": {
+    "row": {
+      "image_id": 1000249822,
+      "caption_id": 766400,
+      "text": "A desk holds a couple computers and some speakers.",
+      "source_image_id": 124911,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000249822.safetensors",
+    "sha256": "23229ac304a24c4b0725aa57ce6bcf39afed5537771e3d4190fc50265a2b58bb"
+  },
+  "280911": {
+    "row": {
+      "image_id": 1000561822,
+      "caption_id": 682315,
+      "text": "Two large elephants in the woods with one leading the other",
+      "source_image_id": 280911,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000561822.safetensors",
+    "sha256": "542573febf29bdbe9e7e34bf583c6a11e5b145f2764695ef9b14c138fece2c40"
+  },
+  "581394": {
+    "row": {
+      "image_id": 1001162788,
+      "caption_id": 217138,
+      "text": "Group of people standing outside of a green bus.",
+      "source_image_id": 581394,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1001162788.safetensors",
+    "sha256": "debf9a8866c6e7b97c6755c33970eea7c6fbaa253f9f48b74fd0e6e67ac21a93"
+  },
+  "123642": {
+    "row": {
+      "image_id": 1000247284,
+      "caption_id": 460888,
+      "text": "there are two sandwiches that are on two white plates",
+      "source_image_id": 123642,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000247284.safetensors",
+    "sha256": "905b034c35eaaf7960971842e5ccc5875fc3031ada4a8fbe38969fc96f5a8c0e"
+  },
+  "511658": {
+    "row": {
+      "image_id": 1001023316,
+      "caption_id": 455446,
+      "text": "A deck with two chairs, glass table and umbrella",
+      "source_image_id": 511658,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1001023316.safetensors",
+    "sha256": "50d81b427923251f25383765baf433483dd53f91683b72c5d395f9c1975c94e5"
+  },
+  "264392": {
+    "row": {
+      "image_id": 1000528784,
+      "caption_id": 413630,
+      "text": "A dog sits on a seat in the middle of a room.",
+      "source_image_id": 264392,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000528784.safetensors",
+    "sha256": "b609f961b7732e5699fcbcc0f8345fc33805b921505aa9b655ab56eeec6c9a9d"
+  },
+  "473110": {
+    "row": {
+      "image_id": 1000946220,
+      "caption_id": 627111,
+      "text": "A train engine carrying a cart down a track.",
+      "source_image_id": 473110,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000946220.safetensors",
+    "sha256": "5cbef93a6ea22899e8d9cf89a23245a8f927b5e55a29cf02f06a10361c22512e"
+  },
+  "251794": {
+    "row": {
+      "image_id": 1000503588,
+      "caption_id": 437428,
+      "text": "a child blowing the candles out on a cake",
+      "source_image_id": 251794,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000503588.safetensors",
+    "sha256": "666a7278efb4f0cd846e3dfbbe34128c7065652b2d914b3918c2c2c5b664fea1"
+  },
+  "365945": {
+    "row": {
+      "image_id": 1000731890,
+      "caption_id": 169712,
+      "text": "A bed with a red flowery blanket in a bedroom topped with pillows.",
+      "source_image_id": 365945,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000731890.safetensors",
+    "sha256": "78758b454f3f522a7c6753c06e495c0bbe0e934c1bd73ac8ea3aa9aad6e04b24"
+  },
+  "277592": {
+    "row": {
+      "image_id": 1000555184,
+      "caption_id": 254618,
+      "text": "A tall giraffe standing in front of two giant stones.",
+      "source_image_id": 277592,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000555184.safetensors",
+    "sha256": "9716ec2a66f0a715675ae0168a8e64b07caf945046214e602fdbee1b8954ab7b"
+  },
+  "500703": {
+    "row": {
+      "image_id": 1001001406,
+      "caption_id": 97388,
+      "text": "People are waiting for the train to arrive",
+      "source_image_id": 500703,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1001001406.safetensors",
+    "sha256": "7b83a1a7e0a662633e706d2be13c63068306bf8dbe64edbbaee60914c468dad1"
+  },
+  "124262": {
+    "row": {
+      "image_id": 1000248524,
+      "caption_id": 230495,
+      "text": "sandwiches on a bar wit beer and a bartender",
+      "source_image_id": 124262,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000248524.safetensors",
+    "sha256": "e8470696f749a677248fd750b9c15fbf3ed1771d36a445189108a07e06e5841d"
+  },
+  "244571": {
+    "row": {
+      "image_id": 1000489142,
+      "caption_id": 534760,
+      "text": "A L shaped couch with a variety of pillows on it, in front of a television.",
+      "source_image_id": 244571,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000489142.safetensors",
+    "sha256": "0db2c63d2f3ca5ec4a1859939c13daa09c1ae2d823d310a5f0cb0c380245ce7a"
+  },
+  "391825": {
+    "row": {
+      "image_id": 1000783650,
+      "caption_id": 589219,
+      "text": "A herd of white sheep standing on top of a green field.",
+      "source_image_id": 391825,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000783650.safetensors",
+    "sha256": "7d5713d702ee85199912e061c7ae6f02bff3736a858462faac528fad7808ed2f"
+  },
+  "335119": {
+    "row": {
+      "image_id": 1000670238,
+      "caption_id": 657018,
+      "text": "A car and a bus behind a fence.",
+      "source_image_id": 335119,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000670238.safetensors",
+    "sha256": "68129e83bb9b9bbff8b81896d3d8362d2a4b8dcc63394fb9a7cf097f510a9420"
+  },
+  "516641": {
+    "row": {
+      "image_id": 1001033282,
+      "caption_id": 554941,
+      "text": "a small cup of oats revolution oatmeal with apples",
+      "source_image_id": 516641,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1001033282.safetensors",
+    "sha256": "b104c48501941ffae6725db65bfda157d55c2245261fde1770f337f3f81ec5db"
+  },
+  "505977": {
+    "row": {
+      "image_id": 1001011954,
+      "caption_id": 354500,
+      "text": "The circular bed has a chandelier above it.",
+      "source_image_id": 505977,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1001011954.safetensors",
+    "sha256": "cb7bb5a1593bc03200c4286df6f4d06e7305eb3fe2a2b46692bca871f8d8264a"
+  },
+  "18553": {
+    "row": {
+      "image_id": 1000037106,
+      "caption_id": 51564,
+      "text": "two brown dogs are laying next to each other",
+      "source_image_id": 18553,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000037106.safetensors",
+    "sha256": "53d3fd2bb11276be2e7868650e452013f1d0183749a2f6768d6c1f1a2b63068f"
+  },
+  "411875": {
+    "row": {
+      "image_id": 1000823750,
+      "caption_id": 383336,
+      "text": "A black and brown car on concrete floor.",
+      "source_image_id": 411875,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000823750.safetensors",
+    "sha256": "0c7b2b41d86fd87b3546a14b1c56359de10c66a8040cf526ab57234004cefde8"
+  },
+  "43753": {
+    "row": {
+      "image_id": 1000087506,
+      "caption_id": 366302,
+      "text": "A man being threatened by a yellow banana.",
+      "source_image_id": 43753,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000087506.safetensors",
+    "sha256": "f736f21df4e25c54dc21d6b07649771b2c1c5a7cb413c914d71871cf5a1313b7"
+  },
+  "31248": {
+    "row": {
+      "image_id": 1000062496,
+      "caption_id": 431844,
+      "text": "Living room with white chairs and couches, fireplace and books on bookshelves.",
+      "source_image_id": 31248,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000062496.safetensors",
+    "sha256": "3e505a31a9ce7b49154cdfe9a98a57139527ce2ba2ac4f6700041535b06ef8cd"
+  },
+  "426714": {
+    "row": {
+      "image_id": 1000853428,
+      "caption_id": 809304,
+      "text": "A cat lying across the top of the microwave",
+      "source_image_id": 426714,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000853428.safetensors",
+    "sha256": "23f70b3e64a43cde473f965b6e00522804b8afff8a382d75f792c27ce70b34b0"
+  },
+  "452321": {
+    "row": {
+      "image_id": 1000904642,
+      "caption_id": 423713,
+      "text": "A large bus on the side of the road.",
+      "source_image_id": 452321,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000904642.safetensors",
+    "sha256": "0b60630dfeaeeef19dea29ebd4ec2ddd45737ceb4a9bdcdd97406489715cc52e"
+  },
+  "564337": {
+    "row": {
+      "image_id": 1001128674,
+      "caption_id": 28284,
+      "text": "Pizza sitting on a paper plate with a can of pop.",
+      "source_image_id": 564337,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1001128674.safetensors",
+    "sha256": "d81d834cdafe91635e83081194376ebfccde429f611c3e4da713197d30404a9a"
+  },
+  "5816": {
+    "row": {
+      "image_id": 1000011632,
+      "caption_id": 511830,
+      "text": "A bed with pillows and white sheets in a room",
+      "source_image_id": 5816,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000011632.safetensors",
+    "sha256": "45ff723c1811fa0ab208ba665988bf3949c161c32da33efc739962a0f1d8a9a2"
+  },
+  "578131": {
+    "row": {
+      "image_id": 1001156262,
+      "caption_id": 87522,
+      "text": "A woman jumping a brown horse over a jump in a field.",
+      "source_image_id": 578131,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1001156262.safetensors",
+    "sha256": "350d88290ee6a395a4cfba4c001b50e85f657d1482370bf84de38d2ac8b6dde3"
+  },
+  "229096": {
+    "row": {
+      "image_id": 1000458192,
+      "caption_id": 231036,
+      "text": "a double deckered bus on a city street",
+      "source_image_id": 229096,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000458192.safetensors",
+    "sha256": "173ca82af879f943f53a73eaf68aae040e032024b9ae15d8b9c8c840fa564caf"
+  },
+  "467578": {
+    "row": {
+      "image_id": 1000935156,
+      "caption_id": 539692,
+      "text": "A box of donuts with a coffee in front of it.",
+      "source_image_id": 467578,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000935156.safetensors",
+    "sha256": "e7612bfbceb6b862b66c5eec3bb17332ce0f967049bb901271518d5c9b393266"
+  },
+  "541664": {
+    "row": {
+      "image_id": 1001083328,
+      "caption_id": 322728,
+      "text": "A laptop computer sitting on top of a lego desk.",
+      "source_image_id": 541664,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1001083328.safetensors",
+    "sha256": "151d6a9f05ada9e336194178c1003c878337318a99af08beed6afddd692d65f3"
+  },
+  "380106": {
+    "row": {
+      "image_id": 1000760212,
+      "caption_id": 393236,
+      "text": "two giraffes in a field with many trees",
+      "source_image_id": 380106,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000760212.safetensors",
+    "sha256": "a2e6d6296f235766645506b3966af4e6878c705a18c40907e1a56c764a8e22ec"
+  },
+  "220732": {
+    "row": {
+      "image_id": 1000441464,
+      "caption_id": 499283,
+      "text": "THERE ARE CITY BUSES THAT ARE LINED ON THE STREET IN FRONT OF THE BUILDING",
+      "source_image_id": 220732,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000441464.safetensors",
+    "sha256": "16501e531b21d585ec9c64be784a7003c5fedc76429e5b2efb972fe094240767"
+  },
+  "107020": {
+    "row": {
+      "image_id": 1000214040,
+      "caption_id": 546509,
+      "text": "half of a birthday cake with an angel decoration on the top of it",
+      "source_image_id": 107020,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000214040.safetensors",
+    "sha256": "02c989589f4e86958aea6c2b33e92bab089c640d34395df7e4bc435e594958ce"
+  },
+  "374241": {
+    "row": {
+      "image_id": 1000748482,
+      "caption_id": 563230,
+      "text": "a directory next to some snow covered benches",
+      "source_image_id": 374241,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000748482.safetensors",
+    "sha256": "979b0d2e58673a49d25487102c0db63efe31cc1f8a2b1e19c706d7e687a0c6d6"
+  },
+  "408336": {
+    "row": {
+      "image_id": 1000816672,
+      "caption_id": 793460,
+      "text": "A zebra looking alertly at the camera while in the field.",
+      "source_image_id": 408336,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000816672.safetensors",
+    "sha256": "60e47f221e4716a7256a78b3695a767af5bb9037255238910519a5af179a9952"
+  },
+  "237568": {
+    "row": {
+      "image_id": 1000475136,
+      "caption_id": 117446,
+      "text": "Person on a motorcycle coming up to a stop sign on the street.",
+      "source_image_id": 237568,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000475136.safetensors",
+    "sha256": "b6b61571db58fe537df2473b88489315a03d0197968a3ba70db62bf5589d554a"
+  },
+  "165009": {
+    "row": {
+      "image_id": 1000330018,
+      "caption_id": 435026,
+      "text": "a man and woman stand next to a wedding cake",
+      "source_image_id": 165009,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000330018.safetensors",
+    "sha256": "55e6a2501124c57ea2eef22a0b6778722ba15057ddc6ce27913e2c957e604392"
+  },
+  "5804": {
+    "row": {
+      "image_id": 1000011608,
+      "caption_id": 794161,
+      "text": "A laptop computer sitting on a table, next to a rocking chair.",
+      "source_image_id": 5804,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000011608.safetensors",
+    "sha256": "9e6f9712e0ae7649f30534dcba486e5ebd8c7d0b37e7750809088f7386c19f23"
+  },
+  "366157": {
+    "row": {
+      "image_id": 1000732314,
+      "caption_id": 225580,
+      "text": "A herd of sheep passing by people behind barriers.",
+      "source_image_id": 366157,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000732314.safetensors",
+    "sha256": "b35e9c4a044bbd37fa5d52a90bfa0191b52b7dc09f85031a3ce1f345d45f4314"
+  },
+  "345560": {
+    "row": {
+      "image_id": 1000691120,
+      "caption_id": 695932,
+      "text": "A woman is seen in the rear view mirror of a motorcycle.",
+      "source_image_id": 345560,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000691120.safetensors",
+    "sha256": "8c7396d3afbb885b44cb977334e9c70eec05f9ae10183f98c8c625c783d8d143"
+  },
+  "8473": {
+    "row": {
+      "image_id": 1000016946,
+      "caption_id": 163390,
+      "text": "Italian blood oranges for sale in a market",
+      "source_image_id": 8473,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000016946.safetensors",
+    "sha256": "55305ed6958e21fb5dc0dd070205ce3d68e7c2fa08b786d7204820dc43afa060"
+  },
+  "25896": {
+    "row": {
+      "image_id": 1000051792,
+      "caption_id": 20821,
+      "text": "Six old men, four sitting on a bench and two standing, conversing.",
+      "source_image_id": 25896,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000051792.safetensors",
+    "sha256": "aae8701c571a7898f52b54c8dc94ad7314f5bdc8345b3885c36e7fc7a023322e"
+  },
+  "371117": {
+    "row": {
+      "image_id": 1000742234,
+      "caption_id": 47675,
+      "text": "A black and white cat sitting on the side of a computer monitor.",
+      "source_image_id": 371117,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000742234.safetensors",
+    "sha256": "eb620a24e7f4189bf2d08339b1850ac21a8d548afc6be57bb555435aa16f6e0f"
+  },
+  "455943": {
+    "row": {
+      "image_id": 1000911886,
+      "caption_id": 75728,
+      "text": "An airplane high in the sky flying overhead.",
+      "source_image_id": 455943,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000911886.safetensors",
+    "sha256": "f8d76b7ef73318b35220390922fdfac6f7a6ec625493e9727e14cd6bd90f84b8"
+  },
+  "513060": {
+    "row": {
+      "image_id": 1001026120,
+      "caption_id": 661115,
+      "text": "A person showing off the inside of two doughnuts",
+      "source_image_id": 513060,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1001026120.safetensors",
+    "sha256": "f04dc63dc418bb0e734187ad46cdf23b451b58fe7d3fc4a4e6c39d759a0fc3f1"
+  },
+  "172006": {
+    "row": {
+      "image_id": 1000344012,
+      "caption_id": 628185,
+      "text": "The bunk beds are made up with the same bedding.",
+      "source_image_id": 172006,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000344012.safetensors",
+    "sha256": "0f0c510f9ff9214bd56975a67ff7793b2a625c1a82c6ed4100a38ece85491628"
+  },
+  "147629": {
+    "row": {
+      "image_id": 1000295258,
+      "caption_id": 513288,
+      "text": "a cat licking its lips while holding onto a toy in the shape of an elephant",
+      "source_image_id": 147629,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000295258.safetensors",
+    "sha256": "feb43326691695f20ac2a96b5aa453084b0e2395820b6cfcd83a5fdd64ee18fa"
+  },
+  "174987": {
+    "row": {
+      "image_id": 1000349974,
+      "caption_id": 610533,
+      "text": "A train is being doodled with green and blue.",
+      "source_image_id": 174987,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000349974.safetensors",
+    "sha256": "c274dde1d6999d3812fdf293c5926740457f32415be52a75a7c36c9016df1533"
+  },
+  "131361": {
+    "row": {
+      "image_id": 1000262722,
+      "caption_id": 206991,
+      "text": "A man sitting at a table eating donuts.",
+      "source_image_id": 131361,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000262722.safetensors",
+    "sha256": "23c74a8378be2f74c2cc15ee82a1cad096a2bc9bd3320bce7f029d0d723eaa88"
+  },
+  "188109": {
+    "row": {
+      "image_id": 1000376218,
+      "caption_id": 48539,
+      "text": "Small bedroom with a bed, lamp, dresser, and a small chair.",
+      "source_image_id": 188109,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000376218.safetensors",
+    "sha256": "8e2edbd4be4c2a758929ba793552ed3bca9b33cc8462f8e2ea9527ab068c29f8"
+  },
+  "216273": {
+    "row": {
+      "image_id": 1000432546,
+      "caption_id": 207855,
+      "text": "A small white dog sitting on the floor on top of a rug.",
+      "source_image_id": 216273,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000432546.safetensors",
+    "sha256": "42ff4ed81369b7cf53c8daa7a8e341c26e84eed2ac0e4946db4d52692057f2b6"
+  },
+  "121503": {
+    "row": {
+      "image_id": 1000243006,
+      "caption_id": 365125,
+      "text": "People get on a bus on a street next to a building.",
+      "source_image_id": 121503,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000243006.safetensors",
+    "sha256": "c54966ad1ce02cc59f02ddc0a8c2bfd1ebe3679b99413a6f47bcb299709fc697"
+  },
+  "539566": {
+    "row": {
+      "image_id": 1001079132,
+      "caption_id": 247567,
+      "text": "a bowl of broccoli,black beans and greens next to a small bowl of red peepers",
+      "source_image_id": 539566,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1001079132.safetensors",
+    "sha256": "c3c99f93038a6c4b193ad3583c01e4a99fc2ad2de7ddf3fcdf394422a885eafa"
+  },
+  "355908": {
+    "row": {
+      "image_id": 1000711816,
+      "caption_id": 394532,
+      "text": "A narrow living room with a couch and tv.",
+      "source_image_id": 355908,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000711816.safetensors",
+    "sha256": "2bed195bef7df01c1f8f037f2c505859efebabf9c0f1a7cff13a5c18ec3e0fa9"
+  },
+  "377060": {
+    "row": {
+      "image_id": 1000754120,
+      "caption_id": 663519,
+      "text": "A horse's rider jumps the horse over a log.",
+      "source_image_id": 377060,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000754120.safetensors",
+    "sha256": "da095b761ff0080a436d6aea0475f95a843292b450a2f80182dcb2a831a643f8"
+  },
+  "320482": {
+    "row": {
+      "image_id": 1000640964,
+      "caption_id": 792847,
+      "text": "A transit bus sitting at one of its stops on the side of a street.",
+      "source_image_id": 320482,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000640964.safetensors",
+    "sha256": "80e4ae6a5923d3e7600c7c1bfa743ba808b74e103b34ecf5a327ee8061c4ba06"
+  },
+  "45574": {
+    "row": {
+      "image_id": 1000091148,
+      "caption_id": 802556,
+      "text": "A HAM SANDWICH WITH LETTUCE IN A PAPER BAG",
+      "source_image_id": 45574,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000091148.safetensors",
+    "sha256": "4f947a4ae9ad2c0323f3d3defadcf11531963ddecb46d9221c921b873c5f3617"
+  },
+  "374576": {
+    "row": {
+      "image_id": 1000749152,
+      "caption_id": 805158,
+      "text": "A room with a bed and some windows in it",
+      "source_image_id": 374576,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000749152.safetensors",
+    "sha256": "255c6438ebdabad0a78b59abf565855fd26f0c99b15420e0dc9c259e5cb666ce"
+  },
+  "208549": {
+    "row": {
+      "image_id": 1000417098,
+      "caption_id": 221802,
+      "text": "A woman standing next to a white cow with long horns.",
+      "source_image_id": 208549,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000417098.safetensors",
+    "sha256": "ebd4856f899715cacd165b121b22f83b8b0d6a7657e0af1dc12bdae0cb6bfdeb"
+  },
+  "218224": {
+    "row": {
+      "image_id": 1000436448,
+      "caption_id": 199920,
+      "text": "A large white airplane sits on the runway.",
+      "source_image_id": 218224,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000436448.safetensors",
+    "sha256": "6586c67b67e16fd4d46ae7947655e3551ba1dbccf952b80acadc74be592a80ab"
+  },
+  "139953": {
+    "row": {
+      "image_id": 1000279906,
+      "caption_id": 648902,
+      "text": "An arrangement of donuts and other food sits on a table.",
+      "source_image_id": 139953,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000279906.safetensors",
+    "sha256": "d0d1d08429f0b70df08a24a338d97fd6a99be9507985fb0b01fc189bcfaedcc4"
+  },
+  "3217": {
+    "row": {
+      "image_id": 1000006434,
+      "caption_id": 462148,
+      "text": "A wooden bench on the ground next to some trees.",
+      "source_image_id": 3217,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000006434.safetensors",
+    "sha256": "d01c37def6468dccc2a4497ca35433e983060c8bbfb9a50feb4915c41450e485"
+  },
+  "143825": {
+    "row": {
+      "image_id": 1000287650,
+      "caption_id": 787831,
+      "text": "a couple of dogs that are playing with a frizbee",
+      "source_image_id": 143825,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000287650.safetensors",
+    "sha256": "cd371339a3f85c9a662bd4cfb6e88a7cbd183dfbc255bd573363655dfb73297d"
+  },
+  "365709": {
+    "row": {
+      "image_id": 1000731418,
+      "caption_id": 370768,
+      "text": "some buildings cars and street meters and a sign",
+      "source_image_id": 365709,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000731418.safetensors",
+    "sha256": "62aa65c91e6a976e2d845356b60475f92a4a5188e4ae4bf391e3a2be38664182"
+  },
+  "308101": {
+    "row": {
+      "image_id": 1000616202,
+      "caption_id": 481988,
+      "text": "A lady with glasses biting a big sandwich.",
+      "source_image_id": 308101,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000616202.safetensors",
+    "sha256": "9f67bf995d3ce4bdf6d63b83a9f9a3794f2a225c9cedd7f89a584790f972ef39"
+  },
+  "315962": {
+    "row": {
+      "image_id": 1000631924,
+      "caption_id": 295228,
+      "text": "Woman in shades and cap sit on beach chair under an umbrella",
+      "source_image_id": 315962,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000631924.safetensors",
+    "sha256": "f58a25d7bd9f232de53da681d8e36a0b6e4b9e75cc4bb560cc55d8ed3cf436bd"
+  },
+  "158494": {
+    "row": {
+      "image_id": 1000316988,
+      "caption_id": 690558,
+      "text": "there are many giraffes that are seen here",
+      "source_image_id": 158494,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000316988.safetensors",
+    "sha256": "e2b73810f0e67aa8589c201e6d8bc2bbea439bb83de1c4c12dba68d29deb0e56"
+  },
+  "308362": {
+    "row": {
+      "image_id": 1000616724,
+      "caption_id": 284278,
+      "text": "A long bus driving on a city street past a building.",
+      "source_image_id": 308362,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000616724.safetensors",
+    "sha256": "fe2e2377213064e35bfc97fc19d933de8b89e92757a9e65b23ccf174d599d8bb"
+  },
+  "387567": {
+    "row": {
+      "image_id": 1000775134,
+      "caption_id": 293742,
+      "text": "an image of a person slicing pizza with a knife",
+      "source_image_id": 387567,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000775134.safetensors",
+    "sha256": "06c1b4a580287b669ebd590c9888ddfd2db3ab4f121199a38a7c0f102309ddaa"
+  },
+  "220176": {
+    "row": {
+      "image_id": 1000440352,
+      "caption_id": 793351,
+      "text": "A man posing for a picture on a bed in the air.",
+      "source_image_id": 220176,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000440352.safetensors",
+    "sha256": "fc37a29607ef54abb39252f6b8d1b813735de17c3a2721da053a2a01cda27c8a"
+  },
+  "180830": {
+    "row": {
+      "image_id": 1000361660,
+      "caption_id": 34367,
+      "text": "A cat sitting in front of a window where there is a field of tulips and a windmill.",
+      "source_image_id": 180830,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000361660.safetensors",
+    "sha256": "cf8c43e5f5b864117ec3342356adca422d16b26443d2efa83c52b56377f19516"
+  },
+  "200162": {
+    "row": {
+      "image_id": 1000400324,
+      "caption_id": 636691,
+      "text": "A train traveling under a signal lights on top of tracks.",
+      "source_image_id": 200162,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000400324.safetensors",
+    "sha256": "f3b8134bd28ccff0de9a5099e4256613ef9db5025dbe54036704cdd1de742f08"
+  },
+  "321332": {
+    "row": {
+      "image_id": 1000642664,
+      "caption_id": 266314,
+      "text": "A group of men standing around a table with pizza.",
+      "source_image_id": 321332,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000642664.safetensors",
+    "sha256": "850fd07127db4592184d2981c04a0bc7a60064743fefdd32bbb78d8bebe9b462"
+  },
+  "567657": {
+    "row": {
+      "image_id": 1001135314,
+      "caption_id": 84895,
+      "text": "A computer desk with a laptop computer and a desktop computer.",
+      "source_image_id": 567657,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1001135314.safetensors",
+    "sha256": "b307a8d78f7b0984e131896adec7156f168ae454dcdec6e3159c179eaccf2782"
+  },
+  "84929": {
+    "row": {
+      "image_id": 1000169858,
+      "caption_id": 553,
+      "text": "Teddy Bear sitting on a radiator wearing a hat.",
+      "source_image_id": 84929,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000169858.safetensors",
+    "sha256": "9947689e349af65fa0ff5fe3d13762c10bf8140add24a650f3e3eaef94ce7111"
+  },
+  "471446": {
+    "row": {
+      "image_id": 1000942892,
+      "caption_id": 659672,
+      "text": "a truck on a street next to a van",
+      "source_image_id": 471446,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000942892.safetensors",
+    "sha256": "e7789eed204789619f6b2fe9ea0d4626f6160b64ccca466a2d0e251598e39d21"
+  },
+  "302643": {
+    "row": {
+      "image_id": 1000605286,
+      "caption_id": 690599,
+      "text": "there is a sandwich and salad on a blue and white plate",
+      "source_image_id": 302643,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000605286.safetensors",
+    "sha256": "d1ce2d3ce71d1f12f0400ef3dd7ccbeef37f5997d216525b30c123b3a2375461"
+  },
+  "32610": {
+    "row": {
+      "image_id": 1000065220,
+      "caption_id": 689529,
+      "text": "a desk top with a bunch of electronics on it",
+      "source_image_id": 32610,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000065220.safetensors",
+    "sha256": "14252d36eea42d9545630de0565ae92d796d58e917abb8a4659c4a5accba3f7c"
+  },
+  "393805": {
+    "row": {
+      "image_id": 1000787610,
+      "caption_id": 150891,
+      "text": "The two zebras are fighting for their own territory.",
+      "source_image_id": 393805,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000787610.safetensors",
+    "sha256": "5bfa286110cc0a980bb260f24a321d3b963214ab03b68170de36d1ceaaabf7cc"
+  },
+  "465664": {
+    "row": {
+      "image_id": 1000931328,
+      "caption_id": 97791,
+      "text": "A 787 Jet Airplane sitting on a runway at an airport.",
+      "source_image_id": 465664,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000931328.safetensors",
+    "sha256": "08ebe42a37e4e31fd90aa709ef4e135d0c3455c17843d24052ee931dd90fa551"
+  },
+  "283168": {
+    "row": {
+      "image_id": 1000566336,
+      "caption_id": 477636,
+      "text": "A large sandwich in a styrofoam container with a fork.",
+      "source_image_id": 283168,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000566336.safetensors",
+    "sha256": "7819cb87accaa8abd666f068e67406c03af8c225150eea929c5243cd0f5efa95"
+  },
+  "411727": {
+    "row": {
+      "image_id": 1000823454,
+      "caption_id": 489665,
+      "text": "A laptop sitting on a desk with books and other accessories.",
+      "source_image_id": 411727,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000823454.safetensors",
+    "sha256": "244a4d859c359ea429d107a19942381daca78c79552ea57e765e71999ee09f13"
+  },
+  "97610": {
+    "row": {
+      "image_id": 1000195220,
+      "caption_id": 378977,
+      "text": "Two elephants walking on cement next to wall",
+      "source_image_id": 97610,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000195220.safetensors",
+    "sha256": "b80e16cd1ed9ebbe341b179c03cc6349450f9f6543975903a96b36075a9dfac2"
+  },
+  "336695": {
+    "row": {
+      "image_id": 1000673390,
+      "caption_id": 411371,
+      "text": "A person riding a motorcycle down a rural country road.",
+      "source_image_id": 336695,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000673390.safetensors",
+    "sha256": "b846fe052b14bb5aca497b57fcae3547496fa719a7bb5b8e409c68d4d61d6a2a"
+  },
+  "447736": {
+    "row": {
+      "image_id": 1000895472,
+      "caption_id": 171498,
+      "text": "A man eating a pink frosted sprinkle filled doughnut.",
+      "source_image_id": 447736,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000895472.safetensors",
+    "sha256": "dab6df473f17c20a763ee744967c77f0482ae6df8937e2797fe495c0d7ebebdf"
+  },
+  "20481": {
+    "row": {
+      "image_id": 1000040962,
+      "caption_id": 733184,
+      "text": "A laptop computer sitting on top of a desk.",
+      "source_image_id": 20481,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000040962.safetensors",
+    "sha256": "296bdc00b18c359b00c1e1719677958de110491955efe9b5a25a1c8dd0e63476"
+  },
+  "569841": {
+    "row": {
+      "image_id": 1001139682,
+      "caption_id": 392559,
+      "text": "Some people are riding along in a horse drawn Carriage",
+      "source_image_id": 569841,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1001139682.safetensors",
+    "sha256": "34d6f292bfe425389cc561b35c0f366f6c6c16d51dd57f530c437f1f572cd879"
+  },
+  "236161": {
+    "row": {
+      "image_id": 1000472322,
+      "caption_id": 394942,
+      "text": "A shiny antique bus coming though a gate by a brick building",
+      "source_image_id": 236161,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000472322.safetensors",
+    "sha256": "1f7ab423bd71ea42798ea0727ff8b95530481f447e8a6fdc885a26da32d25a51"
+  },
+  "193605": {
+    "row": {
+      "image_id": 1000387210,
+      "caption_id": 469420,
+      "text": "A man is selling bananas outside in a lot.",
+      "source_image_id": 193605,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000387210.safetensors",
+    "sha256": "a37b3e6127a926e23c0b6b2d54c25f8fe5ea6cad03ee6063ddf8f8bcdc112303"
+  },
+  "97561": {
+    "row": {
+      "image_id": 1000195122,
+      "caption_id": 135748,
+      "text": "A hotel room complete with a bed, desk and television.",
+      "source_image_id": 97561,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000195122.safetensors",
+    "sha256": "4c95db381ce56f4e42162cab12ea1f36571dde72e4f5277f89430229cef8b781"
+  },
+  "267434": {
+    "row": {
+      "image_id": 1000534868,
+      "caption_id": 54740,
+      "text": "A herd of cows are standing in a green field.",
+      "source_image_id": 267434,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000534868.safetensors",
+    "sha256": "2b3c4e99d62f51d122464918cccb5fe20f690ee994d29d39b562efc854065850"
+  },
+  "144715": {
+    "row": {
+      "image_id": 1000289430,
+      "caption_id": 709622,
+      "text": "Locomotive pulling cars on tracks in outdoor area.",
+      "source_image_id": 144715,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000289430.safetensors",
+    "sha256": "09786fb8417e5f15c9ed53274460e71504ecaf252ecdc561edf7ce0c86f18292"
+  },
+  "499313": {
+    "row": {
+      "image_id": 1000998626,
+      "caption_id": 328505,
+      "text": "A deep dish and thick crusted pizza with toppings.",
+      "source_image_id": 499313,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000998626.safetensors",
+    "sha256": "c7dfdded6eab2c98f960a839607390c08db8513a0f51dadd602bd8d5b89041c8"
+  },
+  "60448": {
+    "row": {
+      "image_id": 1000120896,
+      "caption_id": 591716,
+      "text": "A man flying into the air over a bed.",
+      "source_image_id": 60448,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000120896.safetensors",
+    "sha256": "13e09de6180eaac7cc35db58b0ed393d93bc1e3044d9c7841d72b859b06fb1c1"
+  },
+  "345434": {
+    "row": {
+      "image_id": 1000690868,
+      "caption_id": 422170,
+      "text": "A cat and some people on a grass field.",
+      "source_image_id": 345434,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000690868.safetensors",
+    "sha256": "108a40e83cc14b11cd623551cb9d24215e0aabc9217460c230fddc9bdfc73d73"
+  },
+  "303704": {
+    "row": {
+      "image_id": 1000607408,
+      "caption_id": 267198,
+      "text": "A child's train sitting on top of snow near a building.",
+      "source_image_id": 303704,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000607408.safetensors",
+    "sha256": "40de70a2b97905a6d0e31ae254108e9765974de4307dcdb6fb70314836c7f15d"
+  },
+  "400139": {
+    "row": {
+      "image_id": 1000800278,
+      "caption_id": 409274,
+      "text": "A white paint holding food that includes broccoli and meat.",
+      "source_image_id": 400139,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000800278.safetensors",
+    "sha256": "10576b824ac794039211b09c94beff6da3bc69a1032aea3b2540311448e15a19"
+  },
+  "160498": {
+    "row": {
+      "image_id": 1000320996,
+      "caption_id": 513668,
+      "text": "A chair next to a desk with a lamp, a monitor, a notebook and paper items.",
+      "source_image_id": 160498,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000320996.safetensors",
+    "sha256": "d4b1858f8723459506478cd6793ead643b5f5df08240ac4e633bfd8252a0ca7a"
+  }
+}

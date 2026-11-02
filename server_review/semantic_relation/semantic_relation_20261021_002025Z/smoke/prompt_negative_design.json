@@ -1,0 +1,75 @@
+{
+  "folder": "/root/logs/output_image/semantic/semantic_relation_20261021_002025Z_smoke_0a37cfda/prompt_negative_design",
+  "entries": [
+    {
+      "file_name": "sample_000000.png",
+      "text": "A tall zebra standing in a lush green field.",
+      "sha256": "e7ad10f1cba850569da8c41c43e5181df8db2a1de22088006665327a68265633"
+    },
+    {
+      "file_name": "sample_000001.png",
+      "text": "a white boat some green hills and water",
+      "sha256": "94d4add9a0d8e02ac6729b067c4c27c6255c0b99f534e0c84a7af15cea3513dc"
+    },
+    {
+      "file_name": "sample_000002.png",
+      "text": "Three pedestal plates holding oranges on a table.",
+      "sha256": "e77545eae21d96375e9bb4e866643083a59180e84e70a4bdc1797b1602ab63d5"
+    },
+    {
+      "file_name": "sample_000003.png",
+      "text": "A big bathroom with a couch a bathtub in the middle of the room.",
+      "sha256": "0817f57a2c2de521e1094d2b166d233dc5dd756cc2d6d8703047e7ee721be034"
+    },
+    {
+      "file_name": "sample_000004.png",
+      "text": "A zebra in the grass who is cleaning himself.",
+      "sha256": "537516a488b51b1ae8214d43ecd07d5251f5a905536d4537292e537781754dfb"
+    },
+    {
+      "file_name": "sample_000005.png",
+      "text": "A bus with a red stripe is parked on the street.",
+      "sha256": "9bdfb561aaeeaf2c6cb3ce932e1b3b302fb15001a51d058302d357713c9ba8ef"
+    },
+    {
+      "file_name": "sample_000006.png",
+      "text": "A tray topped with breakfast muffin sandwiches on a table .",
+      "sha256": "37aba2fd90d1b195bff90eca89b31dfdedfea0ba5a2795e56a670e67aa6392f5"
+    },
+    {
+      "file_name": "sample_000007.png",
+      "text": "A living room with two couches and several chairs.",
+      "sha256": "fb5765438fa850463f092cea96e751adb2b7963f4b278cb0b9cfa8446c0652dd"
+    }
+  ],
+  "scores": [
+    0.0026005152612924576,
+    0.014873417094349861,
+    0.002526314929127693,
+    0.011008264496922493,
+    0.0071221874095499516,
+    0.0009733503684401512,
+    0.015061354264616966,
+    0.01538561936467886
+  ],
+  "alignment": [
+    0.349599152803421,
+    0.25607597827911377,
+    0.3525143265724182,
+    0.26172566413879395,
+    0.34325724840164185,
+    0.32102516293525696,
+    0.28580227494239807,
+    0.2792705297470093
+  ],
+  "source_ids": [
+    66798,
+    451090,
+    137085,
+    363830,
+    1818,
+    454741,
+    435270,
+    243134
+  ]
+}

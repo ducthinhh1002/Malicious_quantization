@@ -1,0 +1,18 @@
+{
+  "passed": true,
+  "tests": 18,
+  "ran_at": "2026-10-26T04:47:58.595102+00:00",
+  "python_sources": {
+    "campaign.py": "63f244e6917367eb040c06e387ad6ec8b459bc44aff5c39801b3b3d769493baf",
+    "structure_metrics.py": "78418f71fbceca5c325254d49cae61b0e71b84bba52a7d03de93b79bccef2766",
+    "student_driver.py": "b44fc473b1290e78d176be4c3e91bb23dbcba3ba60cf8f6a3a380c6edaebb21a",
+    "verification.py": "2e6abdac9f6dc52a88fe3d0c27381a57206c508e35d91aaf35ab8b46897459be",
+    "test_transfer90.py": "c9a0dd92b995191d19ff067771a078b7fd9bb6897113a4395d268f4557a98ebf",
+    "refine_teacher.py": "767d3fed4bb6de0e862743d6e8a9c2714a2a5520ddcab6d2e80f4d25a4c67927",
+    "objectives.py": "3670c249f42f337add3f1195782b3c4ad1f907ee28fa0b17dcf721e047310eb8",
+    "bootstrap.py": "fe4fd5d01444453a5019e98cca4e01f8ed6e19dc270c4e78f19a7e2d174419b5",
+    "preserve_current.py": "7880e9f3b302dde536073e86b8b7aba774132049a20f108be23134313292869f"
+  },
+  "historical_report_integration": true,
+  "gpu_actual_model_smoke": "queued first after preserved dependency"
+}

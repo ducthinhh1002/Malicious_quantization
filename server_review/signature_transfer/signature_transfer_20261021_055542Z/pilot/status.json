@@ -1,0 +1,9 @@
+{
+  "status": "superseded",
+  "reason": "Rerun with requested SD1.4 student and author SD2.1 sampling configuration",
+  "previous_status": {
+    "status": "running",
+    "stage": "teacher_images_train"
+  },
+  "results_preserved": true
+}

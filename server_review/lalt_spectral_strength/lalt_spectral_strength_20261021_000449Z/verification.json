@@ -1,0 +1,47 @@
+{
+  "checked_at_utc": "2026-10-21T00:08:13.816853+00:00",
+  "status": {
+    "status": "complete",
+    "passing_angles": [],
+    "students_trained": false,
+    "native_teacher_trained": false
+  },
+  "rows": [
+    {
+      "angle": 0.48,
+      "auc": 0.799072265625,
+      "tpr": 0.109375,
+      "quality": {
+        "lpips": 0.03918717271881178,
+        "lpips_p95": 0.07477691434323783,
+        "psnr_p05": 25.4812180519104,
+        "clip_drop": 0.0008332938887178898
+      },
+      "passes": false
+    },
+    {
+      "angle": 0.72,
+      "auc": 0.88232421875,
+      "tpr": 0.171875,
+      "quality": {
+        "lpips": 0.07713266520295292,
+        "lpips_p95": 0.1376189939677715,
+        "psnr_p05": 21.839883613586426,
+        "clip_drop": 0.0008346452377736568
+      },
+      "passes": false
+    },
+    {
+      "angle": 1.08,
+      "auc": 0.9228515625,
+      "tpr": 0.40625,
+      "quality": {
+        "lpips": 0.1445153586100787,
+        "lpips_p95": 0.24401846677064895,
+        "psnr_p05": 18.0694917678833,
+        "clip_drop": 0.0011508057359606028
+      },
+      "passes": false
+    }
+  ]
+}

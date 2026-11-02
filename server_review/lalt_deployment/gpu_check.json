@@ -1,0 +1,11 @@
+{
+  "passed": true,
+  "resolution": 512,
+  "carrier_gradient": 2.5549783799760917e-07,
+  "transfer_gradient": 4.9282724567945024e-09,
+  "ordinary_inner_steps": 4,
+  "full_query_ddim_steps": 8,
+  "first_order_peak_gib": 9.82594347000122,
+  "meta_peak_gib": 75.43102931976318,
+  "scientific_result": false
+}

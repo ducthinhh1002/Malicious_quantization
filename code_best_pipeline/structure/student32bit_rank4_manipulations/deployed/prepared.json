@@ -1,0 +1,14 @@
+{
+  "branches": [
+    "rotation15",
+    "crop75",
+    "drop96",
+    "gaussian005",
+    "brightness07",
+    "blur15",
+    "flip"
+  ],
+  "teacher_sha256": "2f9fc8d664786acfe50bf7d47c20e037a92e4cc61805524233bd7f15f365a2d8",
+  "student_rank": 4,
+  "steps": 20000
+}

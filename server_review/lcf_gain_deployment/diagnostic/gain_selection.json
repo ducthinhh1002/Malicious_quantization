@@ -1,0 +1,33 @@
+{
+  "valid": true,
+  "selected": {
+    "multiplier": 16.0,
+    "gain": 1.1200000047683716,
+    "n": 32,
+    "psnr": 44.7204008102417,
+    "psnr_p05": 36.82548484802246,
+    "lpips": 0.0017432190006729797,
+    "lpips_p95": 0.003768928011413664,
+    "clip_drop": 2.7939677238464355e-08,
+    "quality_feasible": true
+  },
+  "initial_gain": 0.07000000029802322,
+  "train_image_ids": [
+    434763,
+    332058,
+    117237,
+    57703,
+    377361,
+    246562,
+    531607,
+    137727
+  ],
+  "train_keys": [
+    22,
+    233,
+    7,
+    248
+  ],
+  "rule": "largest quality-feasible gain from a declared grid; no reader scores, validation or test",
+  "caveat": "Train-quality calibration only; final independent quality gates still required"
+}

@@ -1,0 +1,4 @@
+# Preserve source bytes used in integrity checks on Windows and Linux.
+* text eol=lf
+# A few archived Python files contain CRLF; their recorded hashes cover those bytes.
+historical/*.py -text

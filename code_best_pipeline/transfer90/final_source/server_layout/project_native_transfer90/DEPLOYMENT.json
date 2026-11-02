@@ -1,0 +1,19 @@
+{
+  "host": "vm4",
+  "remote_source": "/root/logs/project_native_transfer90",
+  "remote_queue": "/root/logs/project_native_transfer90/runs/run_20261026_114758_661241",
+  "status": {
+    "state": "waiting_for_dependency",
+    "dependency": "/root/logs/threshold_quality_20261022/structure_margin_20261026",
+    "dependency_stage": "02_data",
+    "updated": "2026-10-26T04:48:30.967341+00:00",
+    "pid": 2372014
+  },
+  "launcher": {
+    "pid": 2372014,
+    "queued": "2026-10-26T04:48:00.340073+00:00"
+  },
+  "verification": "18 CPU tests passed; historical report integration passed; real-model GPU smoke queued before training",
+  "code_manifest_sha256": "ee24e95092d3896ac4f85afa12ca562c99dfcd5bf04e1a9f1a89795cd7cfee1f",
+  "recorded": "2026-10-26T04:48:36.837993+00:00"
+}

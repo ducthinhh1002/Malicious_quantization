@@ -1,0 +1,9 @@
+{
+  "method": "fixed_original_refine600_new_prompt_source",
+  "source_checkpoint": "/var/lib/structure32_student12500/runs/structure32/teacher_fp/refined",
+  "source_adapter_sha256": "2f9fc8d664786acfe50bf7d47c20e037a92e4cc61805524233bd7f15f365a2d8",
+  "num_bits": 32,
+  "refinement_steps": 600,
+  "teacher_is_unchanged": true,
+  "teacher_retrained": false
+}

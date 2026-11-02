@@ -1,0 +1,12 @@
+{
+  "status": "running",
+  "stage": "train_r16_attention_marked",
+  "active_stages": [
+    {
+      "stage": "train_r16_attention_marked",
+      "pid": 3316805
+    }
+  ],
+  "coordinator_pid": 3108292,
+  "scheduling": "remaining_marked_only"
+}

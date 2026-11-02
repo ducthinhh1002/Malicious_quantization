@@ -1,0 +1,370 @@
+{
+  "checked_at_utc": "2026-10-18T01:00:49.904073+00:00",
+  "spatial": {
+    "status.json": {
+      "status": "teacher_diagnostic_complete",
+      "students_run": false,
+      "teacher_gate_valid": false,
+      "scientific_result": false,
+      "explanation": "Trainability diagnostic; no student-transfer claim"
+    },
+    "latest_step": {
+      "step": 200,
+      "phase": "generalization",
+      "quality_weight": 1.0,
+      "gradient_norm": 4.918108970741741e-06,
+      "watermark_gradient_norm": 4.9174554987985175e-06,
+      "quality_gradient_norm": 4.640336612737883e-07,
+      "gradient_cosine": -0.045770831406116486,
+      "gradient_cosine_defined": true,
+      "rgb_changed_fraction": 0.0271581020206213,
+      "carrier_rms": 0.2466607689857483,
+      "carrier_update_relative_norm": 0.00015161211194936186,
+      "max_allocated_gb": 17.160754680633545,
+      "loss": 1.78506338596344,
+      "reader_loss": 1.799380898475647,
+      "wm": 1.7850606441497803,
+      "quality_loss": 2.715788696150412e-06,
+      "paired_loss": 1.651877999305725,
+      "mse": 4.2476463590901403e-07,
+      "lpips": 1.1839312719530426e-05,
+      "bit_accuracy": 0.5
+    },
+    "latest_validation": [
+      {
+        "auroc": "0.5",
+        "bit_accuracy": "0.42578125",
+        "calibration_split": "calibration",
+        "clean_fpr": "0.0",
+        "clip_drop": "-5.8175064623355865e-06",
+        "diversity_ratio": "0.9997753015948931",
+        "key": "34",
+        "lpips": "1.4531192206845844e-05",
+        "lpips_p95": "2.5267639375670112e-05",
+        "mean_gain": "-2.9802322387695312e-08",
+        "paired_gain_std": "1.1267288157309079e-05",
+        "paired_win_rate": "0.5",
+        "passes": "False",
+        "psnr": "63.01280927658081",
+        "psnr_p05": "60.11518669128418",
+        "score_scale": "0.05",
+        "split": "teacher_validation",
+        "step": "200",
+        "threshold": "-2.6320531368255615",
+        "tpr": "0.0"
+      },
+      {
+        "auroc": "0.49951171875",
+        "bit_accuracy": "0.5703125",
+        "calibration_split": "calibration",
+        "clean_fpr": "0.03125",
+        "clip_drop": "-4.734378308057785e-06",
+        "diversity_ratio": "1.0002135258918365",
+        "key": "221",
+        "lpips": "1.4521829328373315e-05",
+        "lpips_p95": "2.6713632541941477e-05",
+        "mean_gain": "-1.1846423149108887e-06",
+        "paired_gain_std": "9.418379689627036e-06",
+        "paired_win_rate": "0.484375",
+        "passes": "False",
+        "psnr": "63.01356029510498",
+        "psnr_p05": "60.15746879577637",
+        "score_scale": "0.05",
+        "split": "teacher_validation",
+        "step": "200",
+        "threshold": "-2.615267276763916",
+        "tpr": "0.03125"
+      }
+    ],
+    "teacher_fit_step50.json": {
+      "rows": [
+        {
+          "key": 22,
+          "split": "teacher_train",
+          "tpr": 0.0625,
+          "clean_fpr": 0.0625,
+          "bit_accuracy": 0.5703125,
+          "psnr": 63.33225440979004,
+          "psnr_p05": 59.321529388427734,
+          "lpips": 1.4884636499346016e-05,
+          "lpips_p95": 2.5337451916129794e-05,
+          "clip_drop": 9.091570973396301e-06,
+          "diversity_ratio": 0.9998682392444156,
+          "mean_gain": -1.1786818504333496e-05,
+          "threshold": -2.599945545196533,
+          "calibration_split": "calibration",
+          "score_scale": 0.0860051593651908,
+          "passes": false,
+          "auroc": 0.4921875,
+          "paired_win_rate": 0.375,
+          "paired_gain_std": 4.703399224011856e-05
+        },
+        {
+          "key": 233,
+          "split": "teacher_train",
+          "tpr": 0.25,
+          "clean_fpr": 0.25,
+          "bit_accuracy": 0.4296875,
+          "psnr": 63.332844972610474,
+          "psnr_p05": 59.27707290649414,
+          "lpips": 1.4808523161491394e-05,
+          "lpips_p95": 2.6451722987985704e-05,
+          "clip_drop": 1.3260170817375183e-05,
+          "diversity_ratio": 1.0000367010924311,
+          "mean_gain": 2.7179718017578125e-05,
+          "threshold": -2.649960517883301,
+          "calibration_split": "calibration",
+          "score_scale": 0.0849328187059292,
+          "passes": false,
+          "auroc": 0.51171875,
+          "paired_win_rate": 0.6875,
+          "paired_gain_std": 6.847175504391009e-05
+        }
+      ],
+      "used_for_selection": false,
+      "explanation": "Seen-prompt/seen-key diagnostic only"
+    },
+    "teacher_fit_step200.json": {
+      "rows": [
+        {
+          "key": 22,
+          "split": "teacher_train",
+          "tpr": 0.125,
+          "clean_fpr": 0.125,
+          "bit_accuracy": 0.4609375,
+          "psnr": 63.317357778549194,
+          "psnr_p05": 59.30815410614014,
+          "lpips": 1.4827489764002166e-05,
+          "lpips_p95": 2.4513231437595095e-05,
+          "clip_drop": -2.034008502960205e-06,
+          "diversity_ratio": 0.9999140152368735,
+          "mean_gain": -2.652406692504883e-06,
+          "threshold": -2.621825695037842,
+          "calibration_split": "calibration",
+          "score_scale": 0.05,
+          "passes": false,
+          "auroc": 0.49609375,
+          "paired_win_rate": 0.4375,
+          "paired_gain_std": 8.501918861672069e-06
+        },
+        {
+          "key": 233,
+          "split": "teacher_train",
+          "tpr": 0.0,
+          "clean_fpr": 0.0,
+          "bit_accuracy": 0.5390625,
+          "psnr": 63.32006478309631,
+          "psnr_p05": 59.26837635040283,
+          "lpips": 1.4850266026655845e-05,
+          "lpips_p95": 2.580485534053878e-05,
+          "clip_drop": 9.411945939064026e-06,
+          "diversity_ratio": 0.9999577019602478,
+          "mean_gain": 5.632638931274414e-06,
+          "threshold": -2.6193583011627197,
+          "calibration_split": "calibration",
+          "score_scale": 0.05,
+          "passes": false,
+          "auroc": 0.51171875,
+          "paired_win_rate": 0.6875,
+          "paired_gain_std": 1.1488669653897117e-05
+        }
+      ],
+      "used_for_selection": false,
+      "explanation": "Seen-prompt/seen-key diagnostic only"
+    },
+    "selected_step": 200,
+    "carrier_response.json": {
+      "rows": [
+        {
+          "multiplier": 0.0,
+          "mse": 1.877283217766035e-09,
+          "key_image_mse": 0.0,
+          "rgb_changed_fraction": 0.0001220703125,
+          "carrier_rms": 0.0
+        },
+        {
+          "multiplier": 1.0,
+          "mse": 4.252046323927061e-07,
+          "key_image_mse": 8.52403900353238e-07,
+          "rgb_changed_fraction": 0.027637481689453125,
+          "carrier_rms": 0.24672859907150269
+        },
+        {
+          "multiplier": 2.0,
+          "mse": 8.546917342755478e-07,
+          "key_image_mse": 1.7470856619183905e-06,
+          "rgb_changed_fraction": 0.055079780519008636,
+          "carrier_rms": 0.49345719814300537
+        },
+        {
+          "multiplier": 4.0,
+          "mse": 1.8156064243157743e-06,
+          "key_image_mse": 3.926728822989389e-06,
+          "rgb_changed_fraction": 0.1109161376953125,
+          "carrier_rms": 0.9869143962860107
+        }
+      ],
+      "selected_strength_unchanged": 0.35,
+      "training_prompt_only": true,
+      "interpretation": "Response to amplitude, not detection or transfer evidence"
+    }
+  },
+  "curriculum": {
+    "status.json": {
+      "status": "running",
+      "stage": "teacher"
+    },
+    "latest_step": {
+      "step": 100,
+      "phase": "generalization",
+      "quality_weight": 0.7,
+      "gradient_norm": 2.9225698199297767e-06,
+      "watermark_gradient_norm": 2.912728859882918e-06,
+      "quality_gradient_norm": 2.169708750443533e-07,
+      "gradient_cosine": 0.008182847872376442,
+      "gradient_cosine_defined": true,
+      "rgb_changed_fraction": 0.023288726806640625,
+      "carrier_rms": 0.24646572768688202,
+      "carrier_update_relative_norm": 9.704864351078868e-05,
+      "max_allocated_gb": 17.090383529663086,
+      "loss": 1.7934834957122803,
+      "reader_loss": 1.7993252277374268,
+      "wm": 1.7934811115264893,
+      "quality_loss": 2.403335201961454e-06,
+      "paired_loss": 1.651879072189331,
+      "mse": 3.582971430660109e-07,
+      "lpips": 3.283700789324939e-05,
+      "bit_accuracy": 0.5
+    },
+    "latest_validation": [
+      {
+        "auroc": "0.49755859375",
+        "bit_accuracy": "0.5625",
+        "calibration_split": "calibration",
+        "clean_fpr": "0.0",
+        "clip_drop": "-1.1147931218147278e-05",
+        "diversity_ratio": "0.9997476418154356",
+        "key": "34",
+        "lpips": "1.4549481093695249e-05",
+        "lpips_p95": "2.554109078118927e-05",
+        "mean_gain": "-6.705522537231445e-08",
+        "paired_gain_std": "2.1285071312399e-06",
+        "paired_win_rate": "0.421875",
+        "passes": "False",
+        "psnr": "63.008248925209045",
+        "psnr_p05": "60.10059700012207",
+        "score_scale": "0.05",
+        "split": "teacher_validation",
+        "step": "100",
+        "threshold": "-2.643024206161499",
+        "tpr": "0.0"
+      },
+      {
+        "auroc": "0.49853515625",
+        "bit_accuracy": "0.4375",
+        "calibration_split": "calibration",
+        "clean_fpr": "0.0625",
+        "clip_drop": "1.2605451047420502e-06",
+        "diversity_ratio": "1.0002535847568226",
+        "key": "221",
+        "lpips": "1.4507930885088172e-05",
+        "lpips_p95": "2.6761035860545233e-05",
+        "mean_gain": "-5.885958671569824e-07",
+        "paired_gain_std": "2.7669554507913294e-06",
+        "paired_win_rate": "0.453125",
+        "passes": "False",
+        "psnr": "63.0107399225235",
+        "psnr_p05": "60.14909725189209",
+        "score_scale": "0.05",
+        "split": "teacher_validation",
+        "step": "100",
+        "threshold": "-2.643472671508789",
+        "tpr": "0.0625"
+      }
+    ],
+    "teacher_fit_step50.json": {
+      "rows": [
+        {
+          "key": 22,
+          "split": "teacher_train",
+          "tpr": 0.0,
+          "clean_fpr": 0.0,
+          "bit_accuracy": 0.53125,
+          "psnr": 63.379718542099,
+          "psnr_p05": 59.22437000274658,
+          "lpips": 1.4675840418476582e-05,
+          "lpips_p95": 2.620970826683333e-05,
+          "clip_drop": -6.973743438720703e-06,
+          "diversity_ratio": 0.999874076034034,
+          "mean_gain": -5.066394805908203e-07,
+          "threshold": -2.62835693359375,
+          "calibration_split": "calibration",
+          "score_scale": 0.05,
+          "passes": false,
+          "auroc": 0.494140625,
+          "paired_win_rate": 0.40625,
+          "paired_gain_std": 2.556580722483298e-06
+        },
+        {
+          "key": 233,
+          "split": "teacher_train",
+          "tpr": 0.0,
+          "clean_fpr": 0.0,
+          "bit_accuracy": 0.46875,
+          "psnr": 63.389885902404785,
+          "psnr_p05": 59.17490482330322,
+          "lpips": 1.4655138159014314e-05,
+          "lpips_p95": 2.7434567073214566e-05,
+          "clip_drop": 5.39049506187439e-06,
+          "diversity_ratio": 0.9999462733658261,
+          "mean_gain": 1.087784767150879e-06,
+          "threshold": -2.6387929916381836,
+          "calibration_split": "calibration",
+          "score_scale": 0.05,
+          "passes": false,
+          "auroc": 0.513671875,
+          "paired_win_rate": 0.71875,
+          "paired_gain_std": 3.392723135581313e-06
+        }
+      ],
+      "used_for_selection": false,
+      "explanation": "Seen-prompt/seen-key diagnostic only"
+    },
+    "selected_step": 100,
+    "carrier_response.json": {
+      "rows": [
+        {
+          "multiplier": 0.0,
+          "mse": 1.877283217766035e-09,
+          "key_image_mse": 0.0,
+          "rgb_changed_fraction": 0.0001220703125,
+          "carrier_rms": 0.0
+        },
+        {
+          "multiplier": 1.0,
+          "mse": 4.252046323927061e-07,
+          "key_image_mse": 8.52403900353238e-07,
+          "rgb_changed_fraction": 0.027637481689453125,
+          "carrier_rms": 0.24672859907150269
+        },
+        {
+          "multiplier": 2.0,
+          "mse": 8.546917342755478e-07,
+          "key_image_mse": 1.7470856619183905e-06,
+          "rgb_changed_fraction": 0.055079780519008636,
+          "carrier_rms": 0.49345719814300537
+        },
+        {
+          "multiplier": 4.0,
+          "mse": 1.8156064243157743e-06,
+          "key_image_mse": 3.926728822989389e-06,
+          "rgb_changed_fraction": 0.1109161376953125,
+          "carrier_rms": 0.9869143962860107
+        }
+      ],
+      "selected_strength_unchanged": 0.35,
+      "training_prompt_only": true,
+      "interpretation": "Response to amplitude, not detection or transfer evidence"
+    }
+  }
+}

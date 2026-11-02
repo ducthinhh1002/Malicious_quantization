@@ -1,0 +1,33 @@
+{
+  "evaluation": "teacher adapt_train; separate from clean calibration set",
+  "threshold": 0.04637297987937927,
+  "threshold_file_sha256": "229c94641ba05047b29674f9b00fb002e1e4061973334821352acc0c23cc5e46",
+  "model": {
+    "score_model": {
+      "path": "/root/workspace/serum/third_party/SERUM/results/SERUM_sd21/models/score_model_2026-10-10_13-18-16.pt",
+      "sha256": "a9d46bef5eb39f00e2eccadddccf187c115ea64b6200b06919a9ef3f6d9fc056"
+    },
+    "watermark": {
+      "path": "/root/workspace/serum/third_party/SERUM/results/SERUM_sd21/models/watermark_2026-10-10_13-18-16.pt",
+      "sha256": "f9cd1c8bf87722a4ead0e69c4c6ef94386f332da9387e043e2c0358b85fe637e"
+    }
+  },
+  "clean_count": 5000,
+  "watermarked_count": 5000,
+  "false_positives": 63,
+  "true_positives": 4999,
+  "fpr": 0.0126,
+  "tpr": 0.9998,
+  "fpr_wilson_95": [
+    0.009861068751138881,
+    0.01608731458697478
+  ],
+  "tpr_wilson_95": [
+    0.998867881829747,
+    0.9999646951247276
+  ],
+  "roc_auc": 0.9999952799999999,
+  "clean_score_mean": 0.005097814369946718,
+  "watermarked_score_mean": 0.9996579885482788,
+  "scope": "image-level detection only; no student radioactivity evaluation"
+}

@@ -1,0 +1,193 @@
+{
+  "checked_at": "2026-10-20T17:11:47.008851+00:00",
+  "files": {
+    "status.json": {
+      "status": "complete",
+      "owner_step": 32,
+      "final_test_used": false,
+      "summary": "/root/logs/results/lalt_probe_recovery_20261020_144736Z/summary.json"
+    },
+    "recovery_status.json": {
+      "status": "complete",
+      "message": null
+    },
+    "summary.json": {
+      "rows": [
+        {
+          "branch": "teacher",
+          "key": 221,
+          "correct_key": true,
+          "tpr_or_detection_rate": 0.6875,
+          "matched_clean_fpr": 0.015625,
+          "bit_accuracy": 0.7001953125,
+          "n": 128,
+          "detected": 88,
+          "ci95": [
+            0.6027289441827964,
+            0.7613446972146379
+          ],
+          "threshold": -1.8864712715148926,
+          "threshold_source": "unadapted_calibration",
+          "single_key_nominal_fpr": 0.01,
+          "single_key_1pct_detection_rate": 0.84375,
+          "total_keyset_nominal_fpr": 0.01,
+          "nominal_per_key_fpr": 0.005,
+          "auroc": 0.979248046875,
+          "paired_win_rate": 0.96875,
+          "paired_gain_std": 4.728267312475069,
+          "mean_gain": 5.854502251371741
+        },
+        {
+          "branch": "teacher",
+          "key": 34,
+          "correct_key": false,
+          "tpr_or_detection_rate": 0.0,
+          "matched_clean_fpr": 0.0078125,
+          "bit_accuracy": 0.2998046875,
+          "n": 128,
+          "detected": 0,
+          "ci95": [
+            0.0,
+            0.029136956273508416
+          ],
+          "threshold": -1.7840451002120972,
+          "threshold_source": "unadapted_calibration",
+          "single_key_nominal_fpr": 0.01,
+          "single_key_1pct_detection_rate": 0.0,
+          "total_keyset_nominal_fpr": 0.01,
+          "nominal_per_key_fpr": 0.005,
+          "auroc": 0.867431640625,
+          "paired_win_rate": 0.9140625,
+          "paired_gain_std": 4.448807642082745,
+          "mean_gain": 4.7581320740282536
+        },
+        {
+          "branch": "marked",
+          "key": 221,
+          "correct_key": true,
+          "tpr_or_detection_rate": 0.015625,
+          "matched_clean_fpr": 0.0078125,
+          "bit_accuracy": 0.4501953125,
+          "n": 128,
+          "detected": 2,
+          "ci95": [
+            0.004295449710144082,
+            0.055180976679817195
+          ],
+          "threshold": -1.8427433967590332,
+          "threshold_source": "clean_calibration",
+          "single_key_nominal_fpr": 0.01,
+          "single_key_1pct_detection_rate": 0.0390625,
+          "total_keyset_nominal_fpr": 0.01,
+          "nominal_per_key_fpr": 0.005,
+          "auroc": 0.58660888671875,
+          "paired_win_rate": 0.640625,
+          "paired_gain_std": 3.5047548656043763,
+          "mean_gain": 1.2273648930713534
+        },
+        {
+          "branch": "marked",
+          "key": 34,
+          "correct_key": false,
+          "tpr_or_detection_rate": 0.0,
+          "matched_clean_fpr": 0.0078125,
+          "bit_accuracy": 0.5498046875,
+          "n": 128,
+          "detected": 0,
+          "ci95": [
+            0.0,
+            0.029136956273508416
+          ],
+          "threshold": -1.7419495582580566,
+          "threshold_source": "clean_calibration",
+          "single_key_nominal_fpr": 0.01,
+          "single_key_1pct_detection_rate": 0.0078125,
+          "total_keyset_nominal_fpr": 0.01,
+          "nominal_per_key_fpr": 0.005,
+          "auroc": 0.54913330078125,
+          "paired_win_rate": 0.6015625,
+          "paired_gain_std": 3.4182212464980557,
+          "mean_gain": 0.9238119339570403
+        }
+      ],
+      "quality": [
+        {
+          "branch": "teacher",
+          "paired_reference": "unadapted",
+          "psnr": 30.52301976084709,
+          "lpips": 0.05499897958361544,
+          "clip_drop": -0.0028268705355003476
+        },
+        {
+          "branch": "marked",
+          "paired_reference": "clean",
+          "psnr": 16.919930316507816,
+          "lpips": 0.30947243093396537,
+          "clip_drop": 0.0010752595262601972
+        }
+      ]
+    },
+    "contrast_readout.json": {
+      "teacher": {
+        "auroc": 0.96893310546875,
+        "mean_gain": 1.0963701773434877,
+        "detection": {
+          "n": 128,
+          "detected": 80,
+          "detection_rate": 0.625,
+          "ci95_image_conditional": [
+            0.5386400519080884,
+            0.7040757090235344
+          ],
+          "mean_score": 0.941638296470046,
+          "threshold": 0.8802838325500488,
+          "comparison": ">"
+        },
+        "matched_clean": {
+          "n": 128,
+          "detected": 1,
+          "detection_rate": 0.0078125,
+          "ci95_image_conditional": [
+            0.0013804318928742412,
+            0.04292625943886061
+          ],
+          "mean_score": -0.1547318808734417,
+          "threshold": 0.8802838325500488,
+          "comparison": ">"
+        }
+      },
+      "marked": {
+        "auroc": 0.74029541015625,
+        "mean_gain": 0.3035529591143131,
+        "detection": {
+          "n": 128,
+          "detected": 5,
+          "detection_rate": 0.0390625,
+          "ci95_image_conditional": [
+            0.016798610797803704,
+            0.08818702076683686
+          ],
+          "mean_score": 0.026665440760552883,
+          "threshold": 0.7444758415222168,
+          "comparison": ">"
+        },
+        "matched_clean": {
+          "n": 128,
+          "detected": 2,
+          "detection_rate": 0.015625,
+          "ci95_image_conditional": [
+            0.004295449710144082,
+            0.055180976679817195
+          ],
+          "mean_score": -0.27688751835376024,
+          "threshold": 0.7444758415222168,
+          "comparison": ">"
+        }
+      }
+    }
+  },
+  "generate_marked.log": "imit_gb': 32.0, 'precision': 'FP32; TF32 disabled', 'higher_order_math_attention': False}\n\rLoading pipeline components...:   0%|          | 0/6 [00:00<?, ?it/s]\rLoading pipeline components...:  33%|\u2588\u2588\u2588\u258e      | 2/6 [00:00<00:00,  8.71it/s]\rLoading pipeline components...:  50%|\u2588\u2588\u2588\u2588\u2588     | 3/6 [00:00<00:00,  5.05it/s]\rLoading pipeline components...: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 6/6 [00:00<00:00, 10.01it/s]\rLoading pipeline components...: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 6/6 [00:00<00:00,  8.83it/s]\nYou have disabled the safety checker for <class 'diffusers.pipelines.stable_diffusion.pipeline_stable_diffusion.StableDiffusionPipeline'> by passing `safety_checker=None`. Ensure that you abide to the conditions of the Stable Diffusion license and do not expose unfiltered results in services or applications open to the public. Both the diffusers team and Hugging Face strongly recommend to keep the safety filter enabled in all public facing circumstances, disabling it only for use-cases that involve analyzing network behavior or auditing its results. For more information, please have a look at https://github.com/huggingface/diffusers/pull/254 .\nProbe generation marked/query: 2/128\nProbe generation marked/query: 66/128\n",
+  "evaluate.log": "Probe GPU budget: {'gpu': 'NVIDIA H200', 'total_gb': 139.80072021484375, 'free_gb': 139.2862548828125, 'process_limit_gb': 32.0, 'precision': 'FP32; TF32 disabled', 'higher_order_math_attention': False}\nSetting up [LPIPS] perceptual loss: trunk [alex], v[0.1], spatial [off]\n/root/logs/torch_shared/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.\n  warnings.warn(\n/root/logs/torch_shared/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=AlexNet_Weights.IMAGENET1K_V1`. You can also use `weights=AlexNet_Weights.DEFAULT` to get the most up-to-date weights.\n  warnings.warn(msg)\nLoading model from: /root/logs/gate_env/lib/python3.12/site-packages/lpips/weights/v0.1/alex.pth\n",
+  "recovery_probe.log": "",
+  "gpu": "memory.used [MiB], utilization.gpu [%]\n0 MiB, 0 %\n"
+}

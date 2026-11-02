@@ -1,0 +1,5 @@
+{
+  "winner": null,
+  "development_selection": true,
+  "rule": "contrast TPR/AUC >= baseline+.02; quality within predefined bounds"
+}

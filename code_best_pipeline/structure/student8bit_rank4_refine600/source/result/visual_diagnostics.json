@@ -1,0 +1,26 @@
+{
+  "n": 1000,
+  "condition": "watermarked",
+  "pixel_statistics": {
+    "unadapted": {
+      "clipped_channel_fraction_mean": 0.03252174631754557,
+      "clipped_channel_fraction_p95": 0.10536537170410155,
+      "mean_hsv_saturation": 0.3467555550830439,
+      "interpretation": "Color/clipping diagnostics only; do not measure anatomical correctness or universal image quality"
+    },
+    "student": {
+      "clipped_channel_fraction_mean": 0.08561404546101888,
+      "clipped_channel_fraction_p95": 0.20238501230875647,
+      "mean_hsv_saturation": 0.37282370932772757,
+      "interpretation": "Color/clipping diagnostics only; do not measure anatomical correctness or universal image quality"
+    }
+  },
+  "lpips_quantiles": {
+    "0.1": 0.3693331450223923,
+    "0.5": 0.5179136693477631,
+    "0.9": 0.65877023935318,
+    "0.95": 0.7043083101511001
+  },
+  "summary_sha256": "d89a2dbcc745094b7a43b7675fec4a9d84a5bbf6e96c5b4a00ab4114b43c7623",
+  "human_ratings_collected": false
+}

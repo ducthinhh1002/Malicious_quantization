@@ -1,0 +1,8 @@
+{
+  "gpu": "NVIDIA H200",
+  "total_gb": 139.80072021484375,
+  "free_gb": 113.80267333984375,
+  "process_limit_gb": 80.0,
+  "precision": "FP32; TF32 disabled",
+  "higher_order_math_attention": false
+}

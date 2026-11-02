@@ -1,0 +1,50 @@
+{
+  "step": 5000,
+  "checkpoint_sha256": "aeb829f8370acc938587bf0c78a558eefbc3cce3d7f1ab6ba17f011c5372c39b",
+  "checkpoint": "/root/logs/runtime/lcf_artifacts/lalt_stable_reader_20261018_111112Z_11c90d44/teacher_selected.pt",
+  "validation": [
+    {
+      "key": 34,
+      "split": "teacher_validation",
+      "tpr": 0.765625,
+      "clean_fpr": 0.0,
+      "bit_accuracy": 0.7373046875,
+      "psnr": 28.341339841485023,
+      "psnr_p05": 25.553052806854247,
+      "lpips": 0.07215640836511739,
+      "lpips_p95": 0.10424318201839923,
+      "clip_drop": -5.034683272242546e-05,
+      "diversity_ratio": 0.9840827352745405,
+      "mean_gain": 6.028687710873783,
+      "threshold": -1.9297184944152832,
+      "calibration_split": "calibration",
+      "score_scale": 4.504950071526921,
+      "passes": false,
+      "auroc": 0.99090576171875,
+      "paired_win_rate": 0.984375,
+      "paired_gain_std": 4.406662615249244
+    },
+    {
+      "key": 221,
+      "split": "teacher_validation",
+      "tpr": 0.7734375,
+      "clean_fpr": 0.0,
+      "bit_accuracy": 0.716796875,
+      "psnr": 29.489183872938156,
+      "psnr_p05": 26.558546543121338,
+      "lpips": 0.0637539555755211,
+      "lpips_p95": 0.09641726575791836,
+      "clip_drop": -0.004508842364884913,
+      "diversity_ratio": 0.9786491756137944,
+      "mean_gain": 6.170392150059342,
+      "threshold": -2.003749370574951,
+      "calibration_split": "calibration",
+      "score_scale": 4.586277696921764,
+      "passes": false,
+      "auroc": 0.9931640625,
+      "paired_win_rate": 1.0,
+      "paired_gain_std": 4.43905674285345
+    }
+  ],
+  "selection": "validation quality/detection gates, worst-key AUROC; final test unused"
+}

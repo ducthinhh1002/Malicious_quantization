@@ -1,0 +1,14 @@
+{
+  "checked_at_utc": "2026-10-18T10:32:33.746934+00:00",
+  "tests_passed": 23,
+  "pinned_owner_step": 2000,
+  "pinned_owner_sha256": "5a3a63666e7d31b0d6eeddc5339d96a37e8f5ac8906922a1ece00a113b1d7175",
+  "current_stage": {
+    "status": "running",
+    "stage": "datasets",
+    "branch": null
+  },
+  "student_tpr_available": false,
+  "parallel_with_teacher": true,
+  "memory_cap_gib": 32
+}

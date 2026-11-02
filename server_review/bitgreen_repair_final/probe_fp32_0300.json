@@ -1,0 +1,74 @@
+[
+  {
+    "image": 0,
+    "split": "train",
+    "score": 0.49892088770866394,
+    "detected": false,
+    "psnr": 25.843292236328125,
+    "latent_target_relative_mse": 15.017333030700684,
+    "fixed_t51_loss": 0.8153596520423889
+  },
+  {
+    "image": 1,
+    "split": "train",
+    "score": 0.508643627166748,
+    "detected": true,
+    "psnr": 33.206398010253906,
+    "latent_target_relative_mse": 6.2708516120910645,
+    "fixed_t51_loss": 0.7295990586280823
+  },
+  {
+    "image": 2,
+    "split": "train",
+    "score": 0.5054385662078857,
+    "detected": false,
+    "psnr": 25.31970977783203,
+    "latent_target_relative_mse": 11.877735137939453,
+    "fixed_t51_loss": 0.7808880805969238
+  },
+  {
+    "image": 3,
+    "split": "train",
+    "score": 0.5083602666854858,
+    "detected": false,
+    "psnr": 27.516586303710938,
+    "latent_target_relative_mse": 7.503589630126953,
+    "fixed_t51_loss": 0.6665289402008057
+  },
+  {
+    "image": 4,
+    "split": "heldout",
+    "score": 0.5005174875259399,
+    "detected": false,
+    "psnr": 23.397708892822266,
+    "latent_target_relative_mse": 68.91860961914062,
+    "fixed_t51_loss": 1.0564899444580078
+  },
+  {
+    "image": 5,
+    "split": "heldout",
+    "score": 0.5002918243408203,
+    "detected": false,
+    "psnr": 26.733503341674805,
+    "latent_target_relative_mse": 26.31094741821289,
+    "fixed_t51_loss": 1.0424485206604004
+  },
+  {
+    "image": 6,
+    "split": "heldout",
+    "score": 0.5009183883666992,
+    "detected": false,
+    "psnr": 26.032211303710938,
+    "latent_target_relative_mse": 26.788555145263672,
+    "fixed_t51_loss": 1.0512638092041016
+  },
+  {
+    "image": 7,
+    "split": "heldout",
+    "score": 0.5014031529426575,
+    "detected": false,
+    "psnr": 28.170700073242188,
+    "latent_target_relative_mse": 20.154483795166016,
+    "fixed_t51_loss": 1.047356128692627
+  }
+]

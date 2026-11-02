@@ -1,0 +1,78 @@
+{
+  "threshold": {
+    "threshold": 0.06189660727977753,
+    "target_fpr": 0.01,
+    "false_positives": 50,
+    "empirical_fpr": 0.01,
+    "num_clean": 5000,
+    "rule": "score >= float32(threshold)",
+    "author_manifest_sha256": "4a48a292ba85372c51eb82a2685f596d9429e5202aa0bf60dcc2dc78c235cd52",
+    "calibration_prompt_sha256": "757fdbc79c68205a3ac255c23bcbc444dc6f535c56beb4835771f68d83ab2c3d",
+    "scoring_seed": 42,
+    "scoring_batch_size": 32
+  },
+  "results": {
+    "clean_train": {
+      "n": 5000,
+      "detections": 36,
+      "rate": 0.0072
+    },
+    "wm_train": {
+      "n": 5000,
+      "detections": 5000,
+      "rate": 1.0
+    },
+    "clean_val": {
+      "n": 1000,
+      "detections": 15,
+      "rate": 0.015
+    },
+    "wm_val": {
+      "n": 1000,
+      "detections": 1000,
+      "rate": 1.0
+    },
+    "clean_calib": {
+      "n": 5000,
+      "detections": 50,
+      "rate": 0.01
+    },
+    "wm_calib": {
+      "n": 5000,
+      "detections": 5000,
+      "rate": 1.0
+    }
+  },
+  "inventory": {
+    "clean_train": {
+      "count": 5000,
+      "prompt_sha256": "3fec5b053b4241fb4a520ce4a91c0d2bed78939c12153ab4f33b68cf529af55c",
+      "metadata_sha256": "057b102d66afaeb20245c12db9621f0453387fa38c328f7ae8e9ae8329bed150"
+    },
+    "wm_train": {
+      "count": 5000,
+      "prompt_sha256": "3fec5b053b4241fb4a520ce4a91c0d2bed78939c12153ab4f33b68cf529af55c",
+      "metadata_sha256": "042d6eb9072b47c77c8f9e17eb7812e94020ca104cbb4d5f920700efb1b8b65a"
+    },
+    "clean_val": {
+      "count": 1000,
+      "prompt_sha256": "9c6f463004a2b3480e19090546a6a925bb69ce369714e59a8e0ba0bcbc9ae67b",
+      "metadata_sha256": "1b45343b77f7509cf2349f87b6684e5588010dd5f0b4c6abd4e3ac0a52ad160f"
+    },
+    "wm_val": {
+      "count": 1000,
+      "prompt_sha256": "9c6f463004a2b3480e19090546a6a925bb69ce369714e59a8e0ba0bcbc9ae67b",
+      "metadata_sha256": "0b4ccab5ea19afa8da1b2467d253ad057d04bf4e41d4146f5ce1c70b7593332c"
+    },
+    "clean_calib": {
+      "count": 5000,
+      "prompt_sha256": "757fdbc79c68205a3ac255c23bcbc444dc6f535c56beb4835771f68d83ab2c3d",
+      "metadata_sha256": "d7c3ccf45fae0f62e000bdbd986e1272bb98f1cdbc8da4d0360be2522235834d"
+    },
+    "wm_calib": {
+      "count": 5000,
+      "prompt_sha256": "757fdbc79c68205a3ac255c23bcbc444dc6f535c56beb4835771f68d83ab2c3d",
+      "metadata_sha256": "bb4912522f7b6ae66f7c0840c9ce656c667f30001606f2002d09f2ed6f490b4d"
+    }
+  }
+}

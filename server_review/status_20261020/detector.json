@@ -1,0 +1,19 @@
+{
+  "type": "frozen_lalt_reader_8bit",
+  "keys": [
+    221,
+    34
+  ],
+  "reader_sha256": "bce50d0a1a450ae315a90c4bfcfafe22c93b6bb79ceea85980a9ddef357e8eb0",
+  "bits": 8,
+  "test_used_for_calibration": false,
+  "total_keyset_nominal_fpr": 0.01,
+  "nominal_per_key_fpr": 0.005,
+  "calibration_n": 1000,
+  "calibration_features_sha256": "4e3614539f1b64e07a6f3fba1a8c7c0e61f9e087caf2d37e9b0f270c23f294a4",
+  "thresholds": [
+    -1.8832511608130547,
+    -1.7411006734352195
+  ],
+  "decision": "score >= nextafter(conformal clean quantile, +inf); two-key Bonferroni"
+}

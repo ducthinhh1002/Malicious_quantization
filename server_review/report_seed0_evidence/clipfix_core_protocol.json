@@ -1,0 +1,136 @@
+{
+  "status": "passed",
+  "conditions": {
+    "C00": {
+      "train": {
+        "directory": "/root/workspace/serum/data/raw/clean_train",
+        "count": 5000,
+        "decoded_all": true,
+        "inventory_sha256": "cba37f893f1283d9383366029c561e20529e6431e627e6d327f93ec0ff81d4fd"
+      },
+      "hf_directory": "/root/workspace/serum/data/hf/C00_train",
+      "metadata_sha256": "8861e92220f5992d9d4e6a8529b18625825103332c02f0a8ac3ec9d8b45828e1",
+      "val": {
+        "directory": "/root/workspace/serum/data/raw/clean_val",
+        "count": 1000,
+        "decoded_all": true,
+        "inventory_sha256": "be16c4c7fa45e56ed5a69db86a678eb1c43dc913a8a5a6fe022ac2e50dc9827d"
+      }
+    },
+    "C01_step0.25": {
+      "train": {
+        "directory": "/root/workspace/serum/data/laundered/clean_step_0.25_train",
+        "count": 5000,
+        "decoded_all": true,
+        "inventory_sha256": "e1364f3f3767d9a74ad816d7ce53c02a564658d34ea637c72a6a1e577921b6ff"
+      },
+      "hf_directory": "/root/workspace/serum/data/hf/C01_step0.25_train",
+      "metadata_sha256": "8861e92220f5992d9d4e6a8529b18625825103332c02f0a8ac3ec9d8b45828e1",
+      "val": {
+        "directory": "/root/workspace/serum/data/laundered/clean_step_0.25_val",
+        "count": 1000,
+        "decoded_all": true,
+        "inventory_sha256": "e47fa0d0dacbe78dd95f50eaf786baa528984d9a502afaae90df10f82c2dcce1"
+      }
+    },
+    "C01_step1.00": {
+      "train": {
+        "directory": "/root/workspace/serum/data/laundered/clean_step_1.00_train",
+        "count": 5000,
+        "decoded_all": true,
+        "inventory_sha256": "c04a013dee0c6405a71d86bd3f5cfe18e5ffa2da51752cf1eb5e3958b666a197"
+      },
+      "hf_directory": "/root/workspace/serum/data/hf/C01_step1.00_train",
+      "metadata_sha256": "8861e92220f5992d9d4e6a8529b18625825103332c02f0a8ac3ec9d8b45828e1",
+      "val": {
+        "directory": "/root/workspace/serum/data/laundered/clean_step_1.00_val",
+        "count": 1000,
+        "decoded_all": true,
+        "inventory_sha256": "111e63c6c72c0126e580b03695f6e38b8aabe05d4eee25db87096097f889e46a"
+      }
+    },
+    "C10": {
+      "train": {
+        "directory": "/root/workspace/serum/data/raw/wm_train",
+        "count": 5000,
+        "decoded_all": true,
+        "inventory_sha256": "c77bda2311e3b942c71f55f0cfe3c9bc791004b6072062986489009176737786"
+      },
+      "hf_directory": "/root/workspace/serum/data/hf/C10_train",
+      "metadata_sha256": "8861e92220f5992d9d4e6a8529b18625825103332c02f0a8ac3ec9d8b45828e1",
+      "val": {
+        "directory": "/root/workspace/serum/data/raw/wm_val",
+        "count": 1000,
+        "decoded_all": true,
+        "inventory_sha256": "6a26cbd5cd931de619a092e3ba51945fcc44ddfb7eb1c428d9919afd0b07a1ba"
+      }
+    },
+    "C11_step0.25": {
+      "train": {
+        "directory": "/root/workspace/serum/data/laundered/wm_step_0.25_train",
+        "count": 5000,
+        "decoded_all": true,
+        "inventory_sha256": "f4966603a83d2cb77cd331ac8a48d7f5c39dcd0ed3f22a789b64cba96b8a8de0"
+      },
+      "hf_directory": "/root/workspace/serum/data/hf/C11_step0.25_train",
+      "metadata_sha256": "8861e92220f5992d9d4e6a8529b18625825103332c02f0a8ac3ec9d8b45828e1",
+      "val": {
+        "directory": "/root/workspace/serum/data/laundered/wm_step_0.25_val",
+        "count": 1000,
+        "decoded_all": true,
+        "inventory_sha256": "daf7f5aaf1c31c456fd33520332b18521eb1aed484a5ddce5fe82b7dfd890a73"
+      }
+    },
+    "C11_step1.00": {
+      "train": {
+        "directory": "/root/workspace/serum/data/laundered/wm_step_1.00_train",
+        "count": 5000,
+        "decoded_all": true,
+        "inventory_sha256": "88fc69aae87fb47bc88d5a4fdc58f815e119758505f5d0b5052183a46e162392"
+      },
+      "hf_directory": "/root/workspace/serum/data/hf/C11_step1.00_train",
+      "metadata_sha256": "8861e92220f5992d9d4e6a8529b18625825103332c02f0a8ac3ec9d8b45828e1",
+      "val": {
+        "directory": "/root/workspace/serum/data/laundered/wm_step_1.00_val",
+        "count": 1000,
+        "decoded_all": true,
+        "inventory_sha256": "af925eeb6238cbecc07b1ae31c4740d20a7e41749431ade097a066c8b228178b"
+      }
+    }
+  },
+  "prompt_counts": {
+    "adapt_train.txt": 5000,
+    "adapt_val.txt": 1000,
+    "student_eval.txt": 5000,
+    "detector_calib.txt": 5000
+  },
+  "splits_disjoint": true,
+  "frozen_files": {
+    "third_party/diffusers/examples/text_to_image/train_text_to_image_lora.py": "18c712a5b4aa1f47f3221ee0ea5a98758f02f35ac76f753bd5ad2bdf07e98534",
+    "scripts/select_lora_checkpoint.py": "4bb2b2e341e00389f2f3c30ccd86c848a0973bf0282bdfdbfbe29b0a419746df",
+    "scripts/generate_student.py": "5b5bd9aa646df9a2c20b8eaafe6725bcc7ebd2bbaef07772f99ef898a3e70704",
+    "scripts/serum_scores.py": "a78cf23affbdf16639ddcbef743dd0909b7b771c89b1bc68edb7fed1ec6fe2f6",
+    "scripts/student_utility.py": "0468a32a94b8995c8113a8933ca6ce76f348391cf6ab54b75f4d33d897be51e9",
+    "scripts/find_resume_checkpoint.py": "7e54d11867e03cb944c09d57184b37d8134b7825be59c07e8e22b7e5029e2a1d",
+    "prompts/adapt_train.txt": "3fec5b053b4241fb4a520ce4a91c0d2bed78939c12153ab4f33b68cf529af55c",
+    "prompts/adapt_val.txt": "9c6f463004a2b3480e19090546a6a925bb69ce369714e59a8e0ba0bcbc9ae67b",
+    "prompts/student_eval.txt": "29aa2341e42951d2ed135f73909ae19191019af6e3b56c0a891e3481e5ada23f",
+    "prompts/detector_calib.txt": "757fdbc79c68205a3ac255c23bcbc444dc6f535c56beb4835771f68d83ab2c3d",
+    "metrics/serum_threshold_1pct.json": "229c94641ba05047b29674f9b00fb002e1e4061973334821352acc0c23cc5e46",
+    "manifests/serum_frozen.json": "59bb3be22261d53f29cf43b2233651f30d5b681dfb1e3ab2656a506230e560ac",
+    "metrics/pilot_selection.json": "675fa613caad1531b5235f7dc37bcd827ccbb46ce4d09a698f397b78f0848dd0"
+  },
+  "base_model_revision": "133a221b8aa7292a167afc5127cb63fb5005638b",
+  "base_model_index_sha256": "c7cc314014486aa2f7f17ab8f90197fe0412c818cdefb9e15601ae58752b5001",
+  "threshold": 0.04637297987937927,
+  "training": {
+    "rank": 4,
+    "learning_rate": 1e-05,
+    "batch_size": 8,
+    "steps": 20000,
+    "seed": 0,
+    "mixed_precision": "fp16"
+  },
+  "baseline_gate": "pending corrected C10; user-authorized exploratory full rerun, no automatic pass",
+  "visual_audit": "contact sheets generated separately; requires inspection"
+}

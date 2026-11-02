@@ -1,0 +1,61 @@
+{
+  "rank": 4,
+  "scope": "attention_conv",
+  "evaluation": "marked_only",
+  "binomial_nominal_1pct": {
+    "marked": {
+      "n": 1000,
+      "bit_accuracy": 0.48660416666666667,
+      "exact_message_rate": 0.0,
+      "detections": 3,
+      "detection_rate": 0.003,
+      "ci95": [
+        0.0010207838811386468,
+        0.008783014053502937
+      ],
+      "threshold_matches": 33
+    }
+  },
+  "binomial_nominal_1e_6": {
+    "marked": {
+      "n": 1000,
+      "bit_accuracy": 0.48660416666666667,
+      "exact_message_rate": 0.0,
+      "detections": 0,
+      "detection_rate": 0.0,
+      "ci95": [
+        0,
+        0.0038267584855549135
+      ],
+      "threshold_matches": 41
+    }
+  },
+  "reference_r4_attention_empirical": {
+    "marked": {
+      "n": 1000,
+      "bit_accuracy": 0.48660416666666667,
+      "exact_message_rate": 0.0,
+      "detections": 6,
+      "detection_rate": 0.006,
+      "ci95": [
+        0.002752669141876431,
+        0.013028168241851826
+      ],
+      "threshold_matches": 31
+    },
+    "calibration": {
+      "n": 512,
+      "bit_accuracy": 0.4751790364583333,
+      "exact_message_rate": 0.0,
+      "detections": 2,
+      "detection_rate": 0.00390625,
+      "ci95": [
+        0.0010718890803937042,
+        0.014129407144653612
+      ],
+      "threshold_matches": 31
+    },
+    "reference_branch": "r4_attention_clean"
+  },
+  "limitation": "No matched clean student for this configuration; FPR, paired gain and AUROC unavailable. Reference threshold is from rank4 attention only."
+}

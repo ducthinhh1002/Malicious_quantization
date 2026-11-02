@@ -1,0 +1,58 @@
+{
+  "checked_at_utc": "2026-10-17T23:18:26.192080+00:00",
+  "pilot": "/root/logs/results/lcf_20261017_191721Z_pilot",
+  "status": {
+    "status": "running",
+    "stage": "teacher"
+  },
+  "latest_logged_update": {
+    "step": 1860,
+    "loss": 1.3598264455795288,
+    "reader_loss": 1.3622794151306152,
+    "gradient_norm": 8.215674824896269e-06,
+    "max_allocated_gb": 22.28010606765747,
+    "wm": 1.3597514629364014,
+    "mse": 2.770361504644825e-07,
+    "lpips": 6.5194544731639326e-06
+  },
+  "latest_validation": [
+    {
+      "bit_accuracy": "0.4189453125",
+      "calibration_split": "calibration",
+      "clean_fpr": "0.0234375",
+      "clip_drop": "2.561137080192566e-07",
+      "diversity_ratio": "1.00006509274318",
+      "key": "205",
+      "lpips": "1.4698047099415135e-05",
+      "lpips_p95": "3.152557437715586e-05",
+      "mean_gain": "-5.569308996200562e-07",
+      "passes": "False",
+      "psnr": "63.921920001506805",
+      "psnr_p05": "60.450104331970216",
+      "score_scale": "0.05",
+      "split": "teacher_validation",
+      "step": "1750",
+      "threshold": "-2.724260091781616",
+      "tpr": "0.0234375"
+    },
+    {
+      "bit_accuracy": "0.4306640625",
+      "calibration_split": "calibration",
+      "clean_fpr": "0.0234375",
+      "clip_drop": "7.243244908750057e-06",
+      "diversity_ratio": "1.000032025483351",
+      "key": "237",
+      "lpips": "1.496345881690786e-05",
+      "lpips_p95": "2.8824592664022907e-05",
+      "mean_gain": "7.245689630508423e-07",
+      "passes": "False",
+      "psnr": "63.90935233235359",
+      "psnr_p05": "60.737002754211424",
+      "score_scale": "0.05",
+      "split": "teacher_validation",
+      "step": "1750",
+      "threshold": "-2.7307088375091553",
+      "tpr": "0.0234375"
+    }
+  ]
+}

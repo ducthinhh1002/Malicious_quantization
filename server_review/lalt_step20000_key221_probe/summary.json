@@ -1,0 +1,218 @@
+{
+  "owner_step": 20000,
+  "rows": [
+    {
+      "branch": "unadapted",
+      "key": 221,
+      "correct_key": false,
+      "tpr_or_detection_rate": 0.015625,
+      "matched_clean_fpr": 0.015625,
+      "bit_accuracy": 0.330078125,
+      "n": 128,
+      "detected": 2,
+      "ci95": [
+        0.004295449710144082,
+        0.055180976679817195
+      ],
+      "threshold": -1.8864712715148926,
+      "threshold_source": "unadapted_calibration",
+      "single_key_nominal_fpr": 0.01,
+      "single_key_1pct_detection_rate": 0.015625,
+      "total_keyset_nominal_fpr": 0.01,
+      "nominal_per_key_fpr": 0.005,
+      "auroc": 0.5,
+      "paired_win_rate": 0.5,
+      "paired_gain_std": 0.0,
+      "mean_gain": 0.0
+    },
+    {
+      "branch": "unadapted",
+      "key": 34,
+      "correct_key": false,
+      "tpr_or_detection_rate": 0.0078125,
+      "matched_clean_fpr": 0.0078125,
+      "bit_accuracy": 0.669921875,
+      "n": 128,
+      "detected": 1,
+      "ci95": [
+        0.0013804318928742412,
+        0.04292625943886061
+      ],
+      "threshold": -1.7840451002120972,
+      "threshold_source": "unadapted_calibration",
+      "single_key_nominal_fpr": 0.01,
+      "single_key_1pct_detection_rate": 0.0078125,
+      "total_keyset_nominal_fpr": 0.01,
+      "nominal_per_key_fpr": 0.005,
+      "auroc": 0.5,
+      "paired_win_rate": 0.5,
+      "paired_gain_std": 0.0,
+      "mean_gain": 0.0
+    },
+    {
+      "branch": "teacher",
+      "key": 221,
+      "correct_key": true,
+      "tpr_or_detection_rate": 0.6171875,
+      "matched_clean_fpr": 0.015625,
+      "bit_accuracy": 0.7001953125,
+      "n": 128,
+      "detected": 79,
+      "ci95": [
+        0.5307322844502991,
+        0.6968137414230975
+      ],
+      "threshold": -1.8864712715148926,
+      "threshold_source": "unadapted_calibration",
+      "single_key_nominal_fpr": 0.01,
+      "single_key_1pct_detection_rate": 0.7734375,
+      "total_keyset_nominal_fpr": 0.01,
+      "nominal_per_key_fpr": 0.005,
+      "auroc": 0.98052978515625,
+      "paired_win_rate": 0.96875,
+      "paired_gain_std": 4.571786040926925,
+      "mean_gain": 5.889382085762918
+    },
+    {
+      "branch": "teacher",
+      "key": 34,
+      "correct_key": false,
+      "tpr_or_detection_rate": 0.0,
+      "matched_clean_fpr": 0.0078125,
+      "bit_accuracy": 0.2998046875,
+      "n": 128,
+      "detected": 0,
+      "ci95": [
+        0.0,
+        0.029136956273508416
+      ],
+      "threshold": -1.7840451002120972,
+      "threshold_source": "unadapted_calibration",
+      "single_key_nominal_fpr": 0.01,
+      "single_key_1pct_detection_rate": 0.0,
+      "total_keyset_nominal_fpr": 0.01,
+      "nominal_per_key_fpr": 0.005,
+      "auroc": 0.87255859375,
+      "paired_win_rate": 0.921875,
+      "paired_gain_std": 4.25183265281733,
+      "mean_gain": 4.830276094377041
+    },
+    {
+      "branch": "clean",
+      "key": 221,
+      "correct_key": false,
+      "tpr_or_detection_rate": 0.0078125,
+      "matched_clean_fpr": 0.0078125,
+      "bit_accuracy": 0.28515625,
+      "n": 128,
+      "detected": 1,
+      "ci95": [
+        0.0013804318928742412,
+        0.04292625943886061
+      ],
+      "threshold": -1.8427433967590332,
+      "threshold_source": "clean_calibration",
+      "single_key_nominal_fpr": 0.01,
+      "single_key_1pct_detection_rate": 0.015625,
+      "total_keyset_nominal_fpr": 0.01,
+      "nominal_per_key_fpr": 0.005,
+      "auroc": 0.5,
+      "paired_win_rate": 0.5,
+      "paired_gain_std": 0.0,
+      "mean_gain": 0.0
+    },
+    {
+      "branch": "clean",
+      "key": 34,
+      "correct_key": false,
+      "tpr_or_detection_rate": 0.0078125,
+      "matched_clean_fpr": 0.0078125,
+      "bit_accuracy": 0.71484375,
+      "n": 128,
+      "detected": 1,
+      "ci95": [
+        0.0013804318928742412,
+        0.04292625943886061
+      ],
+      "threshold": -1.7419495582580566,
+      "threshold_source": "clean_calibration",
+      "single_key_nominal_fpr": 0.01,
+      "single_key_1pct_detection_rate": 0.015625,
+      "total_keyset_nominal_fpr": 0.01,
+      "nominal_per_key_fpr": 0.005,
+      "auroc": 0.5,
+      "paired_win_rate": 0.5,
+      "paired_gain_std": 0.0,
+      "mean_gain": 0.0
+    },
+    {
+      "branch": "marked",
+      "key": 221,
+      "correct_key": true,
+      "tpr_or_detection_rate": 0.0078125,
+      "matched_clean_fpr": 0.0078125,
+      "bit_accuracy": 0.4443359375,
+      "n": 128,
+      "detected": 1,
+      "ci95": [
+        0.0013804318928742412,
+        0.04292625943886061
+      ],
+      "threshold": -1.8427433967590332,
+      "threshold_source": "clean_calibration",
+      "single_key_nominal_fpr": 0.01,
+      "single_key_1pct_detection_rate": 0.0390625,
+      "total_keyset_nominal_fpr": 0.01,
+      "nominal_per_key_fpr": 0.005,
+      "auroc": 0.58966064453125,
+      "paired_win_rate": 0.6484375,
+      "paired_gain_std": 3.459096872328046,
+      "mean_gain": 1.2892297636717558
+    },
+    {
+      "branch": "marked",
+      "key": 34,
+      "correct_key": false,
+      "tpr_or_detection_rate": 0.0,
+      "matched_clean_fpr": 0.0078125,
+      "bit_accuracy": 0.5556640625,
+      "n": 128,
+      "detected": 0,
+      "ci95": [
+        0.0,
+        0.029136956273508416
+      ],
+      "threshold": -1.7419495582580566,
+      "threshold_source": "clean_calibration",
+      "single_key_nominal_fpr": 0.01,
+      "single_key_1pct_detection_rate": 0.0078125,
+      "total_keyset_nominal_fpr": 0.01,
+      "nominal_per_key_fpr": 0.005,
+      "auroc": 0.5540771484375,
+      "paired_win_rate": 0.6484375,
+      "paired_gain_std": 3.3698652572041237,
+      "mean_gain": 0.9935493320226669
+    }
+  ],
+  "quality": [
+    {
+      "branch": "teacher",
+      "paired_reference": "unadapted",
+      "psnr": 30.501710414886475,
+      "lpips": 0.05469925724901259,
+      "clip_drop": -0.002963622915558517
+    },
+    {
+      "branch": "marked",
+      "paired_reference": "clean",
+      "psnr": 17.016354955732822,
+      "lpips": 0.30476289414218627,
+      "clip_drop": 0.0013443263014778495
+    }
+  ],
+  "rank": 4,
+  "ordinary_steps": 5000,
+  "final_test_used": false,
+  "development_probe": true,
+  "caveat": "Image CIs conditional on one trained model; not an across-model false-attribution guarantee"
+}

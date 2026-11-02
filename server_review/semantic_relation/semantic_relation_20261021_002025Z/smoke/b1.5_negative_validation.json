@@ -1,0 +1,75 @@
+{
+  "folder": "/root/logs/output_image/semantic/semantic_relation_20261021_002025Z_smoke_0a37cfda/b1.5_negative_validation",
+  "entries": [
+    {
+      "file_name": "sample_000000.png",
+      "text": "A group of elephants by some buildings on the water.",
+      "sha256": "ce22569cbc0dd8b4ff7a27699471e0fa3a2385a7486eeeb9df04f34852a5e2d5"
+    },
+    {
+      "file_name": "sample_000001.png",
+      "text": "A motorized cart fills a train with luggage",
+      "sha256": "7f7ab23437eb0301deaaeeb3d0aac34237f11bbbbdf57a68359f3db279b63b72"
+    },
+    {
+      "file_name": "sample_000002.png",
+      "text": "Apples on a tree that need longer to ripen.",
+      "sha256": "32167b5a42ae485f23fa6b9a5582591b7db4d374abe2e9b25144feeabde9131d"
+    },
+    {
+      "file_name": "sample_000003.png",
+      "text": "A very nice looking living room with a couch.",
+      "sha256": "7c3bbc02a355e0e889ea12865652e9a6c82d0dd9978974406510bdeef62991fd"
+    },
+    {
+      "file_name": "sample_000004.png",
+      "text": "A man kneeling down to pet a small dog.",
+      "sha256": "f04050af970ccd8f6564566b9618c30639beb5b1f89e2989cac33525c70baafa"
+    },
+    {
+      "file_name": "sample_000005.png",
+      "text": "a fire truck on a city street",
+      "sha256": "13ab9929fe777d66ac2bdcc37e7d63b506cd1807df4a6663f8e5882e2afc3339"
+    },
+    {
+      "file_name": "sample_000006.png",
+      "text": "A small child in pajamas is holding bananas.",
+      "sha256": "6cd9aa0f25f9ae8d4e54eb1c7966b9cbeacc27c6e75a5cace0ff4d5c9509b345"
+    },
+    {
+      "file_name": "sample_000007.png",
+      "text": "A vase filled with pens with fake sunflowers attached on a desk that says \"Visitors must sign in\".",
+      "sha256": "b6ed4d34090ce321c931ab9532e1b023189b5f8b7e979d8a5a61fbf4e851551b"
+    }
+  ],
+  "scores": [
+    0.008266130462288857,
+    0.007994952611625195,
+    0.010074391029775143,
+    0.016759879887104034,
+    0.012893564067780972,
+    0.007473306264728308,
+    0.007641072850674391,
+    0.0020640594884753227
+  ],
+  "alignment": [
+    0.27715373039245605,
+    0.31550082564353943,
+    0.31060028076171875,
+    0.2957881689071655,
+    0.3168260157108307,
+    0.2871917486190796,
+    0.34897127747535706,
+    0.36344701051712036
+  ],
+  "source_ids": [
+    67563,
+    137727,
+    285646,
+    540159,
+    102555,
+    78113,
+    275754,
+    242968
+  ]
+}

@@ -1,0 +1,330 @@
+{
+  "rows": [
+    {
+      "key": 221,
+      "paired_effect": -0.010829394770553336,
+      "key_specificity": -0.010829394770553336,
+      "horizons": [
+        {
+          "horizon": 16,
+          "start_kind": "clean_trained",
+          "paired_effect": -0.010829394770553336,
+          "key_specificity": -0.010829394770553336,
+          "raw_key_specificity": -0.02296310942620039
+        },
+        {
+          "horizon": 16,
+          "start_kind": "cold",
+          "paired_effect": 0.00925220334011101,
+          "key_specificity": 0.00925220334011101,
+          "raw_key_specificity": 0.1022137813270092
+        },
+        {
+          "horizon": 64,
+          "start_kind": "clean_trained",
+          "paired_effect": 0.0012992533156648278,
+          "key_specificity": 0.0012992533156648278,
+          "raw_key_specificity": -0.05871313810348511
+        },
+        {
+          "horizon": 64,
+          "start_kind": "cold",
+          "paired_effect": 0.024434432827547425,
+          "key_specificity": 0.024434432827547425,
+          "raw_key_specificity": 0.1224689744412899
+        }
+      ],
+      "episodes": [
+        {
+          "episode": 0,
+          "horizon": 16,
+          "query": 0,
+          "start_kind": "cold",
+          "paired_effect": -0.001188883325085044,
+          "key_specificity": -0.001188883325085044,
+          "raw_key_specificity": 0.15022531151771545
+        },
+        {
+          "episode": 0,
+          "horizon": 16,
+          "query": 1,
+          "start_kind": "cold",
+          "paired_effect": 0.008009297773241997,
+          "key_specificity": 0.008009297773241997,
+          "raw_key_specificity": 0.13601727783679962
+        },
+        {
+          "episode": 0,
+          "horizon": 16,
+          "query": 2,
+          "start_kind": "cold",
+          "paired_effect": 5.584352038567886e-05,
+          "key_specificity": 5.584352038567886e-05,
+          "raw_key_specificity": -0.5764959454536438
+        },
+        {
+          "episode": 0,
+          "horizon": 16,
+          "query": 3,
+          "start_kind": "cold",
+          "paired_effect": 0.002657761797308922,
+          "key_specificity": 0.002657761797308922,
+          "raw_key_specificity": 0.11716274917125702
+        },
+        {
+          "episode": 0,
+          "horizon": 64,
+          "query": 0,
+          "start_kind": "cold",
+          "paired_effect": 0.003773223841562867,
+          "key_specificity": 0.003773223841562867,
+          "raw_key_specificity": 0.1616668999195099
+        },
+        {
+          "episode": 0,
+          "horizon": 64,
+          "query": 1,
+          "start_kind": "cold",
+          "paired_effect": 0.010272638872265816,
+          "key_specificity": 0.010272638872265816,
+          "raw_key_specificity": 0.14072738587856293
+        },
+        {
+          "episode": 0,
+          "horizon": 64,
+          "query": 2,
+          "start_kind": "cold",
+          "paired_effect": 0.0004079416685272008,
+          "key_specificity": 0.0004079416685272008,
+          "raw_key_specificity": -0.5761160254478455
+        },
+        {
+          "episode": 0,
+          "horizon": 64,
+          "query": 3,
+          "start_kind": "cold",
+          "paired_effect": 0.007977048866450787,
+          "key_specificity": 0.007977048866450787,
+          "raw_key_specificity": 0.1787966638803482
+        },
+        {
+          "episode": 1,
+          "horizon": 16,
+          "query": 0,
+          "start_kind": "clean_trained",
+          "paired_effect": 0.014500070363283157,
+          "key_specificity": 0.014500070363283157,
+          "raw_key_specificity": -0.40923750400543213
+        },
+        {
+          "episode": 1,
+          "horizon": 16,
+          "query": 1,
+          "start_kind": "clean_trained",
+          "paired_effect": 0.023329881951212883,
+          "key_specificity": 0.023329881951212883,
+          "raw_key_specificity": 1.6534842252731323
+        },
+        {
+          "episode": 1,
+          "horizon": 16,
+          "query": 2,
+          "start_kind": "clean_trained",
+          "paired_effect": -0.19492268562316895,
+          "key_specificity": -0.19492268562316895,
+          "raw_key_specificity": -0.09177472442388535
+        },
+        {
+          "episode": 1,
+          "horizon": 16,
+          "query": 3,
+          "start_kind": "clean_trained",
+          "paired_effect": 0.012823637574911118,
+          "key_specificity": 0.012823637574911118,
+          "raw_key_specificity": -0.7911566495895386
+        },
+        {
+          "episode": 1,
+          "horizon": 64,
+          "query": 0,
+          "start_kind": "clean_trained",
+          "paired_effect": 0.007681571878492832,
+          "key_specificity": 0.007681571878492832,
+          "raw_key_specificity": -0.36143654584884644
+        },
+        {
+          "episode": 1,
+          "horizon": 64,
+          "query": 1,
+          "start_kind": "clean_trained",
+          "paired_effect": 0.011561186984181404,
+          "key_specificity": 0.011561186984181404,
+          "raw_key_specificity": 1.560219168663025
+        },
+        {
+          "episode": 1,
+          "horizon": 64,
+          "query": 2,
+          "start_kind": "clean_trained",
+          "paired_effect": -0.11559369415044785,
+          "key_specificity": -0.11559369415044785,
+          "raw_key_specificity": -0.2617117762565613
+        },
+        {
+          "episode": 1,
+          "horizon": 64,
+          "query": 3,
+          "start_kind": "clean_trained",
+          "paired_effect": 0.034953899681568146,
+          "key_specificity": 0.034953899681568146,
+          "raw_key_specificity": -0.7732210159301758
+        },
+        {
+          "episode": 2,
+          "horizon": 16,
+          "query": 0,
+          "start_kind": "cold",
+          "paired_effect": -0.01197983231395483,
+          "key_specificity": -0.01197983231395483,
+          "raw_key_specificity": 0.322927325963974
+        },
+        {
+          "episode": 2,
+          "horizon": 16,
+          "query": 1,
+          "start_kind": "cold",
+          "paired_effect": 0.021371887996792793,
+          "key_specificity": 0.021371887996792793,
+          "raw_key_specificity": -0.28541192412376404
+        },
+        {
+          "episode": 2,
+          "horizon": 16,
+          "query": 2,
+          "start_kind": "cold",
+          "paired_effect": 0.00030558439902961254,
+          "key_specificity": 0.00030558439902961254,
+          "raw_key_specificity": -1.1141941547393799
+        },
+        {
+          "episode": 2,
+          "horizon": 16,
+          "query": 3,
+          "start_kind": "cold",
+          "paired_effect": 0.054785966873168945,
+          "key_specificity": 0.054785966873168945,
+          "raw_key_specificity": 2.0674796104431152
+        },
+        {
+          "episode": 2,
+          "horizon": 64,
+          "query": 0,
+          "start_kind": "cold",
+          "paired_effect": -0.04613954946398735,
+          "key_specificity": -0.04613954946398735,
+          "raw_key_specificity": 0.2977313995361328
+        },
+        {
+          "episode": 2,
+          "horizon": 64,
+          "query": 1,
+          "start_kind": "cold",
+          "paired_effect": 0.048051659017801285,
+          "key_specificity": 0.048051659017801285,
+          "raw_key_specificity": -0.28836262226104736
+        },
+        {
+          "episode": 2,
+          "horizon": 64,
+          "query": 2,
+          "start_kind": "cold",
+          "paired_effect": 0.0024324157275259495,
+          "key_specificity": 0.0024324157275259495,
+          "raw_key_specificity": -1.1037545204162598
+        },
+        {
+          "episode": 2,
+          "horizon": 64,
+          "query": 3,
+          "start_kind": "cold",
+          "paired_effect": 0.16870008409023285,
+          "key_specificity": 0.16870008409023285,
+          "raw_key_specificity": 2.169062614440918
+        },
+        {
+          "episode": 3,
+          "horizon": 16,
+          "query": 0,
+          "start_kind": "clean_trained",
+          "paired_effect": 0.003906792961061001,
+          "key_specificity": 0.003906792961061001,
+          "raw_key_specificity": 3.4148478507995605
+        },
+        {
+          "episode": 3,
+          "horizon": 16,
+          "query": 1,
+          "start_kind": "clean_trained",
+          "paired_effect": 0.03560680150985718,
+          "key_specificity": 0.03560680150985718,
+          "raw_key_specificity": -1.1796633005142212
+        },
+        {
+          "episode": 3,
+          "horizon": 16,
+          "query": 2,
+          "start_kind": "clean_trained",
+          "paired_effect": 0.017482852563261986,
+          "key_specificity": 0.017482852563261986,
+          "raw_key_specificity": -1.6375758647918701
+        },
+        {
+          "episode": 3,
+          "horizon": 16,
+          "query": 3,
+          "start_kind": "clean_trained",
+          "paired_effect": 0.0006374905351549387,
+          "key_specificity": 0.0006374905351549387,
+          "raw_key_specificity": -1.1426289081573486
+        },
+        {
+          "episode": 3,
+          "horizon": 64,
+          "query": 0,
+          "start_kind": "clean_trained",
+          "paired_effect": -0.00985658448189497,
+          "key_specificity": -0.00985658448189497,
+          "raw_key_specificity": 3.426429033279419
+        },
+        {
+          "episode": 3,
+          "horizon": 64,
+          "query": 1,
+          "start_kind": "clean_trained",
+          "paired_effect": 0.044161003082990646,
+          "key_specificity": 0.044161003082990646,
+          "raw_key_specificity": -1.1541810035705566
+        },
+        {
+          "episode": 3,
+          "horizon": 64,
+          "query": 2,
+          "start_kind": "clean_trained",
+          "paired_effect": 0.029425345361232758,
+          "key_specificity": 0.029425345361232758,
+          "raw_key_specificity": -1.776353359222412
+        },
+        {
+          "episode": 3,
+          "horizon": 64,
+          "query": 3,
+          "start_kind": "clean_trained",
+          "paired_effect": 0.008061298169195652,
+          "key_specificity": 0.008061298169195652,
+          "raw_key_specificity": -1.1294496059417725
+        }
+      ]
+    }
+  ],
+  "caveat": "Short validation horizons remain proxies, not proof of long-training transfer"
+}

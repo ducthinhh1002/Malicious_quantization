@@ -1,0 +1,2006 @@
+{
+  "seed": 20261025,
+  "samples": [
+    {
+      "index": 10,
+      "prompt": "A baby girl standing in a shopping cart holding an umbrella.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000010.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000010.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 15,
+      "prompt": "A street containing various cars and lampposts at night.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000015.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000015.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 18,
+      "prompt": "A crowd of people standing near a fire hydrant.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000018.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000018.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 28,
+      "prompt": "A black cat laying on top of a bed next to pillows.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000028.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000028.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 29,
+      "prompt": "A variety of old motorcycles on display in a shop",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000029.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000029.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 43,
+      "prompt": "A person on a long large train on a track.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000043.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000043.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 46,
+      "prompt": "A person holding several carrots in their hand.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000046.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000046.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 51,
+      "prompt": "A woman jumps with a tennis racket on a tennis court.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000051.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000051.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 53,
+      "prompt": "A zebra walking next to an alligator next to a pile of rocks..",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000053.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000053.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 66,
+      "prompt": "A very skinny red fire hydrant with silver top and sides.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000066.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000066.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 74,
+      "prompt": "An airplane flies high above in the sky with telephone lines in the picture as well.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000074.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000074.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 76,
+      "prompt": "A group of young children playing soccer on a field.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000076.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000076.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 80,
+      "prompt": "A man standing on a tennis court holding a racquet.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000080.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000080.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 94,
+      "prompt": "A child in baseball uniform prepares to pitch a ball.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000094.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000094.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 100,
+      "prompt": "A silver train that is sitting on a track.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000100.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000100.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 101,
+      "prompt": "A side view of a train passing through a mountain trail.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000101.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000101.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 114,
+      "prompt": "A dog in the air with a frisbee in its mouth.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000114.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000114.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 117,
+      "prompt": "Four kids playing in the leaves on a fall day.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000117.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000117.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 119,
+      "prompt": "A woman in a robe has a big umbrella.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000119.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000119.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 120,
+      "prompt": "Two people are cutting a pastry at a celebration.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000120.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000120.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 128,
+      "prompt": "A decorative flower vase with lavender in it.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000128.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000128.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 130,
+      "prompt": "A white vase filled with purple and green flowers.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000130.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000130.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 131,
+      "prompt": "A large group of people running after a frisbee",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000131.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000131.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 133,
+      "prompt": "A single female rides her skateboard on a level surface beneath a huge palm tree.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000133.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000133.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 138,
+      "prompt": "A white dog sitting on red table next to metal object.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000138.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000138.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 139,
+      "prompt": "A man and a woman, who are dressed nicely, are posing for a silly picture.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000139.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000139.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 142,
+      "prompt": "A collaboration of people in different pictures doing things",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000142.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000142.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 150,
+      "prompt": "A silver, blue, and orange train is moving past a platform at the train station.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000150.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000150.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 151,
+      "prompt": "a black and yellow fire hydrant is near the street",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000151.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000151.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 154,
+      "prompt": "A man riding on top of a hand rail with a skateboard.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000154.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000154.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 166,
+      "prompt": "A room with a bed, dresser, mirror, and rocking chair.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000166.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000166.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 169,
+      "prompt": "a big kitchen with an island and track lighting",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000169.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000169.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 173,
+      "prompt": "A man walking in the ocean carrying a surfboard",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000173.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000173.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 175,
+      "prompt": "A large commercial airliner is flying through the sky.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000175.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000175.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 187,
+      "prompt": "A couple of toothbrushes in a holder in a room.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000187.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000187.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 190,
+      "prompt": "A little girl is making a huge mess with a birthday cake.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000190.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000190.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 193,
+      "prompt": "Various luggage on couch and floor next to a bookshelf.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000193.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000193.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 195,
+      "prompt": "Two people are in the air as they perform water stunts.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000195.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000195.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 206,
+      "prompt": "A white and black bird on a chimney next to sky.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000206.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000206.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 213,
+      "prompt": "A giraffe that is laying down in the grass.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000213.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000213.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 214,
+      "prompt": "A woman is walking with a cat umbrella.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000214.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000214.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 216,
+      "prompt": "There is a clock with a glass front door",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000216.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000216.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 219,
+      "prompt": "Two small dogs on leashes walking on a brick pathway.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000219.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000219.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 221,
+      "prompt": "A train coming out of a bridge next to a river.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000221.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000221.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 235,
+      "prompt": "A small bathroom with a checker board wall.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000235.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000235.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 247,
+      "prompt": "Antique black and white photograph of people skiing",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000247.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000247.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 250,
+      "prompt": "A woman is sitting on a cinder block next to a trailer.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000250.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000250.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 251,
+      "prompt": "A bus driving under a bridge down a road.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000251.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000251.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 259,
+      "prompt": "Several middle eastern looking stickers decorate a black briefcase.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000259.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000259.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 260,
+      "prompt": "A little girl is holding an umbrella on a wet day.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000260.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000260.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 261,
+      "prompt": "a woman sitting in a car while holding onto a cake in a plastic container",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000261.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000261.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 267,
+      "prompt": "Red train at a stop and a man that is waiting.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000267.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000267.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 268,
+      "prompt": "World flags decorate a busy urban street corner.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000268.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000268.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 289,
+      "prompt": "A black bear walking next to a green truck.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000289.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000289.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 290,
+      "prompt": "A person taking a picture with a cell phone of someone laying on the ground",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000290.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000290.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 294,
+      "prompt": "A side rail inside of a building.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000294.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000294.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 296,
+      "prompt": "A lady wearing an apron in a kitchen.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000296.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000296.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 304,
+      "prompt": "A white horse walking in the grass near trees.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000304.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000304.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 307,
+      "prompt": "A brown and white dog chewing on a plastic bottle",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000307.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000307.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 312,
+      "prompt": "A man riding a wind sail in the ocean filled with waves.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000312.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000312.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 313,
+      "prompt": "A group of people standing on ski's in the snow.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000313.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000313.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 316,
+      "prompt": "A woman on skis stands on a flat snowy surface.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000316.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000316.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 317,
+      "prompt": "Two pizzas sitting on top of a wooden cutting board.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000317.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000317.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 350,
+      "prompt": "A young girl sitting at a table that has two pizzas and a pepsi beverage glass on it.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000350.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000350.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 352,
+      "prompt": "a yellow tram some mountains snow and trees",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000352.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000352.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 359,
+      "prompt": "Couple in dress outfit standing in front of the white table with books on it.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000359.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000359.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 380,
+      "prompt": "Shoes, a chair, and snowboard sit on a porch",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000380.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000380.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 383,
+      "prompt": "Clothes and a teddy bear are on a small mattress.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000383.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000383.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 384,
+      "prompt": "an image of a man holding a tennis racket",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000384.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000384.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 385,
+      "prompt": "A motorized passenger buggy with people walking around it in a city.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000385.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000385.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 387,
+      "prompt": "A man riding a white scooter down a street with a woman on the back.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000387.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000387.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 391,
+      "prompt": "A group of people that are standing near a gate.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000391.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000391.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 393,
+      "prompt": "A guy on his surfboard surfing through the ocean.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000393.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000393.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 394,
+      "prompt": "A group of motorcycle cops riding across a field.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000394.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000394.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 397,
+      "prompt": "A hand in a bowl full of broccoli.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000397.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000397.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 400,
+      "prompt": "A man grinding his skateboard on a rail.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000400.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000400.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 403,
+      "prompt": "A field full of lots of yellow flowers with a train passing it by.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000403.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000403.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 407,
+      "prompt": "A camera and a tape recorder charging on a table.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000407.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000407.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 410,
+      "prompt": "There are a bunch of wrenches hanging on a wall",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000410.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000410.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 414,
+      "prompt": "A group of men sitting around a table eating food.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000414.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000414.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 426,
+      "prompt": "A bathroom with an open door and a sink beneath a mirror.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000426.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000426.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 430,
+      "prompt": "A red trolly bus driving down a dirt road.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000430.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000430.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 444,
+      "prompt": "a large lake and a forest behind it",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000444.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000444.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 445,
+      "prompt": "A car, a moped, and a bike rider are stopped at an intersection.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000445.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000445.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 446,
+      "prompt": "A baseball team playing a baseball game on a baseball field.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000446.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000446.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 447,
+      "prompt": "A man wearing a white shirt and tie looking at a paper.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000447.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000447.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 449,
+      "prompt": "A man holding a pizza pie with a section missing.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000449.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000449.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 459,
+      "prompt": "A row of doughnuts being passed through a fryer.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000459.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000459.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 473,
+      "prompt": "A baseball player with one leg kicked up preparing to throw a ball",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000473.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000473.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 476,
+      "prompt": "A man combing his hair with his moobs hanging out.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000476.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000476.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 477,
+      "prompt": "a black and white photo of a long bench for sitting near a building",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000477.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000477.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 479,
+      "prompt": "A laptop sits on a metal table by a metal stool.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000479.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000479.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 481,
+      "prompt": "A small boat traveling past a red light house.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000481.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000481.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 483,
+      "prompt": "A train pulling into a train station pulling a line of train cars behind it.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000483.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000483.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 486,
+      "prompt": "A black purse and cell phone on a table next to an orange peel and newspaper.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000486.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000486.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 500,
+      "prompt": "A large white semi truck parked next to a green truck.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000500.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000500.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 501,
+      "prompt": "A hotdog and fork sitting on a plastic plate",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000501.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000501.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 505,
+      "prompt": "A table topped with apples, oranges and pears.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000505.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000505.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 508,
+      "prompt": "A man wears a wrap towel in a hospital room.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000508.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000508.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 509,
+      "prompt": "An adult and child zebra that are standing together in a field.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000509.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000509.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 511,
+      "prompt": "A person uses their hands to operate a cell phone",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000511.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000511.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 514,
+      "prompt": "A giraffe standing next to a horse in a field.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000514.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000514.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 515,
+      "prompt": "A small chair and bed in a room.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000515.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000515.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 517,
+      "prompt": "A group of people standing in a kitchen making pizza.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000517.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000517.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 518,
+      "prompt": "A family has their luggage on the ground.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000518.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000518.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 519,
+      "prompt": "A tall white clock tower with a black clock on each of it's sides.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000519.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000519.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 521,
+      "prompt": "A desktop computer monitor on a white desk next to books.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000521.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000521.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 525,
+      "prompt": "Road signs giving directions and a car parked next to it",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000525.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000525.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 528,
+      "prompt": "Two children who are sitting next to each other naked.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000528.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000528.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 529,
+      "prompt": "A toy horse is sitting on a sidewalk next a fire hydrant.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000529.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000529.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 534,
+      "prompt": "A man and woman leaning over a baby.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000534.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000534.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 540,
+      "prompt": "An orange cat laying on the seat of a motorcycle",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000540.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000540.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 545,
+      "prompt": "Three men sit at a conference discussing a topic",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000545.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000545.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 550,
+      "prompt": "Grey plane taking off above some green vegetation.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000550.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000550.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 555,
+      "prompt": "Some African Americans are dressed in ties and working.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000555.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000555.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 556,
+      "prompt": "Digital painting of a tabby cat and large dog touching noses.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000556.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000556.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 557,
+      "prompt": "Teddy bears dressed as bride and groom are seated at a table.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000557.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000557.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 560,
+      "prompt": "A dog sleeping on bed against the wall.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000560.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000560.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 575,
+      "prompt": "A bus on driving down a street with other buses",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000575.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000575.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 593,
+      "prompt": "A bathroom with a narrow toilet and hanging towels.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000593.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000593.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 601,
+      "prompt": "A bathroom with a tiled floor and a sink.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000601.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000601.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 603,
+      "prompt": "A man standing over a surfboard in the ocean.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000603.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000603.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 609,
+      "prompt": "A man on a bicycle riding next to a train",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000609.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000609.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 612,
+      "prompt": "A number of cattle outside some houses",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000612.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000612.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 613,
+      "prompt": "The people are at tables on an outdoor patio.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000613.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000613.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 621,
+      "prompt": "A hand holding a pair of giant scissors above boxes.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000621.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000621.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 628,
+      "prompt": "this is a white van driving in the street",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000628.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000628.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 632,
+      "prompt": "A giraffe spreads its legs in order to get its head closer to the ground.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000632.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000632.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 638,
+      "prompt": "Six people in a boat rowing on a body of water.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000638.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000638.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 639,
+      "prompt": "The old man literally has a toothbrush mustache.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000639.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000639.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 645,
+      "prompt": "A large brown bear sniffs something on the ground.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000645.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000645.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 647,
+      "prompt": "a dog that's been playing in the water",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000647.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000647.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 650,
+      "prompt": "A cat that is laying down underneath a car.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000650.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000650.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 655,
+      "prompt": "A boy covering his face as a fire hydrant blows water at him.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000655.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000655.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 666,
+      "prompt": "A couple of baby sheep standing next to each other.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000666.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000666.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 673,
+      "prompt": "Two ladies standing on skis besides a chair lift.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000673.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000673.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 677,
+      "prompt": "there seems to be a stuffed animal that was left in the street",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000677.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000677.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 681,
+      "prompt": "A row of construction cones are lined up behind a fire hydrant.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000681.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000681.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 696,
+      "prompt": "Panini and fries are are on a lunch platter are served with dressings.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000696.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000696.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 705,
+      "prompt": "A group of people posing for a photograph at a black tie event.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000705.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000705.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 709,
+      "prompt": "A living room with a couch, television, and chairs.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000709.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000709.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 711,
+      "prompt": "a pair of shoes and fabric strewn across a wooden floor.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000711.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000711.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 718,
+      "prompt": "A man on a surfboard riding a wave in swimming trunks.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000718.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000718.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 725,
+      "prompt": "a cat on a keyboard on the ground",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000725.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000725.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 742,
+      "prompt": "A view of birds gliding through the air.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000742.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000742.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 745,
+      "prompt": "The train on some railroad tracks next to a platform.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000745.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000745.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 746,
+      "prompt": "a man and woman stand in front of a cake",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000746.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000746.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 747,
+      "prompt": "A partially eaten banana face down on cement about to be stepped on by a shoe.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000747.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000747.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 753,
+      "prompt": "a red white and black plane parked inside a building",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000753.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000753.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 759,
+      "prompt": "A young woman wearing a suite and hat holding a cell phone.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000759.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000759.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 762,
+      "prompt": "A blue vase holding a bunch of white and yellow flowers.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000762.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000762.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 770,
+      "prompt": "a green light over a street at an intersection",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000770.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000770.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 772,
+      "prompt": "A man peers over a small plate behind a napkin lined with pieces of fruit.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000772.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000772.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 778,
+      "prompt": "A woman with a concerned look talking on a cell phone.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000778.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000778.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 783,
+      "prompt": "A group of people are on skateboards on an empty city street.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000783.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000783.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 785,
+      "prompt": "A stuffed bear laying on the ground in some water.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000785.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000785.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 790,
+      "prompt": "A woman standing in a kitchen with hard wood floors.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000790.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000790.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 791,
+      "prompt": "Woman and man playing with a disk toy outside on the beach.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000791.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000791.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 795,
+      "prompt": "Two men using poles to push skateboards up a hill.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000795.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000795.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 802,
+      "prompt": "A pair of shoes sitting on top of a skateboard.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000802.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000802.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 805,
+      "prompt": "The skateboarder flips his board on a colorful ramp.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000805.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000805.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 806,
+      "prompt": "a close up of an open umbrella on a a fence",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000806.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000806.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 817,
+      "prompt": "A boy standing in tall grass flying a kite.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000817.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000817.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 820,
+      "prompt": "A cat is sitting under a purple umbrella.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000820.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000820.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 822,
+      "prompt": "A traffic light on a street corner with shops behind it.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000822.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000822.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 832,
+      "prompt": "A cutting board with cut broccoli and a knife.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000832.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000832.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 833,
+      "prompt": "MAN IN ORANGE SHIRT TRYING TO RIDE A WAVE",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000833.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000833.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 835,
+      "prompt": "A red train on tracks next to a building.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000835.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000835.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 838,
+      "prompt": "A table with teddy bears, sandwiches and other items.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000838.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000838.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 843,
+      "prompt": "A long haired, black cat with yellow eyes lays on a black suitcase.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000843.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000843.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 847,
+      "prompt": "A giraffe is leaning over a fence looking at people.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000847.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000847.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 849,
+      "prompt": "Three zebras in a green field grazing next to a tree.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000849.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000849.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 851,
+      "prompt": "A woman wearing a net on her head cutting a cake.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000851.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000851.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 856,
+      "prompt": "Two girls sitting at a table smiling and eating and drinking.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000856.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000856.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 858,
+      "prompt": "A view from an airplane flying over a mountainous region.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000858.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000858.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 869,
+      "prompt": "A broken cell phone laying on carpeted ground.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000869.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000869.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 871,
+      "prompt": "A bed sitting in a room with a white covering.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000871.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000871.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 872,
+      "prompt": "A man in his skiing gear is posing for the camera.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000872.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000872.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 876,
+      "prompt": "A man wearing sun glasses, a tie and a suit.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000876.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000876.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 878,
+      "prompt": "A young girl holding a colorful kite on a sandy beach.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000878.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000878.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 881,
+      "prompt": "A mother zebra letting her baby feed from her.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000881.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000881.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 897,
+      "prompt": "A baseball player swinging his bat during a game.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000897.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000897.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 898,
+      "prompt": "A gang of bikers driving down a city street.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000898.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000898.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 912,
+      "prompt": "Street view with cars going by and people walking around,",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000912.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000912.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 924,
+      "prompt": "A train traveling under a rusted bridge on top of tracks.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000924.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000924.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 927,
+      "prompt": "A pizza sitting inside of a small cardboard box.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000927.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000927.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 932,
+      "prompt": "A group of three people sitting on a couch.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000932.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000932.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 937,
+      "prompt": "A small white plane sitting on top of an airport runway.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000937.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000937.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 938,
+      "prompt": "Two white plates topped with lots of desserts.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000938.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000938.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 947,
+      "prompt": "A man playing Wii bowling in a living room.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000947.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000947.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 951,
+      "prompt": "A man holding a tennis racquet in front of a crowd.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000951.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000951.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 956,
+      "prompt": "There are bikes parked next to the cars.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000956.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000956.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 957,
+      "prompt": "A tennis player is swinging to hit the ball.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000957.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000957.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 965,
+      "prompt": "Three with colored birds standing on a wet surface, each bird standing on one leg.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000965.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000965.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 967,
+      "prompt": "A couple of people with remotes in a room.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000967.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000967.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 969,
+      "prompt": "A book sitting next to a cup of coffee on a bench.",
+      "A": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000969.png",
+      "B": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000969.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 973,
+      "prompt": "a group of people gather outside by a wall",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000973.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000973.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 976,
+      "prompt": "A train traveling down train tracks next to a train yard.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000976.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000976.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 979,
+      "prompt": "a apple sits on a floor with a knife stuck inside of it",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000979.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000979.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    },
+    {
+      "index": 982,
+      "prompt": "A clock mounted on the side of a tall building under a blue sky.",
+      "A": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/students/k1_evolution/images/lora_r32_conv_wm/sample_000982.png",
+      "B": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native/images/lora_r32_conv_wm/sample_000982.png",
+      "preference": null,
+      "A_severe_defect": null,
+      "B_severe_defect": null,
+      "rubric": "blindly rate face/hand/body/object defects, natural appearance and prompt adherence; tie allowed"
+    }
+  ],
+  "ratings_complete": false
+}

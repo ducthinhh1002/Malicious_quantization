@@ -1,0 +1,7 @@
+{
+  "base": "/root/logs/runtime/cache/sd2-community--stable-diffusion-2-1-base/4e63672c03103b6c636b8fb4119ba982469b2955",
+  "base_revision": "4e63672c03103b6c636b8fb4119ba982469b2955",
+  "clip": "/root/logs/runtime/cache/openai--clip-vit-base-patch32/3d74acf9a28c67741b2f4f2ea7635f0aaf6f0268",
+  "clip_revision": "3d74acf9a28c67741b2f4f2ea7635f0aaf6f0268",
+  "coco_sha256": "031296bbc80c45a1d1f76bf9a90ead27e94e99ec629208449507a4917a3bf009"
+}

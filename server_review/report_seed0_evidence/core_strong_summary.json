@@ -1,0 +1,166 @@
+{
+  "conditions": {
+    "C00": {
+      "audit": {
+        "student": "C00_seed0_author",
+        "n": 5000,
+        "detections": 110,
+        "rate": 0.022,
+        "threshold": {
+          "threshold": 0.06189660727977753,
+          "target_fpr": 0.01,
+          "false_positives": 50,
+          "empirical_fpr": 0.01,
+          "num_clean": 5000,
+          "rule": "score >= float32(threshold)",
+          "author_manifest_sha256": "4a48a292ba85372c51eb82a2685f596d9429e5202aa0bf60dcc2dc78c235cd52",
+          "calibration_prompt_sha256": "757fdbc79c68205a3ac255c23bcbc444dc6f535c56beb4835771f68d83ab2c3d",
+          "scoring_seed": 42,
+          "scoring_batch_size": 32
+        },
+        "checkpoint_selection": {
+          "checkpoint": "/root/workspace/serum/students/C00_seed0_author/checkpoint-20000",
+          "mse": 0.14978830933454446
+        }
+      },
+      "utility": {
+        "student": "C00_seed0_author",
+        "num_images": 5000,
+        "clipscore_mean": 0.8113191305875779,
+        "clipscore_definition": "2.5 * max(cosine, 0), OpenAI CLIP ViT-B/32",
+        "reference": "/root/workspace/serum/data/utility_teacher_clean",
+        "reference_definition": "5000 clean SD2.1 Base outputs on student_eval prompts; teacher-distribution similarity, not COCO FID",
+        "kid_subset_size": 1000,
+        "kid_subsets": 100,
+        "rng_seed": 42000,
+        "distribution_metrics": {
+          "frechet_inception_distance": 13.52025464672289,
+          "kernel_inception_distance_mean": 0.0014683055877685548,
+          "kernel_inception_distance_std": 0.0002031542831395285
+        }
+      }
+    },
+    "C10": {
+      "audit": {
+        "student": "C10_seed0_author",
+        "n": 5000,
+        "detections": 221,
+        "rate": 0.0442,
+        "threshold": {
+          "threshold": 0.06189660727977753,
+          "target_fpr": 0.01,
+          "false_positives": 50,
+          "empirical_fpr": 0.01,
+          "num_clean": 5000,
+          "rule": "score >= float32(threshold)",
+          "author_manifest_sha256": "4a48a292ba85372c51eb82a2685f596d9429e5202aa0bf60dcc2dc78c235cd52",
+          "calibration_prompt_sha256": "757fdbc79c68205a3ac255c23bcbc444dc6f535c56beb4835771f68d83ab2c3d",
+          "scoring_seed": 42,
+          "scoring_batch_size": 32
+        },
+        "checkpoint_selection": {
+          "checkpoint": "/root/workspace/serum/students/C10_seed0_author/checkpoint-20000",
+          "mse": 0.15167077766126022
+        }
+      },
+      "utility": {
+        "student": "C10_seed0_author",
+        "num_images": 5000,
+        "clipscore_mean": 0.8094776739120484,
+        "clipscore_definition": "2.5 * max(cosine, 0), OpenAI CLIP ViT-B/32",
+        "reference": "/root/workspace/serum/data/utility_teacher_clean",
+        "reference_definition": "5000 clean SD2.1 Base outputs on student_eval prompts; teacher-distribution similarity, not COCO FID",
+        "kid_subset_size": 1000,
+        "kid_subsets": 100,
+        "rng_seed": 42000,
+        "distribution_metrics": {
+          "frechet_inception_distance": 14.377545324077573,
+          "kernel_inception_distance_mean": 0.002071661949157715,
+          "kernel_inception_distance_std": 0.00027008331169973217
+        }
+      }
+    },
+    "C01": {
+      "audit": {
+        "student": "C01_step1.00_seed0_author",
+        "n": 5000,
+        "detections": 95,
+        "rate": 0.019,
+        "threshold": {
+          "threshold": 0.06189660727977753,
+          "target_fpr": 0.01,
+          "false_positives": 50,
+          "empirical_fpr": 0.01,
+          "num_clean": 5000,
+          "rule": "score >= float32(threshold)",
+          "author_manifest_sha256": "4a48a292ba85372c51eb82a2685f596d9429e5202aa0bf60dcc2dc78c235cd52",
+          "calibration_prompt_sha256": "757fdbc79c68205a3ac255c23bcbc444dc6f535c56beb4835771f68d83ab2c3d",
+          "scoring_seed": 42,
+          "scoring_batch_size": 32
+        },
+        "checkpoint_selection": {
+          "checkpoint": "/root/workspace/serum/students/C01_step1.00_seed0_author/checkpoint-19500",
+          "mse": 0.14615653915377333
+        }
+      },
+      "utility": {
+        "student": "C01_step1.00_seed0_author",
+        "num_images": 5000,
+        "clipscore_mean": 0.8070531483054161,
+        "clipscore_definition": "2.5 * max(cosine, 0), OpenAI CLIP ViT-B/32",
+        "reference": "/root/workspace/serum/data/utility_teacher_clean",
+        "reference_definition": "5000 clean SD2.1 Base outputs on student_eval prompts; teacher-distribution similarity, not COCO FID",
+        "kid_subset_size": 1000,
+        "kid_subsets": 100,
+        "rng_seed": 42000,
+        "distribution_metrics": {
+          "frechet_inception_distance": 13.043046344297238,
+          "kernel_inception_distance_mean": 0.0010668802261352538,
+          "kernel_inception_distance_std": 0.00017565659438690574
+        }
+      }
+    },
+    "C11": {
+      "audit": {
+        "student": "C11_step1.00_seed0_author",
+        "n": 5000,
+        "detections": 180,
+        "rate": 0.036,
+        "threshold": {
+          "threshold": 0.06189660727977753,
+          "target_fpr": 0.01,
+          "false_positives": 50,
+          "empirical_fpr": 0.01,
+          "num_clean": 5000,
+          "rule": "score >= float32(threshold)",
+          "author_manifest_sha256": "4a48a292ba85372c51eb82a2685f596d9429e5202aa0bf60dcc2dc78c235cd52",
+          "calibration_prompt_sha256": "757fdbc79c68205a3ac255c23bcbc444dc6f535c56beb4835771f68d83ab2c3d",
+          "scoring_seed": 42,
+          "scoring_batch_size": 32
+        },
+        "checkpoint_selection": {
+          "checkpoint": "/root/workspace/serum/students/C11_step1.00_seed0_author/checkpoint-20000",
+          "mse": 0.14693202329589986
+        }
+      },
+      "utility": {
+        "student": "C11_step1.00_seed0_author",
+        "num_images": 5000,
+        "clipscore_mean": 0.8069357810795307,
+        "clipscore_definition": "2.5 * max(cosine, 0), OpenAI CLIP ViT-B/32",
+        "reference": "/root/workspace/serum/data/utility_teacher_clean",
+        "reference_definition": "5000 clean SD2.1 Base outputs on student_eval prompts; teacher-distribution similarity, not COCO FID",
+        "kid_subset_size": 1000,
+        "kid_subsets": 100,
+        "rng_seed": 42000,
+        "distribution_metrics": {
+          "frechet_inception_distance": 13.773444133737712,
+          "kernel_inception_distance_mean": 0.0014609360694885253,
+          "kernel_inception_distance_std": 0.00020142938924128893
+        }
+      }
+    }
+  },
+  "threshold_sha256": "8ad12a11d02bdaa35a6313e88ca2e089dd70ab7b58df8cc45279e43722a9fe30",
+  "scope": "single seed, strong only; report baseline validity before attack interpretation"
+}

@@ -1,0 +1,4012 @@
+{
+  "count": 500,
+  "means": {
+    "clip_image_cosine": 0.9592872270345688,
+    "dino_cosine": 0.9382753207683563,
+    "lpips": 0.1612826989069581,
+    "raw_clipscore": 0.696881502687931,
+    "regen_clipscore": 0.6784057896137238
+  },
+  "per_image": [
+    {
+      "file": "watermarked_000000.png",
+      "clip_image_cosine": 0.9741312265396118,
+      "dino_cosine": 0.9565403461456299,
+      "lpips": 0.17918933928012848,
+      "raw_clipscore": 0.6458321213722229,
+      "regen_clipscore": 0.5993793606758118
+    },
+    {
+      "file": "watermarked_000001.png",
+      "clip_image_cosine": 0.9760423302650452,
+      "dino_cosine": 0.9656785726547241,
+      "lpips": 0.15660975873470306,
+      "raw_clipscore": 0.6154749989509583,
+      "regen_clipscore": 0.60418701171875
+    },
+    {
+      "file": "watermarked_000002.png",
+      "clip_image_cosine": 0.9551178812980652,
+      "dino_cosine": 0.9158275127410889,
+      "lpips": 0.19839708507061005,
+      "raw_clipscore": 0.6758718490600586,
+      "regen_clipscore": 0.5915860533714294
+    },
+    {
+      "file": "watermarked_000003.png",
+      "clip_image_cosine": 0.9752475023269653,
+      "dino_cosine": 0.9390716552734375,
+      "lpips": 0.14168435335159302,
+      "raw_clipscore": 0.777254581451416,
+      "regen_clipscore": 0.6995040774345398
+    },
+    {
+      "file": "watermarked_000004.png",
+      "clip_image_cosine": 0.9466753005981445,
+      "dino_cosine": 0.7957290410995483,
+      "lpips": 0.21940205991268158,
+      "raw_clipscore": 0.6145334839820862,
+      "regen_clipscore": 0.5837143063545227
+    },
+    {
+      "file": "watermarked_000005.png",
+      "clip_image_cosine": 0.9570680260658264,
+      "dino_cosine": 0.9528498649597168,
+      "lpips": 0.1523890644311905,
+      "raw_clipscore": 0.6060932278633118,
+      "regen_clipscore": 0.6510699391365051
+    },
+    {
+      "file": "watermarked_000006.png",
+      "clip_image_cosine": 0.9519351124763489,
+      "dino_cosine": 0.9296516180038452,
+      "lpips": 0.13057678937911987,
+      "raw_clipscore": 0.7167601585388184,
+      "regen_clipscore": 0.6785592436790466
+    },
+    {
+      "file": "watermarked_000007.png",
+      "clip_image_cosine": 0.9716569185256958,
+      "dino_cosine": 0.970761775970459,
+      "lpips": 0.16018490493297577,
+      "raw_clipscore": 0.710983157157898,
+      "regen_clipscore": 0.7814502716064453
+    },
+    {
+      "file": "watermarked_000008.png",
+      "clip_image_cosine": 0.9723916053771973,
+      "dino_cosine": 0.9226061105728149,
+      "lpips": 0.16295111179351807,
+      "raw_clipscore": 0.6223574876785278,
+      "regen_clipscore": 0.597327470779419
+    },
+    {
+      "file": "watermarked_000009.png",
+      "clip_image_cosine": 0.9631689190864563,
+      "dino_cosine": 0.9659067392349243,
+      "lpips": 0.12445291131734848,
+      "raw_clipscore": 0.5989039540290833,
+      "regen_clipscore": 0.5556209087371826
+    },
+    {
+      "file": "watermarked_000010.png",
+      "clip_image_cosine": 0.9573003053665161,
+      "dino_cosine": 0.9514110088348389,
+      "lpips": 0.1176460012793541,
+      "raw_clipscore": 0.7296289205551147,
+      "regen_clipscore": 0.7041646242141724
+    },
+    {
+      "file": "watermarked_000011.png",
+      "clip_image_cosine": 0.954453706741333,
+      "dino_cosine": 0.9442897439002991,
+      "lpips": 0.18135124444961548,
+      "raw_clipscore": 0.5790168046951294,
+      "regen_clipscore": 0.5444138050079346
+    },
+    {
+      "file": "watermarked_000012.png",
+      "clip_image_cosine": 0.9452149868011475,
+      "dino_cosine": 0.9391272068023682,
+      "lpips": 0.14213308691978455,
+      "raw_clipscore": 0.8255487084388733,
+      "regen_clipscore": 0.740172803401947
+    },
+    {
+      "file": "watermarked_000013.png",
+      "clip_image_cosine": 0.922982931137085,
+      "dino_cosine": 0.9617974758148193,
+      "lpips": 0.1856432557106018,
+      "raw_clipscore": 0.8289476633071899,
+      "regen_clipscore": 0.8249687552452087
+    },
+    {
+      "file": "watermarked_000014.png",
+      "clip_image_cosine": 0.9810745716094971,
+      "dino_cosine": 0.9599418640136719,
+      "lpips": 0.11246377974748611,
+      "raw_clipscore": 0.7715176939964294,
+      "regen_clipscore": 0.7821916341781616
+    },
+    {
+      "file": "watermarked_000015.png",
+      "clip_image_cosine": 0.9616488218307495,
+      "dino_cosine": 0.9404445886611938,
+      "lpips": 0.14559200406074524,
+      "raw_clipscore": 0.5532202124595642,
+      "regen_clipscore": 0.5097776055335999
+    },
+    {
+      "file": "watermarked_000016.png",
+      "clip_image_cosine": 0.9526249170303345,
+      "dino_cosine": 0.9730666875839233,
+      "lpips": 0.1590062379837036,
+      "raw_clipscore": 0.7459067106246948,
+      "regen_clipscore": 0.7486349940299988
+    },
+    {
+      "file": "watermarked_000017.png",
+      "clip_image_cosine": 0.9658221006393433,
+      "dino_cosine": 0.9522427320480347,
+      "lpips": 0.09964103996753693,
+      "raw_clipscore": 0.6698744297027588,
+      "regen_clipscore": 0.6257072687149048
+    },
+    {
+      "file": "watermarked_000018.png",
+      "clip_image_cosine": 0.9338555335998535,
+      "dino_cosine": 0.9797896146774292,
+      "lpips": 0.22100485861301422,
+      "raw_clipscore": 0.5751253366470337,
+      "regen_clipscore": 0.55614173412323
+    },
+    {
+      "file": "watermarked_000019.png",
+      "clip_image_cosine": 0.9670954346656799,
+      "dino_cosine": 0.802045464515686,
+      "lpips": 0.1957830935716629,
+      "raw_clipscore": 0.5620785355567932,
+      "regen_clipscore": 0.5159764289855957
+    },
+    {
+      "file": "watermarked_000020.png",
+      "clip_image_cosine": 0.9768540859222412,
+      "dino_cosine": 0.9625272750854492,
+      "lpips": 0.1657240092754364,
+      "raw_clipscore": 0.6900982856750488,
+      "regen_clipscore": 0.6560169458389282
+    },
+    {
+      "file": "watermarked_000021.png",
+      "clip_image_cosine": 0.9488467574119568,
+      "dino_cosine": 0.9253635406494141,
+      "lpips": 0.2035265564918518,
+      "raw_clipscore": 0.6955732107162476,
+      "regen_clipscore": 0.6933521032333374
+    },
+    {
+      "file": "watermarked_000022.png",
+      "clip_image_cosine": 0.9876894950866699,
+      "dino_cosine": 0.9649869203567505,
+      "lpips": 0.07051484286785126,
+      "raw_clipscore": 0.6640452742576599,
+      "regen_clipscore": 0.6835260987281799
+    },
+    {
+      "file": "watermarked_000023.png",
+      "clip_image_cosine": 0.974837064743042,
+      "dino_cosine": 0.9578372240066528,
+      "lpips": 0.1071729063987732,
+      "raw_clipscore": 0.6010185480117798,
+      "regen_clipscore": 0.5821324586868286
+    },
+    {
+      "file": "watermarked_000024.png",
+      "clip_image_cosine": 0.9302228093147278,
+      "dino_cosine": 0.8764448165893555,
+      "lpips": 0.19936339557170868,
+      "raw_clipscore": 0.5374782085418701,
+      "regen_clipscore": 0.45906394720077515
+    },
+    {
+      "file": "watermarked_000025.png",
+      "clip_image_cosine": 0.9466255903244019,
+      "dino_cosine": 0.9248447418212891,
+      "lpips": 0.2193913459777832,
+      "raw_clipscore": 0.8870928287506104,
+      "regen_clipscore": 0.7898057103157043
+    },
+    {
+      "file": "watermarked_000026.png",
+      "clip_image_cosine": 0.9654000997543335,
+      "dino_cosine": 0.9518740177154541,
+      "lpips": 0.1351478546857834,
+      "raw_clipscore": 0.8009931445121765,
+      "regen_clipscore": 0.7956312894821167
+    },
+    {
+      "file": "watermarked_000027.png",
+      "clip_image_cosine": 0.969001293182373,
+      "dino_cosine": 0.9324948787689209,
+      "lpips": 0.1574011743068695,
+      "raw_clipscore": 0.6303629279136658,
+      "regen_clipscore": 0.6663058996200562
+    },
+    {
+      "file": "watermarked_000028.png",
+      "clip_image_cosine": 0.91739821434021,
+      "dino_cosine": 0.956525444984436,
+      "lpips": 0.13234972953796387,
+      "raw_clipscore": 0.6490891575813293,
+      "regen_clipscore": 0.6719067692756653
+    },
+    {
+      "file": "watermarked_000029.png",
+      "clip_image_cosine": 0.9425725936889648,
+      "dino_cosine": 0.954322099685669,
+      "lpips": 0.20119990408420563,
+      "raw_clipscore": 0.5921319127082825,
+      "regen_clipscore": 0.5457965135574341
+    },
+    {
+      "file": "watermarked_000030.png",
+      "clip_image_cosine": 0.9735474586486816,
+      "dino_cosine": 0.9726314544677734,
+      "lpips": 0.09742146730422974,
+      "raw_clipscore": 0.7226765751838684,
+      "regen_clipscore": 0.6972252130508423
+    },
+    {
+      "file": "watermarked_000031.png",
+      "clip_image_cosine": 0.971930742263794,
+      "dino_cosine": 0.9441091418266296,
+      "lpips": 0.2576025426387787,
+      "raw_clipscore": 0.5666601061820984,
+      "regen_clipscore": 0.5566157102584839
+    },
+    {
+      "file": "watermarked_000032.png",
+      "clip_image_cosine": 0.9846732020378113,
+      "dino_cosine": 0.9536231756210327,
+      "lpips": 0.12169069051742554,
+      "raw_clipscore": 0.7376999258995056,
+      "regen_clipscore": 0.7363188862800598
+    },
+    {
+      "file": "watermarked_000033.png",
+      "clip_image_cosine": 0.9285518527030945,
+      "dino_cosine": 0.9337784051895142,
+      "lpips": 0.15112224221229553,
+      "raw_clipscore": 0.6764464378356934,
+      "regen_clipscore": 0.6942906379699707
+    },
+    {
+      "file": "watermarked_000034.png",
+      "clip_image_cosine": 0.9624233841896057,
+      "dino_cosine": 0.9302964210510254,
+      "lpips": 0.1655411720275879,
+      "raw_clipscore": 0.690545916557312,
+      "regen_clipscore": 0.6704750657081604
+    },
+    {
+      "file": "watermarked_000035.png",
+      "clip_image_cosine": 0.9261977672576904,
+      "dino_cosine": 0.968407154083252,
+      "lpips": 0.18134894967079163,
+      "raw_clipscore": 0.8356141448020935,
+      "regen_clipscore": 0.785941481590271
+    },
+    {
+      "file": "watermarked_000036.png",
+      "clip_image_cosine": 0.9792591333389282,
+      "dino_cosine": 0.9380486011505127,
+      "lpips": 0.0925956517457962,
+      "raw_clipscore": 0.7926489114761353,
+      "regen_clipscore": 0.7778313755989075
+    },
+    {
+      "file": "watermarked_000037.png",
+      "clip_image_cosine": 0.9808489680290222,
+      "dino_cosine": 0.9486267566680908,
+      "lpips": 0.1451503038406372,
+      "raw_clipscore": 0.6767063140869141,
+      "regen_clipscore": 0.6533578038215637
+    },
+    {
+      "file": "watermarked_000038.png",
+      "clip_image_cosine": 0.9757673144340515,
+      "dino_cosine": 0.984541118144989,
+      "lpips": 0.10889481008052826,
+      "raw_clipscore": 0.6918317079544067,
+      "regen_clipscore": 0.6907181739807129
+    },
+    {
+      "file": "watermarked_000039.png",
+      "clip_image_cosine": 0.9829682111740112,
+      "dino_cosine": 0.9672138094902039,
+      "lpips": 0.2110854834318161,
+      "raw_clipscore": 0.7624646425247192,
+      "regen_clipscore": 0.736041784286499
+    },
+    {
+      "file": "watermarked_000040.png",
+      "clip_image_cosine": 0.9738832712173462,
+      "dino_cosine": 0.9177224636077881,
+      "lpips": 0.14663822948932648,
+      "raw_clipscore": 0.7989133596420288,
+      "regen_clipscore": 0.7625901699066162
+    },
+    {
+      "file": "watermarked_000041.png",
+      "clip_image_cosine": 0.9301489591598511,
+      "dino_cosine": 0.9403984546661377,
+      "lpips": 0.21294650435447693,
+      "raw_clipscore": 0.7102620601654053,
+      "regen_clipscore": 0.7172847986221313
+    },
+    {
+      "file": "watermarked_000042.png",
+      "clip_image_cosine": 0.9622427821159363,
+      "dino_cosine": 0.977394700050354,
+      "lpips": 0.18082144856452942,
+      "raw_clipscore": 0.5574336051940918,
+      "regen_clipscore": 0.5122530460357666
+    },
+    {
+      "file": "watermarked_000043.png",
+      "clip_image_cosine": 0.9792454242706299,
+      "dino_cosine": 0.9621617197990417,
+      "lpips": 0.07856541872024536,
+      "raw_clipscore": 0.7340329885482788,
+      "regen_clipscore": 0.730394721031189
+    },
+    {
+      "file": "watermarked_000044.png",
+      "clip_image_cosine": 0.9650827646255493,
+      "dino_cosine": 0.944381594657898,
+      "lpips": 0.20335720479488373,
+      "raw_clipscore": 0.7406485676765442,
+      "regen_clipscore": 0.7291954159736633
+    },
+    {
+      "file": "watermarked_000045.png",
+      "clip_image_cosine": 0.9591633081436157,
+      "dino_cosine": 0.9557603597640991,
+      "lpips": 0.10365600883960724,
+      "raw_clipscore": 0.725123405456543,
+      "regen_clipscore": 0.7404768466949463
+    },
+    {
+      "file": "watermarked_000046.png",
+      "clip_image_cosine": 0.96970134973526,
+      "dino_cosine": 0.9608114957809448,
+      "lpips": 0.12791642546653748,
+      "raw_clipscore": 0.6509654521942139,
+      "regen_clipscore": 0.6559308767318726
+    },
+    {
+      "file": "watermarked_000047.png",
+      "clip_image_cosine": 0.9698732495307922,
+      "dino_cosine": 0.9382240772247314,
+      "lpips": 0.192280575633049,
+      "raw_clipscore": 0.628700852394104,
+      "regen_clipscore": 0.5925503969192505
+    },
+    {
+      "file": "watermarked_000048.png",
+      "clip_image_cosine": 0.9771595001220703,
+      "dino_cosine": 0.9579229354858398,
+      "lpips": 0.15492713451385498,
+      "raw_clipscore": 0.5459315180778503,
+      "regen_clipscore": 0.5565693378448486
+    },
+    {
+      "file": "watermarked_000049.png",
+      "clip_image_cosine": 0.9672228097915649,
+      "dino_cosine": 0.9770244359970093,
+      "lpips": 0.10819800198078156,
+      "raw_clipscore": 0.6419841051101685,
+      "regen_clipscore": 0.6280984878540039
+    },
+    {
+      "file": "watermarked_000050.png",
+      "clip_image_cosine": 0.9543132781982422,
+      "dino_cosine": 0.9615777730941772,
+      "lpips": 0.10227341204881668,
+      "raw_clipscore": 0.9390617609024048,
+      "regen_clipscore": 0.8903716802597046
+    },
+    {
+      "file": "watermarked_000051.png",
+      "clip_image_cosine": 0.9585788249969482,
+      "dino_cosine": 0.9318829774856567,
+      "lpips": 0.16490617394447327,
+      "raw_clipscore": 0.8427196741104126,
+      "regen_clipscore": 0.8100155591964722
+    },
+    {
+      "file": "watermarked_000052.png",
+      "clip_image_cosine": 0.9265166521072388,
+      "dino_cosine": 0.9656862020492554,
+      "lpips": 0.1918479949235916,
+      "raw_clipscore": 0.676790177822113,
+      "regen_clipscore": 0.7584731578826904
+    },
+    {
+      "file": "watermarked_000053.png",
+      "clip_image_cosine": 0.9674499034881592,
+      "dino_cosine": 0.8982685804367065,
+      "lpips": 0.2513332664966583,
+      "raw_clipscore": 0.7036585807800293,
+      "regen_clipscore": 0.729062557220459
+    },
+    {
+      "file": "watermarked_000054.png",
+      "clip_image_cosine": 0.9621298313140869,
+      "dino_cosine": 0.9413090348243713,
+      "lpips": 0.15469922125339508,
+      "raw_clipscore": 0.5936560034751892,
+      "regen_clipscore": 0.5659779906272888
+    },
+    {
+      "file": "watermarked_000055.png",
+      "clip_image_cosine": 0.9858239889144897,
+      "dino_cosine": 0.9726290702819824,
+      "lpips": 0.1618134081363678,
+      "raw_clipscore": 0.6476393342018127,
+      "regen_clipscore": 0.5896347761154175
+    },
+    {
+      "file": "watermarked_000056.png",
+      "clip_image_cosine": 0.9652275443077087,
+      "dino_cosine": 0.976057231426239,
+      "lpips": 0.16828081011772156,
+      "raw_clipscore": 0.5813776254653931,
+      "regen_clipscore": 0.5465516448020935
+    },
+    {
+      "file": "watermarked_000057.png",
+      "clip_image_cosine": 0.9675662517547607,
+      "dino_cosine": 0.9638597965240479,
+      "lpips": 0.2329615354537964,
+      "raw_clipscore": 0.7515707612037659,
+      "regen_clipscore": 0.7284119129180908
+    },
+    {
+      "file": "watermarked_000058.png",
+      "clip_image_cosine": 0.9705488681793213,
+      "dino_cosine": 0.9750080108642578,
+      "lpips": 0.1771748960018158,
+      "raw_clipscore": 0.7345473766326904,
+      "regen_clipscore": 0.7341465950012207
+    },
+    {
+      "file": "watermarked_000059.png",
+      "clip_image_cosine": 0.9375022053718567,
+      "dino_cosine": 0.9496878385543823,
+      "lpips": 0.19601808488368988,
+      "raw_clipscore": 0.645957350730896,
+      "regen_clipscore": 0.6180184483528137
+    },
+    {
+      "file": "watermarked_000060.png",
+      "clip_image_cosine": 0.9515928030014038,
+      "dino_cosine": 0.9473037719726562,
+      "lpips": 0.12637396156787872,
+      "raw_clipscore": 0.6890255808830261,
+      "regen_clipscore": 0.685889720916748
+    },
+    {
+      "file": "watermarked_000061.png",
+      "clip_image_cosine": 0.9629545211791992,
+      "dino_cosine": 0.9388198852539062,
+      "lpips": 0.12564727663993835,
+      "raw_clipscore": 0.6378864645957947,
+      "regen_clipscore": 0.6972247958183289
+    },
+    {
+      "file": "watermarked_000062.png",
+      "clip_image_cosine": 0.9534876346588135,
+      "dino_cosine": 0.8835842609405518,
+      "lpips": 0.2115728259086609,
+      "raw_clipscore": 0.6901517510414124,
+      "regen_clipscore": 0.6374502182006836
+    },
+    {
+      "file": "watermarked_000063.png",
+      "clip_image_cosine": 0.9765946865081787,
+      "dino_cosine": 0.9444655179977417,
+      "lpips": 0.14841610193252563,
+      "raw_clipscore": 0.6708809733390808,
+      "regen_clipscore": 0.6404750943183899
+    },
+    {
+      "file": "watermarked_000064.png",
+      "clip_image_cosine": 0.8989565968513489,
+      "dino_cosine": 0.8983709216117859,
+      "lpips": 0.17469097673892975,
+      "raw_clipscore": 0.6399845480918884,
+      "regen_clipscore": 0.5335032343864441
+    },
+    {
+      "file": "watermarked_000065.png",
+      "clip_image_cosine": 0.977250337600708,
+      "dino_cosine": 0.9491497278213501,
+      "lpips": 0.13319648802280426,
+      "raw_clipscore": 0.6971907019615173,
+      "regen_clipscore": 0.6946367025375366
+    },
+    {
+      "file": "watermarked_000066.png",
+      "clip_image_cosine": 0.9441949725151062,
+      "dino_cosine": 0.9410897493362427,
+      "lpips": 0.17869146168231964,
+      "raw_clipscore": 0.7156699895858765,
+      "regen_clipscore": 0.7210831642150879
+    },
+    {
+      "file": "watermarked_000067.png",
+      "clip_image_cosine": 0.9626645445823669,
+      "dino_cosine": 0.9310579299926758,
+      "lpips": 0.08570148050785065,
+      "raw_clipscore": 0.6689565777778625,
+      "regen_clipscore": 0.6361040472984314
+    },
+    {
+      "file": "watermarked_000068.png",
+      "clip_image_cosine": 0.9267643094062805,
+      "dino_cosine": 0.8920057415962219,
+      "lpips": 0.12843666970729828,
+      "raw_clipscore": 0.6147423386573792,
+      "regen_clipscore": 0.6754292249679565
+    },
+    {
+      "file": "watermarked_000069.png",
+      "clip_image_cosine": 0.9526820182800293,
+      "dino_cosine": 0.9590582847595215,
+      "lpips": 0.10689209401607513,
+      "raw_clipscore": 0.7739972472190857,
+      "regen_clipscore": 0.7696837186813354
+    },
+    {
+      "file": "watermarked_000070.png",
+      "clip_image_cosine": 0.973560094833374,
+      "dino_cosine": 0.9295826554298401,
+      "lpips": 0.15601138770580292,
+      "raw_clipscore": 0.7658355236053467,
+      "regen_clipscore": 0.7765339612960815
+    },
+    {
+      "file": "watermarked_000071.png",
+      "clip_image_cosine": 0.9805437326431274,
+      "dino_cosine": 0.9153954982757568,
+      "lpips": 0.11382169276475906,
+      "raw_clipscore": 0.7791857719421387,
+      "regen_clipscore": 0.7305848598480225
+    },
+    {
+      "file": "watermarked_000072.png",
+      "clip_image_cosine": 0.9859697818756104,
+      "dino_cosine": 0.9698194265365601,
+      "lpips": 0.10275983810424805,
+      "raw_clipscore": 0.6920813322067261,
+      "regen_clipscore": 0.7083926200866699
+    },
+    {
+      "file": "watermarked_000073.png",
+      "clip_image_cosine": 0.9404258131980896,
+      "dino_cosine": 0.899815559387207,
+      "lpips": 0.21556463837623596,
+      "raw_clipscore": 0.6059471964836121,
+      "regen_clipscore": 0.5818576812744141
+    },
+    {
+      "file": "watermarked_000074.png",
+      "clip_image_cosine": 0.9608802199363708,
+      "dino_cosine": 0.9694247245788574,
+      "lpips": 0.09330306947231293,
+      "raw_clipscore": 0.6787052154541016,
+      "regen_clipscore": 0.692928671836853
+    },
+    {
+      "file": "watermarked_000075.png",
+      "clip_image_cosine": 0.9758967757225037,
+      "dino_cosine": 0.9366483688354492,
+      "lpips": 0.12990647554397583,
+      "raw_clipscore": 0.6815001368522644,
+      "regen_clipscore": 0.6773957014083862
+    },
+    {
+      "file": "watermarked_000076.png",
+      "clip_image_cosine": 0.8731695413589478,
+      "dino_cosine": 0.8773756623268127,
+      "lpips": 0.19354800879955292,
+      "raw_clipscore": 0.7789666056632996,
+      "regen_clipscore": 0.7697963714599609
+    },
+    {
+      "file": "watermarked_000077.png",
+      "clip_image_cosine": 0.9468473792076111,
+      "dino_cosine": 0.8988110423088074,
+      "lpips": 0.1618352234363556,
+      "raw_clipscore": 0.7746644020080566,
+      "regen_clipscore": 0.7701421976089478
+    },
+    {
+      "file": "watermarked_000078.png",
+      "clip_image_cosine": 0.9600033164024353,
+      "dino_cosine": 0.970273494720459,
+      "lpips": 0.1731635183095932,
+      "raw_clipscore": 0.6975691318511963,
+      "regen_clipscore": 0.6685647368431091
+    },
+    {
+      "file": "watermarked_000079.png",
+      "clip_image_cosine": 0.9530465602874756,
+      "dino_cosine": 0.9193189144134521,
+      "lpips": 0.13649849593639374,
+      "raw_clipscore": 0.7555416226387024,
+      "regen_clipscore": 0.7124462723731995
+    },
+    {
+      "file": "watermarked_000080.png",
+      "clip_image_cosine": 0.9679319858551025,
+      "dino_cosine": 0.9742202758789062,
+      "lpips": 0.16401603817939758,
+      "raw_clipscore": 0.8667575120925903,
+      "regen_clipscore": 0.8592766523361206
+    },
+    {
+      "file": "watermarked_000081.png",
+      "clip_image_cosine": 0.9726485013961792,
+      "dino_cosine": 0.9102277159690857,
+      "lpips": 0.21676847338676453,
+      "raw_clipscore": 0.6247116923332214,
+      "regen_clipscore": 0.6753117442131042
+    },
+    {
+      "file": "watermarked_000082.png",
+      "clip_image_cosine": 0.9861577153205872,
+      "dino_cosine": 0.9523398876190186,
+      "lpips": 0.15464656054973602,
+      "raw_clipscore": 0.6903690099716187,
+      "regen_clipscore": 0.6789755821228027
+    },
+    {
+      "file": "watermarked_000083.png",
+      "clip_image_cosine": 0.9775405526161194,
+      "dino_cosine": 0.9133324027061462,
+      "lpips": 0.0936916321516037,
+      "raw_clipscore": 0.5463789701461792,
+      "regen_clipscore": 0.6276231408119202
+    },
+    {
+      "file": "watermarked_000084.png",
+      "clip_image_cosine": 0.960871160030365,
+      "dino_cosine": 0.9696730971336365,
+      "lpips": 0.09916046261787415,
+      "raw_clipscore": 0.6498633623123169,
+      "regen_clipscore": 0.6005040407180786
+    },
+    {
+      "file": "watermarked_000085.png",
+      "clip_image_cosine": 0.9687491655349731,
+      "dino_cosine": 0.9100058674812317,
+      "lpips": 0.23542086780071259,
+      "raw_clipscore": 0.6514528393745422,
+      "regen_clipscore": 0.6041274070739746
+    },
+    {
+      "file": "watermarked_000086.png",
+      "clip_image_cosine": 0.9562784433364868,
+      "dino_cosine": 0.8590731620788574,
+      "lpips": 0.1539987027645111,
+      "raw_clipscore": 0.8171897530555725,
+      "regen_clipscore": 0.7971128225326538
+    },
+    {
+      "file": "watermarked_000087.png",
+      "clip_image_cosine": 0.9726219177246094,
+      "dino_cosine": 0.9030028581619263,
+      "lpips": 0.22198143601417542,
+      "raw_clipscore": 0.6417416930198669,
+      "regen_clipscore": 0.6452945470809937
+    },
+    {
+      "file": "watermarked_000088.png",
+      "clip_image_cosine": 0.982954740524292,
+      "dino_cosine": 0.8921879529953003,
+      "lpips": 0.18605929613113403,
+      "raw_clipscore": 0.6272172927856445,
+      "regen_clipscore": 0.6027050018310547
+    },
+    {
+      "file": "watermarked_000089.png",
+      "clip_image_cosine": 0.9750759601593018,
+      "dino_cosine": 0.9515866041183472,
+      "lpips": 0.12331793457269669,
+      "raw_clipscore": 0.722862184047699,
+      "regen_clipscore": 0.71823650598526
+    },
+    {
+      "file": "watermarked_000090.png",
+      "clip_image_cosine": 0.9737212061882019,
+      "dino_cosine": 0.8667202591896057,
+      "lpips": 0.2567261755466461,
+      "raw_clipscore": 0.7563977241516113,
+      "regen_clipscore": 0.7328051328659058
+    },
+    {
+      "file": "watermarked_000091.png",
+      "clip_image_cosine": 0.9502480626106262,
+      "dino_cosine": 0.9561983346939087,
+      "lpips": 0.207352876663208,
+      "raw_clipscore": 0.6313238143920898,
+      "regen_clipscore": 0.7271882891654968
+    },
+    {
+      "file": "watermarked_000092.png",
+      "clip_image_cosine": 0.9717357754707336,
+      "dino_cosine": 0.9803885817527771,
+      "lpips": 0.14241105318069458,
+      "raw_clipscore": 0.8043023943901062,
+      "regen_clipscore": 0.8501167297363281
+    },
+    {
+      "file": "watermarked_000093.png",
+      "clip_image_cosine": 0.9820414781570435,
+      "dino_cosine": 0.9573793411254883,
+      "lpips": 0.14167186617851257,
+      "raw_clipscore": 0.7403123378753662,
+      "regen_clipscore": 0.7481821775436401
+    },
+    {
+      "file": "watermarked_000094.png",
+      "clip_image_cosine": 0.974859356880188,
+      "dino_cosine": 0.9705830216407776,
+      "lpips": 0.1059994101524353,
+      "raw_clipscore": 0.6862019896507263,
+      "regen_clipscore": 0.668847918510437
+    },
+    {
+      "file": "watermarked_000095.png",
+      "clip_image_cosine": 0.9799383878707886,
+      "dino_cosine": 0.9604052305221558,
+      "lpips": 0.14062932133674622,
+      "raw_clipscore": 0.6635323166847229,
+      "regen_clipscore": 0.641829252243042
+    },
+    {
+      "file": "watermarked_000096.png",
+      "clip_image_cosine": 0.9473638534545898,
+      "dino_cosine": 0.9028240442276001,
+      "lpips": 0.24281278252601624,
+      "raw_clipscore": 0.5414354205131531,
+      "regen_clipscore": 0.5115469098091125
+    },
+    {
+      "file": "watermarked_000097.png",
+      "clip_image_cosine": 0.9530771374702454,
+      "dino_cosine": 0.8919469118118286,
+      "lpips": 0.2058069407939911,
+      "raw_clipscore": 0.7439055442810059,
+      "regen_clipscore": 0.7452723383903503
+    },
+    {
+      "file": "watermarked_000098.png",
+      "clip_image_cosine": 0.9567849636077881,
+      "dino_cosine": 0.8607127666473389,
+      "lpips": 0.23442217707633972,
+      "raw_clipscore": 0.6109393835067749,
+      "regen_clipscore": 0.5353442430496216
+    },
+    {
+      "file": "watermarked_000099.png",
+      "clip_image_cosine": 0.9082674980163574,
+      "dino_cosine": 0.9515507221221924,
+      "lpips": 0.20652371644973755,
+      "raw_clipscore": 0.6861564517021179,
+      "regen_clipscore": 0.712241530418396
+    },
+    {
+      "file": "watermarked_000100.png",
+      "clip_image_cosine": 0.9773434996604919,
+      "dino_cosine": 0.9782968759536743,
+      "lpips": 0.12078919261693954,
+      "raw_clipscore": 0.7643976807594299,
+      "regen_clipscore": 0.7302030920982361
+    },
+    {
+      "file": "watermarked_000101.png",
+      "clip_image_cosine": 0.951979398727417,
+      "dino_cosine": 0.9250578284263611,
+      "lpips": 0.1785963475704193,
+      "raw_clipscore": 0.6938478350639343,
+      "regen_clipscore": 0.6553434133529663
+    },
+    {
+      "file": "watermarked_000102.png",
+      "clip_image_cosine": 0.9632545709609985,
+      "dino_cosine": 0.9723721742630005,
+      "lpips": 0.15611454844474792,
+      "raw_clipscore": 0.38950684666633606,
+      "regen_clipscore": 0.3459489047527313
+    },
+    {
+      "file": "watermarked_000103.png",
+      "clip_image_cosine": 0.9458803534507751,
+      "dino_cosine": 0.9621966481208801,
+      "lpips": 0.16681887209415436,
+      "raw_clipscore": 0.8161909580230713,
+      "regen_clipscore": 0.8375844359397888
+    },
+    {
+      "file": "watermarked_000104.png",
+      "clip_image_cosine": 0.9414654970169067,
+      "dino_cosine": 0.9511395692825317,
+      "lpips": 0.1401488482952118,
+      "raw_clipscore": 0.646619439125061,
+      "regen_clipscore": 0.6723839640617371
+    },
+    {
+      "file": "watermarked_000105.png",
+      "clip_image_cosine": 0.9647069573402405,
+      "dino_cosine": 0.9392386674880981,
+      "lpips": 0.09010575711727142,
+      "raw_clipscore": 0.7377544045448303,
+      "regen_clipscore": 0.7077420949935913
+    },
+    {
+      "file": "watermarked_000106.png",
+      "clip_image_cosine": 0.9589722752571106,
+      "dino_cosine": 0.9241083860397339,
+      "lpips": 0.13813453912734985,
+      "raw_clipscore": 0.8548544645309448,
+      "regen_clipscore": 0.7389780879020691
+    },
+    {
+      "file": "watermarked_000107.png",
+      "clip_image_cosine": 0.9764910936355591,
+      "dino_cosine": 0.9587242603302002,
+      "lpips": 0.09823808819055557,
+      "raw_clipscore": 0.9777978658676147,
+      "regen_clipscore": 0.9555456042289734
+    },
+    {
+      "file": "watermarked_000108.png",
+      "clip_image_cosine": 0.9581858515739441,
+      "dino_cosine": 0.9800260663032532,
+      "lpips": 0.0930546298623085,
+      "raw_clipscore": 0.7205543518066406,
+      "regen_clipscore": 0.609849750995636
+    },
+    {
+      "file": "watermarked_000109.png",
+      "clip_image_cosine": 0.9568044543266296,
+      "dino_cosine": 0.970493733882904,
+      "lpips": 0.15040341019630432,
+      "raw_clipscore": 0.6204712986946106,
+      "regen_clipscore": 0.6192763447761536
+    },
+    {
+      "file": "watermarked_000110.png",
+      "clip_image_cosine": 0.9389727711677551,
+      "dino_cosine": 0.9528385400772095,
+      "lpips": 0.18325990438461304,
+      "raw_clipscore": 0.79967200756073,
+      "regen_clipscore": 0.778527021408081
+    },
+    {
+      "file": "watermarked_000111.png",
+      "clip_image_cosine": 0.9711845517158508,
+      "dino_cosine": 0.9746754765510559,
+      "lpips": 0.12307986617088318,
+      "raw_clipscore": 0.7283289432525635,
+      "regen_clipscore": 0.7316370010375977
+    },
+    {
+      "file": "watermarked_000112.png",
+      "clip_image_cosine": 0.972075343132019,
+      "dino_cosine": 0.947465181350708,
+      "lpips": 0.16455955803394318,
+      "raw_clipscore": 0.6306788921356201,
+      "regen_clipscore": 0.5956596732139587
+    },
+    {
+      "file": "watermarked_000113.png",
+      "clip_image_cosine": 0.9470899105072021,
+      "dino_cosine": 0.9631149172782898,
+      "lpips": 0.19766727089881897,
+      "raw_clipscore": 0.709437370300293,
+      "regen_clipscore": 0.675366997718811
+    },
+    {
+      "file": "watermarked_000114.png",
+      "clip_image_cosine": 0.9557845592498779,
+      "dino_cosine": 0.8801493644714355,
+      "lpips": 0.2087388038635254,
+      "raw_clipscore": 0.6067637205123901,
+      "regen_clipscore": 0.6415804624557495
+    },
+    {
+      "file": "watermarked_000115.png",
+      "clip_image_cosine": 0.9302955865859985,
+      "dino_cosine": 0.9277489185333252,
+      "lpips": 0.18732532858848572,
+      "raw_clipscore": 0.7594404220581055,
+      "regen_clipscore": 0.7484632730484009
+    },
+    {
+      "file": "watermarked_000116.png",
+      "clip_image_cosine": 0.9587314128875732,
+      "dino_cosine": 0.9466059803962708,
+      "lpips": 0.19438216090202332,
+      "raw_clipscore": 0.6458047032356262,
+      "regen_clipscore": 0.6130272150039673
+    },
+    {
+      "file": "watermarked_000117.png",
+      "clip_image_cosine": 0.9594669938087463,
+      "dino_cosine": 0.9695783853530884,
+      "lpips": 0.131974458694458,
+      "raw_clipscore": 0.6144624352455139,
+      "regen_clipscore": 0.6252387166023254
+    },
+    {
+      "file": "watermarked_000118.png",
+      "clip_image_cosine": 0.9720432758331299,
+      "dino_cosine": 0.9664859771728516,
+      "lpips": 0.12333451211452484,
+      "raw_clipscore": 0.6617143154144287,
+      "regen_clipscore": 0.6591981649398804
+    },
+    {
+      "file": "watermarked_000119.png",
+      "clip_image_cosine": 0.9456393718719482,
+      "dino_cosine": 0.9588562250137329,
+      "lpips": 0.13081052899360657,
+      "raw_clipscore": 0.7236486673355103,
+      "regen_clipscore": 0.6003891825675964
+    },
+    {
+      "file": "watermarked_000120.png",
+      "clip_image_cosine": 0.9667590260505676,
+      "dino_cosine": 0.9616689682006836,
+      "lpips": 0.09370436519384384,
+      "raw_clipscore": 0.7121407985687256,
+      "regen_clipscore": 0.7195252180099487
+    },
+    {
+      "file": "watermarked_000121.png",
+      "clip_image_cosine": 0.9386914372444153,
+      "dino_cosine": 0.9161893725395203,
+      "lpips": 0.14728470146656036,
+      "raw_clipscore": 0.7612013220787048,
+      "regen_clipscore": 0.7025789022445679
+    },
+    {
+      "file": "watermarked_000122.png",
+      "clip_image_cosine": 0.9589918851852417,
+      "dino_cosine": 0.9560859203338623,
+      "lpips": 0.15362906455993652,
+      "raw_clipscore": 0.5145513415336609,
+      "regen_clipscore": 0.5002617239952087
+    },
+    {
+      "file": "watermarked_000123.png",
+      "clip_image_cosine": 0.9568817615509033,
+      "dino_cosine": 0.8999359607696533,
+      "lpips": 0.14641287922859192,
+      "raw_clipscore": 0.6009435057640076,
+      "regen_clipscore": 0.6253936290740967
+    },
+    {
+      "file": "watermarked_000124.png",
+      "clip_image_cosine": 0.9466719627380371,
+      "dino_cosine": 0.8893375992774963,
+      "lpips": 0.20802944898605347,
+      "raw_clipscore": 0.6834366917610168,
+      "regen_clipscore": 0.6202061176300049
+    },
+    {
+      "file": "watermarked_000125.png",
+      "clip_image_cosine": 0.9485355615615845,
+      "dino_cosine": 0.9542359709739685,
+      "lpips": 0.21949155628681183,
+      "raw_clipscore": 0.6659999489784241,
+      "regen_clipscore": 0.6575155258178711
+    },
+    {
+      "file": "watermarked_000126.png",
+      "clip_image_cosine": 0.9773225784301758,
+      "dino_cosine": 0.9471545815467834,
+      "lpips": 0.16416361927986145,
+      "raw_clipscore": 0.8099335432052612,
+      "regen_clipscore": 0.7746149301528931
+    },
+    {
+      "file": "watermarked_000127.png",
+      "clip_image_cosine": 0.9571753740310669,
+      "dino_cosine": 0.9500877261161804,
+      "lpips": 0.15425431728363037,
+      "raw_clipscore": 0.6025930047035217,
+      "regen_clipscore": 0.5724940299987793
+    },
+    {
+      "file": "watermarked_000128.png",
+      "clip_image_cosine": 0.9699416756629944,
+      "dino_cosine": 0.9189326167106628,
+      "lpips": 0.20143257081508636,
+      "raw_clipscore": 0.742529034614563,
+      "regen_clipscore": 0.7161263227462769
+    },
+    {
+      "file": "watermarked_000129.png",
+      "clip_image_cosine": 0.9795436859130859,
+      "dino_cosine": 0.955035388469696,
+      "lpips": 0.16906151175498962,
+      "raw_clipscore": 0.7377398014068604,
+      "regen_clipscore": 0.7453182935714722
+    },
+    {
+      "file": "watermarked_000130.png",
+      "clip_image_cosine": 0.9535555839538574,
+      "dino_cosine": 0.975895345211029,
+      "lpips": 0.15698163211345673,
+      "raw_clipscore": 0.7385025024414062,
+      "regen_clipscore": 0.7327561378479004
+    },
+    {
+      "file": "watermarked_000131.png",
+      "clip_image_cosine": 0.9845775365829468,
+      "dino_cosine": 0.9502043724060059,
+      "lpips": 0.14037106931209564,
+      "raw_clipscore": 0.6505860090255737,
+      "regen_clipscore": 0.6002727150917053
+    },
+    {
+      "file": "watermarked_000132.png",
+      "clip_image_cosine": 0.8671910762786865,
+      "dino_cosine": 0.978683352470398,
+      "lpips": 0.08938413858413696,
+      "raw_clipscore": 0.6679439544677734,
+      "regen_clipscore": 0.7668275833129883
+    },
+    {
+      "file": "watermarked_000133.png",
+      "clip_image_cosine": 0.8990424275398254,
+      "dino_cosine": 0.9582377076148987,
+      "lpips": 0.15767616033554077,
+      "raw_clipscore": 0.7122200131416321,
+      "regen_clipscore": 0.5312809944152832
+    },
+    {
+      "file": "watermarked_000134.png",
+      "clip_image_cosine": 0.9714120626449585,
+      "dino_cosine": 0.9661266207695007,
+      "lpips": 0.13749262690544128,
+      "raw_clipscore": 0.6843991279602051,
+      "regen_clipscore": 0.7295211553573608
+    },
+    {
+      "file": "watermarked_000135.png",
+      "clip_image_cosine": 0.9663599729537964,
+      "dino_cosine": 0.9159143567085266,
+      "lpips": 0.22638632357120514,
+      "raw_clipscore": 0.7311750650405884,
+      "regen_clipscore": 0.709126889705658
+    },
+    {
+      "file": "watermarked_000136.png",
+      "clip_image_cosine": 0.9586987495422363,
+      "dino_cosine": 0.8477281332015991,
+      "lpips": 0.13286982476711273,
+      "raw_clipscore": 0.6875401139259338,
+      "regen_clipscore": 0.6783124804496765
+    },
+    {
+      "file": "watermarked_000137.png",
+      "clip_image_cosine": 0.950009286403656,
+      "dino_cosine": 0.9285710453987122,
+      "lpips": 0.15526363253593445,
+      "raw_clipscore": 0.7867120504379272,
+      "regen_clipscore": 0.7959049940109253
+    },
+    {
+      "file": "watermarked_000138.png",
+      "clip_image_cosine": 0.9127254486083984,
+      "dino_cosine": 0.9315996170043945,
+      "lpips": 0.17251497507095337,
+      "raw_clipscore": 0.8641712665557861,
+      "regen_clipscore": 0.7582345604896545
+    },
+    {
+      "file": "watermarked_000139.png",
+      "clip_image_cosine": 0.9701546430587769,
+      "dino_cosine": 0.949164867401123,
+      "lpips": 0.18309538066387177,
+      "raw_clipscore": 0.7323930263519287,
+      "regen_clipscore": 0.7001792192459106
+    },
+    {
+      "file": "watermarked_000140.png",
+      "clip_image_cosine": 0.9647051095962524,
+      "dino_cosine": 0.9242587089538574,
+      "lpips": 0.2018631398677826,
+      "raw_clipscore": 0.7360923290252686,
+      "regen_clipscore": 0.7353103756904602
+    },
+    {
+      "file": "watermarked_000141.png",
+      "clip_image_cosine": 0.9639441967010498,
+      "dino_cosine": 0.9722609519958496,
+      "lpips": 0.10899022221565247,
+      "raw_clipscore": 0.7556858658790588,
+      "regen_clipscore": 0.7970273494720459
+    },
+    {
+      "file": "watermarked_000142.png",
+      "clip_image_cosine": 0.9643101692199707,
+      "dino_cosine": 0.959924578666687,
+      "lpips": 0.16560156643390656,
+      "raw_clipscore": 0.6499521732330322,
+      "regen_clipscore": 0.595120906829834
+    },
+    {
+      "file": "watermarked_000143.png",
+      "clip_image_cosine": 0.9748976230621338,
+      "dino_cosine": 0.9274883270263672,
+      "lpips": 0.17597562074661255,
+      "raw_clipscore": 0.6783827543258667,
+      "regen_clipscore": 0.6645131707191467
+    },
+    {
+      "file": "watermarked_000144.png",
+      "clip_image_cosine": 0.921560525894165,
+      "dino_cosine": 0.924085259437561,
+      "lpips": 0.0875525027513504,
+      "raw_clipscore": 0.5682642459869385,
+      "regen_clipscore": 0.6260428428649902
+    },
+    {
+      "file": "watermarked_000145.png",
+      "clip_image_cosine": 0.9734736084938049,
+      "dino_cosine": 0.9684714078903198,
+      "lpips": 0.12492615729570389,
+      "raw_clipscore": 0.6783771514892578,
+      "regen_clipscore": 0.7589240074157715
+    },
+    {
+      "file": "watermarked_000146.png",
+      "clip_image_cosine": 0.9739896059036255,
+      "dino_cosine": 0.902424156665802,
+      "lpips": 0.06313875317573547,
+      "raw_clipscore": 0.6328697204589844,
+      "regen_clipscore": 0.665803849697113
+    },
+    {
+      "file": "watermarked_000147.png",
+      "clip_image_cosine": 0.9738070368766785,
+      "dino_cosine": 0.9522584676742554,
+      "lpips": 0.11527229845523834,
+      "raw_clipscore": 0.7110688090324402,
+      "regen_clipscore": 0.6729863882064819
+    },
+    {
+      "file": "watermarked_000148.png",
+      "clip_image_cosine": 0.968574047088623,
+      "dino_cosine": 0.9505205750465393,
+      "lpips": 0.20128530263900757,
+      "raw_clipscore": 0.6296038627624512,
+      "regen_clipscore": 0.6384614109992981
+    },
+    {
+      "file": "watermarked_000149.png",
+      "clip_image_cosine": 0.9707365036010742,
+      "dino_cosine": 0.9105076789855957,
+      "lpips": 0.14817170798778534,
+      "raw_clipscore": 0.6553442478179932,
+      "regen_clipscore": 0.6224662661552429
+    },
+    {
+      "file": "watermarked_000150.png",
+      "clip_image_cosine": 0.9703837037086487,
+      "dino_cosine": 0.9423271417617798,
+      "lpips": 0.0635666698217392,
+      "raw_clipscore": 0.7548960447311401,
+      "regen_clipscore": 0.6985820531845093
+    },
+    {
+      "file": "watermarked_000151.png",
+      "clip_image_cosine": 0.9449413418769836,
+      "dino_cosine": 0.8760316371917725,
+      "lpips": 0.23443065583705902,
+      "raw_clipscore": 0.8120517730712891,
+      "regen_clipscore": 0.8141528964042664
+    },
+    {
+      "file": "watermarked_000152.png",
+      "clip_image_cosine": 0.9590673446655273,
+      "dino_cosine": 0.8998327851295471,
+      "lpips": 0.17386136949062347,
+      "raw_clipscore": 0.8269767761230469,
+      "regen_clipscore": 0.8466206789016724
+    },
+    {
+      "file": "watermarked_000153.png",
+      "clip_image_cosine": 0.960441529750824,
+      "dino_cosine": 0.8943274021148682,
+      "lpips": 0.24546344578266144,
+      "raw_clipscore": 0.7190710306167603,
+      "regen_clipscore": 0.6616968512535095
+    },
+    {
+      "file": "watermarked_000154.png",
+      "clip_image_cosine": 0.9345031976699829,
+      "dino_cosine": 0.9266148805618286,
+      "lpips": 0.17958134412765503,
+      "raw_clipscore": 0.725845992565155,
+      "regen_clipscore": 0.5849753618240356
+    },
+    {
+      "file": "watermarked_000155.png",
+      "clip_image_cosine": 0.9549406170845032,
+      "dino_cosine": 0.9488801956176758,
+      "lpips": 0.1963062882423401,
+      "raw_clipscore": 0.68033766746521,
+      "regen_clipscore": 0.7655941247940063
+    },
+    {
+      "file": "watermarked_000156.png",
+      "clip_image_cosine": 0.9159947037696838,
+      "dino_cosine": 0.8354362845420837,
+      "lpips": 0.19131866097450256,
+      "raw_clipscore": 0.6340413093566895,
+      "regen_clipscore": 0.6302830576896667
+    },
+    {
+      "file": "watermarked_000157.png",
+      "clip_image_cosine": 0.9638603329658508,
+      "dino_cosine": 0.8691211938858032,
+      "lpips": 0.2226528376340866,
+      "raw_clipscore": 0.7057733535766602,
+      "regen_clipscore": 0.6874510049819946
+    },
+    {
+      "file": "watermarked_000158.png",
+      "clip_image_cosine": 0.966424286365509,
+      "dino_cosine": 0.9288865327835083,
+      "lpips": 0.13054491579532623,
+      "raw_clipscore": 0.5591385364532471,
+      "regen_clipscore": 0.5946217775344849
+    },
+    {
+      "file": "watermarked_000159.png",
+      "clip_image_cosine": 0.9530643820762634,
+      "dino_cosine": 0.9156357645988464,
+      "lpips": 0.1510644257068634,
+      "raw_clipscore": 0.9572789072990417,
+      "regen_clipscore": 0.943569540977478
+    },
+    {
+      "file": "watermarked_000160.png",
+      "clip_image_cosine": 0.9779617786407471,
+      "dino_cosine": 0.9713915586471558,
+      "lpips": 0.14137612283229828,
+      "raw_clipscore": 0.7888859510421753,
+      "regen_clipscore": 0.7592135667800903
+    },
+    {
+      "file": "watermarked_000161.png",
+      "clip_image_cosine": 0.9651085138320923,
+      "dino_cosine": 0.9053459167480469,
+      "lpips": 0.13464418053627014,
+      "raw_clipscore": 0.7912157773971558,
+      "regen_clipscore": 0.78867506980896
+    },
+    {
+      "file": "watermarked_000162.png",
+      "clip_image_cosine": 0.9505512118339539,
+      "dino_cosine": 0.9468352794647217,
+      "lpips": 0.11882276087999344,
+      "raw_clipscore": 0.7339752316474915,
+      "regen_clipscore": 0.7339102029800415
+    },
+    {
+      "file": "watermarked_000163.png",
+      "clip_image_cosine": 0.9602419137954712,
+      "dino_cosine": 0.9496296644210815,
+      "lpips": 0.15991583466529846,
+      "raw_clipscore": 0.6404061317443848,
+      "regen_clipscore": 0.6101225018501282
+    },
+    {
+      "file": "watermarked_000164.png",
+      "clip_image_cosine": 0.9620855450630188,
+      "dino_cosine": 0.8349530696868896,
+      "lpips": 0.195126473903656,
+      "raw_clipscore": 0.6242876648902893,
+      "regen_clipscore": 0.5912163257598877
+    },
+    {
+      "file": "watermarked_000165.png",
+      "clip_image_cosine": 0.9551168084144592,
+      "dino_cosine": 0.9642248153686523,
+      "lpips": 0.19996780157089233,
+      "raw_clipscore": 0.6589996814727783,
+      "regen_clipscore": 0.6553823947906494
+    },
+    {
+      "file": "watermarked_000166.png",
+      "clip_image_cosine": 0.9511289596557617,
+      "dino_cosine": 0.86478191614151,
+      "lpips": 0.145195871591568,
+      "raw_clipscore": 0.6679362058639526,
+      "regen_clipscore": 0.6918303966522217
+    },
+    {
+      "file": "watermarked_000167.png",
+      "clip_image_cosine": 0.9887686967849731,
+      "dino_cosine": 0.9853414297103882,
+      "lpips": 0.0921698659658432,
+      "raw_clipscore": 0.5116098523139954,
+      "regen_clipscore": 0.5046916604042053
+    },
+    {
+      "file": "watermarked_000168.png",
+      "clip_image_cosine": 0.9441701173782349,
+      "dino_cosine": 0.9808158874511719,
+      "lpips": 0.059202540665864944,
+      "raw_clipscore": 0.6342965364456177,
+      "regen_clipscore": 0.5405752658843994
+    },
+    {
+      "file": "watermarked_000169.png",
+      "clip_image_cosine": 0.9513125419616699,
+      "dino_cosine": 0.951153039932251,
+      "lpips": 0.1624993085861206,
+      "raw_clipscore": 0.8083036541938782,
+      "regen_clipscore": 0.7774962186813354
+    },
+    {
+      "file": "watermarked_000170.png",
+      "clip_image_cosine": 0.9720950126647949,
+      "dino_cosine": 0.9295547008514404,
+      "lpips": 0.1848522573709488,
+      "raw_clipscore": 0.7472283244132996,
+      "regen_clipscore": 0.7144498825073242
+    },
+    {
+      "file": "watermarked_000171.png",
+      "clip_image_cosine": 0.9796094298362732,
+      "dino_cosine": 0.948113203048706,
+      "lpips": 0.14970096945762634,
+      "raw_clipscore": 0.7001671195030212,
+      "regen_clipscore": 0.6873947381973267
+    },
+    {
+      "file": "watermarked_000172.png",
+      "clip_image_cosine": 0.9550579190254211,
+      "dino_cosine": 0.9453802108764648,
+      "lpips": 0.1658981591463089,
+      "raw_clipscore": 0.9235387444496155,
+      "regen_clipscore": 0.8612298369407654
+    },
+    {
+      "file": "watermarked_000173.png",
+      "clip_image_cosine": 0.9701337814331055,
+      "dino_cosine": 0.970526397228241,
+      "lpips": 0.19078628718852997,
+      "raw_clipscore": 0.5950076580047607,
+      "regen_clipscore": 0.6412136554718018
+    },
+    {
+      "file": "watermarked_000174.png",
+      "clip_image_cosine": 0.9489269852638245,
+      "dino_cosine": 0.9355770349502563,
+      "lpips": 0.20602910220623016,
+      "raw_clipscore": 0.7810164093971252,
+      "regen_clipscore": 0.706062912940979
+    },
+    {
+      "file": "watermarked_000175.png",
+      "clip_image_cosine": 0.9559257626533508,
+      "dino_cosine": 0.9677382707595825,
+      "lpips": 0.13487127423286438,
+      "raw_clipscore": 0.8368911743164062,
+      "regen_clipscore": 0.8445771932601929
+    },
+    {
+      "file": "watermarked_000176.png",
+      "clip_image_cosine": 0.9530942440032959,
+      "dino_cosine": 0.9014902114868164,
+      "lpips": 0.1218591183423996,
+      "raw_clipscore": 0.6432005763053894,
+      "regen_clipscore": 0.6763874292373657
+    },
+    {
+      "file": "watermarked_000177.png",
+      "clip_image_cosine": 0.9686472415924072,
+      "dino_cosine": 0.8771464824676514,
+      "lpips": 0.15368415415287018,
+      "raw_clipscore": 0.7606300711631775,
+      "regen_clipscore": 0.7500625252723694
+    },
+    {
+      "file": "watermarked_000178.png",
+      "clip_image_cosine": 0.9492543935775757,
+      "dino_cosine": 0.929894208908081,
+      "lpips": 0.18328674137592316,
+      "raw_clipscore": 0.4552101790904999,
+      "regen_clipscore": 0.40832027792930603
+    },
+    {
+      "file": "watermarked_000179.png",
+      "clip_image_cosine": 0.970502495765686,
+      "dino_cosine": 0.9412198066711426,
+      "lpips": 0.1671730875968933,
+      "raw_clipscore": 0.8094959259033203,
+      "regen_clipscore": 0.7750893831253052
+    },
+    {
+      "file": "watermarked_000180.png",
+      "clip_image_cosine": 0.9610841870307922,
+      "dino_cosine": 0.8835011720657349,
+      "lpips": 0.18258756399154663,
+      "raw_clipscore": 0.7927178144454956,
+      "regen_clipscore": 0.8009581565856934
+    },
+    {
+      "file": "watermarked_000181.png",
+      "clip_image_cosine": 0.9654992818832397,
+      "dino_cosine": 0.9541692137718201,
+      "lpips": 0.16381916403770447,
+      "raw_clipscore": 0.5839917063713074,
+      "regen_clipscore": 0.5651389360427856
+    },
+    {
+      "file": "watermarked_000182.png",
+      "clip_image_cosine": 0.9771496057510376,
+      "dino_cosine": 0.9455486536026001,
+      "lpips": 0.14334294199943542,
+      "raw_clipscore": 0.6885696649551392,
+      "regen_clipscore": 0.6494622230529785
+    },
+    {
+      "file": "watermarked_000183.png",
+      "clip_image_cosine": 0.966981828212738,
+      "dino_cosine": 0.9897751808166504,
+      "lpips": 0.0580466166138649,
+      "raw_clipscore": 0.6562734246253967,
+      "regen_clipscore": 0.6469467282295227
+    },
+    {
+      "file": "watermarked_000184.png",
+      "clip_image_cosine": 0.9666744470596313,
+      "dino_cosine": 0.9575453400611877,
+      "lpips": 0.17910349369049072,
+      "raw_clipscore": 0.7837287187576294,
+      "regen_clipscore": 0.7556934356689453
+    },
+    {
+      "file": "watermarked_000185.png",
+      "clip_image_cosine": 0.9749512672424316,
+      "dino_cosine": 0.9483592510223389,
+      "lpips": 0.14321301877498627,
+      "raw_clipscore": 0.6947249174118042,
+      "regen_clipscore": 0.6848393678665161
+    },
+    {
+      "file": "watermarked_000186.png",
+      "clip_image_cosine": 0.9927498698234558,
+      "dino_cosine": 0.9693867564201355,
+      "lpips": 0.16710913181304932,
+      "raw_clipscore": 0.640587568283081,
+      "regen_clipscore": 0.6502693295478821
+    },
+    {
+      "file": "watermarked_000187.png",
+      "clip_image_cosine": 0.9251617193222046,
+      "dino_cosine": 0.9362262487411499,
+      "lpips": 0.11004885286092758,
+      "raw_clipscore": 0.6107212901115417,
+      "regen_clipscore": 0.595913290977478
+    },
+    {
+      "file": "watermarked_000188.png",
+      "clip_image_cosine": 0.9582275748252869,
+      "dino_cosine": 0.9063170552253723,
+      "lpips": 0.21630972623825073,
+      "raw_clipscore": 0.5130690336227417,
+      "regen_clipscore": 0.467282772064209
+    },
+    {
+      "file": "watermarked_000189.png",
+      "clip_image_cosine": 0.9684820771217346,
+      "dino_cosine": 0.9617786407470703,
+      "lpips": 0.16174639761447906,
+      "raw_clipscore": 0.8367849588394165,
+      "regen_clipscore": 0.8414530158042908
+    },
+    {
+      "file": "watermarked_000190.png",
+      "clip_image_cosine": 0.9422497749328613,
+      "dino_cosine": 0.9575649499893188,
+      "lpips": 0.1502894163131714,
+      "raw_clipscore": 0.847804844379425,
+      "regen_clipscore": 0.7752101421356201
+    },
+    {
+      "file": "watermarked_000191.png",
+      "clip_image_cosine": 0.9580581188201904,
+      "dino_cosine": 0.9694774746894836,
+      "lpips": 0.12920764088630676,
+      "raw_clipscore": 0.8455926775932312,
+      "regen_clipscore": 0.8614295721054077
+    },
+    {
+      "file": "watermarked_000192.png",
+      "clip_image_cosine": 0.9588895440101624,
+      "dino_cosine": 0.7975625395774841,
+      "lpips": 0.20661689341068268,
+      "raw_clipscore": 0.6510874032974243,
+      "regen_clipscore": 0.5985605120658875
+    },
+    {
+      "file": "watermarked_000193.png",
+      "clip_image_cosine": 0.9590598344802856,
+      "dino_cosine": 0.9826840162277222,
+      "lpips": 0.10638516396284103,
+      "raw_clipscore": 0.8001737594604492,
+      "regen_clipscore": 0.7023255825042725
+    },
+    {
+      "file": "watermarked_000194.png",
+      "clip_image_cosine": 0.9581408500671387,
+      "dino_cosine": 0.9371078014373779,
+      "lpips": 0.1433832347393036,
+      "raw_clipscore": 0.6698412299156189,
+      "regen_clipscore": 0.71230149269104
+    },
+    {
+      "file": "watermarked_000195.png",
+      "clip_image_cosine": 0.9566106200218201,
+      "dino_cosine": 0.9503092765808105,
+      "lpips": 0.1605997383594513,
+      "raw_clipscore": 0.9548217058181763,
+      "regen_clipscore": 0.9246147871017456
+    },
+    {
+      "file": "watermarked_000196.png",
+      "clip_image_cosine": 0.9878764152526855,
+      "dino_cosine": 0.9412134885787964,
+      "lpips": 0.13393256068229675,
+      "raw_clipscore": 0.6868364810943604,
+      "regen_clipscore": 0.6476693153381348
+    },
+    {
+      "file": "watermarked_000197.png",
+      "clip_image_cosine": 0.9407223463058472,
+      "dino_cosine": 0.9086476564407349,
+      "lpips": 0.22808940708637238,
+      "raw_clipscore": 0.6727736592292786,
+      "regen_clipscore": 0.7428255081176758
+    },
+    {
+      "file": "watermarked_000198.png",
+      "clip_image_cosine": 0.944743275642395,
+      "dino_cosine": 0.9047346711158752,
+      "lpips": 0.22938326001167297,
+      "raw_clipscore": 0.8741624355316162,
+      "regen_clipscore": 0.7724052667617798
+    },
+    {
+      "file": "watermarked_000199.png",
+      "clip_image_cosine": 0.9719507694244385,
+      "dino_cosine": 0.962700605392456,
+      "lpips": 0.09132862836122513,
+      "raw_clipscore": 0.9397708177566528,
+      "regen_clipscore": 0.9534477591514587
+    },
+    {
+      "file": "watermarked_000200.png",
+      "clip_image_cosine": 0.9635438919067383,
+      "dino_cosine": 0.9442771077156067,
+      "lpips": 0.15572768449783325,
+      "raw_clipscore": 0.8758230209350586,
+      "regen_clipscore": 0.8285139799118042
+    },
+    {
+      "file": "watermarked_000201.png",
+      "clip_image_cosine": 0.9444316029548645,
+      "dino_cosine": 0.9378480315208435,
+      "lpips": 0.12425560504198074,
+      "raw_clipscore": 0.8433473706245422,
+      "regen_clipscore": 0.9373830556869507
+    },
+    {
+      "file": "watermarked_000202.png",
+      "clip_image_cosine": 0.9733953475952148,
+      "dino_cosine": 0.9864128232002258,
+      "lpips": 0.13396945595741272,
+      "raw_clipscore": 0.7834082841873169,
+      "regen_clipscore": 0.7558960318565369
+    },
+    {
+      "file": "watermarked_000203.png",
+      "clip_image_cosine": 0.9602012634277344,
+      "dino_cosine": 0.9213150143623352,
+      "lpips": 0.1399049460887909,
+      "raw_clipscore": 0.6411957740783691,
+      "regen_clipscore": 0.6317834854125977
+    },
+    {
+      "file": "watermarked_000204.png",
+      "clip_image_cosine": 0.977017879486084,
+      "dino_cosine": 0.9533343315124512,
+      "lpips": 0.10783681273460388,
+      "raw_clipscore": 0.6853193044662476,
+      "regen_clipscore": 0.6816322803497314
+    },
+    {
+      "file": "watermarked_000205.png",
+      "clip_image_cosine": 0.9610843658447266,
+      "dino_cosine": 0.9263997077941895,
+      "lpips": 0.11564654856920242,
+      "raw_clipscore": 0.7801306247711182,
+      "regen_clipscore": 0.7233691215515137
+    },
+    {
+      "file": "watermarked_000206.png",
+      "clip_image_cosine": 0.9624828696250916,
+      "dino_cosine": 0.9226276874542236,
+      "lpips": 0.1758517026901245,
+      "raw_clipscore": 0.6609570980072021,
+      "regen_clipscore": 0.6157686114311218
+    },
+    {
+      "file": "watermarked_000207.png",
+      "clip_image_cosine": 0.983786940574646,
+      "dino_cosine": 0.9682971239089966,
+      "lpips": 0.1160898506641388,
+      "raw_clipscore": 0.6031226515769958,
+      "regen_clipscore": 0.5871995091438293
+    },
+    {
+      "file": "watermarked_000208.png",
+      "clip_image_cosine": 0.9297086596488953,
+      "dino_cosine": 0.9321689605712891,
+      "lpips": 0.13562214374542236,
+      "raw_clipscore": 0.8079816102981567,
+      "regen_clipscore": 0.8071079850196838
+    },
+    {
+      "file": "watermarked_000209.png",
+      "clip_image_cosine": 0.9787063598632812,
+      "dino_cosine": 0.9308265447616577,
+      "lpips": 0.15891669690608978,
+      "raw_clipscore": 0.6458380818367004,
+      "regen_clipscore": 0.6338824033737183
+    },
+    {
+      "file": "watermarked_000210.png",
+      "clip_image_cosine": 0.9552055597305298,
+      "dino_cosine": 0.9499945044517517,
+      "lpips": 0.1736520528793335,
+      "raw_clipscore": 0.6915271878242493,
+      "regen_clipscore": 0.7123962044715881
+    },
+    {
+      "file": "watermarked_000211.png",
+      "clip_image_cosine": 0.9367746114730835,
+      "dino_cosine": 0.9612274765968323,
+      "lpips": 0.16365905106067657,
+      "raw_clipscore": 0.7898716926574707,
+      "regen_clipscore": 0.7282155752182007
+    },
+    {
+      "file": "watermarked_000212.png",
+      "clip_image_cosine": 0.9157505035400391,
+      "dino_cosine": 0.9352397918701172,
+      "lpips": 0.20866061747074127,
+      "raw_clipscore": 0.8734889030456543,
+      "regen_clipscore": 0.8997439742088318
+    },
+    {
+      "file": "watermarked_000213.png",
+      "clip_image_cosine": 0.9404432773590088,
+      "dino_cosine": 0.9354904294013977,
+      "lpips": 0.1660396307706833,
+      "raw_clipscore": 0.7599228620529175,
+      "regen_clipscore": 0.6917740106582642
+    },
+    {
+      "file": "watermarked_000214.png",
+      "clip_image_cosine": 0.9320142269134521,
+      "dino_cosine": 0.9650797247886658,
+      "lpips": 0.11760499328374863,
+      "raw_clipscore": 0.7135967016220093,
+      "regen_clipscore": 0.7324893474578857
+    },
+    {
+      "file": "watermarked_000215.png",
+      "clip_image_cosine": 0.978620707988739,
+      "dino_cosine": 0.9701089859008789,
+      "lpips": 0.17302840948104858,
+      "raw_clipscore": 0.6357797384262085,
+      "regen_clipscore": 0.5824249982833862
+    },
+    {
+      "file": "watermarked_000216.png",
+      "clip_image_cosine": 0.9643545150756836,
+      "dino_cosine": 0.9328064918518066,
+      "lpips": 0.16039571166038513,
+      "raw_clipscore": 0.5938751101493835,
+      "regen_clipscore": 0.5980479121208191
+    },
+    {
+      "file": "watermarked_000217.png",
+      "clip_image_cosine": 0.94002765417099,
+      "dino_cosine": 0.9239615201950073,
+      "lpips": 0.17490635812282562,
+      "raw_clipscore": 0.7701328992843628,
+      "regen_clipscore": 0.7099035382270813
+    },
+    {
+      "file": "watermarked_000218.png",
+      "clip_image_cosine": 0.9465439319610596,
+      "dino_cosine": 0.9414674043655396,
+      "lpips": 0.17613273859024048,
+      "raw_clipscore": 0.725005567073822,
+      "regen_clipscore": 0.681846022605896
+    },
+    {
+      "file": "watermarked_000219.png",
+      "clip_image_cosine": 0.9470639824867249,
+      "dino_cosine": 0.9419476389884949,
+      "lpips": 0.20638824999332428,
+      "raw_clipscore": 0.7017625570297241,
+      "regen_clipscore": 0.6502432823181152
+    },
+    {
+      "file": "watermarked_000220.png",
+      "clip_image_cosine": 0.9727731943130493,
+      "dino_cosine": 0.9703046083450317,
+      "lpips": 0.1308702826499939,
+      "raw_clipscore": 0.7092902064323425,
+      "regen_clipscore": 0.7657765746116638
+    },
+    {
+      "file": "watermarked_000221.png",
+      "clip_image_cosine": 0.961433470249176,
+      "dino_cosine": 0.933986485004425,
+      "lpips": 0.17152556777000427,
+      "raw_clipscore": 0.7082592248916626,
+      "regen_clipscore": 0.632286548614502
+    },
+    {
+      "file": "watermarked_000222.png",
+      "clip_image_cosine": 0.9639641046524048,
+      "dino_cosine": 0.9012553691864014,
+      "lpips": 0.16044390201568604,
+      "raw_clipscore": 0.6937427520751953,
+      "regen_clipscore": 0.647313117980957
+    },
+    {
+      "file": "watermarked_000223.png",
+      "clip_image_cosine": 0.9638795256614685,
+      "dino_cosine": 0.9760413765907288,
+      "lpips": 0.15556484460830688,
+      "raw_clipscore": 0.8191319704055786,
+      "regen_clipscore": 0.8089848756790161
+    },
+    {
+      "file": "watermarked_000224.png",
+      "clip_image_cosine": 0.9557845592498779,
+      "dino_cosine": 0.9763213396072388,
+      "lpips": 0.12336547672748566,
+      "raw_clipscore": 0.6483374834060669,
+      "regen_clipscore": 0.6245633363723755
+    },
+    {
+      "file": "watermarked_000225.png",
+      "clip_image_cosine": 0.9642385244369507,
+      "dino_cosine": 0.8743089437484741,
+      "lpips": 0.23269423842430115,
+      "raw_clipscore": 0.6830745935440063,
+      "regen_clipscore": 0.6432294845581055
+    },
+    {
+      "file": "watermarked_000226.png",
+      "clip_image_cosine": 0.9501335024833679,
+      "dino_cosine": 0.9700020551681519,
+      "lpips": 0.16365133225917816,
+      "raw_clipscore": 0.632633626461029,
+      "regen_clipscore": 0.6294904947280884
+    },
+    {
+      "file": "watermarked_000227.png",
+      "clip_image_cosine": 0.9779523611068726,
+      "dino_cosine": 0.9069784879684448,
+      "lpips": 0.1395728886127472,
+      "raw_clipscore": 0.7776720523834229,
+      "regen_clipscore": 0.7493814826011658
+    },
+    {
+      "file": "watermarked_000228.png",
+      "clip_image_cosine": 0.9698131084442139,
+      "dino_cosine": 0.93501877784729,
+      "lpips": 0.17508700489997864,
+      "raw_clipscore": 0.5675583481788635,
+      "regen_clipscore": 0.5726515054702759
+    },
+    {
+      "file": "watermarked_000229.png",
+      "clip_image_cosine": 0.9493550062179565,
+      "dino_cosine": 0.9102446436882019,
+      "lpips": 0.19624978303909302,
+      "raw_clipscore": 0.5796187520027161,
+      "regen_clipscore": 0.5225914716720581
+    },
+    {
+      "file": "watermarked_000230.png",
+      "clip_image_cosine": 0.9626089334487915,
+      "dino_cosine": 0.8859097957611084,
+      "lpips": 0.2167830467224121,
+      "raw_clipscore": 0.8533515930175781,
+      "regen_clipscore": 0.8500269055366516
+    },
+    {
+      "file": "watermarked_000231.png",
+      "clip_image_cosine": 0.9671633243560791,
+      "dino_cosine": 0.9359203577041626,
+      "lpips": 0.1768704056739807,
+      "raw_clipscore": 0.6383121013641357,
+      "regen_clipscore": 0.5953054428100586
+    },
+    {
+      "file": "watermarked_000232.png",
+      "clip_image_cosine": 0.9844768643379211,
+      "dino_cosine": 0.9210376739501953,
+      "lpips": 0.1642400622367859,
+      "raw_clipscore": 0.6810101866722107,
+      "regen_clipscore": 0.6515821814537048
+    },
+    {
+      "file": "watermarked_000233.png",
+      "clip_image_cosine": 0.9683120250701904,
+      "dino_cosine": 0.945995032787323,
+      "lpips": 0.16571536660194397,
+      "raw_clipscore": 0.6348532438278198,
+      "regen_clipscore": 0.6134214401245117
+    },
+    {
+      "file": "watermarked_000234.png",
+      "clip_image_cosine": 0.9793270826339722,
+      "dino_cosine": 0.9549981355667114,
+      "lpips": 0.17323940992355347,
+      "raw_clipscore": 0.6431434154510498,
+      "regen_clipscore": 0.6192195415496826
+    },
+    {
+      "file": "watermarked_000235.png",
+      "clip_image_cosine": 0.9481073617935181,
+      "dino_cosine": 0.9609814882278442,
+      "lpips": 0.13769255578517914,
+      "raw_clipscore": 0.5427798628807068,
+      "regen_clipscore": 0.43920522928237915
+    },
+    {
+      "file": "watermarked_000236.png",
+      "clip_image_cosine": 0.9450646638870239,
+      "dino_cosine": 0.9513883590698242,
+      "lpips": 0.18137460947036743,
+      "raw_clipscore": 0.6327367424964905,
+      "regen_clipscore": 0.6558264493942261
+    },
+    {
+      "file": "watermarked_000237.png",
+      "clip_image_cosine": 0.9657710790634155,
+      "dino_cosine": 0.9268967509269714,
+      "lpips": 0.21975299715995789,
+      "raw_clipscore": 0.6187107563018799,
+      "regen_clipscore": 0.6307753920555115
+    },
+    {
+      "file": "watermarked_000238.png",
+      "clip_image_cosine": 0.9659297466278076,
+      "dino_cosine": 0.9357991218566895,
+      "lpips": 0.175716370344162,
+      "raw_clipscore": 0.7615191340446472,
+      "regen_clipscore": 0.6888598799705505
+    },
+    {
+      "file": "watermarked_000239.png",
+      "clip_image_cosine": 0.965549886226654,
+      "dino_cosine": 0.9674482345581055,
+      "lpips": 0.126741424202919,
+      "raw_clipscore": 0.8078572154045105,
+      "regen_clipscore": 0.8197132349014282
+    },
+    {
+      "file": "watermarked_000240.png",
+      "clip_image_cosine": 0.9474680423736572,
+      "dino_cosine": 0.9360778331756592,
+      "lpips": 0.18446877598762512,
+      "raw_clipscore": 0.744624137878418,
+      "regen_clipscore": 0.7469271421432495
+    },
+    {
+      "file": "watermarked_000241.png",
+      "clip_image_cosine": 0.962409496307373,
+      "dino_cosine": 0.9729019999504089,
+      "lpips": 0.1841403841972351,
+      "raw_clipscore": 0.6953116655349731,
+      "regen_clipscore": 0.6746630668640137
+    },
+    {
+      "file": "watermarked_000242.png",
+      "clip_image_cosine": 0.965816855430603,
+      "dino_cosine": 0.9571198225021362,
+      "lpips": 0.20220035314559937,
+      "raw_clipscore": 0.7059485912322998,
+      "regen_clipscore": 0.6142851114273071
+    },
+    {
+      "file": "watermarked_000243.png",
+      "clip_image_cosine": 0.9649528861045837,
+      "dino_cosine": 0.9314702749252319,
+      "lpips": 0.17703208327293396,
+      "raw_clipscore": 0.6059001684188843,
+      "regen_clipscore": 0.5643148422241211
+    },
+    {
+      "file": "watermarked_000244.png",
+      "clip_image_cosine": 0.9416271448135376,
+      "dino_cosine": 0.9577599763870239,
+      "lpips": 0.1916360706090927,
+      "raw_clipscore": 0.6729803085327148,
+      "regen_clipscore": 0.6667521595954895
+    },
+    {
+      "file": "watermarked_000245.png",
+      "clip_image_cosine": 0.9728272557258606,
+      "dino_cosine": 0.9433123469352722,
+      "lpips": 0.1710403561592102,
+      "raw_clipscore": 0.7343055009841919,
+      "regen_clipscore": 0.6920783519744873
+    },
+    {
+      "file": "watermarked_000246.png",
+      "clip_image_cosine": 0.9884977340698242,
+      "dino_cosine": 0.9592679738998413,
+      "lpips": 0.11048480868339539,
+      "raw_clipscore": 0.7623891830444336,
+      "regen_clipscore": 0.7560122013092041
+    },
+    {
+      "file": "watermarked_000247.png",
+      "clip_image_cosine": 0.9674304127693176,
+      "dino_cosine": 0.945835530757904,
+      "lpips": 0.08723506331443787,
+      "raw_clipscore": 0.6293039917945862,
+      "regen_clipscore": 0.5608617067337036
+    },
+    {
+      "file": "watermarked_000248.png",
+      "clip_image_cosine": 0.9505735635757446,
+      "dino_cosine": 0.9314743280410767,
+      "lpips": 0.19029313325881958,
+      "raw_clipscore": 0.571319580078125,
+      "regen_clipscore": 0.582394540309906
+    },
+    {
+      "file": "watermarked_000249.png",
+      "clip_image_cosine": 0.9856317639350891,
+      "dino_cosine": 0.991047739982605,
+      "lpips": 0.09731996059417725,
+      "raw_clipscore": 0.5351755023002625,
+      "regen_clipscore": 0.5100536942481995
+    },
+    {
+      "file": "watermarked_000250.png",
+      "clip_image_cosine": 0.9517452716827393,
+      "dino_cosine": 0.9510526657104492,
+      "lpips": 0.11998806893825531,
+      "raw_clipscore": 0.6941092014312744,
+      "regen_clipscore": 0.6871452927589417
+    },
+    {
+      "file": "watermarked_000251.png",
+      "clip_image_cosine": 0.9279563426971436,
+      "dino_cosine": 0.9586172699928284,
+      "lpips": 0.12401703745126724,
+      "raw_clipscore": 0.7129107713699341,
+      "regen_clipscore": 0.7044145464897156
+    },
+    {
+      "file": "watermarked_000252.png",
+      "clip_image_cosine": 0.9721763134002686,
+      "dino_cosine": 0.96769779920578,
+      "lpips": 0.19783300161361694,
+      "raw_clipscore": 0.6237946152687073,
+      "regen_clipscore": 0.6025869846343994
+    },
+    {
+      "file": "watermarked_000253.png",
+      "clip_image_cosine": 0.9666138887405396,
+      "dino_cosine": 0.9656054377555847,
+      "lpips": 0.05447852611541748,
+      "raw_clipscore": 0.40367934107780457,
+      "regen_clipscore": 0.4583527147769928
+    },
+    {
+      "file": "watermarked_000254.png",
+      "clip_image_cosine": 0.9514539837837219,
+      "dino_cosine": 0.9421924948692322,
+      "lpips": 0.22419323027133942,
+      "raw_clipscore": 0.737531840801239,
+      "regen_clipscore": 0.6858484745025635
+    },
+    {
+      "file": "watermarked_000255.png",
+      "clip_image_cosine": 0.9589186906814575,
+      "dino_cosine": 0.951761782169342,
+      "lpips": 0.16105061769485474,
+      "raw_clipscore": 0.617428719997406,
+      "regen_clipscore": 0.6563010215759277
+    },
+    {
+      "file": "watermarked_000256.png",
+      "clip_image_cosine": 0.9805095195770264,
+      "dino_cosine": 0.9303107261657715,
+      "lpips": 0.13483288884162903,
+      "raw_clipscore": 0.7326180934906006,
+      "regen_clipscore": 0.7143822312355042
+    },
+    {
+      "file": "watermarked_000257.png",
+      "clip_image_cosine": 0.9503733515739441,
+      "dino_cosine": 0.905170738697052,
+      "lpips": 0.21782124042510986,
+      "raw_clipscore": 0.8575599193572998,
+      "regen_clipscore": 0.7907148599624634
+    },
+    {
+      "file": "watermarked_000258.png",
+      "clip_image_cosine": 0.9812731146812439,
+      "dino_cosine": 0.9710458517074585,
+      "lpips": 0.11170589923858643,
+      "raw_clipscore": 0.7456363439559937,
+      "regen_clipscore": 0.7090322971343994
+    },
+    {
+      "file": "watermarked_000259.png",
+      "clip_image_cosine": 0.977088451385498,
+      "dino_cosine": 0.9299064874649048,
+      "lpips": 0.1842498779296875,
+      "raw_clipscore": 0.47921401262283325,
+      "regen_clipscore": 0.45467302203178406
+    },
+    {
+      "file": "watermarked_000260.png",
+      "clip_image_cosine": 0.9769660234451294,
+      "dino_cosine": 0.9445339441299438,
+      "lpips": 0.18402902781963348,
+      "raw_clipscore": 0.731063723564148,
+      "regen_clipscore": 0.7218077778816223
+    },
+    {
+      "file": "watermarked_000261.png",
+      "clip_image_cosine": 0.7840392589569092,
+      "dino_cosine": 0.9240383505821228,
+      "lpips": 0.21370364725589752,
+      "raw_clipscore": 0.6135019659996033,
+      "regen_clipscore": 0.5561534762382507
+    },
+    {
+      "file": "watermarked_000262.png",
+      "clip_image_cosine": 0.9852923154830933,
+      "dino_cosine": 0.9814942479133606,
+      "lpips": 0.15334485471248627,
+      "raw_clipscore": 0.5317304134368896,
+      "regen_clipscore": 0.5300209522247314
+    },
+    {
+      "file": "watermarked_000263.png",
+      "clip_image_cosine": 0.9504919648170471,
+      "dino_cosine": 0.9306689500808716,
+      "lpips": 0.1687919944524765,
+      "raw_clipscore": 0.7288858294487,
+      "regen_clipscore": 0.6576622724533081
+    },
+    {
+      "file": "watermarked_000264.png",
+      "clip_image_cosine": 0.9584760665893555,
+      "dino_cosine": 0.9678658246994019,
+      "lpips": 0.17718811333179474,
+      "raw_clipscore": 0.5756977796554565,
+      "regen_clipscore": 0.5347488522529602
+    },
+    {
+      "file": "watermarked_000265.png",
+      "clip_image_cosine": 0.9685248136520386,
+      "dino_cosine": 0.966417670249939,
+      "lpips": 0.16782653331756592,
+      "raw_clipscore": 0.6777271628379822,
+      "regen_clipscore": 0.6539324522018433
+    },
+    {
+      "file": "watermarked_000266.png",
+      "clip_image_cosine": 0.9781336784362793,
+      "dino_cosine": 0.9364906549453735,
+      "lpips": 0.17008914053440094,
+      "raw_clipscore": 0.8359959125518799,
+      "regen_clipscore": 0.863843560218811
+    },
+    {
+      "file": "watermarked_000267.png",
+      "clip_image_cosine": 0.974679708480835,
+      "dino_cosine": 0.9618895053863525,
+      "lpips": 0.159951850771904,
+      "raw_clipscore": 0.6810804605484009,
+      "regen_clipscore": 0.69313645362854
+    },
+    {
+      "file": "watermarked_000268.png",
+      "clip_image_cosine": 0.9640676379203796,
+      "dino_cosine": 0.9731705784797668,
+      "lpips": 0.0771271362900734,
+      "raw_clipscore": 0.7211564779281616,
+      "regen_clipscore": 0.6903111934661865
+    },
+    {
+      "file": "watermarked_000269.png",
+      "clip_image_cosine": 0.9739084243774414,
+      "dino_cosine": 0.9239952564239502,
+      "lpips": 0.21813440322875977,
+      "raw_clipscore": 0.6063245534896851,
+      "regen_clipscore": 0.6018434762954712
+    },
+    {
+      "file": "watermarked_000270.png",
+      "clip_image_cosine": 0.9605904221534729,
+      "dino_cosine": 0.9549786448478699,
+      "lpips": 0.08854241669178009,
+      "raw_clipscore": 0.6916084885597229,
+      "regen_clipscore": 0.6814196109771729
+    },
+    {
+      "file": "watermarked_000271.png",
+      "clip_image_cosine": 0.960703432559967,
+      "dino_cosine": 0.90526282787323,
+      "lpips": 0.19677768647670746,
+      "raw_clipscore": 0.6086992025375366,
+      "regen_clipscore": 0.5835293531417847
+    },
+    {
+      "file": "watermarked_000272.png",
+      "clip_image_cosine": 0.9270387887954712,
+      "dino_cosine": 0.9422169923782349,
+      "lpips": 0.14078691601753235,
+      "raw_clipscore": 0.7767598628997803,
+      "regen_clipscore": 0.7607206702232361
+    },
+    {
+      "file": "watermarked_000273.png",
+      "clip_image_cosine": 0.9493386745452881,
+      "dino_cosine": 0.9616299271583557,
+      "lpips": 0.12061117589473724,
+      "raw_clipscore": 0.8815044164657593,
+      "regen_clipscore": 0.8909123539924622
+    },
+    {
+      "file": "watermarked_000274.png",
+      "clip_image_cosine": 0.9444122910499573,
+      "dino_cosine": 0.9337488412857056,
+      "lpips": 0.15575000643730164,
+      "raw_clipscore": 0.708871603012085,
+      "regen_clipscore": 0.6196510195732117
+    },
+    {
+      "file": "watermarked_000275.png",
+      "clip_image_cosine": 0.9576916098594666,
+      "dino_cosine": 0.9411824345588684,
+      "lpips": 0.11299317330121994,
+      "raw_clipscore": 0.7819598913192749,
+      "regen_clipscore": 0.7088414430618286
+    },
+    {
+      "file": "watermarked_000276.png",
+      "clip_image_cosine": 0.9638035297393799,
+      "dino_cosine": 0.9029499292373657,
+      "lpips": 0.1532992124557495,
+      "raw_clipscore": 0.543130099773407,
+      "regen_clipscore": 0.5242164134979248
+    },
+    {
+      "file": "watermarked_000277.png",
+      "clip_image_cosine": 0.9858645796775818,
+      "dino_cosine": 0.9668476581573486,
+      "lpips": 0.07213060557842255,
+      "raw_clipscore": 0.6674594879150391,
+      "regen_clipscore": 0.647197961807251
+    },
+    {
+      "file": "watermarked_000278.png",
+      "clip_image_cosine": 0.93757563829422,
+      "dino_cosine": 0.8985776305198669,
+      "lpips": 0.19540604948997498,
+      "raw_clipscore": 0.6116088628768921,
+      "regen_clipscore": 0.5567302703857422
+    },
+    {
+      "file": "watermarked_000279.png",
+      "clip_image_cosine": 0.9746026396751404,
+      "dino_cosine": 0.9549381732940674,
+      "lpips": 0.16607172787189484,
+      "raw_clipscore": 0.653613269329071,
+      "regen_clipscore": 0.6539574265480042
+    },
+    {
+      "file": "watermarked_000280.png",
+      "clip_image_cosine": 0.9705476760864258,
+      "dino_cosine": 0.8158628940582275,
+      "lpips": 0.19156599044799805,
+      "raw_clipscore": 0.4809960126876831,
+      "regen_clipscore": 0.5083999633789062
+    },
+    {
+      "file": "watermarked_000281.png",
+      "clip_image_cosine": 0.8722162246704102,
+      "dino_cosine": 0.9242567420005798,
+      "lpips": 0.18169176578521729,
+      "raw_clipscore": 0.6506921052932739,
+      "regen_clipscore": 0.6693267822265625
+    },
+    {
+      "file": "watermarked_000282.png",
+      "clip_image_cosine": 0.9536399841308594,
+      "dino_cosine": 0.8174485564231873,
+      "lpips": 0.15469162166118622,
+      "raw_clipscore": 0.7358354330062866,
+      "regen_clipscore": 0.6486319899559021
+    },
+    {
+      "file": "watermarked_000283.png",
+      "clip_image_cosine": 0.9698525667190552,
+      "dino_cosine": 0.832226037979126,
+      "lpips": 0.2560970187187195,
+      "raw_clipscore": 0.6513463854789734,
+      "regen_clipscore": 0.655475914478302
+    },
+    {
+      "file": "watermarked_000284.png",
+      "clip_image_cosine": 0.9557739496231079,
+      "dino_cosine": 0.9655501842498779,
+      "lpips": 0.22411823272705078,
+      "raw_clipscore": 0.650813639163971,
+      "regen_clipscore": 0.6437276601791382
+    },
+    {
+      "file": "watermarked_000285.png",
+      "clip_image_cosine": 0.9490332007408142,
+      "dino_cosine": 0.9194309711456299,
+      "lpips": 0.17603687942028046,
+      "raw_clipscore": 0.8242735266685486,
+      "regen_clipscore": 0.7715234756469727
+    },
+    {
+      "file": "watermarked_000286.png",
+      "clip_image_cosine": 0.9228464961051941,
+      "dino_cosine": 0.888335108757019,
+      "lpips": 0.18429085612297058,
+      "raw_clipscore": 0.8520311713218689,
+      "regen_clipscore": 0.8058012127876282
+    },
+    {
+      "file": "watermarked_000287.png",
+      "clip_image_cosine": 0.9705345630645752,
+      "dino_cosine": 0.9659624695777893,
+      "lpips": 0.1603647619485855,
+      "raw_clipscore": 0.6243789792060852,
+      "regen_clipscore": 0.6247717142105103
+    },
+    {
+      "file": "watermarked_000288.png",
+      "clip_image_cosine": 0.9574134349822998,
+      "dino_cosine": 0.9329835772514343,
+      "lpips": 0.20326410233974457,
+      "raw_clipscore": 0.7129669189453125,
+      "regen_clipscore": 0.6820831298828125
+    },
+    {
+      "file": "watermarked_000289.png",
+      "clip_image_cosine": 0.9586082696914673,
+      "dino_cosine": 0.9686195850372314,
+      "lpips": 0.11043011397123337,
+      "raw_clipscore": 0.6914129853248596,
+      "regen_clipscore": 0.6222894191741943
+    },
+    {
+      "file": "watermarked_000290.png",
+      "clip_image_cosine": 0.9758731126785278,
+      "dino_cosine": 0.9637854695320129,
+      "lpips": 0.174991637468338,
+      "raw_clipscore": 0.5948050022125244,
+      "regen_clipscore": 0.5807279944419861
+    },
+    {
+      "file": "watermarked_000291.png",
+      "clip_image_cosine": 0.8960636854171753,
+      "dino_cosine": 0.9485725164413452,
+      "lpips": 0.1885751485824585,
+      "raw_clipscore": 0.7417504787445068,
+      "regen_clipscore": 0.7144415974617004
+    },
+    {
+      "file": "watermarked_000292.png",
+      "clip_image_cosine": 0.9690853357315063,
+      "dino_cosine": 0.9657623767852783,
+      "lpips": 0.19446973502635956,
+      "raw_clipscore": 0.7332255840301514,
+      "regen_clipscore": 0.7528253793716431
+    },
+    {
+      "file": "watermarked_000293.png",
+      "clip_image_cosine": 0.965338408946991,
+      "dino_cosine": 0.9525461792945862,
+      "lpips": 0.2135486602783203,
+      "raw_clipscore": 0.6930282711982727,
+      "regen_clipscore": 0.6514458656311035
+    },
+    {
+      "file": "watermarked_000294.png",
+      "clip_image_cosine": 0.9815477132797241,
+      "dino_cosine": 0.9389340877532959,
+      "lpips": 0.13396364450454712,
+      "raw_clipscore": 0.6219755411148071,
+      "regen_clipscore": 0.614891767501831
+    },
+    {
+      "file": "watermarked_000295.png",
+      "clip_image_cosine": 0.9764094352722168,
+      "dino_cosine": 0.9621872901916504,
+      "lpips": 0.12307975441217422,
+      "raw_clipscore": 0.7372912764549255,
+      "regen_clipscore": 0.7572776675224304
+    },
+    {
+      "file": "watermarked_000296.png",
+      "clip_image_cosine": 0.9345073103904724,
+      "dino_cosine": 0.9017453789710999,
+      "lpips": 0.20161473751068115,
+      "raw_clipscore": 0.6026227474212646,
+      "regen_clipscore": 0.5804417133331299
+    },
+    {
+      "file": "watermarked_000297.png",
+      "clip_image_cosine": 0.9640399217605591,
+      "dino_cosine": 0.9549964666366577,
+      "lpips": 0.16375622153282166,
+      "raw_clipscore": 0.7923832535743713,
+      "regen_clipscore": 0.7654733657836914
+    },
+    {
+      "file": "watermarked_000298.png",
+      "clip_image_cosine": 0.9807067513465881,
+      "dino_cosine": 0.915118396282196,
+      "lpips": 0.1752510368824005,
+      "raw_clipscore": 0.5557639598846436,
+      "regen_clipscore": 0.5675214529037476
+    },
+    {
+      "file": "watermarked_000299.png",
+      "clip_image_cosine": 0.9216038584709167,
+      "dino_cosine": 0.87579745054245,
+      "lpips": 0.2210363894701004,
+      "raw_clipscore": 0.8187984228134155,
+      "regen_clipscore": 0.7039621472358704
+    },
+    {
+      "file": "watermarked_000300.png",
+      "clip_image_cosine": 0.9618557691574097,
+      "dino_cosine": 0.9309613704681396,
+      "lpips": 0.16012340784072876,
+      "raw_clipscore": 0.6566246747970581,
+      "regen_clipscore": 0.6311666965484619
+    },
+    {
+      "file": "watermarked_000301.png",
+      "clip_image_cosine": 0.9691051244735718,
+      "dino_cosine": 0.9530206918716431,
+      "lpips": 0.17873971164226532,
+      "raw_clipscore": 0.6566002368927002,
+      "regen_clipscore": 0.5846062898635864
+    },
+    {
+      "file": "watermarked_000302.png",
+      "clip_image_cosine": 0.9634513258934021,
+      "dino_cosine": 0.9495569467544556,
+      "lpips": 0.20965558290481567,
+      "raw_clipscore": 0.7740025520324707,
+      "regen_clipscore": 0.7350389957427979
+    },
+    {
+      "file": "watermarked_000303.png",
+      "clip_image_cosine": 0.9690217971801758,
+      "dino_cosine": 0.9073207974433899,
+      "lpips": 0.22288912534713745,
+      "raw_clipscore": 0.6918617486953735,
+      "regen_clipscore": 0.6918859481811523
+    },
+    {
+      "file": "watermarked_000304.png",
+      "clip_image_cosine": 0.9595355987548828,
+      "dino_cosine": 0.9050468802452087,
+      "lpips": 0.1910407841205597,
+      "raw_clipscore": 0.6925874948501587,
+      "regen_clipscore": 0.661795973777771
+    },
+    {
+      "file": "watermarked_000305.png",
+      "clip_image_cosine": 0.9507746696472168,
+      "dino_cosine": 0.9580215811729431,
+      "lpips": 0.11968126893043518,
+      "raw_clipscore": 0.8225842714309692,
+      "regen_clipscore": 0.7263778448104858
+    },
+    {
+      "file": "watermarked_000306.png",
+      "clip_image_cosine": 0.9432508945465088,
+      "dino_cosine": 0.9785980582237244,
+      "lpips": 0.11712877452373505,
+      "raw_clipscore": 0.6573708057403564,
+      "regen_clipscore": 0.697852373123169
+    },
+    {
+      "file": "watermarked_000307.png",
+      "clip_image_cosine": 0.9805286526679993,
+      "dino_cosine": 0.8503694534301758,
+      "lpips": 0.18640655279159546,
+      "raw_clipscore": 0.7262612581253052,
+      "regen_clipscore": 0.722216010093689
+    },
+    {
+      "file": "watermarked_000308.png",
+      "clip_image_cosine": 0.9644167423248291,
+      "dino_cosine": 0.9563581943511963,
+      "lpips": 0.0767541453242302,
+      "raw_clipscore": 0.8440709114074707,
+      "regen_clipscore": 0.7729783654212952
+    },
+    {
+      "file": "watermarked_000309.png",
+      "clip_image_cosine": 0.9729085564613342,
+      "dino_cosine": 0.940521240234375,
+      "lpips": 0.15497735142707825,
+      "raw_clipscore": 0.6336894631385803,
+      "regen_clipscore": 0.6458720564842224
+    },
+    {
+      "file": "watermarked_000310.png",
+      "clip_image_cosine": 0.993028998374939,
+      "dino_cosine": 0.9273602962493896,
+      "lpips": 0.13041341304779053,
+      "raw_clipscore": 0.7160805463790894,
+      "regen_clipscore": 0.7185816764831543
+    },
+    {
+      "file": "watermarked_000311.png",
+      "clip_image_cosine": 0.97509765625,
+      "dino_cosine": 0.9522790908813477,
+      "lpips": 0.18668033182621002,
+      "raw_clipscore": 0.7333441972732544,
+      "regen_clipscore": 0.7041937708854675
+    },
+    {
+      "file": "watermarked_000312.png",
+      "clip_image_cosine": 0.9316433668136597,
+      "dino_cosine": 0.9490519762039185,
+      "lpips": 0.13333603739738464,
+      "raw_clipscore": 0.6806796789169312,
+      "regen_clipscore": 0.5589896440505981
+    },
+    {
+      "file": "watermarked_000313.png",
+      "clip_image_cosine": 0.975476861000061,
+      "dino_cosine": 0.948438286781311,
+      "lpips": 0.21123269200325012,
+      "raw_clipscore": 0.7020879983901978,
+      "regen_clipscore": 0.6896408796310425
+    },
+    {
+      "file": "watermarked_000314.png",
+      "clip_image_cosine": 0.9653323888778687,
+      "dino_cosine": 0.9117883443832397,
+      "lpips": 0.1108323186635971,
+      "raw_clipscore": 0.8128514885902405,
+      "regen_clipscore": 0.7967336177825928
+    },
+    {
+      "file": "watermarked_000315.png",
+      "clip_image_cosine": 0.9903719425201416,
+      "dino_cosine": 0.9430321455001831,
+      "lpips": 0.22768381237983704,
+      "raw_clipscore": 0.6676678657531738,
+      "regen_clipscore": 0.6568483114242554
+    },
+    {
+      "file": "watermarked_000316.png",
+      "clip_image_cosine": 0.9849828481674194,
+      "dino_cosine": 0.9810240864753723,
+      "lpips": 0.13267430663108826,
+      "raw_clipscore": 0.682826042175293,
+      "regen_clipscore": 0.6739025115966797
+    },
+    {
+      "file": "watermarked_000317.png",
+      "clip_image_cosine": 0.981725811958313,
+      "dino_cosine": 0.8603164553642273,
+      "lpips": 0.17962336540222168,
+      "raw_clipscore": 0.7088202834129333,
+      "regen_clipscore": 0.6711630821228027
+    },
+    {
+      "file": "watermarked_000318.png",
+      "clip_image_cosine": 0.9226096272468567,
+      "dino_cosine": 0.9707543849945068,
+      "lpips": 0.13878828287124634,
+      "raw_clipscore": 0.6073181629180908,
+      "regen_clipscore": 0.5419815182685852
+    },
+    {
+      "file": "watermarked_000319.png",
+      "clip_image_cosine": 0.9445623755455017,
+      "dino_cosine": 0.9216398000717163,
+      "lpips": 0.19796255230903625,
+      "raw_clipscore": 0.6747973561286926,
+      "regen_clipscore": 0.727369487285614
+    },
+    {
+      "file": "watermarked_000320.png",
+      "clip_image_cosine": 0.9604125618934631,
+      "dino_cosine": 0.9535230398178101,
+      "lpips": 0.15483403205871582,
+      "raw_clipscore": 0.6739872694015503,
+      "regen_clipscore": 0.5982447862625122
+    },
+    {
+      "file": "watermarked_000321.png",
+      "clip_image_cosine": 0.9766602516174316,
+      "dino_cosine": 0.9761541485786438,
+      "lpips": 0.17217405140399933,
+      "raw_clipscore": 0.7369704246520996,
+      "regen_clipscore": 0.7123472690582275
+    },
+    {
+      "file": "watermarked_000322.png",
+      "clip_image_cosine": 0.9183927774429321,
+      "dino_cosine": 0.9382878541946411,
+      "lpips": 0.2670564353466034,
+      "raw_clipscore": 0.7980971336364746,
+      "regen_clipscore": 0.6749516725540161
+    },
+    {
+      "file": "watermarked_000323.png",
+      "clip_image_cosine": 0.9531776905059814,
+      "dino_cosine": 0.8578121662139893,
+      "lpips": 0.19414721429347992,
+      "raw_clipscore": 0.7272790670394897,
+      "regen_clipscore": 0.7362431287765503
+    },
+    {
+      "file": "watermarked_000324.png",
+      "clip_image_cosine": 0.9462045431137085,
+      "dino_cosine": 0.9516443014144897,
+      "lpips": 0.2007731944322586,
+      "raw_clipscore": 0.7843151688575745,
+      "regen_clipscore": 0.7998610734939575
+    },
+    {
+      "file": "watermarked_000325.png",
+      "clip_image_cosine": 0.9826406836509705,
+      "dino_cosine": 0.9757982492446899,
+      "lpips": 0.17002733051776886,
+      "raw_clipscore": 0.7004345655441284,
+      "regen_clipscore": 0.6706827878952026
+    },
+    {
+      "file": "watermarked_000326.png",
+      "clip_image_cosine": 0.9822103977203369,
+      "dino_cosine": 0.9246496558189392,
+      "lpips": 0.1923333704471588,
+      "raw_clipscore": 0.7905030250549316,
+      "regen_clipscore": 0.7963817715644836
+    },
+    {
+      "file": "watermarked_000327.png",
+      "clip_image_cosine": 0.9136836528778076,
+      "dino_cosine": 0.8836114406585693,
+      "lpips": 0.18691937625408173,
+      "raw_clipscore": 0.6975069642066956,
+      "regen_clipscore": 0.7119483947753906
+    },
+    {
+      "file": "watermarked_000328.png",
+      "clip_image_cosine": 0.9259122610092163,
+      "dino_cosine": 0.9331908226013184,
+      "lpips": 0.1830257773399353,
+      "raw_clipscore": 0.7076340913772583,
+      "regen_clipscore": 0.6877356767654419
+    },
+    {
+      "file": "watermarked_000329.png",
+      "clip_image_cosine": 0.9809552431106567,
+      "dino_cosine": 0.941399097442627,
+      "lpips": 0.07452144473791122,
+      "raw_clipscore": 0.8607287406921387,
+      "regen_clipscore": 0.8939754366874695
+    },
+    {
+      "file": "watermarked_000330.png",
+      "clip_image_cosine": 0.9394650459289551,
+      "dino_cosine": 0.8929728269577026,
+      "lpips": 0.15449252724647522,
+      "raw_clipscore": 0.7057353854179382,
+      "regen_clipscore": 0.6774413585662842
+    },
+    {
+      "file": "watermarked_000331.png",
+      "clip_image_cosine": 0.9597744345664978,
+      "dino_cosine": 0.9444642663002014,
+      "lpips": 0.1274426132440567,
+      "raw_clipscore": 0.626373827457428,
+      "regen_clipscore": 0.6118787527084351
+    },
+    {
+      "file": "watermarked_000332.png",
+      "clip_image_cosine": 0.9641082286834717,
+      "dino_cosine": 0.9592042565345764,
+      "lpips": 0.1942252367734909,
+      "raw_clipscore": 0.6520920991897583,
+      "regen_clipscore": 0.544917643070221
+    },
+    {
+      "file": "watermarked_000333.png",
+      "clip_image_cosine": 0.9605858325958252,
+      "dino_cosine": 0.9495737552642822,
+      "lpips": 0.07098203152418137,
+      "raw_clipscore": 0.3090178668498993,
+      "regen_clipscore": 0.35214149951934814
+    },
+    {
+      "file": "watermarked_000334.png",
+      "clip_image_cosine": 0.9487675428390503,
+      "dino_cosine": 0.9721589684486389,
+      "lpips": 0.14603497087955475,
+      "raw_clipscore": 0.6319072842597961,
+      "regen_clipscore": 0.6509885191917419
+    },
+    {
+      "file": "watermarked_000335.png",
+      "clip_image_cosine": 0.9721530079841614,
+      "dino_cosine": 0.9289571046829224,
+      "lpips": 0.11534058302640915,
+      "raw_clipscore": 0.8595249056816101,
+      "regen_clipscore": 0.8434479236602783
+    },
+    {
+      "file": "watermarked_000336.png",
+      "clip_image_cosine": 0.9736588001251221,
+      "dino_cosine": 0.9833731055259705,
+      "lpips": 0.0885530412197113,
+      "raw_clipscore": 0.6099081635475159,
+      "regen_clipscore": 0.6245058178901672
+    },
+    {
+      "file": "watermarked_000337.png",
+      "clip_image_cosine": 0.9692059755325317,
+      "dino_cosine": 0.9874268770217896,
+      "lpips": 0.10207537561655045,
+      "raw_clipscore": 0.7136601805686951,
+      "regen_clipscore": 0.6738635897636414
+    },
+    {
+      "file": "watermarked_000338.png",
+      "clip_image_cosine": 0.9662532806396484,
+      "dino_cosine": 0.9271821975708008,
+      "lpips": 0.1832398772239685,
+      "raw_clipscore": 0.7615700364112854,
+      "regen_clipscore": 0.7453474402427673
+    },
+    {
+      "file": "watermarked_000339.png",
+      "clip_image_cosine": 0.9571166038513184,
+      "dino_cosine": 0.9672236442565918,
+      "lpips": 0.1453068107366562,
+      "raw_clipscore": 0.83552086353302,
+      "regen_clipscore": 0.8288657069206238
+    },
+    {
+      "file": "watermarked_000340.png",
+      "clip_image_cosine": 0.9661324620246887,
+      "dino_cosine": 0.9430510997772217,
+      "lpips": 0.13903413712978363,
+      "raw_clipscore": 0.6036602258682251,
+      "regen_clipscore": 0.6239943504333496
+    },
+    {
+      "file": "watermarked_000341.png",
+      "clip_image_cosine": 0.9604476690292358,
+      "dino_cosine": 0.9596394300460815,
+      "lpips": 0.20253680646419525,
+      "raw_clipscore": 0.605704128742218,
+      "regen_clipscore": 0.491386353969574
+    },
+    {
+      "file": "watermarked_000342.png",
+      "clip_image_cosine": 0.9523797631263733,
+      "dino_cosine": 0.8712960481643677,
+      "lpips": 0.18641358613967896,
+      "raw_clipscore": 0.705763041973114,
+      "regen_clipscore": 0.7004785537719727
+    },
+    {
+      "file": "watermarked_000343.png",
+      "clip_image_cosine": 0.9623196721076965,
+      "dino_cosine": 0.940554141998291,
+      "lpips": 0.10260403901338577,
+      "raw_clipscore": 0.8419995307922363,
+      "regen_clipscore": 0.7334108352661133
+    },
+    {
+      "file": "watermarked_000344.png",
+      "clip_image_cosine": 0.8936642408370972,
+      "dino_cosine": 0.9341460466384888,
+      "lpips": 0.14373630285263062,
+      "raw_clipscore": 0.8043128848075867,
+      "regen_clipscore": 0.8059214353561401
+    },
+    {
+      "file": "watermarked_000345.png",
+      "clip_image_cosine": 0.96673184633255,
+      "dino_cosine": 0.9533157348632812,
+      "lpips": 0.17350104451179504,
+      "raw_clipscore": 0.7129454612731934,
+      "regen_clipscore": 0.704275906085968
+    },
+    {
+      "file": "watermarked_000346.png",
+      "clip_image_cosine": 0.9667237401008606,
+      "dino_cosine": 0.9717585444450378,
+      "lpips": 0.17116841673851013,
+      "raw_clipscore": 0.6466695666313171,
+      "regen_clipscore": 0.5985950827598572
+    },
+    {
+      "file": "watermarked_000347.png",
+      "clip_image_cosine": 0.9631198644638062,
+      "dino_cosine": 0.9589862823486328,
+      "lpips": 0.19527257978916168,
+      "raw_clipscore": 0.6260424256324768,
+      "regen_clipscore": 0.6135961413383484
+    },
+    {
+      "file": "watermarked_000348.png",
+      "clip_image_cosine": 0.9711090922355652,
+      "dino_cosine": 0.9666150808334351,
+      "lpips": 0.14245830476284027,
+      "raw_clipscore": 0.7253931760787964,
+      "regen_clipscore": 0.7296501398086548
+    },
+    {
+      "file": "watermarked_000349.png",
+      "clip_image_cosine": 0.9673765301704407,
+      "dino_cosine": 0.9537997245788574,
+      "lpips": 0.17077431082725525,
+      "raw_clipscore": 0.5174055695533752,
+      "regen_clipscore": 0.5539718866348267
+    },
+    {
+      "file": "watermarked_000350.png",
+      "clip_image_cosine": 0.9592943787574768,
+      "dino_cosine": 0.9339327812194824,
+      "lpips": 0.16982045769691467,
+      "raw_clipscore": 0.7801024913787842,
+      "regen_clipscore": 0.7301139831542969
+    },
+    {
+      "file": "watermarked_000351.png",
+      "clip_image_cosine": 0.9773305654525757,
+      "dino_cosine": 0.9060201048851013,
+      "lpips": 0.2627013921737671,
+      "raw_clipscore": 0.6764158606529236,
+      "regen_clipscore": 0.6350897550582886
+    },
+    {
+      "file": "watermarked_000352.png",
+      "clip_image_cosine": 0.9602554440498352,
+      "dino_cosine": 0.8869664669036865,
+      "lpips": 0.20340614020824432,
+      "raw_clipscore": 0.6910685300827026,
+      "regen_clipscore": 0.6337214708328247
+    },
+    {
+      "file": "watermarked_000353.png",
+      "clip_image_cosine": 0.9694441556930542,
+      "dino_cosine": 0.9650301933288574,
+      "lpips": 0.1798352599143982,
+      "raw_clipscore": 0.8127319812774658,
+      "regen_clipscore": 0.8144092559814453
+    },
+    {
+      "file": "watermarked_000354.png",
+      "clip_image_cosine": 0.9835479259490967,
+      "dino_cosine": 0.9622607231140137,
+      "lpips": 0.16171471774578094,
+      "raw_clipscore": 0.8126602172851562,
+      "regen_clipscore": 0.8161653280258179
+    },
+    {
+      "file": "watermarked_000355.png",
+      "clip_image_cosine": 0.9411792159080505,
+      "dino_cosine": 0.8409938216209412,
+      "lpips": 0.18824970722198486,
+      "raw_clipscore": 0.5562413930892944,
+      "regen_clipscore": 0.512111246585846
+    },
+    {
+      "file": "watermarked_000356.png",
+      "clip_image_cosine": 0.935949444770813,
+      "dino_cosine": 0.9544600248336792,
+      "lpips": 0.16762767732143402,
+      "raw_clipscore": 0.7503505945205688,
+      "regen_clipscore": 0.7446532249450684
+    },
+    {
+      "file": "watermarked_000357.png",
+      "clip_image_cosine": 0.9850667715072632,
+      "dino_cosine": 0.9720368981361389,
+      "lpips": 0.05684752017259598,
+      "raw_clipscore": 0.7587672472000122,
+      "regen_clipscore": 0.7506579756736755
+    },
+    {
+      "file": "watermarked_000358.png",
+      "clip_image_cosine": 0.9614541530609131,
+      "dino_cosine": 0.7902300357818604,
+      "lpips": 0.23065894842147827,
+      "raw_clipscore": 0.6344919204711914,
+      "regen_clipscore": 0.5855556726455688
+    },
+    {
+      "file": "watermarked_000359.png",
+      "clip_image_cosine": 0.9696903228759766,
+      "dino_cosine": 0.9123983383178711,
+      "lpips": 0.15697064995765686,
+      "raw_clipscore": 0.7485277652740479,
+      "regen_clipscore": 0.7049126625061035
+    },
+    {
+      "file": "watermarked_000360.png",
+      "clip_image_cosine": 0.9558998346328735,
+      "dino_cosine": 0.9158548712730408,
+      "lpips": 0.20128688216209412,
+      "raw_clipscore": 0.8296331167221069,
+      "regen_clipscore": 0.7931146025657654
+    },
+    {
+      "file": "watermarked_000361.png",
+      "clip_image_cosine": 0.9895261526107788,
+      "dino_cosine": 0.9753326177597046,
+      "lpips": 0.11703626811504364,
+      "raw_clipscore": 0.5784173011779785,
+      "regen_clipscore": 0.5797049403190613
+    },
+    {
+      "file": "watermarked_000362.png",
+      "clip_image_cosine": 0.9659202098846436,
+      "dino_cosine": 0.9720544219017029,
+      "lpips": 0.1626293659210205,
+      "raw_clipscore": 0.5663721561431885,
+      "regen_clipscore": 0.5014492869377136
+    },
+    {
+      "file": "watermarked_000363.png",
+      "clip_image_cosine": 0.964238166809082,
+      "dino_cosine": 0.9283843040466309,
+      "lpips": 0.17063352465629578,
+      "raw_clipscore": 0.7302570343017578,
+      "regen_clipscore": 0.7497789859771729
+    },
+    {
+      "file": "watermarked_000364.png",
+      "clip_image_cosine": 0.9639242887496948,
+      "dino_cosine": 0.9433674812316895,
+      "lpips": 0.16973400115966797,
+      "raw_clipscore": 0.5826503038406372,
+      "regen_clipscore": 0.5682033896446228
+    },
+    {
+      "file": "watermarked_000365.png",
+      "clip_image_cosine": 0.9553785920143127,
+      "dino_cosine": 0.9128220677375793,
+      "lpips": 0.12536391615867615,
+      "raw_clipscore": 0.7272431254386902,
+      "regen_clipscore": 0.751534104347229
+    },
+    {
+      "file": "watermarked_000366.png",
+      "clip_image_cosine": 0.9530710577964783,
+      "dino_cosine": 0.9296172857284546,
+      "lpips": 0.23078516125679016,
+      "raw_clipscore": 0.8270870447158813,
+      "regen_clipscore": 0.8522393703460693
+    },
+    {
+      "file": "watermarked_000367.png",
+      "clip_image_cosine": 0.9634709358215332,
+      "dino_cosine": 0.9671549797058105,
+      "lpips": 0.09675713628530502,
+      "raw_clipscore": 0.6055482029914856,
+      "regen_clipscore": 0.5790882110595703
+    },
+    {
+      "file": "watermarked_000368.png",
+      "clip_image_cosine": 0.9251086711883545,
+      "dino_cosine": 0.9096249341964722,
+      "lpips": 0.1773586869239807,
+      "raw_clipscore": 0.6755863428115845,
+      "regen_clipscore": 0.6250330805778503
+    },
+    {
+      "file": "watermarked_000369.png",
+      "clip_image_cosine": 0.970204770565033,
+      "dino_cosine": 0.8461006879806519,
+      "lpips": 0.06968133896589279,
+      "raw_clipscore": 0.7056641578674316,
+      "regen_clipscore": 0.7071487903594971
+    },
+    {
+      "file": "watermarked_000370.png",
+      "clip_image_cosine": 0.9753108620643616,
+      "dino_cosine": 0.9505555629730225,
+      "lpips": 0.12590086460113525,
+      "raw_clipscore": 0.5082064270973206,
+      "regen_clipscore": 0.508417010307312
+    },
+    {
+      "file": "watermarked_000371.png",
+      "clip_image_cosine": 0.957878828048706,
+      "dino_cosine": 0.9358614087104797,
+      "lpips": 0.19326962530612946,
+      "raw_clipscore": 0.7707935571670532,
+      "regen_clipscore": 0.7484583854675293
+    },
+    {
+      "file": "watermarked_000372.png",
+      "clip_image_cosine": 0.9787710905075073,
+      "dino_cosine": 0.9462701082229614,
+      "lpips": 0.17859511077404022,
+      "raw_clipscore": 0.745780348777771,
+      "regen_clipscore": 0.7507050633430481
+    },
+    {
+      "file": "watermarked_000373.png",
+      "clip_image_cosine": 0.9599916934967041,
+      "dino_cosine": 0.9092077612876892,
+      "lpips": 0.17716148495674133,
+      "raw_clipscore": 0.7361939549446106,
+      "regen_clipscore": 0.7259993553161621
+    },
+    {
+      "file": "watermarked_000374.png",
+      "clip_image_cosine": 0.9578142762184143,
+      "dino_cosine": 0.9604679346084595,
+      "lpips": 0.18828147649765015,
+      "raw_clipscore": 0.6643328070640564,
+      "regen_clipscore": 0.5561062097549438
+    },
+    {
+      "file": "watermarked_000375.png",
+      "clip_image_cosine": 0.9709342122077942,
+      "dino_cosine": 0.8958374857902527,
+      "lpips": 0.13012300431728363,
+      "raw_clipscore": 0.6533924341201782,
+      "regen_clipscore": 0.6472443342208862
+    },
+    {
+      "file": "watermarked_000376.png",
+      "clip_image_cosine": 0.9487510919570923,
+      "dino_cosine": 0.9519495964050293,
+      "lpips": 0.11353372782468796,
+      "raw_clipscore": 0.6876348257064819,
+      "regen_clipscore": 0.6922037601470947
+    },
+    {
+      "file": "watermarked_000377.png",
+      "clip_image_cosine": 0.9509196281433105,
+      "dino_cosine": 0.9468026161193848,
+      "lpips": 0.1214500442147255,
+      "raw_clipscore": 0.6832448244094849,
+      "regen_clipscore": 0.6986644864082336
+    },
+    {
+      "file": "watermarked_000378.png",
+      "clip_image_cosine": 0.9395061731338501,
+      "dino_cosine": 0.9336044192314148,
+      "lpips": 0.23000481724739075,
+      "raw_clipscore": 0.5738688707351685,
+      "regen_clipscore": 0.5324438214302063
+    },
+    {
+      "file": "watermarked_000379.png",
+      "clip_image_cosine": 0.9711693525314331,
+      "dino_cosine": 0.9632748365402222,
+      "lpips": 0.16096985340118408,
+      "raw_clipscore": 0.7997459173202515,
+      "regen_clipscore": 0.7991195917129517
+    },
+    {
+      "file": "watermarked_000380.png",
+      "clip_image_cosine": 0.9624099731445312,
+      "dino_cosine": 0.9551351070404053,
+      "lpips": 0.17894020676612854,
+      "raw_clipscore": 0.7393935918807983,
+      "regen_clipscore": 0.6985589861869812
+    },
+    {
+      "file": "watermarked_000381.png",
+      "clip_image_cosine": 0.9775038957595825,
+      "dino_cosine": 0.964985728263855,
+      "lpips": 0.1274939328432083,
+      "raw_clipscore": 0.7815917730331421,
+      "regen_clipscore": 0.8279163837432861
+    },
+    {
+      "file": "watermarked_000382.png",
+      "clip_image_cosine": 0.9583359956741333,
+      "dino_cosine": 0.9497034549713135,
+      "lpips": 0.11850510537624359,
+      "raw_clipscore": 0.5955991744995117,
+      "regen_clipscore": 0.6231913566589355
+    },
+    {
+      "file": "watermarked_000383.png",
+      "clip_image_cosine": 0.9547502994537354,
+      "dino_cosine": 0.9506257772445679,
+      "lpips": 0.1839480698108673,
+      "raw_clipscore": 0.9171392917633057,
+      "regen_clipscore": 0.9258301258087158
+    },
+    {
+      "file": "watermarked_000384.png",
+      "clip_image_cosine": 0.9508851766586304,
+      "dino_cosine": 0.937004804611206,
+      "lpips": 0.08859845250844955,
+      "raw_clipscore": 0.6715707778930664,
+      "regen_clipscore": 0.5962761640548706
+    },
+    {
+      "file": "watermarked_000385.png",
+      "clip_image_cosine": 0.9916586875915527,
+      "dino_cosine": 0.9691868424415588,
+      "lpips": 0.06701001524925232,
+      "raw_clipscore": 0.8061556816101074,
+      "regen_clipscore": 0.7926337718963623
+    },
+    {
+      "file": "watermarked_000386.png",
+      "clip_image_cosine": 0.9614026546478271,
+      "dino_cosine": 0.9605880975723267,
+      "lpips": 0.20671691000461578,
+      "raw_clipscore": 0.7125997543334961,
+      "regen_clipscore": 0.6722785234451294
+    },
+    {
+      "file": "watermarked_000387.png",
+      "clip_image_cosine": 0.981395423412323,
+      "dino_cosine": 0.9428423047065735,
+      "lpips": 0.2018229365348816,
+      "raw_clipscore": 0.4942188262939453,
+      "regen_clipscore": 0.47953927516937256
+    },
+    {
+      "file": "watermarked_000388.png",
+      "clip_image_cosine": 0.9377180337905884,
+      "dino_cosine": 0.9599654078483582,
+      "lpips": 0.1320180594921112,
+      "raw_clipscore": 0.8106324672698975,
+      "regen_clipscore": 0.7581901550292969
+    },
+    {
+      "file": "watermarked_000389.png",
+      "clip_image_cosine": 0.9425320625305176,
+      "dino_cosine": 0.9704681634902954,
+      "lpips": 0.10332595556974411,
+      "raw_clipscore": 0.7546048164367676,
+      "regen_clipscore": 0.7805648446083069
+    },
+    {
+      "file": "watermarked_000390.png",
+      "clip_image_cosine": 0.9748399257659912,
+      "dino_cosine": 0.9657421112060547,
+      "lpips": 0.12325087189674377,
+      "raw_clipscore": 0.6741220355033875,
+      "regen_clipscore": 0.695881187915802
+    },
+    {
+      "file": "watermarked_000391.png",
+      "clip_image_cosine": 0.969058096408844,
+      "dino_cosine": 0.901396632194519,
+      "lpips": 0.1838168203830719,
+      "raw_clipscore": 0.5728908777236938,
+      "regen_clipscore": 0.5656901001930237
+    },
+    {
+      "file": "watermarked_000392.png",
+      "clip_image_cosine": 0.9628231525421143,
+      "dino_cosine": 0.9022730588912964,
+      "lpips": 0.21739648282527924,
+      "raw_clipscore": 0.6752480268478394,
+      "regen_clipscore": 0.6060924530029297
+    },
+    {
+      "file": "watermarked_000393.png",
+      "clip_image_cosine": 0.9847180247306824,
+      "dino_cosine": 0.9757401347160339,
+      "lpips": 0.05178641527891159,
+      "raw_clipscore": 0.5663251876831055,
+      "regen_clipscore": 0.5796108245849609
+    },
+    {
+      "file": "watermarked_000394.png",
+      "clip_image_cosine": 0.9731902480125427,
+      "dino_cosine": 0.957909882068634,
+      "lpips": 0.15974602103233337,
+      "raw_clipscore": 0.651952862739563,
+      "regen_clipscore": 0.5960481762886047
+    },
+    {
+      "file": "watermarked_000395.png",
+      "clip_image_cosine": 0.8779377341270447,
+      "dino_cosine": 0.9484257102012634,
+      "lpips": 0.20309333503246307,
+      "raw_clipscore": 0.8566852807998657,
+      "regen_clipscore": 0.7460761070251465
+    },
+    {
+      "file": "watermarked_000396.png",
+      "clip_image_cosine": 0.9364023208618164,
+      "dino_cosine": 0.8597433567047119,
+      "lpips": 0.20755144953727722,
+      "raw_clipscore": 0.6639483571052551,
+      "regen_clipscore": 0.6148545742034912
+    },
+    {
+      "file": "watermarked_000397.png",
+      "clip_image_cosine": 0.9806697368621826,
+      "dino_cosine": 0.954382061958313,
+      "lpips": 0.17107993364334106,
+      "raw_clipscore": 0.7825909852981567,
+      "regen_clipscore": 0.7619000673294067
+    },
+    {
+      "file": "watermarked_000398.png",
+      "clip_image_cosine": 0.950409471988678,
+      "dino_cosine": 0.927382230758667,
+      "lpips": 0.12592527270317078,
+      "raw_clipscore": 0.49251142144203186,
+      "regen_clipscore": 0.4789574146270752
+    },
+    {
+      "file": "watermarked_000399.png",
+      "clip_image_cosine": 0.9766695499420166,
+      "dino_cosine": 0.9360843896865845,
+      "lpips": 0.12743274867534637,
+      "raw_clipscore": 0.6146595478057861,
+      "regen_clipscore": 0.6444305181503296
+    },
+    {
+      "file": "watermarked_000400.png",
+      "clip_image_cosine": 0.9633862376213074,
+      "dino_cosine": 0.9565535187721252,
+      "lpips": 0.20504862070083618,
+      "raw_clipscore": 0.7535732984542847,
+      "regen_clipscore": 0.7237550616264343
+    },
+    {
+      "file": "watermarked_000401.png",
+      "clip_image_cosine": 0.9656025171279907,
+      "dino_cosine": 0.9125487208366394,
+      "lpips": 0.21063049137592316,
+      "raw_clipscore": 0.605541467666626,
+      "regen_clipscore": 0.5949857234954834
+    },
+    {
+      "file": "watermarked_000402.png",
+      "clip_image_cosine": 0.9817880392074585,
+      "dino_cosine": 0.9392587542533875,
+      "lpips": 0.16321393847465515,
+      "raw_clipscore": 0.7722033262252808,
+      "regen_clipscore": 0.770198404788971
+    },
+    {
+      "file": "watermarked_000403.png",
+      "clip_image_cosine": 0.9356032013893127,
+      "dino_cosine": 0.8871543407440186,
+      "lpips": 0.18975159525871277,
+      "raw_clipscore": 0.8177480101585388,
+      "regen_clipscore": 0.7493095397949219
+    },
+    {
+      "file": "watermarked_000404.png",
+      "clip_image_cosine": 0.9701526165008545,
+      "dino_cosine": 0.9575400948524475,
+      "lpips": 0.1697348952293396,
+      "raw_clipscore": 0.6593319177627563,
+      "regen_clipscore": 0.6155620813369751
+    },
+    {
+      "file": "watermarked_000405.png",
+      "clip_image_cosine": 0.9777832627296448,
+      "dino_cosine": 0.9774910807609558,
+      "lpips": 0.12855273485183716,
+      "raw_clipscore": 0.7521432638168335,
+      "regen_clipscore": 0.7098387479782104
+    },
+    {
+      "file": "watermarked_000406.png",
+      "clip_image_cosine": 0.9652175307273865,
+      "dino_cosine": 0.9523153305053711,
+      "lpips": 0.14870363473892212,
+      "raw_clipscore": 0.7475346922874451,
+      "regen_clipscore": 0.6653649806976318
+    },
+    {
+      "file": "watermarked_000407.png",
+      "clip_image_cosine": 0.9235851168632507,
+      "dino_cosine": 0.9348245859146118,
+      "lpips": 0.1753576397895813,
+      "raw_clipscore": 0.6001044511795044,
+      "regen_clipscore": 0.5953933000564575
+    },
+    {
+      "file": "watermarked_000408.png",
+      "clip_image_cosine": 0.9718589782714844,
+      "dino_cosine": 0.9644311666488647,
+      "lpips": 0.11874789744615555,
+      "raw_clipscore": 0.5196665525436401,
+      "regen_clipscore": 0.5869389176368713
+    },
+    {
+      "file": "watermarked_000409.png",
+      "clip_image_cosine": 0.9574521780014038,
+      "dino_cosine": 0.9593687057495117,
+      "lpips": 0.1485733687877655,
+      "raw_clipscore": 0.756462574005127,
+      "regen_clipscore": 0.786018431186676
+    },
+    {
+      "file": "watermarked_000410.png",
+      "clip_image_cosine": 0.9823296666145325,
+      "dino_cosine": 0.9523943662643433,
+      "lpips": 0.19320064783096313,
+      "raw_clipscore": 0.5960431098937988,
+      "regen_clipscore": 0.5778454542160034
+    },
+    {
+      "file": "watermarked_000411.png",
+      "clip_image_cosine": 0.9656587839126587,
+      "dino_cosine": 0.9456961154937744,
+      "lpips": 0.15366211533546448,
+      "raw_clipscore": 0.5628881454467773,
+      "regen_clipscore": 0.5420740842819214
+    },
+    {
+      "file": "watermarked_000412.png",
+      "clip_image_cosine": 0.9866541624069214,
+      "dino_cosine": 0.982509195804596,
+      "lpips": 0.07268660515546799,
+      "raw_clipscore": 0.6058975458145142,
+      "regen_clipscore": 0.5897921919822693
+    },
+    {
+      "file": "watermarked_000413.png",
+      "clip_image_cosine": 0.9718602895736694,
+      "dino_cosine": 0.911105751991272,
+      "lpips": 0.20330844819545746,
+      "raw_clipscore": 0.7366666793823242,
+      "regen_clipscore": 0.7030946016311646
+    },
+    {
+      "file": "watermarked_000414.png",
+      "clip_image_cosine": 0.9434077739715576,
+      "dino_cosine": 0.9031288027763367,
+      "lpips": 0.14001283049583435,
+      "raw_clipscore": 0.7037849426269531,
+      "regen_clipscore": 0.7203755378723145
+    },
+    {
+      "file": "watermarked_000415.png",
+      "clip_image_cosine": 0.9670794010162354,
+      "dino_cosine": 0.9478169083595276,
+      "lpips": 0.1506928950548172,
+      "raw_clipscore": 0.7477444410324097,
+      "regen_clipscore": 0.6800660490989685
+    },
+    {
+      "file": "watermarked_000416.png",
+      "clip_image_cosine": 0.9276955127716064,
+      "dino_cosine": 0.9504125714302063,
+      "lpips": 0.13343356549739838,
+      "raw_clipscore": 0.7189322710037231,
+      "regen_clipscore": 0.7300882339477539
+    },
+    {
+      "file": "watermarked_000417.png",
+      "clip_image_cosine": 0.9520072937011719,
+      "dino_cosine": 0.9321698546409607,
+      "lpips": 0.220660001039505,
+      "raw_clipscore": 0.8423186540603638,
+      "regen_clipscore": 0.7886751890182495
+    },
+    {
+      "file": "watermarked_000418.png",
+      "clip_image_cosine": 0.9602580070495605,
+      "dino_cosine": 0.9682536721229553,
+      "lpips": 0.13799446821212769,
+      "raw_clipscore": 0.647166907787323,
+      "regen_clipscore": 0.6007899641990662
+    },
+    {
+      "file": "watermarked_000419.png",
+      "clip_image_cosine": 0.9670809507369995,
+      "dino_cosine": 0.8659361600875854,
+      "lpips": 0.260287344455719,
+      "raw_clipscore": 0.6762897968292236,
+      "regen_clipscore": 0.6714870929718018
+    },
+    {
+      "file": "watermarked_000420.png",
+      "clip_image_cosine": 0.9747180938720703,
+      "dino_cosine": 0.9730827808380127,
+      "lpips": 0.16459909081459045,
+      "raw_clipscore": 0.6176360845565796,
+      "regen_clipscore": 0.5302488207817078
+    },
+    {
+      "file": "watermarked_000421.png",
+      "clip_image_cosine": 0.9643487930297852,
+      "dino_cosine": 0.951007604598999,
+      "lpips": 0.13626495003700256,
+      "raw_clipscore": 0.6674331426620483,
+      "regen_clipscore": 0.7143073678016663
+    },
+    {
+      "file": "watermarked_000422.png",
+      "clip_image_cosine": 0.9552968740463257,
+      "dino_cosine": 0.8883991241455078,
+      "lpips": 0.2502787113189697,
+      "raw_clipscore": 0.7903022766113281,
+      "regen_clipscore": 0.7434340715408325
+    },
+    {
+      "file": "watermarked_000423.png",
+      "clip_image_cosine": 0.9687963128089905,
+      "dino_cosine": 0.9456641674041748,
+      "lpips": 0.201697438955307,
+      "raw_clipscore": 0.5579503178596497,
+      "regen_clipscore": 0.5403962135314941
+    },
+    {
+      "file": "watermarked_000424.png",
+      "clip_image_cosine": 0.9371293187141418,
+      "dino_cosine": 0.9283932447433472,
+      "lpips": 0.11556205153465271,
+      "raw_clipscore": 0.7089566588401794,
+      "regen_clipscore": 0.6932754516601562
+    },
+    {
+      "file": "watermarked_000425.png",
+      "clip_image_cosine": 0.9747073650360107,
+      "dino_cosine": 0.9409189224243164,
+      "lpips": 0.16214001178741455,
+      "raw_clipscore": 0.6382424831390381,
+      "regen_clipscore": 0.6023635864257812
+    },
+    {
+      "file": "watermarked_000426.png",
+      "clip_image_cosine": 0.9383808970451355,
+      "dino_cosine": 0.9661413431167603,
+      "lpips": 0.1407187283039093,
+      "raw_clipscore": 0.7151283025741577,
+      "regen_clipscore": 0.6567143797874451
+    },
+    {
+      "file": "watermarked_000427.png",
+      "clip_image_cosine": 0.9776377081871033,
+      "dino_cosine": 0.9657723903656006,
+      "lpips": 0.16506780683994293,
+      "raw_clipscore": 0.6643372774124146,
+      "regen_clipscore": 0.649239718914032
+    },
+    {
+      "file": "watermarked_000428.png",
+      "clip_image_cosine": 0.9786649942398071,
+      "dino_cosine": 0.9392859935760498,
+      "lpips": 0.1917317509651184,
+      "raw_clipscore": 0.8131150007247925,
+      "regen_clipscore": 0.7352748513221741
+    },
+    {
+      "file": "watermarked_000429.png",
+      "clip_image_cosine": 0.9516162872314453,
+      "dino_cosine": 0.9598758220672607,
+      "lpips": 0.18530112504959106,
+      "raw_clipscore": 0.5920292139053345,
+      "regen_clipscore": 0.6241474747657776
+    },
+    {
+      "file": "watermarked_000430.png",
+      "clip_image_cosine": 0.9476451873779297,
+      "dino_cosine": 0.9596708416938782,
+      "lpips": 0.12457961589097977,
+      "raw_clipscore": 0.7684722542762756,
+      "regen_clipscore": 0.7110089659690857
+    },
+    {
+      "file": "watermarked_000431.png",
+      "clip_image_cosine": 0.9604551196098328,
+      "dino_cosine": 0.9271005392074585,
+      "lpips": 0.17152950167655945,
+      "raw_clipscore": 0.7057094573974609,
+      "regen_clipscore": 0.6737638711929321
+    },
+    {
+      "file": "watermarked_000432.png",
+      "clip_image_cosine": 0.9627606272697449,
+      "dino_cosine": 0.9343334436416626,
+      "lpips": 0.2038986086845398,
+      "raw_clipscore": 0.8319762349128723,
+      "regen_clipscore": 0.818432092666626
+    },
+    {
+      "file": "watermarked_000433.png",
+      "clip_image_cosine": 0.9609193801879883,
+      "dino_cosine": 0.9736056327819824,
+      "lpips": 0.16013804078102112,
+      "raw_clipscore": 0.5840014815330505,
+      "regen_clipscore": 0.46898365020751953
+    },
+    {
+      "file": "watermarked_000434.png",
+      "clip_image_cosine": 0.9579174518585205,
+      "dino_cosine": 0.9543596506118774,
+      "lpips": 0.18637306988239288,
+      "raw_clipscore": 0.7512518167495728,
+      "regen_clipscore": 0.7754518985748291
+    },
+    {
+      "file": "watermarked_000435.png",
+      "clip_image_cosine": 0.9470014572143555,
+      "dino_cosine": 0.9103032946586609,
+      "lpips": 0.15645447373390198,
+      "raw_clipscore": 0.7254883646965027,
+      "regen_clipscore": 0.6872888803482056
+    },
+    {
+      "file": "watermarked_000436.png",
+      "clip_image_cosine": 0.9704841375350952,
+      "dino_cosine": 0.9848741888999939,
+      "lpips": 0.17493480443954468,
+      "raw_clipscore": 0.6574717164039612,
+      "regen_clipscore": 0.7020118236541748
+    },
+    {
+      "file": "watermarked_000437.png",
+      "clip_image_cosine": 0.9558179378509521,
+      "dino_cosine": 0.8662475943565369,
+      "lpips": 0.1634463369846344,
+      "raw_clipscore": 0.5517042279243469,
+      "regen_clipscore": 0.5697682499885559
+    },
+    {
+      "file": "watermarked_000438.png",
+      "clip_image_cosine": 0.9578369855880737,
+      "dino_cosine": 0.9314606785774231,
+      "lpips": 0.1859380602836609,
+      "raw_clipscore": 0.7077875733375549,
+      "regen_clipscore": 0.6530701518058777
+    },
+    {
+      "file": "watermarked_000439.png",
+      "clip_image_cosine": 0.9600387215614319,
+      "dino_cosine": 0.8999001979827881,
+      "lpips": 0.18967199325561523,
+      "raw_clipscore": 0.687821626663208,
+      "regen_clipscore": 0.65376877784729
+    },
+    {
+      "file": "watermarked_000440.png",
+      "clip_image_cosine": 0.9455219507217407,
+      "dino_cosine": 0.8757195472717285,
+      "lpips": 0.21688666939735413,
+      "raw_clipscore": 0.7803105711936951,
+      "regen_clipscore": 0.7234877347946167
+    },
+    {
+      "file": "watermarked_000441.png",
+      "clip_image_cosine": 0.9708982706069946,
+      "dino_cosine": 0.969928503036499,
+      "lpips": 0.17998699843883514,
+      "raw_clipscore": 0.6733106374740601,
+      "regen_clipscore": 0.6935490369796753
+    },
+    {
+      "file": "watermarked_000442.png",
+      "clip_image_cosine": 0.9472144246101379,
+      "dino_cosine": 0.9280950427055359,
+      "lpips": 0.20929835736751556,
+      "raw_clipscore": 0.5957120060920715,
+      "regen_clipscore": 0.6007862687110901
+    },
+    {
+      "file": "watermarked_000443.png",
+      "clip_image_cosine": 0.9327232837677002,
+      "dino_cosine": 0.9692219495773315,
+      "lpips": 0.18482893705368042,
+      "raw_clipscore": 0.7824090123176575,
+      "regen_clipscore": 0.809541642665863
+    },
+    {
+      "file": "watermarked_000444.png",
+      "clip_image_cosine": 0.9746203422546387,
+      "dino_cosine": 0.9682090878486633,
+      "lpips": 0.1381891369819641,
+      "raw_clipscore": 0.7209689021110535,
+      "regen_clipscore": 0.7522692680358887
+    },
+    {
+      "file": "watermarked_000445.png",
+      "clip_image_cosine": 0.9605061411857605,
+      "dino_cosine": 0.954135000705719,
+      "lpips": 0.1876423954963684,
+      "raw_clipscore": 0.7248002290725708,
+      "regen_clipscore": 0.7213076949119568
+    },
+    {
+      "file": "watermarked_000446.png",
+      "clip_image_cosine": 0.9580058455467224,
+      "dino_cosine": 0.9590030908584595,
+      "lpips": 0.18718813359737396,
+      "raw_clipscore": 0.6600207090377808,
+      "regen_clipscore": 0.6638133525848389
+    },
+    {
+      "file": "watermarked_000447.png",
+      "clip_image_cosine": 0.9803390502929688,
+      "dino_cosine": 0.9570096135139465,
+      "lpips": 0.13563457131385803,
+      "raw_clipscore": 0.681153416633606,
+      "regen_clipscore": 0.6996992230415344
+    },
+    {
+      "file": "watermarked_000448.png",
+      "clip_image_cosine": 0.9668940305709839,
+      "dino_cosine": 0.9206607341766357,
+      "lpips": 0.14843210577964783,
+      "raw_clipscore": 0.6778312921524048,
+      "regen_clipscore": 0.6738459467887878
+    },
+    {
+      "file": "watermarked_000449.png",
+      "clip_image_cosine": 0.9724323153495789,
+      "dino_cosine": 0.9699842929840088,
+      "lpips": 0.1766413450241089,
+      "raw_clipscore": 0.47896331548690796,
+      "regen_clipscore": 0.47315752506256104
+    },
+    {
+      "file": "watermarked_000450.png",
+      "clip_image_cosine": 0.9662512540817261,
+      "dino_cosine": 0.9477941989898682,
+      "lpips": 0.14456936717033386,
+      "raw_clipscore": 0.8584160804748535,
+      "regen_clipscore": 0.8777607679367065
+    },
+    {
+      "file": "watermarked_000451.png",
+      "clip_image_cosine": 0.94597327709198,
+      "dino_cosine": 0.9174572229385376,
+      "lpips": 0.22762322425842285,
+      "raw_clipscore": 0.8100849986076355,
+      "regen_clipscore": 0.7947134971618652
+    },
+    {
+      "file": "watermarked_000452.png",
+      "clip_image_cosine": 0.9816768169403076,
+      "dino_cosine": 0.943722128868103,
+      "lpips": 0.1929454207420349,
+      "raw_clipscore": 0.5770955085754395,
+      "regen_clipscore": 0.583728015422821
+    },
+    {
+      "file": "watermarked_000453.png",
+      "clip_image_cosine": 0.9712070226669312,
+      "dino_cosine": 0.9527151584625244,
+      "lpips": 0.1803237795829773,
+      "raw_clipscore": 0.6216646432876587,
+      "regen_clipscore": 0.6408542394638062
+    },
+    {
+      "file": "watermarked_000454.png",
+      "clip_image_cosine": 0.9844622611999512,
+      "dino_cosine": 0.9813389778137207,
+      "lpips": 0.13651292026042938,
+      "raw_clipscore": 0.7368541955947876,
+      "regen_clipscore": 0.7686483860015869
+    },
+    {
+      "file": "watermarked_000455.png",
+      "clip_image_cosine": 0.9856459498405457,
+      "dino_cosine": 0.9713417291641235,
+      "lpips": 0.1578872799873352,
+      "raw_clipscore": 0.6014372706413269,
+      "regen_clipscore": 0.6030269861221313
+    },
+    {
+      "file": "watermarked_000456.png",
+      "clip_image_cosine": 0.9441322088241577,
+      "dino_cosine": 0.8683180809020996,
+      "lpips": 0.20786985754966736,
+      "raw_clipscore": 0.902731716632843,
+      "regen_clipscore": 0.9333158135414124
+    },
+    {
+      "file": "watermarked_000457.png",
+      "clip_image_cosine": 0.9612782597541809,
+      "dino_cosine": 0.9638068079948425,
+      "lpips": 0.12418938428163528,
+      "raw_clipscore": 0.5643283128738403,
+      "regen_clipscore": 0.5110020041465759
+    },
+    {
+      "file": "watermarked_000458.png",
+      "clip_image_cosine": 0.9459354877471924,
+      "dino_cosine": 0.9802525043487549,
+      "lpips": 0.060242682695388794,
+      "raw_clipscore": 0.6149647235870361,
+      "regen_clipscore": 0.6415766477584839
+    },
+    {
+      "file": "watermarked_000459.png",
+      "clip_image_cosine": 0.9384997487068176,
+      "dino_cosine": 0.9320349097251892,
+      "lpips": 0.17802487313747406,
+      "raw_clipscore": 0.8208650350570679,
+      "regen_clipscore": 0.8218303322792053
+    },
+    {
+      "file": "watermarked_000460.png",
+      "clip_image_cosine": 0.9695889949798584,
+      "dino_cosine": 0.9368447065353394,
+      "lpips": 0.16999831795692444,
+      "raw_clipscore": 0.8207236528396606,
+      "regen_clipscore": 0.7811698317527771
+    },
+    {
+      "file": "watermarked_000461.png",
+      "clip_image_cosine": 0.9768692851066589,
+      "dino_cosine": 0.9375951290130615,
+      "lpips": 0.17534278333187103,
+      "raw_clipscore": 0.8204546570777893,
+      "regen_clipscore": 0.8502756357192993
+    },
+    {
+      "file": "watermarked_000462.png",
+      "clip_image_cosine": 0.9559316635131836,
+      "dino_cosine": 0.964038610458374,
+      "lpips": 0.1816856861114502,
+      "raw_clipscore": 0.7578930258750916,
+      "regen_clipscore": 0.7673030495643616
+    },
+    {
+      "file": "watermarked_000463.png",
+      "clip_image_cosine": 0.9384185671806335,
+      "dino_cosine": 0.9461146593093872,
+      "lpips": 0.11488136649131775,
+      "raw_clipscore": 0.8574879169464111,
+      "regen_clipscore": 0.8605812788009644
+    },
+    {
+      "file": "watermarked_000464.png",
+      "clip_image_cosine": 0.9765652418136597,
+      "dino_cosine": 0.9734997749328613,
+      "lpips": 0.14188146591186523,
+      "raw_clipscore": 0.6027784943580627,
+      "regen_clipscore": 0.5683615803718567
+    },
+    {
+      "file": "watermarked_000465.png",
+      "clip_image_cosine": 0.9774103164672852,
+      "dino_cosine": 0.9349954128265381,
+      "lpips": 0.20273363590240479,
+      "raw_clipscore": 0.7739715576171875,
+      "regen_clipscore": 0.7610137462615967
+    },
+    {
+      "file": "watermarked_000466.png",
+      "clip_image_cosine": 0.9665372371673584,
+      "dino_cosine": 0.9670240879058838,
+      "lpips": 0.22206977009773254,
+      "raw_clipscore": 0.7160627841949463,
+      "regen_clipscore": 0.707550585269928
+    },
+    {
+      "file": "watermarked_000467.png",
+      "clip_image_cosine": 0.9336229562759399,
+      "dino_cosine": 0.9879794120788574,
+      "lpips": 0.159286767244339,
+      "raw_clipscore": 0.7840840816497803,
+      "regen_clipscore": 0.7738640904426575
+    },
+    {
+      "file": "watermarked_000468.png",
+      "clip_image_cosine": 0.9812885522842407,
+      "dino_cosine": 0.9568976163864136,
+      "lpips": 0.10171443223953247,
+      "raw_clipscore": 0.5320742130279541,
+      "regen_clipscore": 0.5264852046966553
+    },
+    {
+      "file": "watermarked_000469.png",
+      "clip_image_cosine": 0.9274040460586548,
+      "dino_cosine": 0.8394814729690552,
+      "lpips": 0.18851861357688904,
+      "raw_clipscore": 0.6124614477157593,
+      "regen_clipscore": 0.621197521686554
+    },
+    {
+      "file": "watermarked_000470.png",
+      "clip_image_cosine": 0.9504257440567017,
+      "dino_cosine": 0.9304161071777344,
+      "lpips": 0.15998061001300812,
+      "raw_clipscore": 0.72360759973526,
+      "regen_clipscore": 0.697936475276947
+    },
+    {
+      "file": "watermarked_000471.png",
+      "clip_image_cosine": 0.9593629837036133,
+      "dino_cosine": 0.9376691579818726,
+      "lpips": 0.21620605885982513,
+      "raw_clipscore": 0.7335022687911987,
+      "regen_clipscore": 0.7256860136985779
+    },
+    {
+      "file": "watermarked_000472.png",
+      "clip_image_cosine": 0.9375756978988647,
+      "dino_cosine": 0.9497178792953491,
+      "lpips": 0.17397940158843994,
+      "raw_clipscore": 0.6989794969558716,
+      "regen_clipscore": 0.603661298751831
+    },
+    {
+      "file": "watermarked_000473.png",
+      "clip_image_cosine": 0.9596368670463562,
+      "dino_cosine": 0.9591034650802612,
+      "lpips": 0.19704380631446838,
+      "raw_clipscore": 0.6275781989097595,
+      "regen_clipscore": 0.6115513443946838
+    },
+    {
+      "file": "watermarked_000474.png",
+      "clip_image_cosine": 0.9780510663986206,
+      "dino_cosine": 0.8909938335418701,
+      "lpips": 0.12787139415740967,
+      "raw_clipscore": 0.6710444688796997,
+      "regen_clipscore": 0.6025230884552002
+    },
+    {
+      "file": "watermarked_000475.png",
+      "clip_image_cosine": 0.9493511915206909,
+      "dino_cosine": 0.8597400188446045,
+      "lpips": 0.1937878131866455,
+      "raw_clipscore": 0.767277717590332,
+      "regen_clipscore": 0.7146891355514526
+    },
+    {
+      "file": "watermarked_000476.png",
+      "clip_image_cosine": 0.9353811740875244,
+      "dino_cosine": 0.9287407398223877,
+      "lpips": 0.21263781189918518,
+      "raw_clipscore": 0.73172926902771,
+      "regen_clipscore": 0.6385620832443237
+    },
+    {
+      "file": "watermarked_000477.png",
+      "clip_image_cosine": 0.9582687616348267,
+      "dino_cosine": 0.9623852372169495,
+      "lpips": 0.1550806164741516,
+      "raw_clipscore": 0.7528021931648254,
+      "regen_clipscore": 0.7711997628211975
+    },
+    {
+      "file": "watermarked_000478.png",
+      "clip_image_cosine": 0.9705367088317871,
+      "dino_cosine": 0.9281290769577026,
+      "lpips": 0.24441471695899963,
+      "raw_clipscore": 0.6508785486221313,
+      "regen_clipscore": 0.6602864265441895
+    },
+    {
+      "file": "watermarked_000479.png",
+      "clip_image_cosine": 0.9689785242080688,
+      "dino_cosine": 0.983631432056427,
+      "lpips": 0.13155579566955566,
+      "raw_clipscore": 0.5712295770645142,
+      "regen_clipscore": 0.536898136138916
+    },
+    {
+      "file": "watermarked_000480.png",
+      "clip_image_cosine": 0.9663578271865845,
+      "dino_cosine": 0.8665642738342285,
+      "lpips": 0.1658661812543869,
+      "raw_clipscore": 0.7868551015853882,
+      "regen_clipscore": 0.7898973226547241
+    },
+    {
+      "file": "watermarked_000481.png",
+      "clip_image_cosine": 0.9744262099266052,
+      "dino_cosine": 0.9604501724243164,
+      "lpips": 0.18026188015937805,
+      "raw_clipscore": 0.7139147520065308,
+      "regen_clipscore": 0.6906528472900391
+    },
+    {
+      "file": "watermarked_000482.png",
+      "clip_image_cosine": 0.9588494896888733,
+      "dino_cosine": 0.9532342553138733,
+      "lpips": 0.1764369010925293,
+      "raw_clipscore": 0.6705394983291626,
+      "regen_clipscore": 0.6246507167816162
+    },
+    {
+      "file": "watermarked_000483.png",
+      "clip_image_cosine": 0.9350802302360535,
+      "dino_cosine": 0.940635085105896,
+      "lpips": 0.2055957019329071,
+      "raw_clipscore": 0.7204940915107727,
+      "regen_clipscore": 0.7071901559829712
+    },
+    {
+      "file": "watermarked_000484.png",
+      "clip_image_cosine": 0.9462368488311768,
+      "dino_cosine": 0.9630879163742065,
+      "lpips": 0.16558662056922913,
+      "raw_clipscore": 0.6787209510803223,
+      "regen_clipscore": 0.6729200482368469
+    },
+    {
+      "file": "watermarked_000485.png",
+      "clip_image_cosine": 0.906349778175354,
+      "dino_cosine": 0.8554882407188416,
+      "lpips": 0.13452908396720886,
+      "raw_clipscore": 0.7193455696105957,
+      "regen_clipscore": 0.6953291893005371
+    },
+    {
+      "file": "watermarked_000486.png",
+      "clip_image_cosine": 0.9600988030433655,
+      "dino_cosine": 0.9623987674713135,
+      "lpips": 0.1456581950187683,
+      "raw_clipscore": 0.7860416769981384,
+      "regen_clipscore": 0.8122921586036682
+    },
+    {
+      "file": "watermarked_000487.png",
+      "clip_image_cosine": 0.9417276382446289,
+      "dino_cosine": 0.9061930179595947,
+      "lpips": 0.23907437920570374,
+      "raw_clipscore": 0.5961402058601379,
+      "regen_clipscore": 0.5925900340080261
+    },
+    {
+      "file": "watermarked_000488.png",
+      "clip_image_cosine": 0.948712170124054,
+      "dino_cosine": 0.9523490071296692,
+      "lpips": 0.21687692403793335,
+      "raw_clipscore": 0.6639823913574219,
+      "regen_clipscore": 0.6425756812095642
+    },
+    {
+      "file": "watermarked_000489.png",
+      "clip_image_cosine": 0.9761477708816528,
+      "dino_cosine": 0.9361288547515869,
+      "lpips": 0.19764097034931183,
+      "raw_clipscore": 0.8090517520904541,
+      "regen_clipscore": 0.7956811785697937
+    },
+    {
+      "file": "watermarked_000490.png",
+      "clip_image_cosine": 0.9640713930130005,
+      "dino_cosine": 0.8992292881011963,
+      "lpips": 0.191348597407341,
+      "raw_clipscore": 0.5260639786720276,
+      "regen_clipscore": 0.5181800723075867
+    },
+    {
+      "file": "watermarked_000491.png",
+      "clip_image_cosine": 0.9240586757659912,
+      "dino_cosine": 0.8691446781158447,
+      "lpips": 0.17197895050048828,
+      "raw_clipscore": 0.9000787734985352,
+      "regen_clipscore": 0.8406871557235718
+    },
+    {
+      "file": "watermarked_000492.png",
+      "clip_image_cosine": 0.981960654258728,
+      "dino_cosine": 0.9664793610572815,
+      "lpips": 0.08335840702056885,
+      "raw_clipscore": 0.6332489252090454,
+      "regen_clipscore": 0.5893880724906921
+    },
+    {
+      "file": "watermarked_000493.png",
+      "clip_image_cosine": 0.9822621941566467,
+      "dino_cosine": 0.9546837210655212,
+      "lpips": 0.07195781171321869,
+      "raw_clipscore": 0.6713888645172119,
+      "regen_clipscore": 0.7058888673782349
+    },
+    {
+      "file": "watermarked_000494.png",
+      "clip_image_cosine": 0.976059079170227,
+      "dino_cosine": 0.9723418951034546,
+      "lpips": 0.17510956525802612,
+      "raw_clipscore": 0.6943874359130859,
+      "regen_clipscore": 0.6535971164703369
+    },
+    {
+      "file": "watermarked_000495.png",
+      "clip_image_cosine": 0.9820472002029419,
+      "dino_cosine": 0.9462164044380188,
+      "lpips": 0.15745069086551666,
+      "raw_clipscore": 0.6508798599243164,
+      "regen_clipscore": 0.68105149269104
+    },
+    {
+      "file": "watermarked_000496.png",
+      "clip_image_cosine": 0.8948078751564026,
+      "dino_cosine": 0.9483567476272583,
+      "lpips": 0.12175984680652618,
+      "raw_clipscore": 0.7935068011283875,
+      "regen_clipscore": 0.7871982455253601
+    },
+    {
+      "file": "watermarked_000497.png",
+      "clip_image_cosine": 0.9560953378677368,
+      "dino_cosine": 0.953987717628479,
+      "lpips": 0.0862230658531189,
+      "raw_clipscore": 0.768355131149292,
+      "regen_clipscore": 0.6857789754867554
+    },
+    {
+      "file": "watermarked_000498.png",
+      "clip_image_cosine": 0.975238561630249,
+      "dino_cosine": 0.9747588634490967,
+      "lpips": 0.0967915803194046,
+      "raw_clipscore": 0.6018895506858826,
+      "regen_clipscore": 0.5874528884887695
+    },
+    {
+      "file": "watermarked_000499.png",
+      "clip_image_cosine": 0.9456011652946472,
+      "dino_cosine": 0.9035160541534424,
+      "lpips": 0.22872205078601837,
+      "raw_clipscore": 0.7073643207550049,
+      "regen_clipscore": 0.6396433711051941
+    }
+  ]
+}

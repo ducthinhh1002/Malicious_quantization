@@ -1,0 +1,24 @@
+{
+  "checked_at_utc": "2026-10-18T05:37:04.258419+00:00",
+  "tests_passed": 21,
+  "full_pipeline_smoke": "complete",
+  "gpu_512_check": {
+    "passed": true,
+    "resolution": 512,
+    "carrier_gradient": 2.5549783799760917e-07,
+    "transfer_gradient": 4.9282724567945024e-09,
+    "ordinary_inner_steps": 4,
+    "full_query_ddim_steps": 8,
+    "first_order_peak_gib": 9.82594347000122,
+    "meta_peak_gib": 75.43102931976318,
+    "scientific_result": false
+  },
+  "long_run": {
+    "status": "running",
+    "stage": "teacher"
+  },
+  "teacher_steps": 20000,
+  "meta_steps": 128,
+  "ordinary_student_steps": 5000,
+  "efficacy_established": false
+}

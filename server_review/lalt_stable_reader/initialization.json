@@ -1,0 +1,10 @@
+{
+  "parent_run": "/root/logs/results/lalt_20261018_053126Z_diagnostic",
+  "checkpoint": "/root/logs/runtime/lcf_artifacts/lalt_stable_reader_20261018_111112Z_11c90d44/initial_pair.pt",
+  "checkpoint_sha256": "5a3a63666e7d31b0d6eeddc5339d96a37e8f5ac8906922a1ece00a113b1d7175",
+  "step": 2000,
+  "optimizer": "fresh AdamW carrier only; original optimizer state was not saved",
+  "rng": "new deterministic stream; warm start, not exact continuation",
+  "selection": "parent validation selected pair; no final test selection",
+  "cache": "reuse parent clean cache with original identity; sampler and data unchanged"
+}

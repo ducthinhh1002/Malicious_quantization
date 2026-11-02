@@ -1,0 +1,1035 @@
+{
+  "folder": "/root/logs/output_image/semantic/semantic_relation_20261021_002025Z_94c0989d/b3_negative_validation",
+  "entries": [
+    {
+      "file_name": "sample_000000.png",
+      "text": "A small bird perched on a thick tree branch.",
+      "sha256": "7ec9cd62b8fbd815c26a39ecff2db6df7b7ff9af5cd67da18ba5ac3d19340869"
+    },
+    {
+      "file_name": "sample_000001.png",
+      "text": "a line of cars are oarked outside an old church",
+      "sha256": "695e2024ac0db747c4fe9b12c270e30cceb88b34eff0bf63e8c00f7317a473fa"
+    },
+    {
+      "file_name": "sample_000002.png",
+      "text": "A bowl of baby carrots, cauliflower and broccoli pieces. ",
+      "sha256": "907a2ce51af528cf9f41054e0eca79efa0e1c815568894736d4f4db8f4487a94"
+    },
+    {
+      "file_name": "sample_000003.png",
+      "text": "A boy and a man playing video games sitting on a couch.",
+      "sha256": "61c51951ec15813b4612415388ce7a8484388c5b7528381a800a58acff344917"
+    },
+    {
+      "file_name": "sample_000004.png",
+      "text": "Two birds sitting a cage perched on top of a branch.",
+      "sha256": "a3a9fae9b17ad00fc6ef7a3efcf95c0b63aa6ba839ff0f4ef050fdba559e300f"
+    },
+    {
+      "file_name": "sample_000005.png",
+      "text": "A small kitten is lying on the seat of a large motorcycle.",
+      "sha256": "ef204ec3cd228401dc9aae25f159928b22bc51f49953649ffb46e1836a02a029"
+    },
+    {
+      "file_name": "sample_000006.png",
+      "text": "a pizza on a wooden table ready to be cooked",
+      "sha256": "20a87062e45fa3c1239faf91d6636f92d346ac72b88199886dd243934f88f7cc"
+    },
+    {
+      "file_name": "sample_000007.png",
+      "text": "Unmade bed with khaki and white sheets on it. ",
+      "sha256": "45a0d3bc1e74764aa5841aa4d4062e9a8d5509ae4bf21043aeb1b0036e84c706"
+    },
+    {
+      "file_name": "sample_000008.png",
+      "text": "Three dogs standing together, they all have leashes on.",
+      "sha256": "9af3fbffe8e10cf612b06cd4c66a41721c199c28da72f257c8e0627757a090b5"
+    },
+    {
+      "file_name": "sample_000009.png",
+      "text": "A man riding on a boat filled with luggage.",
+      "sha256": "c6a73c83dd7b3175b609706351f13bf1e6018219e6ccda20e8520201d0ed6875"
+    },
+    {
+      "file_name": "sample_000010.png",
+      "text": "A pizza sitting on top of a cutting board.",
+      "sha256": "ac0e2e417db13860dc2565bc5b05d46bdd85d094c696e11e5c1101049448ccd6"
+    },
+    {
+      "file_name": "sample_000011.png",
+      "text": "A living room has some chairs and a ceiling fan.",
+      "sha256": "2ca37c339bad936571ddfacc96c5f51e1f175aae03f2c787dbfe5ef4d50c3835"
+    },
+    {
+      "file_name": "sample_000012.png",
+      "text": "There is a black and white cat laying on top of a purse.",
+      "sha256": "9127225bf0e23235c24b147f3edb4fbf095a98800c143a6f906931bc441d450e"
+    },
+    {
+      "file_name": "sample_000013.png",
+      "text": "Train drives down the tracks along the treeline",
+      "sha256": "75e0caa6c77c909ee7a50d9a6e028ffb4d57a1be57054781d66d52261da3962a"
+    },
+    {
+      "file_name": "sample_000014.png",
+      "text": "bowls filled with different foods next to a plate of broccoli.",
+      "sha256": "9a60d5ec4b444ed29c93963f6812bcea85c588864f09cbe44a13627b59593714"
+    },
+    {
+      "file_name": "sample_000015.png",
+      "text": "A computer desk topped with a computer and two monitors.",
+      "sha256": "d28b0a9fe874d7d00b70b9ea840b5a7fd310425d6a3d41617bc895d53b661eef"
+    },
+    {
+      "file_name": "sample_000016.png",
+      "text": "A tall giraffe standing next to a tree in a field.",
+      "sha256": "72a9752bd2320b3249225e370668ce895c2964ffbcabe4662beefe46777eb08a"
+    },
+    {
+      "file_name": "sample_000017.png",
+      "text": "A old truck with a busted window in the tall bushes.",
+      "sha256": "d787ce72a90c79eac9fb08f4373e02e8ed3f6625d20f67faa724c0d984fa27ae"
+    },
+    {
+      "file_name": "sample_000018.png",
+      "text": "A man eating some pizza and drinking Pepsi.",
+      "sha256": "e9ea9321f04bd3121c0800513c0db4051f2d9567b960c0f68d9b699f26f1d1de"
+    },
+    {
+      "file_name": "sample_000019.png",
+      "text": "A lady sitting on a couch with a laptop.",
+      "sha256": "3dec0f575e05bd3c4bdf4877c7d9749180c35a8c362fe5e60574f24b2b983813"
+    },
+    {
+      "file_name": "sample_000020.png",
+      "text": "A cat is sitting outside on the ledge of a window.",
+      "sha256": "62ebce564e8ff08bf899d21cab1a4ccb598b6c31d57bdd2ab51ace5903a129d3"
+    },
+    {
+      "file_name": "sample_000021.png",
+      "text": "A store with a taxi and bus parked out front",
+      "sha256": "24500fbc3b29c22907316e29231a48fd4fb30ff6adccee1c3c665a411916f835"
+    },
+    {
+      "file_name": "sample_000022.png",
+      "text": "A group of people watching a woman cutting a cake.",
+      "sha256": "5831ba7cb3a16178a28c2035e5be2aec0d14622618dd9c0fcfdb783710f752f5"
+    },
+    {
+      "file_name": "sample_000023.png",
+      "text": "A man sitting on a bench wearing a suit.",
+      "sha256": "0920cd0aa2840b14c39c4a6244ce89f4da9437a74a355251623bc010bf1554e4"
+    },
+    {
+      "file_name": "sample_000024.png",
+      "text": "A giraffe points its head towards the sky",
+      "sha256": "8276f46bd17b05bfca8fa0ab26eda77ff25401c5647b06b546b940d6326ceb12"
+    },
+    {
+      "file_name": "sample_000025.png",
+      "text": "A large steam engine train traveling down train tracks.",
+      "sha256": "1af9cb9cb4e584dcd450b25d8dc866c1c173f52ac3b4d65d968b7d0cc7f9b6ab"
+    },
+    {
+      "file_name": "sample_000026.png",
+      "text": "Bride and groom feed each other piece of cake ",
+      "sha256": "baf889e018a24835adee4723f13610b3a62a8810e8a3765b84c2a74bd1844697"
+    },
+    {
+      "file_name": "sample_000027.png",
+      "text": "two women are sitting on a couch texting on their phones",
+      "sha256": "c8818ada4894603f7706a31a70c43da3aa53f2859453281c123380692acafaea"
+    },
+    {
+      "file_name": "sample_000028.png",
+      "text": "there are two men playing fetch with a dog in the field",
+      "sha256": "05eea1775d48057b365b8778565f78c68eb64e5f632d72f5cf658d938325b602"
+    },
+    {
+      "file_name": "sample_000029.png",
+      "text": "A long railroad train going down the tracks",
+      "sha256": "1f108a300690c644008218870cc6fa4bf25a0621dc0bd4baba567876d7f6f00a"
+    },
+    {
+      "file_name": "sample_000030.png",
+      "text": "A deep dish vegetable pizza on a plate.",
+      "sha256": "7d943c05b402b067214735c1ca5b641753b2628bbd6c4f635f16d25f1daa8000"
+    },
+    {
+      "file_name": "sample_000031.png",
+      "text": "a desk with a laptop and a desktop computer ",
+      "sha256": "e2d0fa117674236d92bc2a7468963d60c043ab68edda81c3a37f997e2fe2b9ec"
+    },
+    {
+      "file_name": "sample_000032.png",
+      "text": "Dog standing on an empty beach in front of some birds.",
+      "sha256": "eb517c89b00f02b6d82c1ccd8fda50f7e0d92bbff930ef8b9c3eb78589436178"
+    },
+    {
+      "file_name": "sample_000033.png",
+      "text": "A group of men who are on motorcycles.",
+      "sha256": "cf40622b885cb9403228fc81013e377bddbe690d9237ac5c108a826dad7a26f7"
+    },
+    {
+      "file_name": "sample_000034.png",
+      "text": "A couple of pieces of pizza with vegetable slices on them.",
+      "sha256": "db8c7acb3a58bb1c723294ea18f9cf27ba1e63147e7254a0f05ebfa06d41ad74"
+    },
+    {
+      "file_name": "sample_000035.png",
+      "text": "Laptop lifted up on a desk next to another monitor.",
+      "sha256": "e1721a86985c430009b4855b4b183cfd9718246d0152f415454d3c27aa8e38bc"
+    },
+    {
+      "file_name": "sample_000036.png",
+      "text": "A cat that is standing looking through a glass.",
+      "sha256": "e70281e3edd1e5b04fe9334f5e32e8a9e2b7e3bbab956adb9874238b0a6d3791"
+    },
+    {
+      "file_name": "sample_000037.png",
+      "text": "A bus is driving along the street by a street sign.",
+      "sha256": "897d795a553fffe628b198a651a307da7fbb97a405d2f1650b63cf313c0bbfde"
+    },
+    {
+      "file_name": "sample_000038.png",
+      "text": "Small pizza looking meal set on a white plate.",
+      "sha256": "2130a5c277eccd1eb4fcbb0867f503e5f46ebcac990b40520c1a60bec388bc39"
+    },
+    {
+      "file_name": "sample_000039.png",
+      "text": "A woman sits in a chair holding a tennis racket.",
+      "sha256": "2566aaddf61bb2f4bfb4c2497935b989f8d49163f9caf4582e9f8435ba079242"
+    },
+    {
+      "file_name": "sample_000040.png",
+      "text": "An adorable cat hiding out in luggage that is left open.",
+      "sha256": "9d927a4ccc63b7d74a0c356fbedb54586dbe87587ccc3695a9df55a9e1e0579c"
+    },
+    {
+      "file_name": "sample_000041.png",
+      "text": "A person riding a motorcycle  down a road.",
+      "sha256": "3fb02c97be07186015a00c893e939f0a233baa53d03224ed9e140220ec6b3b80"
+    },
+    {
+      "file_name": "sample_000042.png",
+      "text": "There is a plate filled with pizza slices.",
+      "sha256": "422e75f7331012359d0db26acabfd2b40891150c7fe720bb8609ae93cee99372"
+    },
+    {
+      "file_name": "sample_000043.png",
+      "text": "A woman laying in bed next to a large stuffed animal.",
+      "sha256": "7f50df1501646bb2eb5fb4a6a34b3341f528a3a2f2ec55b2e332d4e18e3760a3"
+    },
+    {
+      "file_name": "sample_000044.png",
+      "text": "Three giraffes grazing from a bush over a fence.",
+      "sha256": "4136fa1e187964d7624de4ab06cddbc2d313e2e03e45a21788a3095161fa72fd"
+    },
+    {
+      "file_name": "sample_000045.png",
+      "text": "A train engine carrying carts into a station.",
+      "sha256": "dc8c4096259f9e3ed6f2321ad1d84cd607a744f0bfe42a8801fc59762bb5f0fa"
+    },
+    {
+      "file_name": "sample_000046.png",
+      "text": "An Apple computer on a table next to an iPhone and an iPad.",
+      "sha256": "cc51d017a01d973145153eef50cc3b273dfe447749a8747c6f2094fafa2e5686"
+    },
+    {
+      "file_name": "sample_000047.png",
+      "text": "A brick ally way with an old wooden bench with people sitting and smoking on it.  ",
+      "sha256": "282cc7b390ad4eb741ed85083afbc85a51c633611a344bc4a41e812c6752fe35"
+    },
+    {
+      "file_name": "sample_000048.png",
+      "text": "A group of birds stand on partially water covered ground.",
+      "sha256": "159fad97f0eb61358a81dafb0a9536ec49712595120d7b1cd723372c06034ee1"
+    },
+    {
+      "file_name": "sample_000049.png",
+      "text": "Two motorcycles parked in a grassy area next to a tree.",
+      "sha256": "d7def5bbef30b1159a3c758f68041b67f339287cc2f42a9c5d9e2f4b13217cf7"
+    },
+    {
+      "file_name": "sample_000050.png",
+      "text": "blue plate on a table with meat sandwich and sidedish",
+      "sha256": "6e7f145b7c8342c15d67cc4521278121f52816c43d566cb502df4560a4c94d3e"
+    },
+    {
+      "file_name": "sample_000051.png",
+      "text": "a desk with  container full pens, remotes and other nic nacks",
+      "sha256": "2c176fef64f90d9f62223d9816e04584d8ebf5161afa1b7e35efd19666c34380"
+    },
+    {
+      "file_name": "sample_000052.png",
+      "text": "A cat standing on a toilet seat looking in the bowl.",
+      "sha256": "5f6e140faae2c2c26b78dc44f1752173d03b7f1ae0bc888462a09c796d2973e3"
+    },
+    {
+      "file_name": "sample_000053.png",
+      "text": "boats filled with people getting ready to go into the water",
+      "sha256": "58c31e5fe957695b502aadb967f50d5eda39d37a81ec11ff3b6e468d3609d714"
+    },
+    {
+      "file_name": "sample_000054.png",
+      "text": "a close up of a plate of food with broccoli",
+      "sha256": "ff4b3b054224cc80c2fb9b4e04265799e3acd43a070691a1d435e0f9942c9755"
+    },
+    {
+      "file_name": "sample_000055.png",
+      "text": "A big comfortable chair in front of a flat screen TV.",
+      "sha256": "29307e93e5759d5290226a337502c4a0b1985e6cf65469fea8034782502c0d9f"
+    },
+    {
+      "file_name": "sample_000056.png",
+      "text": "Two elephants that are walking together in an enclosure.",
+      "sha256": "08a6ccefcbedfc080ad9a13a6e6ca2f9771b112abc9e38ffebae9c471441d987"
+    },
+    {
+      "file_name": "sample_000057.png",
+      "text": "A large white bus on a city road.",
+      "sha256": "72a68fcad7b9378721fb0e20e6894e1b8d08a4e491fb6091afeb7ba3ee1546a5"
+    },
+    {
+      "file_name": "sample_000058.png",
+      "text": "A man eating a donut in front of a river with a waterfall.",
+      "sha256": "96d3ec637f87bc026ea4a2cb8b27f44cbf50ea5f52f866e8939f80adb6ce210d"
+    },
+    {
+      "file_name": "sample_000059.png",
+      "text": "tables and chairs and microwaves in a dining room",
+      "sha256": "da0e75ab7354f57c63944f6257469320f92d67166d63361b310113d2a4503177"
+    },
+    {
+      "file_name": "sample_000060.png",
+      "text": "There is a little boy holding a stuffed bear.",
+      "sha256": "6a5c5f12308a8e04d21f7b7ad3907e8779cf193209a3be7b2ee03ad9b254e5c4"
+    },
+    {
+      "file_name": "sample_000061.png",
+      "text": "A man standing next to a truck parked on the side of a road.",
+      "sha256": "abb9ecae93eb8c1b5f3bb0496622cba33ff7c696a49863ea649e5b694d1b7285"
+    },
+    {
+      "file_name": "sample_000062.png",
+      "text": "there is a birthday cake that looks like a boxing ring",
+      "sha256": "222d9610c6a0a1ec30644ed14f77088ab5d181800bffc02b993226cbd7fe7d5e"
+    },
+    {
+      "file_name": "sample_000063.png",
+      "text": "An unmade dirty bed in a filthy room with a window.",
+      "sha256": "047befba2d2f97b24324aec41ceda4048bbf153e994020c5cb18bfd2527b997b"
+    },
+    {
+      "file_name": "sample_000064.png",
+      "text": "There is a bird standing near some water.",
+      "sha256": "feb16e5f3c9cdff5f87d4c0e772bdecc993427c1f360cc6597fbccd39b0cdb4f"
+    },
+    {
+      "file_name": "sample_000065.png",
+      "text": "A blue motorcycle strapped onto a vehicle trailer.",
+      "sha256": "b874f337951039f4c8f52f84e317757096a3acb1a931194077fae4035215bfd4"
+    },
+    {
+      "file_name": "sample_000066.png",
+      "text": "An open oven reveals a pizza with meats and vegetables",
+      "sha256": "0954c62b8b66fcb6e9885c7fc4fad48925a7307114f7cb3503199f5e9d51347f"
+    },
+    {
+      "file_name": "sample_000067.png",
+      "text": "a small kid lays on a bed with a bunch of stuffed animals ",
+      "sha256": "69272a6e289816c38607a3da6101174293fa8e38b0e91c244241e3d1ae894c13"
+    },
+    {
+      "file_name": "sample_000068.png",
+      "text": "A dog is walking by a red fire hydrant.",
+      "sha256": "9dfc109717add85f78852ba314427eacf21e271ae6f2e00848469c8b286b8fe2"
+    },
+    {
+      "file_name": "sample_000069.png",
+      "text": "A train driving on train tracks beside the river.",
+      "sha256": "d9f9968f448f733293a8b4c67c81bf0197ba9d5fb71a6dc999ef231eac25a5e3"
+    },
+    {
+      "file_name": "sample_000070.png",
+      "text": "A toy raccoon is placed on the green broccoli.",
+      "sha256": "58d9b63a66a131bf9d8a388a498830efd7f3341a98629fff49e81a5485ab24f0"
+    },
+    {
+      "file_name": "sample_000071.png",
+      "text": "A white couch sitting in a living room next to a book shelf.",
+      "sha256": "fc7d8fe706914372384c630a10ed0b2dc930182a4d561a77ae1f71515e693e64"
+    },
+    {
+      "file_name": "sample_000072.png",
+      "text": "A group of giraffe standing next to each other in a field.",
+      "sha256": "584ce9304ad533819348822d441c0b0f38a73db4dd1ee92270992c645acca4bf"
+    },
+    {
+      "file_name": "sample_000073.png",
+      "text": "Two motorcycles parked by a sign at the curb ",
+      "sha256": "192e0665a335a1789c698e6ae2c3196876d4ec4633594ab152d896189e59d0fd"
+    },
+    {
+      "file_name": "sample_000074.png",
+      "text": "Several cut oranges with brown cake falling out from inside.",
+      "sha256": "120e3f0c466d596cde989cadedd238d2f5aa5a951cd4b2b7b9e66449089f98c9"
+    },
+    {
+      "file_name": "sample_000075.png",
+      "text": "A living room area with tile flooring and a man sitting int he middle of the room on a chair with a remote control in his hand, while looking at a television.",
+      "sha256": "e813a88955d5ada2a1e25b7bc1f383162e086a6ecf54afca034b20e5f8e2a891"
+    },
+    {
+      "file_name": "sample_000076.png",
+      "text": "A dog sitting on top of a downed tree.",
+      "sha256": "c17cb45dfbc2dd163da6fd3f074bffe9d3fc9045efd007213a2378b205d61f32"
+    },
+    {
+      "file_name": "sample_000077.png",
+      "text": "A large yellow train moving down a track.",
+      "sha256": "39b03dcabea099e4aea0998fc1d3a0fa4b90230a68cf7f56997edba996956ad4"
+    },
+    {
+      "file_name": "sample_000078.png",
+      "text": "A cooked pizza sliced into four equal pieces.",
+      "sha256": "694f260f013714a30cd45ab88ba2275bad9d53c6f0311c9e32d6440c9567a183"
+    },
+    {
+      "file_name": "sample_000079.png",
+      "text": "A middle aged man and an older man sit on a bench beneath a tree, a pair of crutches sits between them. ",
+      "sha256": "b2c9c8b42089c2c36b6e567439c44fd51bd8a940c473910795e97b14c2aa3566"
+    },
+    {
+      "file_name": "sample_000080.png",
+      "text": "Two sheep sit in a field and look towards the camera. ",
+      "sha256": "d029dda76d0dc067331cdf37dc79b9c66665e3172a7263190909d669b67d6c80"
+    },
+    {
+      "file_name": "sample_000081.png",
+      "text": "A school bus is parked on the side of the street.",
+      "sha256": "7a122faca870206afc635c87a5eb0be621588597ac975519e844d1257e963d10"
+    },
+    {
+      "file_name": "sample_000082.png",
+      "text": "Some of the broccoli in this bowl are starting to yellow. ",
+      "sha256": "127db91519774f0a7349a2fd37d149bc5ec8ec2a53519ac3354767306352ccb5"
+    },
+    {
+      "file_name": "sample_000083.png",
+      "text": "A man sitting in a chair with a frisbee covering his face. ",
+      "sha256": "0552c83c036f7a080e599ee70ea30dd1ecc93178e12196c6f896422f7c00616f"
+    },
+    {
+      "file_name": "sample_000084.png",
+      "text": "A giraffe is walking around in daytime traffic.",
+      "sha256": "f42202e289bf8e67a623832465a734f5baf7f974838adaa9181829fcd59f2b97"
+    },
+    {
+      "file_name": "sample_000085.png",
+      "text": "Many small boats docked in the water together.",
+      "sha256": "4afa6bbcc07ca6824978b2c7415833f57d7fe2344fec38d7407dcfecbed2612b"
+    },
+    {
+      "file_name": "sample_000086.png",
+      "text": "a banana sitting next to a lemon and an orange ",
+      "sha256": "e51cc6e96fdf109dafd074686eab305952889868e7aeb9a5237badf8556fe6cf"
+    },
+    {
+      "file_name": "sample_000087.png",
+      "text": "The room has a partition seperating a couch from the bed.",
+      "sha256": "7e527502605c7242b7b5f1cf301155b8ed753bd3629b41014970dfa0cd6bcd53"
+    },
+    {
+      "file_name": "sample_000088.png",
+      "text": "A chili cheese dog with french fries on a plate.",
+      "sha256": "2e4b5accbdb171f4ac8531909a87e83ec4965ae9db206004214ebdcc6ec5449d"
+    },
+    {
+      "file_name": "sample_000089.png",
+      "text": "Several people with motorcycles are attending an event.",
+      "sha256": "053ec5de9c351e87018750a82c5c931f8b59558e086aae473ae3003fd91d5d3e"
+    },
+    {
+      "file_name": "sample_000090.png",
+      "text": "A pizza being made inside of an oven. ",
+      "sha256": "124b56a517ae7465d448435dffb8284be3c121ba4f640bec81525641fe15d387"
+    },
+    {
+      "file_name": "sample_000091.png",
+      "text": "Black and white photo of a woman on a bench.",
+      "sha256": "f53b1d97204d017913974e972213c589ac6785bf2aa1c13b6cc3447bbd4ca796"
+    },
+    {
+      "file_name": "sample_000092.png",
+      "text": "The dog is wearing socks, shoes, and a cap. ",
+      "sha256": "75cc065789a39731ecef65037f798aa224b9ffff28efe9310680f9215bde77d2"
+    },
+    {
+      "file_name": "sample_000093.png",
+      "text": "A truck parked in the dirt near a fence.",
+      "sha256": "90e3dd6cc7e39355baa93a49a988c09de78ea0c03d2ba44da63ada67b0cad5d4"
+    },
+    {
+      "file_name": "sample_000094.png",
+      "text": "A variety of singular donuts sitting on white plates.",
+      "sha256": "52c799e84037723672fc7a35b49e66ce255430165247b7934a1d72b0bb888be0"
+    },
+    {
+      "file_name": "sample_000095.png",
+      "text": "A group of stuffed animals sitting next to each other in bed.",
+      "sha256": "76a128c9a712c7c1f3db6693b651825ab93dc51fcac7a398cc1476473e5b8140"
+    },
+    {
+      "file_name": "sample_000096.png",
+      "text": "People riding on top of elephants across a river.",
+      "sha256": "423815bd3a70651edeec3f1f6867aa7d1b25f85a0a5047fb64dafadffef8276b"
+    },
+    {
+      "file_name": "sample_000097.png",
+      "text": "Red train pulling four blue train cars behind it over a bridge. ",
+      "sha256": "dba387f9d8f9dbeabde4cfc992f3367f5ffae89919c2b3600d8110d68126ac0d"
+    },
+    {
+      "file_name": "sample_000098.png",
+      "text": "A cake that is half eaten on a plate.",
+      "sha256": "ac7cb6fe7427ed6b71066a6c8629876bc89ab6caefe2aff0a86a57c93f937977"
+    },
+    {
+      "file_name": "sample_000099.png",
+      "text": "A desk in an office with a computer and a phone.",
+      "sha256": "5b7cc6f963e41ca1524ef2c19c7ea0ae97c81dc8dddad72b61c50233ffd9df60"
+    },
+    {
+      "file_name": "sample_000100.png",
+      "text": "The cat is looking at the television with the dog on it",
+      "sha256": "16873c990248b0099880036ae764cf8bc93408e6473dbae7e879694a8aadab5f"
+    },
+    {
+      "file_name": "sample_000101.png",
+      "text": "a train on a train track with power lines above",
+      "sha256": "9b2c9f043adfc179036ecc8ea2488a61ff8cfd73ea56bef38ca7407075c74e3c"
+    },
+    {
+      "file_name": "sample_000102.png",
+      "text": "Tray of chocolate donuts with sprinkles in a display case.",
+      "sha256": "5b11f131643d067de6692c50e1c837b696b30e37122ec68c1de7eeeca25272ef"
+    },
+    {
+      "file_name": "sample_000103.png",
+      "text": "A woman with good posture sits at a wooden desk with an open laptop.",
+      "sha256": "1af09260e4b8a9ad5ec9a02c02387873232ac728fc9aec2a1a769f673152c46d"
+    },
+    {
+      "file_name": "sample_000104.png",
+      "text": "The zebra in the zoo have both grassy and sandy areas within their enclosure.",
+      "sha256": "2963af12a491c72c2e63e8a8c460cacc86018e2a14c432560029f3405b0b1800"
+    },
+    {
+      "file_name": "sample_000105.png",
+      "text": "A locomotive that looks like Thomas the Train on a track.",
+      "sha256": "54565608063959d3db739e8c3f0bc27ae16b57acb6aa301b158bf60a18d5b3a5"
+    },
+    {
+      "file_name": "sample_000106.png",
+      "text": "Red hot water cooker, bowl of fruit, bananas, cereal and a sliced orange sit on a white tile kitchen counter tip. ",
+      "sha256": "12c97799b5424d12b9009566960d38ad075c9ee88329e00c48cccad8e440ca45"
+    },
+    {
+      "file_name": "sample_000107.png",
+      "text": "A man sitting on a bench holding a blue umbrella with black dots.",
+      "sha256": "c281060a0de7eafd4427dbe25b09e1a74e353170313d951c3bd65c653f37cb39"
+    },
+    {
+      "file_name": "sample_000108.png",
+      "text": "A large panda bear hanging off the side of a tree.",
+      "sha256": "8d669d51753a6dca2489cf5095985276bec2bd78ab479161c0aa79c1f76c9693"
+    },
+    {
+      "file_name": "sample_000109.png",
+      "text": "The station has no passengers waiting for the train.",
+      "sha256": "cf4fbd4a53dca2c5dc911e45acd5667795264d8abff26e50a033282bee519b8c"
+    },
+    {
+      "file_name": "sample_000110.png",
+      "text": "a person presents some big doughnuts in a box",
+      "sha256": "21661c141af178ae09de0fe97ae1d3704fdc1b68026e75732f81a7c39d86f4ee"
+    },
+    {
+      "file_name": "sample_000111.png",
+      "text": "Two computers on a large wooden computer desk.",
+      "sha256": "87a82ab8c13241ff9fb4be55a844fa7aeb4b2ca7c4b4b5751364771af30a216a"
+    },
+    {
+      "file_name": "sample_000112.png",
+      "text": "three giraffes some brown and green grass some bushes and trees",
+      "sha256": "8e7e18c175fb911375a07ca17ce4e6d46a147a72693ce0a1f492a08a2ff74670"
+    },
+    {
+      "file_name": "sample_000113.png",
+      "text": "A commuter train is stopped on train tracks.",
+      "sha256": "5751ff992a962727cacb09a3c2661fc81f046c6e47bd5bb297ef185cd8144d14"
+    },
+    {
+      "file_name": "sample_000114.png",
+      "text": "Lots of green bananas are hanging in the tree.",
+      "sha256": "7760b0636ab69a52dd8d015f1fd88d4d0b5caa25b5d7cba21cac26441bb2ad07"
+    },
+    {
+      "file_name": "sample_000115.png",
+      "text": "A desk by a window with flowers on it.",
+      "sha256": "8d7ed04256a6873e46249ded4970c694e1eab803d95183c95a0b6b7845de3bb3"
+    },
+    {
+      "file_name": "sample_000116.png",
+      "text": "Many people watch a man and dog herd sheep.",
+      "sha256": "412f925d0dffb21ab5469686f21ff68bdfc9bc4e619462e1eefba868a0022f05"
+    },
+    {
+      "file_name": "sample_000117.png",
+      "text": "A blue and yellow train stopped on the tracks at a train station.",
+      "sha256": "3f612905c87197da39ba708aa1f6161c46bc39d4753fdfe62aafd92b99bfa843"
+    },
+    {
+      "file_name": "sample_000118.png",
+      "text": "A birthday cake with candles in it sitting on a table. ",
+      "sha256": "cb47eadcd5aadeee8f7f77549852512ab95766203da04af5ade9cfd1fc42e1a2"
+    },
+    {
+      "file_name": "sample_000119.png",
+      "text": "A GUY IS IN HIS BEDROOM SHOWING OFF HIS MADE UP BED",
+      "sha256": "53ce776fded074226967cfa46c557aab888244b37fcd86fa920b199b5367982d"
+    },
+    {
+      "file_name": "sample_000120.png",
+      "text": "The man is fixing to ride his horse today.",
+      "sha256": "646c86b9f53e413b0d12e15e1784207c8fe6cdf690a8845545c6d5a3d2822ecc"
+    },
+    {
+      "file_name": "sample_000121.png",
+      "text": "A woman posing with arms open in front of a graffiti'ed bus.",
+      "sha256": "2c1ef53be6fb961ec2c8aa1c21d2b424c796a9e6483a33be8ce4b04f4aa79523"
+    },
+    {
+      "file_name": "sample_000122.png",
+      "text": "There is a person taking a slice out of a pizza",
+      "sha256": "0b70a463e41665fea1843bf9fbe56fd70cd6f2ea388c3a009fcde1c8a23ff265"
+    },
+    {
+      "file_name": "sample_000123.png",
+      "text": "Grand father clock in the corner of a room near side table and dinning table and chairs.",
+      "sha256": "f192516d4d46b9cc4234db46ac6aa89ae469c61af3e5711fd9c217cee68ccdfd"
+    },
+    {
+      "file_name": "sample_000124.png",
+      "text": "A teddy bear wearing a red bow that is sitting on a Christmas tree.",
+      "sha256": "c2cdbabee37c6c135843f96d9e7662ce2793577288f8acbf3a17b3d17c6ca1a1"
+    },
+    {
+      "file_name": "sample_000125.png",
+      "text": "yellow school bus drives through the wet street",
+      "sha256": "965ca01f0472bc78458f455d02c69f7d3fa1215544a8ae19b924dc9035586de1"
+    },
+    {
+      "file_name": "sample_000126.png",
+      "text": "A doughnut stands on edge on a plate of doughnuts and twists. ",
+      "sha256": "74eb8d6fba15c23866ad2be32f635f19c309ee9c09f9cc0e3f6e104c5dc2e44b"
+    },
+    {
+      "file_name": "sample_000127.png",
+      "text": "a person riding a skate board  on a bench",
+      "sha256": "abd1d9fde830f16a17d73bd7b42697e574a1a96afc6eabf957e9e0f956e40c3d"
+    }
+  ],
+  "scores": [
+    -0.0015848679468035698,
+    0.014662672765552998,
+    0.013812330551445484,
+    0.014562632888555527,
+    0.014772255904972553,
+    0.0015740063972771168,
+    0.01080398540943861,
+    0.02574450522661209,
+    0.011109973303973675,
+    0.008993907831609249,
+    0.017475642263889313,
+    0.013979293406009674,
+    0.006276468746364117,
+    0.0013451538980007172,
+    0.01418374665081501,
+    0.004335337318480015,
+    0.008514786139130592,
+    0.008927135728299618,
+    0.01462620496749878,
+    0.023406021296977997,
+    0.00263763964176178,
+    0.007934696972370148,
+    0.01718936488032341,
+    0.01551741547882557,
+    0.004022063687443733,
+    0.004447479732334614,
+    0.0024405429139733315,
+    0.023520231246948242,
+    0.014241889119148254,
+    -0.0002521420828998089,
+    0.01215624064207077,
+    0.013233607634902,
+    0.019131317734718323,
+    0.010678472928702831,
+    0.018678301945328712,
+    0.008663387969136238,
+    0.002095249481499195,
+    0.00887499563395977,
+    0.019205724820494652,
+    0.0029309578239917755,
+    0.0010899920016527176,
+    0.002237446838989854,
+    0.014844570308923721,
+    0.01775413006544113,
+    0.010341622866690159,
+    0.005484300199896097,
+    0.014172635041177273,
+    0.015779465436935425,
+    -0.0021599659230560064,
+    -0.000562525587156415,
+    0.012154019437730312,
+    0.011529138311743736,
+    0.002773098647594452,
+    0.01768898405134678,
+    0.010715659707784653,
+    0.020531071349978447,
+    0.008326064795255661,
+    0.003466417081654072,
+    0.017354514449834824,
+    0.020226240158081055,
+    0.0042600627057254314,
+    0.0017617717385292053,
+    0.001710465527139604,
+    0.01789660006761551,
+    0.0064736600033938885,
+    -0.0032027019187808037,
+    0.01044766791164875,
+    0.0156273003667593,
+    0.009921187534928322,
+    0.0037830648943781853,
+    0.0010753283277153969,
+    0.0305105522274971,
+    0.01534847728908062,
+    -0.0033939401619136333,
+    0.014442836865782738,
+    0.019380636513233185,
+    0.0033280160278081894,
+    0.0015604179352521896,
+    0.011201870627701283,
+    0.013255542144179344,
+    0.014982611872255802,
+    0.007266649045050144,
+    0.005336276721209288,
+    0.005232810042798519,
+    0.006052188575267792,
+    0.010982036590576172,
+    0.011946327984333038,
+    0.01861286722123623,
+    0.021436862647533417,
+    0.014735475182533264,
+    0.011957371607422829,
+    0.013664636760950089,
+    0.00030814576894044876,
+    0.00013984274119138718,
+    0.021295960992574692,
+    0.01979093626141548,
+    0.009989960119128227,
+    -0.0005454064812511206,
+    0.0089044701308012,
+    0.008938179351389408,
+    0.011057788506150246,
+    0.0004002894274890423,
+    0.019893605262041092,
+    0.014847248792648315,
+    -0.006592734716832638,
+    -0.0050597842782735825,
+    0.0085289953276515,
+    0.01251611951738596,
+    0.005347566679120064,
+    0.009860701858997345,
+    0.02054539881646633,
+    0.015364277176558971,
+    0.005591296590864658,
+    0.003946136683225632,
+    0.013367234729230404,
+    0.024140797555446625,
+    0.02150002308189869,
+    -0.007094515021890402,
+    0.00450105220079422,
+    0.012909239158034325,
+    0.004994961433112621,
+    0.00797627866268158,
+    0.015020160004496574,
+    0.0058646490797400475,
+    0.007595403119921684,
+    0.005861538462340832,
+    0.02270020917057991,
+    -0.000615112017840147
+  ],
+  "alignment": [
+    0.282029390335083,
+    0.3401298522949219,
+    0.3511086106300354,
+    0.34254521131515503,
+    0.2909165620803833,
+    0.3790815770626068,
+    0.30441397428512573,
+    0.3033266067504883,
+    0.30220216512680054,
+    0.3419899344444275,
+    0.31174007058143616,
+    0.3030703663825989,
+    0.33486074209213257,
+    0.27950572967529297,
+    0.3299819231033325,
+    0.32135316729545593,
+    0.3356974720954895,
+    0.3336143493652344,
+    0.30667823553085327,
+    0.2798554301261902,
+    0.3353413939476013,
+    0.313776433467865,
+    0.3261832594871521,
+    0.32047033309936523,
+    0.2859112024307251,
+    0.30916041135787964,
+    0.3326296806335449,
+    0.2885168194770813,
+    0.3190365433692932,
+    0.29455864429473877,
+    0.29385048151016235,
+    0.3038397431373596,
+    0.3035053014755249,
+    0.3421837091445923,
+    0.30951693654060364,
+    0.30598777532577515,
+    0.32200849056243896,
+    0.27427276968955994,
+    0.2796640396118164,
+    0.3434421420097351,
+    0.28987789154052734,
+    0.30398115515708923,
+    0.2813209295272827,
+    0.3254845142364502,
+    0.3249119222164154,
+    0.27238893508911133,
+    0.2846682667732239,
+    0.31480905413627625,
+    0.33402180671691895,
+    0.3350994884967804,
+    0.3145589232444763,
+    0.3106469511985779,
+    0.34023576974868774,
+    0.2825523912906647,
+    0.3317909836769104,
+    0.29447415471076965,
+    0.3275757431983948,
+    0.30013614892959595,
+    0.36603713035583496,
+    0.3071637749671936,
+    0.27340900897979736,
+    0.26812586188316345,
+    0.29438865184783936,
+    0.30990058183670044,
+    0.31518808007240295,
+    0.35128480195999146,
+    0.3263886868953705,
+    0.32068854570388794,
+    0.323739618062973,
+    0.2657053768634796,
+    0.3565260171890259,
+    0.3316188156604767,
+    0.32311952114105225,
+    0.3185621201992035,
+    0.2665821313858032,
+    0.319632351398468,
+    0.31532907485961914,
+    0.32175710797309875,
+    0.32895427942276,
+    0.31098270416259766,
+    0.3099009692668915,
+    0.2925848364830017,
+    0.30044153332710266,
+    0.30918189883232117,
+    0.3505699038505554,
+    0.32226723432540894,
+    0.2553344964981079,
+    0.2561676502227783,
+    0.31301796436309814,
+    0.3278442621231079,
+    0.31330329179763794,
+    0.3173009157180786,
+    0.31682080030441284,
+    0.28248366713523865,
+    0.30991360545158386,
+    0.3284919857978821,
+    0.34359392523765564,
+    0.30611786246299744,
+    0.2878311574459076,
+    0.2671951651573181,
+    0.3098994493484497,
+    0.29394441843032837,
+    0.3323790431022644,
+    0.2855623662471771,
+    0.3174900412559509,
+    0.2784154713153839,
+    0.3472699522972107,
+    0.3393120765686035,
+    0.34431809186935425,
+    0.26542729139328003,
+    0.3136080503463745,
+    0.28205636143684387,
+    0.27463001012802124,
+    0.27874213457107544,
+    0.34202441573143005,
+    0.2880603075027466,
+    0.3138915002346039,
+    0.33153676986694336,
+    0.3029590845108032,
+    0.2691805958747864,
+    0.27775198221206665,
+    0.3340485990047455,
+    0.275286465883255,
+    0.3570060729980469,
+    0.34931397438049316,
+    0.31479552388191223,
+    0.30109331011772156,
+    0.31508272886276245
+  ],
+  "source_ids": [
+    337139,
+    393288,
+    557059,
+    11034,
+    128891,
+    325768,
+    261757,
+    516404,
+    22870,
+    467696,
+    337502,
+    36844,
+    520389,
+    241297,
+    134016,
+    153524,
+    171613,
+    186518,
+    426897,
+    320180,
+    513971,
+    258112,
+    144003,
+    352761,
+    289586,
+    6870,
+    370207,
+    534162,
+    428366,
+    419624,
+    573853,
+    135872,
+    283748,
+    203389,
+    207151,
+    354976,
+    63552,
+    78696,
+    556703,
+    497330,
+    581717,
+    152120,
+    297574,
+    197880,
+    190056,
+    572178,
+    295768,
+    491902,
+    310879,
+    153083,
+    298600,
+    286285,
+    494345,
+    316782,
+    292916,
+    178690,
+    131611,
+    400189,
+    29358,
+    316882,
+    563697,
+    47263,
+    485130,
+    193449,
+    436695,
+    237626,
+    484425,
+    504353,
+    531189,
+    496800,
+    38294,
+    51746,
+    366115,
+    19451,
+    218608,
+    65773,
+    290355,
+    174329,
+    532009,
+    523230,
+    547383,
+    566758,
+    262325,
+    289640,
+    54305,
+    581081,
+    320972,
+    127337,
+    513220,
+    478575,
+    190656,
+    35313,
+    282287,
+    79816,
+    321846,
+    113403,
+    242499,
+    329486,
+    390954,
+    528311,
+    143824,
+    277955,
+    550627,
+    501242,
+    38064,
+    349021,
+    211756,
+    195798,
+    405032,
+    318426,
+    81779,
+    340894,
+    325874,
+    307847,
+    439290,
+    390072,
+    288685,
+    234164,
+    371652,
+    242610,
+    313718,
+    382848,
+    257060,
+    304484,
+    175443,
+    548126,
+    475295,
+    75179
+  ]
+}

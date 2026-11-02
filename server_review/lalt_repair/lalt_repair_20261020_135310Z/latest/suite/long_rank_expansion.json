@@ -1,0 +1,6 @@
+{
+  "winner": null,
+  "rule": "Rank4 contrast AUROC and TPR each improve >=.02 absolute vs old rank4; CLIP drop<=.02 and paired LPIPS<=old rank4+.03; rank by TPR then AUROC",
+  "development_selection": true,
+  "final_tests_used": false
+}

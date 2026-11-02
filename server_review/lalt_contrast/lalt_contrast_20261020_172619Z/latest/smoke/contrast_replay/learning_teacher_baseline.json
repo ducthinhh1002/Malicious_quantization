@@ -1,0 +1,48 @@
+{
+  "rows": [
+    {
+      "key": 221,
+      "split": "teacher_validation",
+      "tpr": 0.9375,
+      "clean_fpr": 0.0,
+      "bit_accuracy": 0.7265625,
+      "psnr": 29.608532428741455,
+      "psnr_p05": 27.358540058135986,
+      "lpips": 0.06231180066242814,
+      "lpips_p95": 0.0823797844350338,
+      "clip_drop": -0.005935763940215111,
+      "diversity_ratio": 0.9910594775397943,
+      "mean_gain": 6.841408275067806,
+      "threshold": -2.003749370574951,
+      "calibration_split": "calibration",
+      "score_scale": 4.586277696921764,
+      "passes": true,
+      "contrast_score_scale": 0.3306120119378658,
+      "auroc": 1.0,
+      "paired_win_rate": 1.0,
+      "paired_gain_std": 3.9564133413354705
+    },
+    {
+      "key": 34,
+      "split": "teacher_validation",
+      "tpr": 0.8125,
+      "clean_fpr": 0.0,
+      "bit_accuracy": 0.7734375,
+      "psnr": 28.67081916332245,
+      "psnr_p05": 26.635905742645264,
+      "lpips": 0.06677604001015425,
+      "lpips_p95": 0.08553818985819817,
+      "clip_drop": 0.001145804300904274,
+      "diversity_ratio": 0.9822496133726418,
+      "mean_gain": 6.693602234125137,
+      "threshold": -1.9297184944152832,
+      "calibration_split": "calibration",
+      "score_scale": 4.504950071526921,
+      "passes": false,
+      "contrast_score_scale": 0.3306120119378658,
+      "auroc": 1.0,
+      "paired_win_rate": 1.0,
+      "paired_gain_std": 3.8488957288121903
+    }
+  ]
+}

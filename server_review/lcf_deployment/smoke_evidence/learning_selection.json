@@ -1,0 +1,57 @@
+{
+  "step": 1,
+  "accepted_updates": true,
+  "checkpoint_sha256": "5fa694dbe263a91e731c9dfeb1c8d207b235070d6e3300545801352b39d93d63",
+  "teacher_validation": [
+    {
+      "key": 205,
+      "split": "teacher_validation",
+      "tpr": 0.75,
+      "clean_fpr": 0.75,
+      "bit_accuracy": 0.375,
+      "psnr": 50.311781883239746,
+      "psnr_p05": 42.79812507629394,
+      "lpips": 0.00015991888813005062,
+      "lpips_p95": 0.0004446034707143552,
+      "clip_drop": -0.00017241016030311584,
+      "diversity_ratio": 1.0066479777009978,
+      "mean_gain": -0.0006309151649475098,
+      "threshold": -2.9012932777404785,
+      "score_scale": 0.05,
+      "passes": false
+    },
+    {
+      "key": 237,
+      "split": "teacher_validation",
+      "tpr": 0.75,
+      "clean_fpr": 0.75,
+      "bit_accuracy": 0.25,
+      "psnr": 50.75408363342285,
+      "psnr_p05": 45.515133476257326,
+      "lpips": 9.175027207675157e-05,
+      "lpips_p95": 0.00020262795005692163,
+      "clip_drop": -6.354972720146179e-05,
+      "diversity_ratio": 1.0005197362911877,
+      "mean_gain": -0.00021719932556152344,
+      "threshold": -3.1418089866638184,
+      "score_scale": 0.05337395135697287,
+      "passes": false
+    }
+  ],
+  "design_proxy_score": -0.0020647048950195312,
+  "proxy_rows": [
+    {
+      "key": 41,
+      "paired_effect": -0.0020647048950195312,
+      "key_specificity": -7.329463958740234
+    },
+    {
+      "key": 95,
+      "paired_effect": -0.0001049041748046875,
+      "key_specificity": 7.330446243286133
+    }
+  ],
+  "selection": "post-update worst-key effect on fixed disjoint short-learning validation; teacher gates",
+  "proxy_caveat": "short unroll; rank must be validated by long ordinary learners",
+  "test_used": false
+}

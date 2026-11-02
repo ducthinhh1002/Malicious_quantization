@@ -1,0 +1,154 @@
+{
+  "passed": true,
+  "scientific_result": false,
+  "purpose": "Exercise disjoint multi-episode/two-horizon GPU paths with smoke weights",
+  "rows": [
+    {
+      "key": 22,
+      "paired_effect": 0.0012743473052978516,
+      "key_specificity": -15.643625259399414,
+      "horizons": [
+        {
+          "horizon": 2,
+          "paired_effect": 0.002173185348510742
+        },
+        {
+          "horizon": 4,
+          "paired_effect": 0.0012743473052978516
+        }
+      ],
+      "episodes": [
+        {
+          "episode": 0,
+          "horizon": 2,
+          "query": 0,
+          "paired_effect": 0.0009632110595703125,
+          "key_specificity": -15.643625259399414
+        },
+        {
+          "episode": 0,
+          "horizon": 2,
+          "query": 1,
+          "paired_effect": 0.0028657913208007812,
+          "key_specificity": -14.92922306060791
+        },
+        {
+          "episode": 0,
+          "horizon": 4,
+          "query": 0,
+          "paired_effect": 0.0055980682373046875,
+          "key_specificity": -15.61244010925293
+        },
+        {
+          "episode": 0,
+          "horizon": 4,
+          "query": 1,
+          "paired_effect": 0.0043964385986328125,
+          "key_specificity": -14.933457374572754
+        },
+        {
+          "episode": 1,
+          "horizon": 2,
+          "query": 0,
+          "paired_effect": -0.000667572021484375,
+          "key_specificity": -14.178481101989746
+        },
+        {
+          "episode": 1,
+          "horizon": 2,
+          "query": 1,
+          "paired_effect": 0.00553131103515625,
+          "key_specificity": -15.09631633758545
+        },
+        {
+          "episode": 1,
+          "horizon": 4,
+          "query": 0,
+          "paired_effect": -0.002727508544921875,
+          "key_specificity": -14.169530868530273
+        },
+        {
+          "episode": 1,
+          "horizon": 4,
+          "query": 1,
+          "paired_effect": -0.0021696090698242188,
+          "key_specificity": -15.229043960571289
+        }
+      ]
+    },
+    {
+      "key": 233,
+      "paired_effect": -0.0008571147918701172,
+      "key_specificity": 14.165792465209961,
+      "horizons": [
+        {
+          "horizon": 2,
+          "paired_effect": 0.0011718273162841797
+        },
+        {
+          "horizon": 4,
+          "paired_effect": -0.0008571147918701172
+        }
+      ],
+      "episodes": [
+        {
+          "episode": 0,
+          "horizon": 2,
+          "query": 0,
+          "paired_effect": 0.001773834228515625,
+          "key_specificity": 15.6459379196167
+        },
+        {
+          "episode": 0,
+          "horizon": 2,
+          "query": 1,
+          "paired_effect": 0.008397102355957031,
+          "key_specificity": 14.93715763092041
+        },
+        {
+          "episode": 0,
+          "horizon": 4,
+          "query": 0,
+          "paired_effect": -0.001850128173828125,
+          "key_specificity": 15.620551109313965
+        },
+        {
+          "episode": 0,
+          "horizon": 4,
+          "query": 1,
+          "paired_effect": -0.0013113021850585938,
+          "key_specificity": 14.945640563964844
+        },
+        {
+          "episode": 1,
+          "horizon": 2,
+          "query": 0,
+          "paired_effect": -0.005011558532714844,
+          "key_specificity": 14.168639183044434
+        },
+        {
+          "episode": 1,
+          "horizon": 2,
+          "query": 1,
+          "paired_effect": -0.00047206878662109375,
+          "key_specificity": 15.103588104248047
+        },
+        {
+          "episode": 1,
+          "horizon": 4,
+          "query": 0,
+          "paired_effect": 0.0031375885009765625,
+          "key_specificity": 14.165792465209961
+        },
+        {
+          "episode": 1,
+          "horizon": 4,
+          "query": 1,
+          "paired_effect": -0.0034046173095703125,
+          "key_specificity": 15.225625038146973
+        }
+      ]
+    }
+  ],
+  "max_allocated_gb": 4.206182956695557
+}

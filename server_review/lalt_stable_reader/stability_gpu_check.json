@@ -1,0 +1,13 @@
+{
+  "passed": true,
+  "resolution": 512,
+  "batch": 4,
+  "gradient_norm": 3.192068576812744,
+  "reader_unchanged": true,
+  "reader_sha256": "136ef3db2352568194c53263d4ca61b528500c8f90262038e39039f77e76f85d",
+  "cycle_channel": true,
+  "carrier_updated": true,
+  "checkpoint_modified": false,
+  "peak_gib": 28.727003574371338,
+  "efficacy_result": false
+}

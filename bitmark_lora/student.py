@@ -22,9 +22,9 @@ def branches(config):
         if not result or len(set(names)) != len(names):
             raise ValueError("Empty/duplicate carrier student branches")
         for b in result:
-            if (not b["name"].replace("_", "").isalnum() or b["kind"] != "lora"
+            if (not b["name"].replace("_", "").isalnum() or b["kind"] not in {"lora", "full"}
                     or b["condition"] not in {"clean", "wm", "fixed"}
-                    or b["scope"] not in {"attention", "attention_conv"} or b["rank"] < 1):
+                    or (b["kind"] == "lora" and (b["scope"] not in {"attention", "attention_conv"} or b["rank"] < 1))):
                 raise ValueError("Invalid carrier student branch")
         return result
     result = []
@@ -158,6 +158,9 @@ def load_pipeline(run, name, checkpoint_dir=None, device="cuda", dtype=None):
     dtype = dtype or (torch.float16 if device == "cuda" else torch.float32)
     pipe = StableDiffusionPipeline.from_pretrained(assets["student"], torch_dtype=dtype,
                                                   safety_checker=None, local_files_only=True)
+    if config.get('watermark_method')=='new_watermark' and config.get('generation_sampler')=='ddim':
+        from diffusers import DDIMScheduler
+        pipe.scheduler=DDIMScheduler.from_config(pipe.scheduler.config,clip_sample=False)
     checkpoint = None
     if name != "unadapted":
         branch = next(b for b in branches(config) if b["name"] == name)

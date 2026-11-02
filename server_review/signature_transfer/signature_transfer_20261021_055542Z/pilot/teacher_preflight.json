@@ -1,0 +1,42 @@
+{
+  "passes": true,
+  "metrics": {
+    "clean": {
+      "n": 32,
+      "bit_accuracy": 0.4622395833333333,
+      "exact_message_rate": 0.0,
+      "detections": 0,
+      "detection_rate": 0.0,
+      "ci95": [
+        0,
+        0.10717919825506533
+      ],
+      "threshold_matches": 33
+    },
+    "marked": {
+      "n": 32,
+      "bit_accuracy": 0.99609375,
+      "exact_message_rate": 0.875,
+      "detections": 32,
+      "detection_rate": 1.0,
+      "ci95": [
+        0.8928208017449346,
+        1
+      ],
+      "threshold_matches": 33
+    },
+    "cycle": {
+      "n": 32,
+      "bit_accuracy": 0.51171875,
+      "exact_message_rate": 0.0,
+      "detections": 1,
+      "detection_rate": 0.03125,
+      "ci95": [
+        0.005537860164003344,
+        0.15744263820012042
+      ],
+      "threshold_matches": 33
+    }
+  },
+  "cycle": "clean VAE encode-posterior-mean/decode diagnostic; not student training"
+}

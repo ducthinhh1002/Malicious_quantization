@@ -1,0 +1,9 @@
+{
+  "manifests_verified": true,
+  "vendor_verified": true,
+  "asset_paths_exist": true,
+  "proxy_path_exists": true,
+  "unknown_code_hash_rejected": true,
+  "dangling_symlinks": 0,
+  "training_launched": false
+}

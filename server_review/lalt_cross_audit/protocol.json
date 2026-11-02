@@ -1,0 +1,20 @@
+{
+  "carrier_steps": [
+    2000,
+    3000
+  ],
+  "reader_steps": [
+    2000,
+    3000
+  ],
+  "n_prompts": 128,
+  "keys": [
+    34,
+    221
+  ],
+  "thresholds": "original model-specific clean calibration thresholds",
+  "no_training": true,
+  "final_test_used": false,
+  "source_checkpoint3000_sha256": "7107d32005d832293f32f4c3c4e10bcb3073cbd4b7e55e7589b06da07cfec026",
+  "caveat": "Crossed pairs measure compatibility; they are not independently retrained causal ablations"
+}

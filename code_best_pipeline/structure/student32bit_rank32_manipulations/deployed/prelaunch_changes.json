@@ -1,0 +1,37 @@
+{
+  "crop75": {
+    "old_channel_sha256": "d9896ef306adbfa315bc479ea9948a7debda7e6642d42271c1b16f797e9e8dbb",
+    "new_channel_sha256": "d8ced66adccb3116eb44c396eca652bfb9634f88b902b56f96f1d335501c96c7",
+    "phase": "before all training; CPU-only seeding preserves CUDA noise RNG"
+  },
+  "brightness07": {
+    "old_channel_sha256": "d9896ef306adbfa315bc479ea9948a7debda7e6642d42271c1b16f797e9e8dbb",
+    "new_channel_sha256": "d8ced66adccb3116eb44c396eca652bfb9634f88b902b56f96f1d335501c96c7",
+    "phase": "before all training; CPU-only seeding preserves CUDA noise RNG"
+  },
+  "flip": {
+    "old_channel_sha256": "d9896ef306adbfa315bc479ea9948a7debda7e6642d42271c1b16f797e9e8dbb",
+    "new_channel_sha256": "d8ced66adccb3116eb44c396eca652bfb9634f88b902b56f96f1d335501c96c7",
+    "phase": "before all training; CPU-only seeding preserves CUDA noise RNG"
+  },
+  "gaussian005": {
+    "old_channel_sha256": "d9896ef306adbfa315bc479ea9948a7debda7e6642d42271c1b16f797e9e8dbb",
+    "new_channel_sha256": "d8ced66adccb3116eb44c396eca652bfb9634f88b902b56f96f1d335501c96c7",
+    "phase": "before all training; CPU-only seeding preserves CUDA noise RNG"
+  },
+  "drop96": {
+    "old_channel_sha256": "d9896ef306adbfa315bc479ea9948a7debda7e6642d42271c1b16f797e9e8dbb",
+    "new_channel_sha256": "d8ced66adccb3116eb44c396eca652bfb9634f88b902b56f96f1d335501c96c7",
+    "phase": "before all training; CPU-only seeding preserves CUDA noise RNG"
+  },
+  "rotation15": {
+    "old_channel_sha256": "d9896ef306adbfa315bc479ea9948a7debda7e6642d42271c1b16f797e9e8dbb",
+    "new_channel_sha256": "d8ced66adccb3116eb44c396eca652bfb9634f88b902b56f96f1d335501c96c7",
+    "phase": "before all training; CPU-only seeding preserves CUDA noise RNG"
+  },
+  "blur15": {
+    "old_channel_sha256": "d9896ef306adbfa315bc479ea9948a7debda7e6642d42271c1b16f797e9e8dbb",
+    "new_channel_sha256": "d8ced66adccb3116eb44c396eca652bfb9634f88b902b56f96f1d335501c96c7",
+    "phase": "before all training; CPU-only seeding preserves CUDA noise RNG"
+  }
+}

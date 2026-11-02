@@ -1,0 +1,5 @@
+{
+  "max_rollout_error": 0.0004297494888305664,
+  "rms_rollout_error": 2.1580199245363474e-05,
+  "no_lora_parameters": true
+}

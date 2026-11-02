@@ -1,0 +1,22 @@
+{
+  "student": "C00_seed0_author",
+  "n": 5000,
+  "detections": 110,
+  "rate": 0.022,
+  "threshold": {
+    "threshold": 0.06189660727977753,
+    "target_fpr": 0.01,
+    "false_positives": 50,
+    "empirical_fpr": 0.01,
+    "num_clean": 5000,
+    "rule": "score >= float32(threshold)",
+    "author_manifest_sha256": "4a48a292ba85372c51eb82a2685f596d9429e5202aa0bf60dcc2dc78c235cd52",
+    "calibration_prompt_sha256": "757fdbc79c68205a3ac255c23bcbc444dc6f535c56beb4835771f68d83ab2c3d",
+    "scoring_seed": 42,
+    "scoring_batch_size": 32
+  },
+  "checkpoint_selection": {
+    "checkpoint": "/root/workspace/serum/students/C00_seed0_author/checkpoint-20000",
+    "mse": 0.14978830933454446
+  }
+}

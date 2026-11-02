@@ -1,0 +1,7 @@
+{
+  "raw_gradient_norm": 0.028249334543943405,
+  "contrast_gradient_norm": 0.24400821328163147,
+  "teacher_gradient_norm": 0.023314815014600754,
+  "raw_contrast_cosine": 0.9854612350463867,
+  "teacher_contrast_cosine": -0.04607098177075386
+}

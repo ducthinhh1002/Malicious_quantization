@@ -1,0 +1,119 @@
+{
+  "checked_at_utc": "2026-10-20T23:41:05.871569+00:00",
+  "smoke/status.json": {
+    "status": "smoke_complete",
+    "outcomes": [
+      {
+        "mode": "contrast_replay",
+        "status": "smoke_complete",
+        "gradient": {
+          "transfer_gradient_norm": 0.013251492753624916,
+          "independent_of_teacher_loss": true,
+          "inner_updates": 4
+        }
+      }
+    ],
+    "expansions": [],
+    "final_tests_used": false
+  },
+  "smoke/contrast_replay/learning_selection.json": {
+    "step": 0,
+    "accepted_updates": false,
+    "reason": "baseline retained until a feasible post-update validation",
+    "test_used": false
+  },
+  "smoke/contrast_replay/learning_channel_training.jsonl": {
+    "step": 2,
+    "start_kind": "clean_trained",
+    "key": 221,
+    "loss": 1.6559339761734009,
+    "gradient_norm": 0.330346941947937,
+    "student_lpips": 0.012230463325977325,
+    "marked_training_mse": 0.2568187713623047,
+    "clean_training_mse": 0.2523120939731598,
+    "paired_effect": 0.004083946347236633,
+    "key_specificity": 0.004083946347236633,
+    "raw_key_specificity": -0.33579421043395996,
+    "wm": 0.9430031776428223,
+    "quality_loss": 0.008642783388495445,
+    "paired_loss": 0.744671642780304,
+    "mse": 0.0009656645124778152,
+    "lpips": 0.04505232721567154,
+    "bit_accuracy": 0.6875,
+    "anchor_wm": 0.9432649612426758,
+    "preservation_loss": 0.0
+  },
+  "full/status.json": {
+    "status": "complete",
+    "outcomes": [
+      {
+        "mode": "contrast_cold",
+        "status": "no_positive_preserved_proxy",
+        "students_run": false
+      },
+      {
+        "mode": "contrast_replay",
+        "status": "no_positive_preserved_proxy",
+        "students_run": false
+      }
+    ],
+    "expansions": [],
+    "final_tests_used": false
+  },
+  "full/contrast_cold/learning_selection.json": {
+    "step": 0,
+    "accepted_updates": false,
+    "reason": "baseline retained until a feasible post-update validation",
+    "test_used": false
+  },
+  "full/contrast_cold/learning_channel_training.jsonl": {
+    "step": 96,
+    "start_kind": "cold",
+    "key": 221,
+    "loss": 1.6583638191223145,
+    "gradient_norm": 0.03149241581559181,
+    "student_lpips": 3.5758857848122716e-05,
+    "marked_training_mse": 0.24798449873924255,
+    "clean_training_mse": 0.24598346650600433,
+    "paired_effect": -0.0005597873823717237,
+    "key_specificity": -0.0005597873823717237,
+    "raw_key_specificity": -1.638666033744812,
+    "wm": 0.9438515901565552,
+    "quality_loss": 0.005855544004589319,
+    "paired_loss": 0.7902640104293823,
+    "mse": 0.0006692655151709914,
+    "lpips": 0.05018433928489685,
+    "bit_accuracy": 0.71875,
+    "anchor_wm": 0.9395999908447266,
+    "preservation_loss": 0.0
+  },
+  "full/contrast_replay/learning_selection.json": {
+    "step": 0,
+    "accepted_updates": false,
+    "reason": "baseline retained until a feasible post-update validation",
+    "test_used": false
+  },
+  "full/contrast_replay/learning_channel_training.jsonl": {
+    "step": 96,
+    "start_kind": "clean_trained",
+    "key": 221,
+    "loss": 1.6562635898590088,
+    "gradient_norm": 0.11696525663137436,
+    "student_lpips": 0.0009129546815529466,
+    "marked_training_mse": 0.24742846190929413,
+    "clean_training_mse": 0.2451981008052826,
+    "paired_effect": 0.0013052690774202347,
+    "key_specificity": 0.0013052690774202347,
+    "raw_key_specificity": -1.6297701597213745,
+    "wm": 0.9443318843841553,
+    "quality_loss": 0.0058518084697425365,
+    "paired_loss": 0.7905040979385376,
+    "mse": 0.0006683450192213058,
+    "lpips": 0.050201669335365295,
+    "bit_accuracy": 0.71875,
+    "anchor_wm": 0.9395999908447266,
+    "preservation_loss": 0.0
+  },
+  "gpu": "100 %, 61915 MiB\n",
+  "wrapper_log_tail": ""
+}

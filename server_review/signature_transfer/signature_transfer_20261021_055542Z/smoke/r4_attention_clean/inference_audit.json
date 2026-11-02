@@ -1,0 +1,6 @@
+{
+  "clean_vae_tensor_sha256": "06cadd8a76b98c867937d4f30991c85b34cfafb7dfd9efd07fee640e9a809178",
+  "marked_decoder_loaded": false,
+  "adapter_sha256": "e15965e4d5ea870b825e0f40bb7a73dfe267a94b87aa9df009a3263bd7f200c7",
+  "base_revision": "4e63672c03103b6c636b8fb4119ba982469b2955"
+}

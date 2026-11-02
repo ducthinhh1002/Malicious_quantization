@@ -1,0 +1,457 @@
+{
+  "checked_at": "2026-10-20T15:06:46.217923+00:00",
+  "session": "lalt_repair_20261020_135310Z",
+  "files": {
+    "smoke/status.json": {
+      "status": "smoke_complete",
+      "gradient": {
+        "transfer_gradient_norm": 0.019538935273885727,
+        "independent_of_teacher_loss": true,
+        "inner_updates": 8
+      }
+    },
+    "smoke/stage_status.json": {
+      "status": "complete",
+      "stage": "gradient_smoke"
+    },
+    "smoke/gradient_smoke/learning_gradient_audit.json": {
+      "transfer_gradient_norm": 0.019538935273885727,
+      "independent_of_teacher_loss": true,
+      "inner_updates": 8
+    },
+    "smoke/gradient_smoke/repair_result.json": {
+      "qualified": true,
+      "selected_repair_step": 0,
+      "reader_frozen": true,
+      "original_teacher_preserved": true,
+      "mode": "adaptive"
+    },
+    "suite/status.json": {
+      "status": "running",
+      "stage": "fresh_readout",
+      "rank": 4,
+      "outcomes": [
+        {
+          "mode": "adaptive",
+          "status": "failed",
+          "message": "Command '['/root/logs/gate_env/bin/python', '-u', '-m', 'new_watermark.learning_channel.midpoint_probe', '--run', '/root/logs/results/lalt_repair_20261020_135310Z/adaptive_ordinary_r4']' returned non-zero exit status 1.",
+          "traceback": "Traceback (most recent call last):\n  File \"/root/logs/lalt_repair_20261020_135310Z/new_watermark/learning_channel/repair_suite.py\", line 119, in execute\n    probe = ordinary_probe(run)\n            ^^^^^^^^^^^^^^^^^^^\n  File \"/root/logs/lalt_repair_20261020_135310Z/new_watermark/learning_channel/repair_suite.py\", line 74, in ordinary_probe\n    process(run, f\"ordinary_r{rank}\", \"new_watermark.learning_channel.midpoint_probe\", \"--run\", probe)\n  File \"/root/logs/lalt_repair_20261020_135310Z/new_watermark/learning_channel/repair_suite.py\", line 47, in process\n    subprocess.run([sys.executable, \"-u\", \"-m\", module, *map(str, args)],\n  File \"/usr/lib/python3.12/subprocess.py\", line 571, in run\n    raise CalledProcessError(retcode, process.args,\nsubprocess.CalledProcessError: Command '['/root/logs/gate_env/bin/python', '-u', '-m', 'new_watermark.learning_channel.midpoint_probe', '--run', '/root/logs/results/lalt_repair_20261020_135310Z/adaptive_ordinary_r4']' returned non-zero exit status 1.\n"
+        },
+        {
+          "mode": "shared",
+          "status": "teacher_preservation_failed",
+          "students_run": false
+        },
+        {
+          "mode": "amplitude",
+          "status": "teacher_preservation_failed",
+          "students_run": false
+        }
+      ]
+    },
+    "suite/outcomes.json": {
+      "variants": [
+        {
+          "mode": "adaptive",
+          "status": "failed",
+          "message": "Command '['/root/logs/gate_env/bin/python', '-u', '-m', 'new_watermark.learning_channel.midpoint_probe', '--run', '/root/logs/results/lalt_repair_20261020_135310Z/adaptive_ordinary_r4']' returned non-zero exit status 1.",
+          "traceback": "Traceback (most recent call last):\n  File \"/root/logs/lalt_repair_20261020_135310Z/new_watermark/learning_channel/repair_suite.py\", line 119, in execute\n    probe = ordinary_probe(run)\n            ^^^^^^^^^^^^^^^^^^^\n  File \"/root/logs/lalt_repair_20261020_135310Z/new_watermark/learning_channel/repair_suite.py\", line 74, in ordinary_probe\n    process(run, f\"ordinary_r{rank}\", \"new_watermark.learning_channel.midpoint_probe\", \"--run\", probe)\n  File \"/root/logs/lalt_repair_20261020_135310Z/new_watermark/learning_channel/repair_suite.py\", line 47, in process\n    subprocess.run([sys.executable, \"-u\", \"-m\", module, *map(str, args)],\n  File \"/usr/lib/python3.12/subprocess.py\", line 571, in run\n    raise CalledProcessError(retcode, process.args,\nsubprocess.CalledProcessError: Command '['/root/logs/gate_env/bin/python', '-u', '-m', 'new_watermark.learning_channel.midpoint_probe', '--run', '/root/logs/results/lalt_repair_20261020_135310Z/adaptive_ordinary_r4']' returned non-zero exit status 1.\n"
+        }
+      ]
+    },
+    "suite/long_rank_expansion.json": {
+      "winner": null,
+      "rule": "Rank4 contrast AUROC and TPR each improve >=.02 absolute vs old rank4; CLIP drop<=.02 and paired LPIPS<=old rank4+.03; rank by TPR then AUROC",
+      "development_selection": true,
+      "final_tests_used": false
+    },
+    "suite/adaptive/stage_status.json": {
+      "status": "running",
+      "stage": "ordinary_r4"
+    },
+    "suite/adaptive/repair_progress.json": {
+      "step": 512,
+      "selected": 256,
+      "preserved_vs_original": true
+    },
+    "suite/adaptive/repair_result.json": {
+      "qualified": true,
+      "selected_repair_step": 256,
+      "reader_frozen": true,
+      "original_teacher_preserved": true,
+      "mode": "adaptive"
+    },
+    "suite/adaptive/learning_selection.json": {
+      "step": 32,
+      "accepted_updates": true,
+      "checkpoint_sha256": "1c8fe21c7c5443168f710badcc84086badeb46618bde70147406a7c722d85e80",
+      "teacher_validation": [
+        {
+          "key": 221,
+          "split": "teacher_validation",
+          "tpr": 0.859375,
+          "clean_fpr": 0.0,
+          "bit_accuracy": 0.712890625,
+          "psnr": 30.457766637206078,
+          "psnr_p05": 27.523021030426026,
+          "lpips": 0.05618162447353825,
+          "lpips_p95": 0.08295485228300095,
+          "clip_drop": -0.004243229399435222,
+          "diversity_ratio": 0.9793492335262352,
+          "mean_gain": 6.201560320332646,
+          "threshold": -2.003749370574951,
+          "calibration_split": "calibration",
+          "score_scale": 4.586277696921764,
+          "passes": false,
+          "auroc": 0.99371337890625,
+          "paired_win_rate": 0.984375,
+          "paired_gain_std": 4.449023281887472
+        },
+        {
+          "key": 34,
+          "split": "teacher_validation",
+          "tpr": 0.703125,
+          "clean_fpr": 0.0,
+          "bit_accuracy": 0.7353515625,
+          "psnr": 28.829341545701027,
+          "psnr_p05": 26.150545024871825,
+          "lpips": 0.06516510312212631,
+          "lpips_p95": 0.09979356862604617,
+          "clip_drop": 7.118226494640112e-05,
+          "diversity_ratio": 0.9881233632825464,
+          "mean_gain": 5.924058853648603,
+          "threshold": -1.9297184944152832,
+          "calibration_split": "calibration",
+          "score_scale": 4.504950071526921,
+          "passes": false,
+          "auroc": 0.982177734375,
+          "paired_win_rate": 0.9765625,
+          "paired_gain_std": 4.458013551338702
+        }
+      ],
+      "design_proxy_score": -0.003291004833954503,
+      "proxy_rows": [
+        {
+          "key": 221,
+          "paired_effect": -0.003291004833954503,
+          "key_specificity": -0.0006544607458636165,
+          "horizons": [
+            {
+              "horizon": 8,
+              "paired_effect": -0.003291004833954503,
+              "key_specificity": -0.00027879062690772116,
+              "raw_key_specificity": -0.037087591423187405
+            },
+            {
+              "horizon": 32,
+              "paired_effect": 0.008082435379492381,
+              "key_specificity": -0.0006544607458636165,
+              "raw_key_specificity": -0.037125188202480786
+            }
+          ],
+          "episodes": [
+            {
+              "episode": 0,
+              "horizon": 8,
+              "query": 0,
+              "paired_effect": -0.004921543411910534,
+              "key_specificity": -4.741176962852478e-05,
+              "raw_key_specificity": -0.04800272360444069
+            },
+            {
+              "episode": 0,
+              "horizon": 8,
+              "query": 1,
+              "paired_effect": 0.0012168696848675609,
+              "key_specificity": 0.00016780942678451538,
+              "raw_key_specificity": -0.08789429813623428
+            },
+            {
+              "episode": 0,
+              "horizon": 8,
+              "query": 2,
+              "paired_effect": 0.0003701346577145159,
+              "key_specificity": 2.100318670272827e-05,
+              "raw_key_specificity": -0.046373091638088226
+            },
+            {
+              "episode": 0,
+              "horizon": 8,
+              "query": 3,
+              "paired_effect": 0.0002820197551045567,
+              "key_specificity": 0.00024667009711265564,
+              "raw_key_specificity": 0.03353612497448921
+            },
+            {
+              "episode": 0,
+              "horizon": 32,
+              "query": 0,
+              "paired_effect": -0.00011228804214624688,
+              "key_specificity": -4.616379737854004e-05,
+              "raw_key_specificity": -0.04836038127541542
+            },
+            {
+              "episode": 0,
+              "horizon": 32,
+              "query": 1,
+              "paired_effect": 0.0016757950652390718,
+              "key_specificity": 0.0007303953170776367,
+              "raw_key_specificity": -0.08735001087188721
+            },
+            {
+              "episode": 0,
+              "horizon": 32,
+              "query": 2,
+              "paired_effect": 0.0006658264901489019,
+              "key_specificity": 3.098323941230774e-05,
+              "raw_key_specificity": -0.04637537896633148
+            },
+            {
+              "episode": 0,
+              "horizon": 32,
+              "query": 3,
+              "paired_effect": 0.0007301322184503078,
+              "key_specificity": 4.366785287857056e-05,
+              "raw_key_specificity": 0.031633101403713226
+            },
+            {
+              "episode": 1,
+              "horizon": 8,
+              "query": 0,
+              "paired_effect": -0.0066478680819272995,
+              "key_specificity": -0.0010085180401802063,
+              "raw_key_specificity": 0.09933727979660034
+            },
+            {
+              "episode": 1,
+              "horizon": 8,
+              "query": 1,
+              "paired_effect": -0.057438142597675323,
+              "key_specificity": -0.001025200355798006,
+              "raw_key_specificity": -0.005284504033625126
+            },
+            {
+              "episode": 1,
+              "horizon": 8,
+              "query": 2,
+              "paired_effect": 0.004235130734741688,
+              "key_specificity": 0.00015803426504135132,
+              "raw_key_specificity": -0.04766939580440521
+            },
+            {
+              "episode": 1,
+              "horizon": 8,
+              "query": 3,
+              "paired_effect": -0.0007552410825155675,
+              "key_specificity": -5.405396223068237e-06,
+              "raw_key_specificity": -0.0471591055393219
+            },
+            {
+              "episode": 1,
+              "horizon": 32,
+              "query": 0,
+              "paired_effect": -0.013432769104838371,
+              "key_specificity": -0.0015038251876831055,
+              "raw_key_specificity": 0.10183818638324738
+            },
+            {
+              "episode": 1,
+              "horizon": 32,
+              "query": 1,
+              "paired_effect": -0.04156580939888954,
+              "key_specificity": -0.0049642231315374374,
+              "raw_key_specificity": -0.002357217250391841
+            },
+            {
+              "episode": 1,
+              "horizon": 32,
+              "query": 2,
+              "paired_effect": 0.01964728906750679,
+              "key_specificity": 0.00045539066195487976,
+              "raw_key_specificity": -0.04686320573091507
+            },
+            {
+              "episode": 1,
+              "horizon": 32,
+              "query": 3,
+              "paired_effect": -0.00035828203544951975,
+              "key_specificity": 2.4747103452682495e-05,
+              "raw_key_specificity": -0.04718780145049095
+            },
+            {
+              "episode": 2,
+              "horizon": 8,
+              "query": 0,
+              "paired_effect": 0.03121555596590042,
+              "key_specificity": -0.001106351613998413,
+              "raw_key_specificity": -0.13727691769599915
+            },
+            {
+              "episode": 2,
+              "horizon": 8,
+              "query": 1,
+              "paired_effect": -0.0008910264004953206,
+              "key_specificity": -7.589906454086304e-05,
+              "raw_key_specificity": -0.07601110637187958
+            },
+            {
+              "episode": 2,
+              "horizon": 8,
+              "query": 2,
+              "paired_effect": 0.010285168886184692,
+              "key_specificity": -0.00043854862451553345,
+              "raw_key_specificity": -0.10227902233600616
+            },
+            {
+              "episode": 2,
+              "horizon": 8,
+              "query": 3,
+              "paired_effect": -0.017211470752954483,
+              "key_specificity": -0.0004937537014484406,
+              "raw_key_specificity": -0.05327131971716881
+            },
+            {
+              "episode": 2,
+              "horizon": 32,
+              "query": 0,
+              "paired_effect": 0.036524076014757156,
+              "key_specificity": -0.0013754218816757202,
+              "raw_key_specificity": -0.1376553624868393
+            },
+            {
+              "episode": 2,
+              "horizon": 32,
+              "query": 1,
+              "paired_effect": -0.0014942627167329192,
+              "key_specificity": 0.00016967952251434326,
+              "raw_key_specificity": -0.07598427683115005
+            },
+            {
+              "episode": 2,
+              "horizon": 32,
+              "query": 2,
+              "paired_effect": 0.004770786501467228,
+              "key_specificity": 6.274878978729248e-05,
+              "raw_key_specificity": -0.10209457576274872
+            },
+            {
+              "episode": 2,
+              "horizon": 32,
+              "query": 3,
+              "paired_effect": -0.002791605656966567,
+              "key_specificity": -0.0004774332046508789,
+              "raw_key_specificity": -0.05292198061943054
+            },
+            {
+              "episode": 3,
+              "horizon": 8,
+              "query": 0,
+              "paired_effect": 0.0020435384940356016,
+              "key_specificity": 0.00034965574741363525,
+              "raw_key_specificity": 0.0739855021238327
+            },
+            {
+              "episode": 3,
+              "horizon": 8,
+              "query": 1,
+              "paired_effect": -0.0007506663678213954,
+              "key_specificity": 4.138052463531494e-05,
+              "raw_key_specificity": -0.05795186012983322
+            },
+            {
+              "episode": 3,
+              "horizon": 8,
+              "query": 2,
+              "paired_effect": -0.008004474453628063,
+              "key_specificity": -0.0013509932905435562,
+              "raw_key_specificity": -0.02922961860895157
+            },
+            {
+              "episode": 3,
+              "horizon": 8,
+              "query": 3,
+              "paired_effect": -0.005684062372893095,
+              "key_specificity": 0.00010687857866287231,
+              "raw_key_specificity": -0.06185740604996681
+            },
+            {
+              "episode": 3,
+              "horizon": 32,
+              "query": 0,
+              "paired_effect": -0.011427284218370914,
+              "key_specificity": -0.0008816719055175781,
+              "raw_key_specificity": 0.07145210355520248
+            },
+            {
+              "episode": 3,
+              "horizon": 32,
+              "query": 1,
+              "paired_effect": -0.0004102672392036766,
+              "key_specificity": 5.780532956123352e-05,
+              "raw_key_specificity": -0.05861831083893776
+            },
+            {
+              "episode": 3,
+              "horizon": 32,
+              "query": 2,
+              "paired_effect": 0.020990585908293724,
+              "key_specificity": -0.0005206838250160217,
+              "raw_key_specificity": -0.028328193351626396
+            },
+            {
+              "episode": 3,
+              "horizon": 32,
+              "query": 3,
+              "paired_effect": 0.11590704321861267,
+              "key_specificity": -0.002277366816997528,
+              "raw_key_specificity": -0.06482970714569092
+            }
+          ]
+        }
+      ],
+      "selection": "diagnostic worst-key min(effect,specificity); relative teacher preservation and quality",
+      "proxy_caveat": "short unroll; rank must be validated by long ordinary learners",
+      "test_used": false
+    },
+    "suite/adaptive/learning_gradient_audit.json": {
+      "transfer_gradient_norm": 0.029530799016356468,
+      "independent_of_teacher_loss": true,
+      "inner_updates": 8
+    },
+    "suite/shared/stage_status.json": {
+      "status": "complete",
+      "stage": "warmup"
+    },
+    "suite/shared/repair_progress.json": {
+      "step": 512,
+      "selected": null,
+      "preserved_vs_original": false
+    },
+    "suite/shared/repair_result.json": {
+      "qualified": false,
+      "selected_repair_step": null,
+      "reader_frozen": true,
+      "original_teacher_preserved": false,
+      "mode": "shared"
+    },
+    "suite/amplitude/stage_status.json": {
+      "status": "complete",
+      "stage": "warmup"
+    },
+    "suite/amplitude/repair_progress.json": {
+      "step": 512,
+      "selected": null,
+      "preserved_vs_original": false
+    },
+    "suite/amplitude/repair_result.json": {
+      "qualified": false,
+      "selected_repair_step": null,
+      "reader_frozen": true,
+      "original_teacher_preserved": false,
+      "mode": "amplitude"
+    }
+  },
+  "gpu": "memory.used [MiB], utilization.gpu [%]\n5373 MiB, 99 %\n",
+  "session_alive": true,
+  "command_error": ""
+}

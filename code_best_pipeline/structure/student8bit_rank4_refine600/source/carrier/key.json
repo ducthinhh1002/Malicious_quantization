@@ -1,0 +1,38 @@
+{
+  "key_seed": 0,
+  "num_bits": 8,
+  "selected_pc_indices": [
+    28,
+    26,
+    11,
+    15,
+    23,
+    40,
+    14,
+    56
+  ],
+  "signs": [
+    1,
+    1,
+    1,
+    -1,
+    -1,
+    1,
+    -1,
+    -1
+  ],
+  "sigmas": [
+    4.836943626403809,
+    4.948652744293213,
+    7.402875900268555,
+    6.333646297454834,
+    5.295120716094971,
+    4.093606472015381,
+    6.480942726135254,
+    3.5127158164978027
+  ],
+  "basis_sha256": "dba3a9f6aedbcdc0be3acba3956acac2f287055a7c097ec0103c41c5b827d1a6",
+  "carrier_fit_prompt_sha256": "f2c908cb70784f4add798db1519688e10b9750d2662e087caf8abe8c20d132db",
+  "index_convention": "zero-based inclusive PC range",
+  "selection_rule": "correlation descending, sign retention descending, PC ascending; RNG sample without replacement"
+}

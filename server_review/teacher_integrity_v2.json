@@ -1,0 +1,20 @@
+{
+  "ok": true,
+  "errors": [],
+  "counts": {
+    "clean_train": 5000,
+    "wm_train": 5000,
+    "clean_val": 1000,
+    "wm_val": 1000,
+    "calib_clean": 5000,
+    "calib_wm_unused": 5000
+  },
+  "split_overlap": {
+    "adapt_train/adapt_val": 0,
+    "adapt_train/student_eval": 0,
+    "adapt_train/detector_calib": 0,
+    "adapt_val/student_eval": 0,
+    "adapt_val/detector_calib": 0,
+    "student_eval/detector_calib": 0
+  }
+}

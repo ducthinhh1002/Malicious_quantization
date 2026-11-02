@@ -1,0 +1,44 @@
+{
+  "created": "2026-10-31T05:48:10.131793+00:00",
+  "source": "/var/lib/structure32_student12500/runs/structure32",
+  "source_provenance": {
+    "assets.json": "db93c0296a3f47955290d8be6e86d289fe0423bed978e7fdfcf666bfe57d06ba",
+    "prompts.json": "c9593dcf889f3d630ff71c974bb7385964ea8bfe120e260ecaee538527c3d866",
+    "config.json": "f738ae591d286c1fe0db516f250f01762b9dc147756cb1879ea603c7571f4c01",
+    "images/teacher_wm_train/image_hashes.json": "96829ac92f112719e25600c3f81d9b68c38d36cd5630eaf49658e93b08ef3bbb",
+    "images/teacher_wm_validation/image_hashes.json": "2ec5bcdbd8f3b2b2629b1bf85c768e826b41e4d5be9ba42f23e5963f44824c4b",
+    "carrier/complete.json": "ea4aefe89337d022320c28b3d3cd7578a3f1d3d2ae27491681cb636a63d9a037",
+    "result/threshold_student.json": "1ba4143f100a954aa9a7c10e09dcddfd18d42eea731611b3d53f07ad1d565732",
+    "teacher_fp/refined/adapter_model.safetensors": "2f9fc8d664786acfe50bf7d47c20e037a92e4cc61805524233bd7f15f365a2d8"
+  },
+  "initialization": "clean SD1.4, train from clean SD1.4 with fixed manipulated Structure refine600 image targets",
+  "primary_metrics": [
+    "bit_accuracy",
+    "full_key_recovery_rate"
+  ],
+  "new_student_updates": 12500,
+  "schedule": "constant1e-4 for7500; cosine to2e-5 by12500",
+  "full_state_every": 1250,
+  "retention": "all10 complete state checkpoints; no deletion",
+  "state_contents": [
+    "LoRA parameters",
+    "AdamW moments/step",
+    "LR scheduler",
+    "FP16 scaler",
+    "Python/NumPy/Torch CPU/CUDA RNG",
+    "cumulative optimizer update counts",
+    "epoch/seed data-order identity"
+  ],
+  "sampler": "SeedableRandomSampler data_seed0, explicit set_epoch; resume only full epoch boundaries",
+  "sampler_caveat": "Deterministic sampler differs from earlier unseeded RandomSampler; this is a fresh trial, not bitwise replay",
+  "selection": "fixed12500 by user; no validation checkpoint evaluation",
+  "scientific_gates": false,
+  "project": "vllm",
+  "training_gpu_cap_gib": 40,
+  "limitations": [
+    "single seed",
+    "existing exploratory test",
+    "32bit exploratory single-seed experiment",
+    "LPIPS is paired deviation, not anatomy"
+  ]
+}

@@ -1,0 +1,84 @@
+{
+  "summary": {
+    "train": {
+      "n": 4,
+      "detected": 0,
+      "score": 0.4977313131093979,
+      "psnr": 37.61359214782715,
+      "latent_target_relative_mse": 2.3295576870441437
+    },
+    "heldout": {
+      "n": 4,
+      "detected": 0,
+      "score": 0.500825822353363,
+      "psnr": 38.537606716156006,
+      "latent_target_relative_mse": 13.349685609340668
+    }
+  },
+  "records": [
+    {
+      "image": 0,
+      "split": "train",
+      "score": 0.49189990758895874,
+      "detected": false,
+      "psnr": 39.82997512817383,
+      "latent_target_relative_mse": 1.4605714082717896
+    },
+    {
+      "image": 1,
+      "split": "train",
+      "score": 0.4993513822555542,
+      "detected": false,
+      "psnr": 36.22349166870117,
+      "latent_target_relative_mse": 3.4997353553771973
+    },
+    {
+      "image": 2,
+      "split": "train",
+      "score": 0.4967228174209595,
+      "detected": false,
+      "psnr": 33.61606979370117,
+      "latent_target_relative_mse": 3.2289907932281494
+    },
+    {
+      "image": 3,
+      "split": "train",
+      "score": 0.5029511451721191,
+      "detected": false,
+      "psnr": 40.78483200073242,
+      "latent_target_relative_mse": 1.1289331912994385
+    },
+    {
+      "image": 4,
+      "split": "heldout",
+      "score": 0.5014691352844238,
+      "detected": false,
+      "psnr": 41.445865631103516,
+      "latent_target_relative_mse": 1.6543470621109009
+    },
+    {
+      "image": 5,
+      "split": "heldout",
+      "score": 0.4995343089103699,
+      "detected": false,
+      "psnr": 45.35360336303711,
+      "latent_target_relative_mse": 1.1347944736480713
+    },
+    {
+      "image": 6,
+      "split": "heldout",
+      "score": 0.5017185211181641,
+      "detected": false,
+      "psnr": 24.167593002319336,
+      "latent_target_relative_mse": 48.9520263671875
+    },
+    {
+      "image": 7,
+      "split": "heldout",
+      "score": 0.5005813241004944,
+      "detected": false,
+      "psnr": 43.18336486816406,
+      "latent_target_relative_mse": 1.6575745344161987
+    }
+  ]
+}

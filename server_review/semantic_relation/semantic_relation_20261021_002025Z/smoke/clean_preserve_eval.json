@@ -1,0 +1,27 @@
+{
+  "folder": "/root/logs/output_image/semantic/semantic_relation_20261021_002025Z_smoke_0a37cfda/clean_preserve_eval",
+  "entries": [
+    {
+      "file_name": "sample_000000.png",
+      "text": "A white plate with rice and vegetables with wooden chop sticks.",
+      "sha256": "2ad7aa75c5879dd82a138c6102241bd7364b0b66a705fc651d1f56be493ad323"
+    },
+    {
+      "file_name": "sample_000001.png",
+      "text": "A person in a suit takes a photo of themselves in the mirror.",
+      "sha256": "6b393baf77a059d7c89e98fcdba30206d07f384346eca19d978d68299c1f2c7c"
+    }
+  ],
+  "scores": [
+    0.009713242761790752,
+    0.010393181815743446
+  ],
+  "alignment": [
+    0.3088538348674774,
+    0.36330074071884155
+  ],
+  "source_ids": [
+    205716,
+    422375
+  ]
+}

@@ -1,0 +1,34 @@
+   0%|          | 0/6 [00:00<?, ?it/s]Loading pipeline components...:  33%|███▎      | 2/6 [00:00<00:00, 17.14it/s]Loading pipeline components...:  83%|████████▎ | 5/6 [00:00<00:00, 23.48it/s]Loading pipeline components...: 100%|██████████| 6/6 [00:00<00:00, 18.44it/s]
+You have disabled the safety checker for <class 'diffusers.pipelines.stable_diffusion.pipeline_stable_diffusion.StableDiffusionPipeline'> by passing `safety_checker=None`. Ensure that you abide to the conditions of the Stable Diffusion license and do not expose unfiltered results in services or applications open to the public. Both the diffusers team and Hugging Face strongly recommend to keep the safety filter enabled in all public facing circumstances, disabling it only for use-cases that involve analyzing network behavior or auditing its results. For more information, please have a look at https://github.com/huggingface/diffusers/pull/254 .
+Paired probe training images 2/2048
+Paired probe training images 66/2048
+Paired probe training images 130/2048
+Paired probe training images 194/2048
+Paired probe training images 258/2048
+Paired probe training images 322/2048
+Paired probe training images 386/2048
+Paired probe training images 450/2048
+Paired probe training images 514/2048
+Paired probe training images 578/2048
+Paired probe training images 642/2048
+Paired probe training images 706/2048
+Paired probe training images 770/2048
+Paired probe training images 834/2048
+Paired probe training images 898/2048
+Paired probe training images 962/2048
+Paired probe training images 1026/2048
+Paired probe training images 1090/2048
+Paired probe training images 1154/2048
+Paired probe training images 1218/2048
+Paired probe training images 1282/2048
+Paired probe training images 1346/2048
+Paired probe training images 1410/2048
+Paired probe training images 1474/2048
+Paired probe training images 1538/2048
+Paired probe training images 1602/2048
+Paired probe training images 1666/2048
+Paired probe training images 1730/2048
+Paired probe training images 1794/2048
+Paired probe training images 1858/2048
+Paired probe training images 1922/2048
+Paired probe training images 1986/2048

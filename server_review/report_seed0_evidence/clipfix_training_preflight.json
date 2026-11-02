@@ -1,0 +1,33 @@
+{
+  "status": "passed",
+  "actual_fp16_training_steps": 4,
+  "clipping_calls": [
+    {
+      "parameter_count": 256,
+      "max_norm": 1.0,
+      "norm_before": 0.012181408703327179,
+      "norm_after": 0.012181408703327179
+    },
+    {
+      "parameter_count": 256,
+      "max_norm": 1.0,
+      "norm_before": 0.011086659505963326,
+      "norm_after": 0.011086659505963326
+    },
+    {
+      "parameter_count": 256,
+      "max_norm": 1.0,
+      "norm_before": 0.014976171776652336,
+      "norm_after": 0.014976170845329762
+    },
+    {
+      "parameter_count": 256,
+      "max_norm": 1.0,
+      "norm_before": 0.01681862771511078,
+      "norm_after": 0.01681862771511078
+    }
+  ],
+  "optimizer_updated": true,
+  "checkpoint_save_and_inference_reload": true,
+  "scope": "diagnostic smoke test; no research results overwritten"
+}

@@ -1,0 +1,17 @@
+test_auc_ties_and_false_positive_invariance (new_watermark.learning_channel.test_learning_channel.LearningChannelTests.test_auc_ties_and_false_positive_invariance) ... ok
+test_budget_penalty_and_gradient_audit (new_watermark.learning_channel.test_learning_channel.LearningChannelTests.test_budget_penalty_and_gradient_audit) ... ok
+test_calibration_ties_and_unattainable_fpr (new_watermark.learning_channel.test_learning_channel.LearningChannelTests.test_calibration_ties_and_unattainable_fpr) ... ok
+test_checkpoint_keeps_carrier_scope_during_backward (new_watermark.learning_channel.test_learning_channel.LearningChannelTests.test_checkpoint_keeps_carrier_scope_during_backward) ... ok
+test_correct_key_scores_higher (new_watermark.learning_channel.test_learning_channel.LearningChannelTests.test_correct_key_scores_higher) ... ok
+test_counterfactual_batches_and_disjoint_probe_coverage (new_watermark.learning_channel.test_learning_channel.LearningChannelTests.test_counterfactual_batches_and_disjoint_probe_coverage) ... ok
+test_functional_adamw_matches_ordinary_optimizer (new_watermark.learning_channel.test_learning_channel.LearningChannelTests.test_functional_adamw_matches_ordinary_optimizer) ... ok
+test_hypergradient_matches_finite_difference (new_watermark.learning_channel.test_learning_channel.LearningChannelTests.test_hypergradient_matches_finite_difference) ... ok
+test_key_shared_across_batch_and_zero_equivalence (new_watermark.learning_channel.test_learning_channel.LearningChannelTests.test_key_shared_across_batch_and_zero_equivalence) ... ok
+test_rgb8_forward_and_owner_straight_through_derivative (new_watermark.learning_channel.test_learning_channel.LearningChannelTests.test_rgb8_forward_and_owner_straight_through_derivative) ... ok
+test_spatial_reader_and_pair_loss_backpropagate (new_watermark.learning_channel.test_learning_channel.LearningChannelTests.test_spatial_reader_and_pair_loss_backpropagate) ... ok
+test_true_transfer_gradient_through_ordinary_updates (new_watermark.learning_channel.test_learning_channel.LearningChannelTests.test_true_transfer_gradient_through_ordinary_updates) ... ok
+
+----------------------------------------------------------------------
+Ran 12 tests in 1.526s
+
+OK

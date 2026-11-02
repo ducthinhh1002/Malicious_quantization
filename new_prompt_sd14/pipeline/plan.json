@@ -1,0 +1,17 @@
+{
+  "dataset": "COCO2014 disjoint from all original teacher splits",
+  "new_counts": {
+    "train": 5000,
+    "validation": 1000,
+    "test": 1000
+  },
+  "source": "/var/lib/structure32_newprompts_rank32/coco_disjoint_source",
+  "prompt_sha256": "5cf63b020893205a1865fa9f238bc81d63d1cd50bdb3d0a0958b007f4cdd84c2",
+  "training_image_manifest_sha256": "2b70f94a46543a8373ab820a7623a9cc8922d8568044c6ce6161adf2cefd85bc",
+  "teacher_sha256": "2f9fc8d664786acfe50bf7d47c20e037a92e4cc61805524233bd7f15f365a2d8",
+  "same_data_as": [
+    "sana600m",
+    "pixart512"
+  ],
+  "selection": "fixed20000; no validation/test checkpoint selection"
+}

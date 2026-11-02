@@ -1,0 +1,49 @@
+{
+  "selected_step": 2000,
+  "valid_design_winner": false,
+  "warning": "No feasible positive transfer on pilot; using the strongest teacher positive control for diagnosis only.",
+  "test_used_for_selection": false,
+  "rule": "pilot TPR minus matched clean-trained FPR under teacher/pilot quality gates; tie PSNR then earlier step",
+  "fallback_rule": "highest teacher TPR; tie PSNR then earlier step; never counted as success",
+  "feasible_steps": [],
+  "measurements": [
+    {
+      "step": 500,
+      "teacher_tpr": 0.00390625,
+      "teacher_ci_low": 0.0006898821669617927,
+      "pilot_tpr": 0.0,
+      "clean_pilot_fpr": 0.0,
+      "clip_drop": 0.007649831240996718,
+      "pilot_clip_drop": 0.0010455306619405746,
+      "psnr": 19.242048369838347
+    },
+    {
+      "step": 1000,
+      "teacher_tpr": 0.0078125,
+      "teacher_ci_low": 0.002145090367681419,
+      "pilot_tpr": 0.0,
+      "clean_pilot_fpr": 0.0,
+      "clip_drop": 0.011779538122937083,
+      "pilot_clip_drop": 0.0011301846243441105,
+      "psnr": 18.487860522907923
+    },
+    {
+      "step": 2000,
+      "teacher_tpr": 0.046875,
+      "teacher_ci_low": 0.027014851001628076,
+      "pilot_tpr": 0.0,
+      "clean_pilot_fpr": 0.0,
+      "clip_drop": 0.013191542588174343,
+      "pilot_clip_drop": 0.004657637560740113,
+      "psnr": 18.348487200055356
+    }
+  ],
+  "detector_sha256": "9bcedc429fd74b667a643c55e5e49b8b671e56be9f9f791d6f49e0197d272065",
+  "pilot_budget": {
+    "per_student_steps": 500,
+    "students": 4,
+    "train_n": 512,
+    "eval_n": 256
+  },
+  "selected_model_export_sha256": "6e8c889b2cde3f2995d32c72a8f0a105360c302837618352cdb2bfb15bdf243e"
+}

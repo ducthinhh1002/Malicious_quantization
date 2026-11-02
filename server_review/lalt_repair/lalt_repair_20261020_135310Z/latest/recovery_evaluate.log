@@ -1,0 +1,7 @@
+Probe GPU budget: {'gpu': 'NVIDIA H200', 'total_gb': 139.80072021484375, 'free_gb': 139.2862548828125, 'process_limit_gb': 32.0, 'precision': 'FP32; TF32 disabled', 'higher_order_math_attention': False}
+Setting up [LPIPS] perceptual loss: trunk [alex], v[0.1], spatial [off]
+/root/logs/torch_shared/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.
+  warnings.warn(
+/root/logs/torch_shared/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=AlexNet_Weights.IMAGENET1K_V1`. You can also use `weights=AlexNet_Weights.DEFAULT` to get the most up-to-date weights.
+  warnings.warn(msg)
+Loading model from: /root/logs/gate_env/lib/python3.12/site-packages/lpips/weights/v0.1/alex.pth

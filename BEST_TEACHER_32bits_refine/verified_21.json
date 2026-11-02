@@ -1,0 +1,282 @@
+{
+  "host": "21",
+  "all_exported_files_verified": true,
+  "delete_paths": {
+    "/var/lib/structure32_student12500/README.md": {
+      "sha256": "255d5849bbc4e3f8f3830058d19cbd6330dd17b6a802272bcde9f9a3aaac856a",
+      "size": 2945
+    },
+    "/var/lib/structure32_student12500/__pycache__/k1_original.cpython-312.pyc": {
+      "sha256": "5d51a88d3c510fe41cd601bc1bc61c594734ae9db87e5a072c9d6e0a69d3f7c7",
+      "size": 60132
+    },
+    "/var/lib/structure32_student12500/campaign.py": {
+      "sha256": "68669698617854f92c74cf48eebe15487dc25c1162fbf673d8591257b4956034",
+      "size": 8747
+    },
+    "/var/lib/structure32_student12500/core/__pycache__/pareto_quality_refine.cpython-312.pyc": {
+      "sha256": "93659e00399bcf8b3b3180a0325e9022a69642c1f9c163d0868c917fb83341f5",
+      "size": 20328
+    },
+    "/var/lib/structure32_student12500/core/__pycache__/pareto_step.cpython-312.pyc": {
+      "sha256": "67d6d8ceab8b68c750b0437ef569124681da89effcf668e5e2262b0263481bdd",
+      "size": 8588
+    },
+    "/var/lib/structure32_student12500/core/__pycache__/structure_margin_objectives.cpython-312.pyc": {
+      "sha256": "017a84c8a4c4b280136f60317b3a564d1c36f9ba4654762434155c186e0085a8",
+      "size": 4644
+    },
+    "/var/lib/structure32_student12500/core/__pycache__/transfer_proxy.cpython-312.pyc": {
+      "sha256": "9769071248e4871be5bb9e1d8c716d7e388de814516ce40a85a4af851a54f9ca",
+      "size": 14812
+    },
+    "/var/lib/structure32_student12500/core/__pycache__/transfer_refine.cpython-312.pyc": {
+      "sha256": "e9917fd28606944962a6ca5e4870936b457d8611f388d17b35acc4b0b4c87f56",
+      "size": 21334
+    },
+    "/var/lib/structure32_student12500/core/pareto_quality_refine.py": {
+      "sha256": "b67524d93196dca50f2e87be6d273bc730333622b7bdf0be17941e8d81c0fcd3",
+      "size": 11913
+    },
+    "/var/lib/structure32_student12500/core/pareto_step.py": {
+      "sha256": "acab6f3fa7728750369b36cc3891d92b5e3576c3ef0af51c683d9d3a5c405d51",
+      "size": 5105
+    },
+    "/var/lib/structure32_student12500/core/structure_margin_objectives.py": {
+      "sha256": "78418f71fbceca5c325254d49cae61b0e71b84bba52a7d03de93b79bccef2766",
+      "size": 2435
+    },
+    "/var/lib/structure32_student12500/core/structure_margin_refine.py": {
+      "sha256": "3fa63b88ee45b8faefe27a98e0e44a812f01973b8fd84419c53dad26dd88fdd6",
+      "size": 12610
+    },
+    "/var/lib/structure32_student12500/core/transfer_proxy.py": {
+      "sha256": "45e9a8509dcaa9da1756cc5f0277bdc4688be5214a6ded2db582b61416a48362",
+      "size": 8127
+    },
+    "/var/lib/structure32_student12500/core/transfer_refine.py": {
+      "sha256": "7fb9021665bc730dca8f053aa9e819b6716df2098e668ebe0e51e7507e20ec96",
+      "size": 12580
+    },
+    "/var/lib/structure32_student12500/deploy.py": {
+      "sha256": "ea25dd69fe4ad66f320b092daaa2693916ed25ad68d94c1c7d42e9f00c9abd0d",
+      "size": 2223
+    },
+    "/var/lib/structure32_student12500/k1_original.py": {
+      "sha256": "c64c7bd52a12c874fd30fae21863b15f80a3c6b7a892983a7a319e311d5358f0",
+      "size": 39983
+    },
+    "/var/lib/structure32_student12500/plan.json": {
+      "sha256": "26ee703561ea2c2d4fd68f43fb36ddb856d2bef2c4ba92a0be820c90e57b38f9",
+      "size": 719
+    },
+    "/var/lib/structure32_student12500/run.sh": {
+      "sha256": "99f268b53443d6c6793051b51ab08263c336e8e24519b0c66c1d588479a10a6b",
+      "size": 540
+    },
+    "/var/lib/structure32_student12500/runs/k1_32bit/teacher_fp/candidates/kappa_1.0/checkpoint-1000/checkpoint.json": {
+      "sha256": "ec7e38be8899fabee38bb427bbf05267e0ec88d85cf5620dba890acd79daf607",
+      "size": 1098
+    },
+    "/var/lib/structure32_student12500/runs/k1_32bit/teacher_fp/candidates/kappa_1.0/checkpoint-1500/checkpoint.json": {
+      "sha256": "93a966a08e161c9d26dc058ce8d14fc0e258fcc39e7dcc76afe80ab38e5c531f",
+      "size": 1098
+    },
+    "/var/lib/structure32_student12500/runs/k1_32bit/teacher_fp/candidates/kappa_1.0/checkpoint-2000/checkpoint.json": {
+      "sha256": "9dceb6451fea21698b3b6bb090df67da2b5a0b8126a20d6981522596b2a09b09",
+      "size": 1098
+    },
+    "/var/lib/structure32_student12500/runs/k1_32bit/teacher_fp/candidates/kappa_1.0/checkpoint-2500/checkpoint.json": {
+      "sha256": "7f849af57db3a9d590cc29be018d38ff3d7ebcc046d8aac4b64a0ffe781289dd",
+      "size": 1098
+    },
+    "/var/lib/structure32_student12500/runs/k1_32bit/teacher_fp/candidates/kappa_1.0/checkpoint-3000/checkpoint.json": {
+      "sha256": "b9b16b8cf244b4812518ffa4d0dc5f88951d63778f1605363a4d4a87c8b8df3e",
+      "size": 1098
+    },
+    "/var/lib/structure32_student12500/runs/k1_32bit/teacher_fp/candidates/kappa_1.0/checkpoint-500/checkpoint.json": {
+      "sha256": "f69ed5c096cb56d71b3d3bb726fb0f55510480140577e7780ef973082c903f18",
+      "size": 1097
+    },
+    "/var/lib/structure32_student12500/runs/k1_32bit/teacher_fp/candidates/kappa_1.0/losses.jsonl": {
+      "sha256": "799e66b924c7aba9f5d9560757c131c31795fbdbe143e0455fd0fc615d41d02c",
+      "size": 2146809
+    },
+    "/var/lib/structure32_student12500/runs/k1_32bit/teacher_fp/candidates/kappa_1.0/protocol.json": {
+      "sha256": "c73bdd8249a18422c5294ca292d3eee8e8ddc629542e4dc1ed886c1a422de4ec",
+      "size": 732
+    },
+    "/var/lib/structure32_student12500/runs/k1_32bit/teacher_fp/candidates/kappa_1.0/trained.json": {
+      "sha256": "aac3f9d605a9c3d22a6fa84909221cbc0b3a3e3a04c84c67885b7f8ac3f2ea31",
+      "size": 321
+    },
+    "/var/lib/structure32_student12500/runs/structure32/refine_spec.json": {
+      "sha256": "80e030e2decd37097d7e179e102fe84448cae78177abdbfc6b12b75cfbeea5b1",
+      "size": 633
+    },
+    "/var/lib/structure32_student12500/runs/structure32/teacher_fp/refined/checkpoint-200/checkpoint.json": {
+      "sha256": "350c7ea6353ce76701e025e80929db7b445e5cc2a9784f678181a3f44023cb29",
+      "size": 1137
+    },
+    "/var/lib/structure32_student12500/runs/structure32/teacher_fp/refined/checkpoint-400/checkpoint.json": {
+      "sha256": "3a7113964997920760179fb25694c4b6bfe4c7c88cb45db5ea3da305b12b707d",
+      "size": 1137
+    },
+    "/var/lib/structure32_student12500/runs/structure32/teacher_fp/refined/checkpoint-600/checkpoint.json": {
+      "sha256": "6e19e12e7251b6ab8ab31dc4baafe83089e9bc7ed69468624a5c38c3e5a2b009",
+      "size": 1137
+    },
+    "/var/lib/structure32_student12500/runs/structure32/teacher_fp/refined/losses.jsonl": {
+      "sha256": "4e79a2b6b660cf37800ce4177f3e612b9e006e8eeaee36ced212fc40f09b7aad",
+      "size": 1288917
+    },
+    "/var/lib/structure32_student12500/runs/structure32/teacher_fp/refined/protocol.json": {
+      "sha256": "23343d49af617d3cf865320de68cca6f65f1fbcdb93d87ddab670dc4a3bc0d9d",
+      "size": 776
+    },
+    "/var/lib/structure32_student12500/runs/structure32/teacher_fp/refined/trained.json": {
+      "sha256": "fc13867752344d8870df9bd086fc7b3262eaf0d8cf5298cbd367c035a4d1dff5",
+      "size": 320
+    },
+    "/var/lib/structure32_student12500/structure32_deploy.tar.gz": {
+      "sha256": "5525b229fff07088fc036337aef5aaa7f3feb88a24ff4d1986bbc163f615b6dd",
+      "size": 19687
+    },
+    "/var/lib/structure32_teacher_robust_v2/README.md": {
+      "sha256": "303d10cfcfb9a4bae1b153b1f0ceffbc09c91966b10731461dfa0a6ed6c78693",
+      "size": 7584
+    },
+    "/var/lib/structure32_teacher_robust_v2/__pycache__/deploy.cpython-312.pyc": {
+      "sha256": "c60d26253dfde13a544b6e96540873011de98af012857c2d4f7a1505f10128e7",
+      "size": 6742
+    },
+    "/var/lib/structure32_teacher_robust_v2/__pycache__/pareto_quality_refine.cpython-312.pyc": {
+      "sha256": "9ee0fdabbdb6907511a326d47c44724527742dc0d9b1882802f472368232e312",
+      "size": 20328
+    },
+    "/var/lib/structure32_teacher_robust_v2/__pycache__/pareto_step.cpython-312.pyc": {
+      "sha256": "9221d11d99896738b49c09fa5e4d8b9ffb2f8872b3de7f72091c987d03dd2a0d",
+      "size": 8588
+    },
+    "/var/lib/structure32_teacher_robust_v2/__pycache__/robust_objectives.cpython-312.pyc": {
+      "sha256": "6129d21749914337ca8f759e7107cae117e3074274dc0f35a54623c1d5d83499",
+      "size": 2333
+    },
+    "/var/lib/structure32_teacher_robust_v2/__pycache__/run_teacher.cpython-312.pyc": {
+      "sha256": "1024a05fe56e45eb4c21b2d0fcc22ad7e34a40eba9bf0ef7f8cb57af824caa0d",
+      "size": 11335
+    },
+    "/var/lib/structure32_teacher_robust_v2/__pycache__/structure_margin_objectives.cpython-312.pyc": {
+      "sha256": "aae6f117f35cfe6c8e1136afb85a42e1c779b769721881550b1526fbbd92433e",
+      "size": 4644
+    },
+    "/var/lib/structure32_teacher_robust_v2/__pycache__/teacher_refine.cpython-312.pyc": {
+      "sha256": "9f03b2264f4cd129b30602c503a36f1301458bd0744051dfca5a715e475b1906",
+      "size": 25899
+    },
+    "/var/lib/structure32_teacher_robust_v2/__pycache__/test_protocol.cpython-312.pyc": {
+      "sha256": "17aea9e43074d9a6d21b5df1e0d33545f42d99da036741addd60fedc6f58c100",
+      "size": 7784
+    },
+    "/var/lib/structure32_teacher_robust_v2/__pycache__/transfer_proxy.cpython-312.pyc": {
+      "sha256": "87f8cd7caab485854e45ec2eb8cdb245ef8b5ab323cacca1ed39cb32b3ca7bf8",
+      "size": 14812
+    },
+    "/var/lib/structure32_teacher_robust_v2/__pycache__/transfer_refine.cpython-312.pyc": {
+      "sha256": "b1829420324c76151612bdfcb0c57236d91a8495cdda22469ef63292bcbdfabb",
+      "size": 21334
+    },
+    "/var/lib/structure32_teacher_robust_v2/code.tar": {
+      "sha256": "444b0faf3e1d085a7cf4abd0dd9bed3f6bbabc96c34c7606c3cd44fd76b99985",
+      "size": 122880
+    },
+    "/var/lib/structure32_teacher_robust_v2/deploy.py": {
+      "sha256": "8362265bb6f0e6ff49782c7d56fa9cfed7383b9e0c257d21a542a6c8218fb56a",
+      "size": 4456
+    },
+    "/var/lib/structure32_teacher_robust_v2/fix_generation.py": {
+      "sha256": "ba967422e3ee0f314c603fe6fbd2dd0f9104bb1fd9f5195f590e452b322ac54f",
+      "size": 858
+    },
+    "/var/lib/structure32_teacher_robust_v2/original_refine_spec.json": {
+      "sha256": "80e030e2decd37097d7e179e102fe84448cae78177abdbfc6b12b75cfbeea5b1",
+      "size": 633
+    },
+    "/var/lib/structure32_teacher_robust_v2/pareto_quality_refine.py": {
+      "sha256": "b67524d93196dca50f2e87be6d273bc730333622b7bdf0be17941e8d81c0fcd3",
+      "size": 11913
+    },
+    "/var/lib/structure32_teacher_robust_v2/pareto_step.py": {
+      "sha256": "acab6f3fa7728750369b36cc3891d92b5e3576c3ef0af51c683d9d3a5c405d51",
+      "size": 5105
+    },
+    "/var/lib/structure32_teacher_robust_v2/robust_objectives.py": {
+      "sha256": "2b87c23ecefb45689f3ed572a28aaf7a96a82c73006cb0825004ada974d3e916",
+      "size": 1159
+    },
+    "/var/lib/structure32_teacher_robust_v2/run/refine_spec.json": {
+      "sha256": "eef4137d9b5567b3c246ea2560300560fc3b7abb306c145248a8b135e13d6a62",
+      "size": 708
+    },
+    "/var/lib/structure32_teacher_robust_v2/run/teacher_fp/refined/checkpoint-1000/checkpoint.json": {
+      "sha256": "ca9c3fdb9618a8736bad16a45fc3764c10023ba8bc668206d41d09a18446f9e2",
+      "size": 1205
+    },
+    "/var/lib/structure32_teacher_robust_v2/run/teacher_fp/refined/checkpoint-1200/checkpoint.json": {
+      "sha256": "dc8dc354eeff6b607bb92bacb0b8aa3537e76af37ac2436673f72faef1d58dce",
+      "size": 1205
+    },
+    "/var/lib/structure32_teacher_robust_v2/run/teacher_fp/refined/checkpoint-200/checkpoint.json": {
+      "sha256": "1d6e913b6ed8e45f63a9b327e459555db0a5f0e1fca7f30c75ca8f03e3836b4a",
+      "size": 1204
+    },
+    "/var/lib/structure32_teacher_robust_v2/run/teacher_fp/refined/checkpoint-400/checkpoint.json": {
+      "sha256": "e2a1026da75caae9346d535776e8f2e6c8a33dae66e2b132fcb754c44113d8a5",
+      "size": 1204
+    },
+    "/var/lib/structure32_teacher_robust_v2/run/teacher_fp/refined/checkpoint-600/checkpoint.json": {
+      "sha256": "47a816b71e9904f876d48b8cd043975c8df357520f7e69d31afce21394894d54",
+      "size": 1204
+    },
+    "/var/lib/structure32_teacher_robust_v2/run/teacher_fp/refined/checkpoint-800/checkpoint.json": {
+      "sha256": "014cfd7c85ffb7077bc5bdce518ce3f44912e7ed02e69161589d585b8f5f3fb6",
+      "size": 1204
+    },
+    "/var/lib/structure32_teacher_robust_v2/run/teacher_fp/refined/losses.jsonl": {
+      "sha256": "dc55ec760ebf906d02f9703411a4fca327cb68557b24ec5112a81f388afd9a4d",
+      "size": 3523157
+    },
+    "/var/lib/structure32_teacher_robust_v2/run/teacher_fp/refined/protocol.json": {
+      "sha256": "29b4ea5084d372458da4c964a4e7d5cef0590506c798736515d5d2c856ace10b",
+      "size": 843
+    },
+    "/var/lib/structure32_teacher_robust_v2/run/teacher_fp/refined/trained.json": {
+      "sha256": "57ce95f4d57970f7527796a580734496bd9e35ab6ae97d2c6f04e39c0dd7fdd9",
+      "size": 321
+    },
+    "/var/lib/structure32_teacher_robust_v2/run_teacher.py": {
+      "sha256": "a2515f841bd3f5e143ff54cd167f74eb85b7656c1433cbb1e598fb27469bfcc9",
+      "size": 6161
+    },
+    "/var/lib/structure32_teacher_robust_v2/structure_margin_objectives.py": {
+      "sha256": "78418f71fbceca5c325254d49cae61b0e71b84bba52a7d03de93b79bccef2766",
+      "size": 2435
+    },
+    "/var/lib/structure32_teacher_robust_v2/teacher_refine.py": {
+      "sha256": "34895547c2a5c30495589c538e998aca3a704c6e7ddc7f90640b5dac5bbb6ce5",
+      "size": 15420
+    },
+    "/var/lib/structure32_teacher_robust_v2/test_protocol.py": {
+      "sha256": "1af28ba76410b359ac8a28d6e01376adb184c57a813484d93a20ae5e74362081",
+      "size": 3660
+    },
+    "/var/lib/structure32_teacher_robust_v2/transfer_proxy.py": {
+      "sha256": "45e9a8509dcaa9da1756cc5f0277bdc4688be5214a6ded2db582b61416a48362",
+      "size": 8127
+    },
+    "/var/lib/structure32_teacher_robust_v2/transfer_refine.py": {
+      "sha256": "7fb9021665bc730dca8f053aa9e819b6716df2098e668ebe0e51e7507e20ec96",
+      "size": 12580
+    }
+  }
+}

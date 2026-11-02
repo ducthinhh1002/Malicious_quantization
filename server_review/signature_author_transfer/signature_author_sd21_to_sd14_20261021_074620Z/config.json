@@ -1,0 +1,31 @@
+{
+  "method": "official_stable_signature_sd21_to_sd14_lora",
+  "seed": 2310,
+  "resolution": 512,
+  "sampling_steps": 50,
+  "guidance": 3.0,
+  "vram_limit_gb": 32.0,
+  "probe_steps": 5000,
+  "probe_batch": 2,
+  "probe_accumulation": 2,
+  "student_lr": 1e-05,
+  "smoke": false,
+  "matrix": [
+    {
+      "rank": 4,
+      "scope": "attention"
+    },
+    {
+      "rank": 4,
+      "scope": "attention_conv"
+    },
+    {
+      "rank": 16,
+      "scope": "attention"
+    },
+    {
+      "rank": 16,
+      "scope": "attention_conv"
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "folder": "E:\\Research\\Malicious_quantization\\BEST_TEACHER_32bits_refine",
+  "role": "original teacher32 refinement source plus local-verified server snapshots and creation documents",
+  "main_files": [
+    "campaign.py",
+    "k1_original.py",
+    "core/structure_margin_refine.py",
+    "core/structure_margin_objectives.py"
+  ],
+  "source_server": ".21 /var/lib/structure32_student12500",
+  "teacher_checkpoint_sha256": "2f9fc8d664786acfe50bf7d47c20e037a92e4cc61805524233bd7f15f365a2d8",
+  "checkpoint_local": "E:/Research/Malicious_quantization/checkpoint/structure/32bit_rank32/teacher_refine600",
+  "base_models_and_images_not_copied_into_this_folder": true,
+  "original_server_paths_in_source_preserved": true,
+  "runtime_metadata_retained_on_servers": "shared prompt/config/assets/carrier and student experiment identities needed for active training/evaluation",
+  "scope": "remove explicit private teacher-training/refinement source, compiled copies, code archives, specs/protocols/loss logs; leave model checkpoints and shared generic harness",
+  "not_a_guarantee": "other pre-existing copies, administrator snapshots and model checkpoint access are not controlled by source deletion"
+}

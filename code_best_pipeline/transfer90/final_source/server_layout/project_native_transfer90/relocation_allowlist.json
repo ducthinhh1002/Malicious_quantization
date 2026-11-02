@@ -1,0 +1,36 @@
+{
+  "created_utc": "2026-10-27T13:11:44.216563+00:00",
+  "files": {
+    "/var/lib/wmq/logs/project_native_transfer90/bootstrap.py": {
+      "original_sha256": "fe4fd5d01444453a5019e98cca4e01f8ed6e19dc270c4e78f19a7e2d174419b5",
+      "relocated_sha256": "af385592b1c3d7d230d8dedcea2d0d893b09406ef84d50738eb083375f5347d7",
+      "reason": "deployment path / integrity adapter only"
+    },
+    "/var/lib/wmq/logs/project_native_transfer90/campaign.py": {
+      "original_sha256": "63f244e6917367eb040c06e387ad6ec8b459bc44aff5c39801b3b3d769493baf",
+      "relocated_sha256": "4d49845227a5a35a15410cfec480d9cadc6efaea607b6684710a92d4c43826a5",
+      "reason": "deployment path / integrity adapter only"
+    },
+    "/var/lib/wmq/logs/project_native_transfer90/run.sh": {
+      "original_sha256": "56933573c50147079ddce8ad30285d7da51610aec86f12d4bbe27753d73ef635",
+      "relocated_sha256": "1b3e6bbff6b83cae4c8b91164dd6c0ce3d10db3a4450a53a98bf36780bbf13dc",
+      "reason": "deployment path / integrity adapter only"
+    },
+    "/var/lib/wmq/logs/threshold_quality_20261022/Malicious_quantization/bitmark_lora/common.py": {
+      "original_sha256": "9ab7f703d573fea68d1f84296d54b3828c292315429da99d7f07f17345b8641e",
+      "relocated_sha256": "946c8f4895fa0803f42b90ec28a76e83d66daa644689a5504f11c3913dc46343",
+      "reason": "existing read-time deployment path mapping; original copy hash checked"
+    }
+  },
+  "frozen_evidence_sha256": {
+    "/var/lib/wmq/logs/project_native_transfer90/runs/run_20261026_114758_661241/code_manifest.json": "ee24e95092d3896ac4f85afa12ca562c99dfcd5bf04e1a9f1a89795cd7cfee1f",
+    "/var/lib/wmq/logs/project_native_transfer90/runs/run_20261026_114758_661241/dependency_code_manifest.json": "96cf62a70a1fe8789429bd89bce379d1b5ae9ac5236d5a70ad4eb8de46eeb52a",
+    "/var/lib/wmq/logs/project_native_transfer90/runs/run_20261026_114758_661241/input_manifest.json": "bf33f2540799ce4b85468c2b341da896db3ed4b6d45ce26145a9c53fcecd54c6",
+    "/var/lib/wmq/logs/project_native_transfer90/runs/run_20261026_114758_661241/transfer90/config.json": "4c4a3cf60b3d13d261e399edc1aa241c48a10e975f28a228b6850fba813ccf42",
+    "/var/lib/wmq/logs/project_native_transfer90/runs/run_20261026_114758_661241/transfer90/assets.json": "669b0f51cc983358f0f6c8d63f728854211715bf9b401357c87b65b817250035",
+    "/var/lib/wmq/logs/project_native_transfer90/runs/run_20261026_114758_661241/transfer90/result/student_summary.json": "0059f5b1d9238c45b51aa5ee7da126365073d3499a9c18d81ea512b4b905faf3",
+    "/var/lib/wmq/logs/project_native_transfer90/runs/run_20261026_114758_661241/transfer90/result/verification.json": "74fa9063fc27e88c79796c5dd5a7f388486ea07fd8f246eacedd69cf8eb0c413"
+  },
+  "retired_dead_symlinks": 32,
+  "note": "Original experiment manifests/configs/results retained byte-for-byte. Allowlist covers only exact audited code hashes."
+}

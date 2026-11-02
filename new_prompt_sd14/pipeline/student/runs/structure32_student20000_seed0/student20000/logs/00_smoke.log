@@ -1,0 +1,30 @@
+11/01/2026 13:36:57 - INFO - structure12500_pinned_trainer - Distributed environment: DistributedType.NO
+Num processes: 1
+Process index: 0
+Local process index: 0
+Device: cuda
+
+Mixed precision type: fp16
+
+{'variance_type', 'thresholding', 'rescale_betas_zero_snr', 'sample_max_value', 'prediction_type', 'clip_sample_range', 'dynamic_thresholding_ratio', 'timestep_spacing'} was not found in config. Values will be initialized to default values.
+{'shift_factor', 'norm_num_groups', 'force_upcast', 'latents_std', 'latents_mean', 'mid_block_add_attention', 'use_quant_conv', 'use_post_quant_conv'} was not found in config. Values will be initialized to default values.
+All model checkpoint weights were used when initializing AutoencoderKL.
+
+All the weights of AutoencoderKL were initialized from the model checkpoint at /var/lib/vllm/runtime/cache/CompVis--stable-diffusion-v1-4/133a221b8aa7292a167afc5127cb63fb5005638b.
+If your task is similar to the task the model of the checkpoint was trained on, you can already use AutoencoderKL for predictions without further training.
+{'conv_in_kernel', 'reverse_transformer_layers_per_block', 'use_linear_projection', 'num_attention_heads', 'mid_block_only_cross_attention', 'transformer_layers_per_block', 'time_embedding_type', 'resnet_skip_time_act', 'resnet_time_scale_shift', 'time_embedding_dim', 'addition_embed_type_num_heads', 'projection_class_embeddings_input_dim', 'time_embedding_act_fn', 'resnet_out_scale_factor', 'upcast_attention', 'encoder_hid_dim_type', 'class_embed_type', 'time_cond_proj_dim', 'num_class_embeds', 'conv_out_kernel', 'dual_cross_attention', 'cross_attention_norm', 'dropout', 'mid_block_type', 'encoder_hid_dim', 'attention_type', 'class_embeddings_concat', 'addition_time_embed_dim', 'timestep_post_act', 'addition_embed_type', 'only_cross_attention'} was not found in config. Values will be initialized to default values.
+All model checkpoint weights were used when initializing UNet2DConditionModel.
+
+All the weights of UNet2DConditionModel were initialized from the model checkpoint at /var/lib/vllm/runtime/cache/CompVis--stable-diffusion-v1-4/133a221b8aa7292a167afc5127cb63fb5005638b.
+If your task is similar to the task the model of the checkpoint was trained on, you can already use UNet2DConditionModel for predictions without further training.
+Downloading data:   0%|          | 0/5001 [00:00<?, ?files/s]Downloading data: 100%|██████████| 5001/5001 [00:00<00:00, 83444.91files/s]
+Generating train split: 0 examples [00:00, ? examples/s]Generating train split: 3445 examples [00:00, 34232.93 examples/s]Generating train split: 5000 examples [00:00, 35752.25 examples/s]
+11/01/2026 13:37:01 - INFO - structure12500_pinned_trainer - ***** Running training *****
+11/01/2026 13:37:01 - INFO - structure12500_pinned_trainer -   Num examples = 5000
+11/01/2026 13:37:01 - INFO - structure12500_pinned_trainer -   Num Epochs = 1
+11/01/2026 13:37:01 - INFO - structure12500_pinned_trainer -   Instantaneous batch size per device = 4
+11/01/2026 13:37:01 - INFO - structure12500_pinned_trainer -   Total train batch size (w. parallel, distributed & accumulation) = 4
+11/01/2026 13:37:01 - INFO - structure12500_pinned_trainer -   Gradient Accumulation steps = 1
+11/01/2026 13:37:01 - INFO - structure12500_pinned_trainer -   Total optimization steps = 4
+Steps:   0%|          | 0/4 [00:00<?, ?it/s]Steps:  25%|██▌       | 1/4 [00:02<00:08,  2.69s/it]Steps:  25%|██▌       | 1/4 [00:02<00:08,  2.69s/it, lr=0.0001, step_loss=0.0474]Steps:  50%|█████     | 2/4 [00:03<00:02,  1.36s/it, lr=0.0001, step_loss=0.0474]Steps:  50%|█████     | 2/4 [00:03<00:02,  1.36s/it, lr=0.0001, step_loss=0.0718]Steps:  75%|███████▌  | 3/4 [00:03<00:00,  1.08it/s, lr=0.0001, step_loss=0.0718]Steps:  75%|███████▌  | 3/4 [00:03<00:00,  1.08it/s, lr=0.0001, step_loss=0.17]  Steps: 100%|██████████| 4/4 [00:03<00:00,  1.39it/s, lr=0.0001, step_loss=0.17]Steps: 100%|██████████| 4/4 [00:03<00:00,  1.39it/s, lr=0.0001, step_loss=0.085]Model weights saved in /var/lib/structure32_newprompts_rank32/sd14_coco_disjoint/student/runs/structure32_student20000_seed0/student20000/technical_smoke/pytorch_lora_weights.safetensors
+Steps: 100%|██████████| 4/4 [00:04<00:00,  1.10s/it, lr=0.0001, step_loss=0.085]

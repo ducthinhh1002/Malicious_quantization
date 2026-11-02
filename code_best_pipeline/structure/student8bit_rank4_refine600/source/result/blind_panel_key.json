@@ -1,0 +1,802 @@
+[
+  {
+    "index": 10,
+    "candidate": "B"
+  },
+  {
+    "index": 15,
+    "candidate": "A"
+  },
+  {
+    "index": 18,
+    "candidate": "B"
+  },
+  {
+    "index": 28,
+    "candidate": "B"
+  },
+  {
+    "index": 29,
+    "candidate": "B"
+  },
+  {
+    "index": 43,
+    "candidate": "B"
+  },
+  {
+    "index": 46,
+    "candidate": "B"
+  },
+  {
+    "index": 51,
+    "candidate": "A"
+  },
+  {
+    "index": 53,
+    "candidate": "B"
+  },
+  {
+    "index": 66,
+    "candidate": "A"
+  },
+  {
+    "index": 74,
+    "candidate": "A"
+  },
+  {
+    "index": 76,
+    "candidate": "B"
+  },
+  {
+    "index": 80,
+    "candidate": "B"
+  },
+  {
+    "index": 94,
+    "candidate": "A"
+  },
+  {
+    "index": 100,
+    "candidate": "A"
+  },
+  {
+    "index": 101,
+    "candidate": "B"
+  },
+  {
+    "index": 114,
+    "candidate": "A"
+  },
+  {
+    "index": 117,
+    "candidate": "B"
+  },
+  {
+    "index": 119,
+    "candidate": "B"
+  },
+  {
+    "index": 120,
+    "candidate": "B"
+  },
+  {
+    "index": 128,
+    "candidate": "B"
+  },
+  {
+    "index": 130,
+    "candidate": "B"
+  },
+  {
+    "index": 131,
+    "candidate": "B"
+  },
+  {
+    "index": 133,
+    "candidate": "B"
+  },
+  {
+    "index": 138,
+    "candidate": "A"
+  },
+  {
+    "index": 139,
+    "candidate": "A"
+  },
+  {
+    "index": 142,
+    "candidate": "A"
+  },
+  {
+    "index": 150,
+    "candidate": "A"
+  },
+  {
+    "index": 151,
+    "candidate": "A"
+  },
+  {
+    "index": 154,
+    "candidate": "A"
+  },
+  {
+    "index": 166,
+    "candidate": "B"
+  },
+  {
+    "index": 169,
+    "candidate": "A"
+  },
+  {
+    "index": 173,
+    "candidate": "B"
+  },
+  {
+    "index": 175,
+    "candidate": "B"
+  },
+  {
+    "index": 187,
+    "candidate": "A"
+  },
+  {
+    "index": 190,
+    "candidate": "B"
+  },
+  {
+    "index": 193,
+    "candidate": "B"
+  },
+  {
+    "index": 195,
+    "candidate": "A"
+  },
+  {
+    "index": 206,
+    "candidate": "B"
+  },
+  {
+    "index": 213,
+    "candidate": "A"
+  },
+  {
+    "index": 214,
+    "candidate": "A"
+  },
+  {
+    "index": 216,
+    "candidate": "B"
+  },
+  {
+    "index": 219,
+    "candidate": "A"
+  },
+  {
+    "index": 221,
+    "candidate": "A"
+  },
+  {
+    "index": 235,
+    "candidate": "A"
+  },
+  {
+    "index": 247,
+    "candidate": "B"
+  },
+  {
+    "index": 250,
+    "candidate": "A"
+  },
+  {
+    "index": 251,
+    "candidate": "B"
+  },
+  {
+    "index": 259,
+    "candidate": "A"
+  },
+  {
+    "index": 260,
+    "candidate": "B"
+  },
+  {
+    "index": 261,
+    "candidate": "B"
+  },
+  {
+    "index": 267,
+    "candidate": "A"
+  },
+  {
+    "index": 268,
+    "candidate": "A"
+  },
+  {
+    "index": 289,
+    "candidate": "B"
+  },
+  {
+    "index": 290,
+    "candidate": "A"
+  },
+  {
+    "index": 294,
+    "candidate": "A"
+  },
+  {
+    "index": 296,
+    "candidate": "B"
+  },
+  {
+    "index": 304,
+    "candidate": "A"
+  },
+  {
+    "index": 307,
+    "candidate": "A"
+  },
+  {
+    "index": 312,
+    "candidate": "B"
+  },
+  {
+    "index": 313,
+    "candidate": "B"
+  },
+  {
+    "index": 316,
+    "candidate": "B"
+  },
+  {
+    "index": 317,
+    "candidate": "B"
+  },
+  {
+    "index": 350,
+    "candidate": "B"
+  },
+  {
+    "index": 352,
+    "candidate": "A"
+  },
+  {
+    "index": 359,
+    "candidate": "A"
+  },
+  {
+    "index": 380,
+    "candidate": "A"
+  },
+  {
+    "index": 383,
+    "candidate": "A"
+  },
+  {
+    "index": 384,
+    "candidate": "B"
+  },
+  {
+    "index": 385,
+    "candidate": "A"
+  },
+  {
+    "index": 387,
+    "candidate": "B"
+  },
+  {
+    "index": 391,
+    "candidate": "B"
+  },
+  {
+    "index": 393,
+    "candidate": "B"
+  },
+  {
+    "index": 394,
+    "candidate": "A"
+  },
+  {
+    "index": 397,
+    "candidate": "A"
+  },
+  {
+    "index": 400,
+    "candidate": "B"
+  },
+  {
+    "index": 403,
+    "candidate": "A"
+  },
+  {
+    "index": 407,
+    "candidate": "A"
+  },
+  {
+    "index": 410,
+    "candidate": "A"
+  },
+  {
+    "index": 414,
+    "candidate": "B"
+  },
+  {
+    "index": 426,
+    "candidate": "A"
+  },
+  {
+    "index": 430,
+    "candidate": "B"
+  },
+  {
+    "index": 444,
+    "candidate": "A"
+  },
+  {
+    "index": 445,
+    "candidate": "B"
+  },
+  {
+    "index": 446,
+    "candidate": "B"
+  },
+  {
+    "index": 447,
+    "candidate": "A"
+  },
+  {
+    "index": 449,
+    "candidate": "B"
+  },
+  {
+    "index": 459,
+    "candidate": "B"
+  },
+  {
+    "index": 473,
+    "candidate": "B"
+  },
+  {
+    "index": 476,
+    "candidate": "A"
+  },
+  {
+    "index": 477,
+    "candidate": "B"
+  },
+  {
+    "index": 479,
+    "candidate": "B"
+  },
+  {
+    "index": 481,
+    "candidate": "B"
+  },
+  {
+    "index": 483,
+    "candidate": "A"
+  },
+  {
+    "index": 486,
+    "candidate": "A"
+  },
+  {
+    "index": 500,
+    "candidate": "B"
+  },
+  {
+    "index": 501,
+    "candidate": "B"
+  },
+  {
+    "index": 505,
+    "candidate": "A"
+  },
+  {
+    "index": 508,
+    "candidate": "A"
+  },
+  {
+    "index": 509,
+    "candidate": "A"
+  },
+  {
+    "index": 511,
+    "candidate": "A"
+  },
+  {
+    "index": 514,
+    "candidate": "B"
+  },
+  {
+    "index": 515,
+    "candidate": "B"
+  },
+  {
+    "index": 517,
+    "candidate": "A"
+  },
+  {
+    "index": 518,
+    "candidate": "B"
+  },
+  {
+    "index": 519,
+    "candidate": "B"
+  },
+  {
+    "index": 521,
+    "candidate": "A"
+  },
+  {
+    "index": 525,
+    "candidate": "B"
+  },
+  {
+    "index": 528,
+    "candidate": "A"
+  },
+  {
+    "index": 529,
+    "candidate": "A"
+  },
+  {
+    "index": 534,
+    "candidate": "A"
+  },
+  {
+    "index": 540,
+    "candidate": "B"
+  },
+  {
+    "index": 545,
+    "candidate": "B"
+  },
+  {
+    "index": 550,
+    "candidate": "A"
+  },
+  {
+    "index": 555,
+    "candidate": "B"
+  },
+  {
+    "index": 556,
+    "candidate": "A"
+  },
+  {
+    "index": 557,
+    "candidate": "B"
+  },
+  {
+    "index": 560,
+    "candidate": "B"
+  },
+  {
+    "index": 575,
+    "candidate": "B"
+  },
+  {
+    "index": 593,
+    "candidate": "A"
+  },
+  {
+    "index": 601,
+    "candidate": "A"
+  },
+  {
+    "index": 603,
+    "candidate": "A"
+  },
+  {
+    "index": 609,
+    "candidate": "B"
+  },
+  {
+    "index": 612,
+    "candidate": "B"
+  },
+  {
+    "index": 613,
+    "candidate": "A"
+  },
+  {
+    "index": 621,
+    "candidate": "A"
+  },
+  {
+    "index": 628,
+    "candidate": "A"
+  },
+  {
+    "index": 632,
+    "candidate": "B"
+  },
+  {
+    "index": 638,
+    "candidate": "B"
+  },
+  {
+    "index": 639,
+    "candidate": "B"
+  },
+  {
+    "index": 645,
+    "candidate": "B"
+  },
+  {
+    "index": 647,
+    "candidate": "B"
+  },
+  {
+    "index": 650,
+    "candidate": "B"
+  },
+  {
+    "index": 655,
+    "candidate": "B"
+  },
+  {
+    "index": 666,
+    "candidate": "B"
+  },
+  {
+    "index": 673,
+    "candidate": "A"
+  },
+  {
+    "index": 677,
+    "candidate": "A"
+  },
+  {
+    "index": 681,
+    "candidate": "A"
+  },
+  {
+    "index": 696,
+    "candidate": "B"
+  },
+  {
+    "index": 705,
+    "candidate": "A"
+  },
+  {
+    "index": 709,
+    "candidate": "A"
+  },
+  {
+    "index": 711,
+    "candidate": "B"
+  },
+  {
+    "index": 718,
+    "candidate": "A"
+  },
+  {
+    "index": 725,
+    "candidate": "B"
+  },
+  {
+    "index": 742,
+    "candidate": "A"
+  },
+  {
+    "index": 745,
+    "candidate": "A"
+  },
+  {
+    "index": 746,
+    "candidate": "A"
+  },
+  {
+    "index": 747,
+    "candidate": "A"
+  },
+  {
+    "index": 753,
+    "candidate": "A"
+  },
+  {
+    "index": 759,
+    "candidate": "B"
+  },
+  {
+    "index": 762,
+    "candidate": "B"
+  },
+  {
+    "index": 770,
+    "candidate": "A"
+  },
+  {
+    "index": 772,
+    "candidate": "A"
+  },
+  {
+    "index": 778,
+    "candidate": "B"
+  },
+  {
+    "index": 783,
+    "candidate": "B"
+  },
+  {
+    "index": 785,
+    "candidate": "A"
+  },
+  {
+    "index": 790,
+    "candidate": "A"
+  },
+  {
+    "index": 791,
+    "candidate": "A"
+  },
+  {
+    "index": 795,
+    "candidate": "B"
+  },
+  {
+    "index": 802,
+    "candidate": "A"
+  },
+  {
+    "index": 805,
+    "candidate": "A"
+  },
+  {
+    "index": 806,
+    "candidate": "A"
+  },
+  {
+    "index": 817,
+    "candidate": "B"
+  },
+  {
+    "index": 820,
+    "candidate": "B"
+  },
+  {
+    "index": 822,
+    "candidate": "A"
+  },
+  {
+    "index": 832,
+    "candidate": "B"
+  },
+  {
+    "index": 833,
+    "candidate": "A"
+  },
+  {
+    "index": 835,
+    "candidate": "A"
+  },
+  {
+    "index": 838,
+    "candidate": "A"
+  },
+  {
+    "index": 843,
+    "candidate": "A"
+  },
+  {
+    "index": 847,
+    "candidate": "A"
+  },
+  {
+    "index": 849,
+    "candidate": "B"
+  },
+  {
+    "index": 851,
+    "candidate": "B"
+  },
+  {
+    "index": 856,
+    "candidate": "B"
+  },
+  {
+    "index": 858,
+    "candidate": "B"
+  },
+  {
+    "index": 869,
+    "candidate": "A"
+  },
+  {
+    "index": 871,
+    "candidate": "B"
+  },
+  {
+    "index": 872,
+    "candidate": "A"
+  },
+  {
+    "index": 876,
+    "candidate": "B"
+  },
+  {
+    "index": 878,
+    "candidate": "A"
+  },
+  {
+    "index": 881,
+    "candidate": "A"
+  },
+  {
+    "index": 897,
+    "candidate": "A"
+  },
+  {
+    "index": 898,
+    "candidate": "B"
+  },
+  {
+    "index": 912,
+    "candidate": "A"
+  },
+  {
+    "index": 924,
+    "candidate": "B"
+  },
+  {
+    "index": 927,
+    "candidate": "A"
+  },
+  {
+    "index": 932,
+    "candidate": "A"
+  },
+  {
+    "index": 937,
+    "candidate": "A"
+  },
+  {
+    "index": 938,
+    "candidate": "B"
+  },
+  {
+    "index": 947,
+    "candidate": "B"
+  },
+  {
+    "index": 951,
+    "candidate": "B"
+  },
+  {
+    "index": 956,
+    "candidate": "A"
+  },
+  {
+    "index": 957,
+    "candidate": "B"
+  },
+  {
+    "index": 965,
+    "candidate": "B"
+  },
+  {
+    "index": 967,
+    "candidate": "A"
+  },
+  {
+    "index": 969,
+    "candidate": "A"
+  },
+  {
+    "index": 973,
+    "candidate": "B"
+  },
+  {
+    "index": 976,
+    "candidate": "B"
+  },
+  {
+    "index": 979,
+    "candidate": "B"
+  },
+  {
+    "index": 982,
+    "candidate": "B"
+  }
+]

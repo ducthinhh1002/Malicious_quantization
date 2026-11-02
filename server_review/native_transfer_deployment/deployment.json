@@ -1,0 +1,10 @@
+{
+  "session": "native_transfer_20261017_174732Z",
+  "code": "/root/logs/native_transfer_candidate_20261018",
+  "script": "/root/logs/native_transfer_20261017_174732Z.sh",
+  "smoke": "/root/logs/results/native_transfer_20261017_174732Z_smoke",
+  "pilot": "/root/logs/results/native_transfer_20261017_174732Z_pilot",
+  "smoke_log": "/root/logs/native_transfer_20261017_174732Z_smoke.log",
+  "pilot_log": "/root/logs/native_transfer_20261017_174732Z_pilot.log",
+  "production_waits_for_gpu_smoke": true
+}

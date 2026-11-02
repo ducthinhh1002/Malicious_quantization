@@ -1,0 +1,16 @@
+{
+  "checked_at_utc": "2026-10-18T04:12:14.479518+00:00",
+  "local_tests_passed": 18,
+  "server_tests_passed": 18,
+  "gpu_resize_backward": "passed",
+  "frozen_audit": "complete",
+  "repair": {
+    "status": "complete",
+    "carrier_unchanged": true,
+    "source_checkpoint_unchanged": true,
+    "final_test_used": false,
+    "students_run": false
+  },
+  "efficacy_of_repair_not_yet_established": false,
+  "repair_improved_generalization": false
+}

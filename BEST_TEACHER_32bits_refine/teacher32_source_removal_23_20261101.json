@@ -1,0 +1,20 @@
+{
+  "host": "23",
+  "time": 1793538813.3138473,
+  "locally_verified_before_delete": true,
+  "deleted_files": [
+    "/var/lib/structure32_teacher_refine600/DOWNLOAD_COMPLETE.json",
+    "/var/lib/structure32_teacher_refine600/DOWNLOAD_MANIFEST.json",
+    "/var/lib/structure32_teacher_refine600/checkpoint-600/checkpoint.json",
+    "/var/lib/structure32_teacher_refine600/losses.jsonl",
+    "/var/lib/structure32_teacher_refine600/metadata/assets.json",
+    "/var/lib/structure32_teacher_refine600/metadata/config.json",
+    "/var/lib/structure32_teacher_refine600/metadata/prompts.json",
+    "/var/lib/structure32_teacher_refine600/metadata/teacher_choice.json",
+    "/var/lib/structure32_teacher_refine600/protocol.json",
+    "/var/lib/structure32_teacher_refine600/trained.json"
+  ],
+  "export_staging_removed": true,
+  "teacher_adapter_preserved": "/var/lib/structure32_teacher_refine600/adapter_model.safetensors",
+  "shared_harness_runtime_and_student_dependencies_preserved": true
+}

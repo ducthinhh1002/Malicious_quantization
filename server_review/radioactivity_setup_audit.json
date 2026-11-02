@@ -1,0 +1,27 @@
+{
+  "pairing": {
+    "C00": {
+      "count": 5000,
+      "mismatches": []
+    },
+    "C10": {
+      "count": 5000,
+      "mismatches": []
+    }
+  },
+  "text_encoder_cross_version": {
+    "token_ids_identical": true,
+    "embedding_max_abs_difference": 0.0,
+    "embedding_relative_l2_difference": 0.0,
+    "serum_environment": {
+      "transformers": "4.53.1",
+      "tokenizer": "CLIPTokenizer",
+      "revision": "133a221b8aa7292a167afc5127cb63fb5005638b"
+    },
+    "student_environment": {
+      "transformers": "5.19.0",
+      "tokenizer": "CLIPTokenizer",
+      "revision": "133a221b8aa7292a167afc5127cb63fb5005638b"
+    }
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "step": 200,
+  "checkpoint_sha256": "0a36d6749a54925d453cc781dfb1781d1f6f6c5a70d18e2cc78f6db1b2750461",
+  "checkpoint": "/root/logs/runtime/lcf_artifacts/spatial_df2df08e/teacher_selected.pt",
+  "validation": [
+    {
+      "key": 34,
+      "split": "teacher_validation",
+      "tpr": 0.0,
+      "clean_fpr": 0.0,
+      "bit_accuracy": 0.42578125,
+      "psnr": 63.01280927658081,
+      "psnr_p05": 60.11518669128418,
+      "lpips": 1.4531192206845844e-05,
+      "lpips_p95": 2.5267639375670112e-05,
+      "clip_drop": -5.8175064623355865e-06,
+      "diversity_ratio": 0.9997753015948931,
+      "mean_gain": -2.9802322387695312e-08,
+      "threshold": -2.6320531368255615,
+      "calibration_split": "calibration",
+      "score_scale": 0.05,
+      "passes": false,
+      "auroc": 0.5,
+      "paired_win_rate": 0.5,
+      "paired_gain_std": 1.1267288157309079e-05,
+      "step": 200
+    },
+    {
+      "key": 221,
+      "split": "teacher_validation",
+      "tpr": 0.03125,
+      "clean_fpr": 0.03125,
+      "bit_accuracy": 0.5703125,
+      "psnr": 63.01356029510498,
+      "psnr_p05": 60.15746879577637,
+      "lpips": 1.4521829328373315e-05,
+      "lpips_p95": 2.6713632541941477e-05,
+      "clip_drop": -4.734378308057785e-06,
+      "diversity_ratio": 1.0002135258918365,
+      "mean_gain": -1.1846423149108887e-06,
+      "threshold": -2.615267276763916,
+      "calibration_split": "calibration",
+      "score_scale": 0.05,
+      "passes": false,
+      "auroc": 0.49951171875,
+      "paired_win_rate": 0.484375,
+      "paired_gain_std": 9.418379689627036e-06,
+      "step": 200
+    }
+  ],
+  "selection": "frozen validation gates, worst-key AUROC, TPR-FPR, paired gain, quality; no test data"
+}

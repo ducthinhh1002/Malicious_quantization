@@ -1,0 +1,13 @@
+{
+  "review_date": "2026-10-11",
+  "reviewer": "assistant visual inspection",
+  "reviewed_source_prompt_rows": 50,
+  "composition": "25 clean and 25 watermarked rows; raw and existing mild/strong images inspected on ten contact sheets",
+  "current_training_scope": "raw and strong only; inspecting existing mild images does not schedule mild training",
+  "findings": [
+    "No visible row-swapping or unrelated source/regeneration pairing found in the 50 sampled rows. All strong variants visibly correspond to their raw source.",
+    "Strong regeneration changes faces, texture, lighting and small details. This inspection does not establish utility equivalence.",
+    "Some raw teacher images only partially satisfy complex captions: clean 3616 depicts a human swordsman rather than an anthropomorphic tree; watermarked 4911 depicts a man and cat rather than the requested dog and cat. The corresponding regenerated images preserve these source limitations, so these examples are not evidence of filename-index mispairing.",
+    "The visual sample is a sanity check, not a quantitative quality or watermark measurement. Full automated pairing and decode checks cover all datasets."
+  ]
+}

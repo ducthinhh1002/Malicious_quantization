@@ -1,0 +1,14 @@
+{
+  "coverage": {
+    "eligible": 14646,
+    "outside_domain": 20183,
+    "explicit_lighting": 952,
+    "ambiguous": 1095
+  },
+  "available_per_group": [
+    5901,
+    3941,
+    2728,
+    2076
+  ]
+}

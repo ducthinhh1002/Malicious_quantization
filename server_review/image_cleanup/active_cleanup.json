@@ -1,0 +1,5 @@
+{
+  "script": "/root/logs/image_cleanup_20261018_093011Z.py",
+  "plan": "/root/logs/image_cleanup_20261018_093011Z.plan.json",
+  "tag": "image_cleanup_20261018_093011Z"
+}

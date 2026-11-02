@@ -1,0 +1,11 @@
+{
+  "scientific_result": false,
+  "purpose": "full pilot-shaped owner hypergradient/VRAM smoke; weights excluded from pilot",
+  "passed": true,
+  "resolution": 512,
+  "inner_steps": 4,
+  "student_generation_steps": 8,
+  "max_allocated_gb": 69.3722472190857,
+  "max_reserved_gb": 79.609375,
+  "source_script_sha256": "7557d4617bc2c1c0f37dc59186faf22b8876df15120bf4188c091629d0b94a8e"
+}

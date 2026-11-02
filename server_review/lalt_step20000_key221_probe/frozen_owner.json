@@ -1,0 +1,14 @@
+{
+  "tag": "lalt_step20000_key221_probe_20261018_231633Z",
+  "reports": "/root/logs/results/lalt_step20000_key221_probe_20261018_231633Z",
+  "artifacts": "/root/logs/runtime/lalt_probe_artifacts/lalt_step20000_key221_probe_20261018_231633Z",
+  "checkpoint": "/root/logs/runtime/lalt_probe_artifacts/lalt_step20000_key221_probe_20261018_231633Z/owner_step20000.pt",
+  "sha256": "bce50d0a1a450ae315a90c4bfcfafe22c93b6bb79ceea85980a9ddef357e8eb0",
+  "source_run": "/root/logs/results/lalt_stable_reader_20261018_111112Z",
+  "owner_step": 20000,
+  "step": 20000,
+  "probe_key": 221,
+  "probe_wrong_key": 34,
+  "cache_run": "/root/logs/results/lalt_20261018_053126Z_diagnostic",
+  "key_selection": "User selected key221 with 83.59375% teacher validation TPR at step20000; development selection, not final test"
+}

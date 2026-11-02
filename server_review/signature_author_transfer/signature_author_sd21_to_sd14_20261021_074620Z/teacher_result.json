@@ -1,0 +1,105 @@
+{
+  "empirical_nominal_1pct": {
+    "marked": {
+      "n": 1000,
+      "bit_accuracy": 0.9975,
+      "exact_message_rate": 0.921,
+      "detections": 1000,
+      "detection_rate": 1.0,
+      "ci95": [
+        0.9961732415144451,
+        1
+      ],
+      "threshold_matches": 29
+    },
+    "clean": {
+      "n": 1000,
+      "bit_accuracy": 0.45679166666666665,
+      "exact_message_rate": 0.0,
+      "detections": 23,
+      "detection_rate": 0.023,
+      "ci95": [
+        0.01537427693299309,
+        0.0342764506622263
+      ],
+      "threshold_matches": 29
+    },
+    "calibration": {
+      "n": 512,
+      "bit_accuracy": 0.4572347005208333,
+      "exact_message_rate": 0.0,
+      "detections": 5,
+      "detection_rate": 0.009765625,
+      "ci95": [
+        0.004178301706740387,
+        0.0226544752715544
+      ],
+      "threshold_matches": 29
+    }
+  },
+  "binomial_nominal_1pct": {
+    "marked": {
+      "n": 1000,
+      "bit_accuracy": 0.9975,
+      "exact_message_rate": 0.921,
+      "detections": 1000,
+      "detection_rate": 1.0,
+      "ci95": [
+        0.9961732415144451,
+        1
+      ],
+      "threshold_matches": 33
+    },
+    "clean": {
+      "n": 1000,
+      "bit_accuracy": 0.45679166666666665,
+      "exact_message_rate": 0.0,
+      "detections": 0,
+      "detection_rate": 0.0,
+      "ci95": [
+        0,
+        0.0038267584855549135
+      ],
+      "threshold_matches": 33
+    }
+  },
+  "binomial_nominal_1e_6": {
+    "marked": {
+      "n": 1000,
+      "bit_accuracy": 0.9975,
+      "exact_message_rate": 0.921,
+      "detections": 1000,
+      "detection_rate": 1.0,
+      "ci95": [
+        0.9961732415144451,
+        1
+      ],
+      "threshold_matches": 41
+    },
+    "clean": {
+      "n": 1000,
+      "bit_accuracy": 0.45679166666666665,
+      "exact_message_rate": 0.0,
+      "detections": 0,
+      "detection_rate": 0.0,
+      "ci95": [
+        0,
+        0.0038267584855549135
+      ],
+      "threshold_matches": 41
+    }
+  },
+  "auroc": 1.0,
+  "paired_bit_accuracy_gain": 0.5407083333333333,
+  "paired_gain_ci95": [
+    0.5365208333333332,
+    0.5448958333333334
+  ],
+  "wrong_key_bit_accuracy": [
+    0.5424583333333334,
+    0.39575,
+    0.41783333333333333,
+    0.541375
+  ],
+  "limitation": "single model seed; empirical FPR measured on independent clean queries; binomial FPR assumes unbiased independent bits"
+}

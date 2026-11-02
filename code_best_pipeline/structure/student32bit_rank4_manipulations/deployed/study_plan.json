@@ -1,0 +1,85 @@
+{
+  "source": "/var/lib/structure32_student12500/runs/structure32",
+  "teacher_adapter_sha256": "2f9fc8d664786acfe50bf7d47c20e037a92e4cc61805524233bd7f15f365a2d8",
+  "teacher_refine_steps": 600,
+  "teacher_robust1200_used": false,
+  "bits": 32,
+  "student_rank": 4,
+  "student_base": "clean pinned SD1.4",
+  "steps": 20000,
+  "train_n": 5000,
+  "test_n": 1000,
+  "source_images_manifest_sha256": "96829ac92f112719e25600c3f81d9b68c38d36cd5630eaf49658e93b08ef3bbb",
+  "settings": {
+    "flip": {
+      "operation": "horizontal_flip",
+      "channel": "tensor"
+    },
+    "rotation15": {
+      "operation": "rotation",
+      "degrees": [
+        -15,
+        15
+      ],
+      "fill": 0.5,
+      "interpolation": "nearest",
+      "channel": "rgb8"
+    },
+    "crop75": {
+      "operation": "crop",
+      "retained_area": 0.75,
+      "ratio": 1,
+      "interpolation": "bilinear",
+      "antialias": true,
+      "channel": "tensor"
+    },
+    "drop96": {
+      "operation": "drop",
+      "keep_probability": 0.96,
+      "fill": 0.5,
+      "shared_rgb_mask": true,
+      "channel": "tensor"
+    },
+    "gaussian005": {
+      "operation": "gaussian",
+      "sigma": 0.05,
+      "bounds": [
+        0,
+        1
+      ],
+      "channel": "tensor"
+    },
+    "brightness07": {
+      "operation": "brightness",
+      "factor": 0.7,
+      "channel": "rgb8"
+    },
+    "blur15": {
+      "operation": "blur",
+      "kernel": 15,
+      "sigma": [
+        0.1,
+        2.0
+      ],
+      "channel": "rgb8"
+    }
+  },
+  "deterministic_per_source_image": true,
+  "training": "ordinary denoising MSE on manipulated image targets; no owner/detector loss",
+  "pixel_channels": "float tensor preserved except declared RGB8 rotation/brightness/blur",
+  "validation_selection": false,
+  "loss_log": "each updates.jsonl",
+  "full_state_every": 1250,
+  "parallel_slots": {
+    "gpu0": 2,
+    "gpu1": 2
+  },
+  "per_process_cap_gib": 40,
+  "source_control_student": "rank32 seven manipulated branches at20000",
+  "key_metrics": "BA, exact32/32, acceptance>=24/32 for1,8,32,64,256; theoretical FPR conditional0.350018%",
+  "new_initialization": "clean SD1.4; fresh rank4 LoRA; no teacher or student LoRA used for initialization",
+  "rank32_reference": "/var/lib/structure32_student_manipulations/continuation20k",
+  "student_source": "same teacher32bit/rank32 original refine600 images",
+  "amp_skip_policy": "report attempted/applied/skipped separately; fail if more than1 skipped update",
+  "rank32_plan_sha256": "c985b5ee6d0c04b867bca7450c823d299ac7fb78218a0c40b36a188316391aae"
+}

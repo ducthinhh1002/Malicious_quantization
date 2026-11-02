@@ -1,0 +1,16 @@
+{
+  "student": "C10_seed0_author",
+  "num_images": 5000,
+  "clipscore_mean": 0.8094776739120484,
+  "clipscore_definition": "2.5 * max(cosine, 0), OpenAI CLIP ViT-B/32",
+  "reference": "/root/workspace/serum/data/utility_teacher_clean",
+  "reference_definition": "5000 clean SD2.1 Base outputs on student_eval prompts; teacher-distribution similarity, not COCO FID",
+  "kid_subset_size": 1000,
+  "kid_subsets": 100,
+  "rng_seed": 42000,
+  "distribution_metrics": {
+    "frechet_inception_distance": 14.377545324077573,
+    "kernel_inception_distance_mean": 0.002071661949157715,
+    "kernel_inception_distance_std": 0.00027008331169973217
+  }
+}

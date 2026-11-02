@@ -1,0 +1,95 @@
+{
+  "rows": [
+    {
+      "key": 221,
+      "paired_effect": -0.0016439281753264368,
+      "key_specificity": 0.019547581672668457,
+      "horizons": [
+        {
+          "horizon": 4,
+          "paired_effect": -0.0016439281753264368
+        },
+        {
+          "horizon": 16,
+          "paired_effect": 0.0004214441869407892
+        }
+      ],
+      "episodes": [
+        {
+          "episode": 0,
+          "horizon": 4,
+          "query": 0,
+          "paired_effect": -0.0010789009975269437,
+          "key_specificity": 0.10486309975385666
+        },
+        {
+          "episode": 0,
+          "horizon": 16,
+          "query": 0,
+          "paired_effect": 0.00425353366881609,
+          "key_specificity": 0.10577461123466492
+        },
+        {
+          "episode": 1,
+          "horizon": 4,
+          "query": 0,
+          "paired_effect": -0.00220895535312593,
+          "key_specificity": 0.019547581672668457
+        },
+        {
+          "episode": 1,
+          "horizon": 16,
+          "query": 0,
+          "paired_effect": -0.003410645294934511,
+          "key_specificity": 0.020738769322633743
+        }
+      ]
+    },
+    {
+      "key": 34,
+      "paired_effect": -0.0007112944149412215,
+      "key_specificity": -0.10741931945085526,
+      "horizons": [
+        {
+          "horizon": 4,
+          "paired_effect": -0.0007112944149412215
+        },
+        {
+          "horizon": 16,
+          "paired_effect": 0.0010560393275227398
+        }
+      ],
+      "episodes": [
+        {
+          "episode": 0,
+          "horizon": 4,
+          "query": 0,
+          "paired_effect": 0.0004966359119862318,
+          "key_specificity": -0.10696375370025635
+        },
+        {
+          "episode": 0,
+          "horizon": 16,
+          "query": 0,
+          "paired_effect": 0.000837676168885082,
+          "key_specificity": -0.10741931945085526
+        },
+        {
+          "episode": 1,
+          "horizon": 4,
+          "query": 0,
+          "paired_effect": -0.0019192247418686748,
+          "key_specificity": -0.019834104925394058
+        },
+        {
+          "episode": 1,
+          "horizon": 16,
+          "query": 0,
+          "paired_effect": 0.0012744024861603975,
+          "key_specificity": -0.020747462287545204
+        }
+      ]
+    }
+  ],
+  "worst_key_effect": -0.10741931945085526
+}

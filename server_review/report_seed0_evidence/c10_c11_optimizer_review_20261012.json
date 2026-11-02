@@ -1,0 +1,122 @@
+{
+  "C10_full_seed0_author": {
+    "optimizer_steps": [
+      19997.0
+    ],
+    "param_groups": [
+      {
+        "lr": 5e-06,
+        "betas": [
+          0.9,
+          0.999
+        ],
+        "eps": 1e-08,
+        "weight_decay": 0.01,
+        "amsgrad": false,
+        "maximize": false,
+        "foreach": null,
+        "capturable": false,
+        "differentiable": false,
+        "fused": null,
+        "decoupled_weight_decay": true,
+        "initial_lr": 5e-06
+      }
+    ],
+    "parameter_count": 686
+  },
+  "C11_full_step1.00_seed0_author": {
+    "optimizer_steps": [
+      19997.0
+    ],
+    "param_groups": [
+      {
+        "lr": 5e-06,
+        "betas": [
+          0.9,
+          0.999
+        ],
+        "eps": 1e-08,
+        "weight_decay": 0.01,
+        "amsgrad": false,
+        "maximize": false,
+        "foreach": null,
+        "capturable": false,
+        "differentiable": false,
+        "fused": null,
+        "decoupled_weight_decay": true,
+        "initial_lr": 5e-06
+      }
+    ],
+    "parameter_count": 686
+  },
+  "C10_seed0_author": {
+    "optimizer_steps": [
+      19997.0
+    ],
+    "param_groups": [
+      {
+        "lr": 1e-05,
+        "betas": [
+          0.9,
+          0.999
+        ],
+        "eps": 1e-08,
+        "weight_decay": 0.01,
+        "amsgrad": false,
+        "maximize": false,
+        "foreach": null,
+        "capturable": false,
+        "differentiable": false,
+        "fused": null,
+        "decoupled_weight_decay": true,
+        "initial_lr": 1e-05
+      }
+    ],
+    "parameter_count": 256
+  },
+  "C11_step1.00_seed0_author": {
+    "optimizer_steps": [
+      19998.0
+    ],
+    "param_groups": [
+      {
+        "lr": 1e-05,
+        "betas": [
+          0.9,
+          0.999
+        ],
+        "eps": 1e-08,
+        "weight_decay": 0.01,
+        "amsgrad": false,
+        "maximize": false,
+        "foreach": null,
+        "capturable": false,
+        "differentiable": false,
+        "fused": null,
+        "decoupled_weight_decay": true,
+        "initial_lr": 1e-05
+      }
+    ],
+    "parameter_count": 256
+  },
+  "clipping_full": [
+    {
+      "before": 18083.6171875,
+      "after": 1.0
+    },
+    {
+      "before": 18083.517578125,
+      "after": 1.0
+    }
+  ],
+  "clipping_lora": [
+    {
+      "before": 32403.9453125,
+      "after": 1.0
+    },
+    {
+      "before": 32403.845703125,
+      "after": 1.0
+    }
+  ]
+}

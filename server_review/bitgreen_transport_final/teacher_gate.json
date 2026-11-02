@@ -1,0 +1,43 @@
+{
+  "arms": {
+    "clean": {
+      "detected": 1,
+      "n": 128,
+      "tpr": 0.0078125,
+      "ci95": [
+        0.0013804318928742412,
+        0.04292625943886061
+      ],
+      "mean_psnr": 120.0,
+      "p05_psnr": 120.0
+    },
+    "plain": {
+      "detected": 0,
+      "n": 128,
+      "tpr": 0.0,
+      "ci95": [
+        0.0,
+        0.029136956273508416
+      ],
+      "mean_psnr": 26.998947500815483,
+      "p05_psnr": 18.534828469559418,
+      "eligible": false
+    },
+    "robust": {
+      "detected": 0,
+      "n": 128,
+      "tpr": 0.0,
+      "ci95": [
+        0.0,
+        0.029136956273508416
+      ],
+      "mean_psnr": 27.36591949040135,
+      "p05_psnr": 19.45515000051642,
+      "eligible": false
+    }
+  },
+  "student_feedback": false,
+  "selection_split": "pilot_eval, never final test",
+  "policy": "If either arm passes, compare BOTH with matched clean student",
+  "run_students": false
+}

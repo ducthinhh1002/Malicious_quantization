@@ -1,0 +1,16 @@
+{
+  "student": "clean SD1.4; new LoRA rank32 attention_conv",
+  "source": "/var/lib/structure32_newprompts_rank32/coco_disjoint_source",
+  "train": 5000,
+  "validation": 1000,
+  "test": 1000,
+  "teacher": "unchanged Structure32 refine600",
+  "bits": 32,
+  "batch_size": 4,
+  "seed": 0,
+  "steps": 20000,
+  "data_reuse": "same read-only prompt JSON and image directories as Sana/PixArt; no regeneration",
+  "run_after": "sana600m releases GPU0 after completion or technical failure",
+  "full_state_every": 1250,
+  "test_selection": false
+}

@@ -1,0 +1,14 @@
+{
+  "steps": 2,
+  "samples_seen": 8,
+  "owner_accumulation": 4,
+  "hashes": {
+    "adapter_model.safetensors": "43808d0904adaadbe663b34eb9dc7cc2a2c3ed5a48f5c8eae50708508f795d71",
+    "adapter_config.json": "9095faefe9604aadd22c28d3055c40f287fe03736f0d25cc49b453ffb2dc775b"
+  },
+  "student_feedback": false,
+  "frozen_reader_trainable_parameters": 0,
+  "owner_only": true,
+  "last_k_gradient_steps": 4,
+  "objective": "constrained"
+}

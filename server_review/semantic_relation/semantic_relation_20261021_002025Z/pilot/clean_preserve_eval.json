@@ -1,0 +1,267 @@
+{
+  "folder": "/root/logs/output_image/semantic/semantic_relation_20261021_002025Z_94c0989d/clean_preserve_eval",
+  "entries": [
+    {
+      "file_name": "sample_000000.png",
+      "text": "A white plate with rice and vegetables with wooden chop sticks.",
+      "sha256": "2ad7aa75c5879dd82a138c6102241bd7364b0b66a705fc651d1f56be493ad323"
+    },
+    {
+      "file_name": "sample_000001.png",
+      "text": "A person in a suit takes a photo of themselves in the mirror.",
+      "sha256": "6b393baf77a059d7c89e98fcdba30206d07f384346eca19d978d68299c1f2c7c"
+    },
+    {
+      "file_name": "sample_000002.png",
+      "text": "A sink and counter in a small kitchen.",
+      "sha256": "2dcca9972b643d2ee434be44a84c0a7272e5b61d6b9d59ba641b0cd258e84603"
+    },
+    {
+      "file_name": "sample_000003.png",
+      "text": "Two tennis players being friendly on the court",
+      "sha256": "2f850c2a4766277d853fe75423b5f8e370a9d3222f2843766d16e4362bf48598"
+    },
+    {
+      "file_name": "sample_000004.png",
+      "text": "A shirtless surfer jumps up from the waves.",
+      "sha256": "d97764f27edd0e795703e81e8c64f8b1117826129a5f57917fea7b188c67a488"
+    },
+    {
+      "file_name": "sample_000005.png",
+      "text": "A cat lays on top of a couch.",
+      "sha256": "e94217dfc6eb4493dfcfc8ad2edb1c94e2ab8dce8f4702eab77976518a7dd4c3"
+    },
+    {
+      "file_name": "sample_000006.png",
+      "text": "There is a map in the street of the city.",
+      "sha256": "00386f2119ecf1db3512d09171aa68d8a5cb8ceacc29bdda8a6deb218261c2b7"
+    },
+    {
+      "file_name": "sample_000007.png",
+      "text": "People on a mountain snowboarding in a group.",
+      "sha256": "27e7d23ecd15d300ef01e9c3b04e664a496918a24f8a29dc145fae5a46220598"
+    },
+    {
+      "file_name": "sample_000008.png",
+      "text": "Various animals graze in a pasture surrounded by woods.",
+      "sha256": "c27d1b0acbe65cd569b830bc8442712f106f77d53a759272eabee7339ad2fae6"
+    },
+    {
+      "file_name": "sample_000009.png",
+      "text": "a couple of people are wearing skis in the snow",
+      "sha256": "33641f3eff6a9d562ec95674e6bf73bd8a3c326cbbf9fd94b7ada26544ce0711"
+    },
+    {
+      "file_name": "sample_000010.png",
+      "text": "a man holding a tennis racket and playing tennis on a tennis court.",
+      "sha256": "d4290f2f65f657930174d07975309061876016ed3cb2956d914b870977007946"
+    },
+    {
+      "file_name": "sample_000011.png",
+      "text": "The reflection of a man taking a picture in a mirror",
+      "sha256": "0f56b4faaa05c054541eb4de43896dfc475e04d812167f60990953a41e74a128"
+    },
+    {
+      "file_name": "sample_000012.png",
+      "text": "Black and white photograph of a young man on cell phone.",
+      "sha256": "2ef997d32dc00a01d4f6ad627857acc3618ef063f8f85cd18c4dff7935ef0fe5"
+    },
+    {
+      "file_name": "sample_000013.png",
+      "text": "Parallel parking between the meters on a city street.",
+      "sha256": "7a20beb786a0190fd762c29a3dba8fe0bea912d0c3d995ed10f082d28789afd7"
+    },
+    {
+      "file_name": "sample_000014.png",
+      "text": "A group of people are taking surfing lessons.",
+      "sha256": "cc71990466449282f39a2b77e2e79b119af7e9a1c070644235cb600ec75426af"
+    },
+    {
+      "file_name": "sample_000015.png",
+      "text": "A red people ferry cruises along the pay with a load of passengers.",
+      "sha256": "40b115cbc564faaaed1b7731c292aa4c3b235bce5f09df603ff4a9a77e6f63d0"
+    },
+    {
+      "file_name": "sample_000016.png",
+      "text": "A large United States Air Force plane sitting on a tarmac at an airport.",
+      "sha256": "f9450632b2cb7cbec7ca32aa23ff639f8a28c35b95892f99c90c68f72704bcce"
+    },
+    {
+      "file_name": "sample_000017.png",
+      "text": "Yellow Train stopped at the station in front of a bench.",
+      "sha256": "187dd81aab37578a7b434d74cefcaa979f41f9ca31b089cce7488f9b50e5de6a"
+    },
+    {
+      "file_name": "sample_000018.png",
+      "text": "Two people are sitting on an outdoor bench at night.",
+      "sha256": "9d80d3e23625d49e842bb3faaac0416da005f978e50de95699a177929d994b83"
+    },
+    {
+      "file_name": "sample_000019.png",
+      "text": "The pitcher is lurching toward the batter, the ball is en-route to the plate, the batter is ready to swing, as the outfielders and umpires look on.",
+      "sha256": "a9890eba9ce24da1230c5860b490f214b612bf4a6878b2ad1a8aec6c261b11f0"
+    },
+    {
+      "file_name": "sample_000020.png",
+      "text": "A red stop sign sitting next to a wooden fence.",
+      "sha256": "7c45099cb8681339d1826ae11961e84cced93ea5ae860dc57148acf77645ab1c"
+    },
+    {
+      "file_name": "sample_000021.png",
+      "text": "A woman riding a surfboard on a wave in the ocean.",
+      "sha256": "ec6a896b2e9a801b5573dc80d552eaad1a3462686150dec076424cb8881b7bf1"
+    },
+    {
+      "file_name": "sample_000022.png",
+      "text": "An urban street with a streetlight, one way sign, and people walking.",
+      "sha256": "e7d5f539b913d1cf064c8ce22245b024e78d75fb44412b5d24b6eafee89cb4bd"
+    },
+    {
+      "file_name": "sample_000023.png",
+      "text": "Street signs, graffiti, old buildings and a bridge.",
+      "sha256": "5fce750883c017e8e288e56e42a1d32757d63904b2d0531607d458fbcbb1f0dd"
+    },
+    {
+      "file_name": "sample_000024.png",
+      "text": "A girl in a red dress working on a laptop.",
+      "sha256": "2ce1c5d6fa539341c22ecd994097e109203effddda4f9aa8ccd0817d4f61fc10"
+    },
+    {
+      "file_name": "sample_000025.png",
+      "text": "a few suitcases for sale in a second hand shop",
+      "sha256": "7d917aed39f1c35acf4943f82d7422dcd7d6bdbad35369b3b1a78f3ddab5d6a5"
+    },
+    {
+      "file_name": "sample_000026.png",
+      "text": "An old style refrigerator that is holding beverages.",
+      "sha256": "1496a5f5221f917522dea156172fab3a117030485792a954adae69b424867263"
+    },
+    {
+      "file_name": "sample_000027.png",
+      "text": "A family standing in front of a sign while wearing skis and holding ski poles.",
+      "sha256": "0c47b19a91aeb61ab64473410de1610aeedac72740a727460f32723f77cc0c7c"
+    },
+    {
+      "file_name": "sample_000028.png",
+      "text": "A group of people sitting around a table on laptops.",
+      "sha256": "34ede8d2faf7acc732ebe18212f2639f176164228f52f3b092ae9c8e6bb3abe6"
+    },
+    {
+      "file_name": "sample_000029.png",
+      "text": "An older white motorhome pulled over on the side of a highway.",
+      "sha256": "3708adb392f50c6b024511b667fbcf49fe646e3568812a5a41887753cbfa2186"
+    },
+    {
+      "file_name": "sample_000030.png",
+      "text": "Doorway view to a bathroom with a sink, cabinets and a toilet.",
+      "sha256": "1d165637ac8e6c4b132d0b48d94ca17c6b70d82221c6c9bfea5322913ebc5db7"
+    },
+    {
+      "file_name": "sample_000031.png",
+      "text": "A man with luggage on wheels standing next to a white van.",
+      "sha256": "9397b353e9ca574a90632fa430dc6b36ceeaec045f0da77f6e4a9d06803ec0a4"
+    }
+  ],
+  "scores": [
+    0.009713242761790752,
+    0.010393181815743446,
+    -0.001208605244755745,
+    0.006888293661177158,
+    -0.000476667657494545,
+    0.011154714971780777,
+    0.005284798331558704,
+    0.005138828419148922,
+    0.024560045450925827,
+    0.016997357830405235,
+    0.003915377892553806,
+    0.016440270468592644,
+    0.014431914314627647,
+    0.004396392963826656,
+    0.012676356360316277,
+    -0.0024513360112905502,
+    0.004342935048043728,
+    -0.0014283019118010998,
+    0.010885672643780708,
+    0.00958562083542347,
+    -0.01594119518995285,
+    0.0020334958098828793,
+    0.016306892037391663,
+    0.0027337269857525826,
+    0.011811371892690659,
+    0.022692907601594925,
+    0.014906549826264381,
+    0.002091645495966077,
+    0.014480385929346085,
+    0.00170909333974123,
+    0.0068513173609972,
+    0.008216800168156624
+  ],
+  "alignment": [
+    0.3088538348674774,
+    0.36330074071884155,
+    0.2979012727737427,
+    0.2941688895225525,
+    0.30436497926712036,
+    0.3106417655944824,
+    0.29418516159057617,
+    0.288698673248291,
+    0.3210614323616028,
+    0.29205840826034546,
+    0.3023732304573059,
+    0.28079748153686523,
+    0.3290984034538269,
+    0.268233060836792,
+    0.33489638566970825,
+    0.33573228120803833,
+    0.28431928157806396,
+    0.2986742854118347,
+    0.3439117968082428,
+    0.32229945063591003,
+    0.3116201162338257,
+    0.3125394582748413,
+    0.27343517541885376,
+    0.28910744190216064,
+    0.3291015923023224,
+    0.3177262842655182,
+    0.319264680147171,
+    0.36879777908325195,
+    0.2608904242515564,
+    0.3253236711025238,
+    0.2790793180465698,
+    0.3050686717033386
+  ],
+  "source_ids": [
+    205716,
+    422375,
+    356400,
+    465223,
+    376449,
+    446626,
+    532530,
+    245667,
+    312306,
+    282618,
+    43605,
+    202228,
+    153931,
+    387150,
+    326174,
+    117704,
+    428357,
+    129135,
+    398882,
+    498541,
+    273188,
+    141887,
+    190923,
+    528977,
+    280761,
+    196192,
+    566450,
+    77544,
+    479950,
+    244005,
+    297976,
+    326702
+  ]
+}

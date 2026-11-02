@@ -1,0 +1,50 @@
+[
+  {
+    "image_id": 66798,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_smoke_0a37cfda/design_latents/66798.safetensors",
+    "sha256": "637446cee4f1ba2ea86e8c70760fd8d1caebc3a5807368335df3b0eb10f556eb",
+    "reused": true
+  },
+  {
+    "image_id": 451090,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_smoke_0a37cfda/design_latents/451090.safetensors",
+    "sha256": "e3e5da3629579b2a64227946c5014cacfd969a5d8731c2947d9600358f0fb087",
+    "reused": true
+  },
+  {
+    "image_id": 137085,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_smoke_0a37cfda/design_latents/137085.safetensors",
+    "sha256": "ac071b130d16a692c761e98df5aa80e586311f328e959a8cba29cc4fe3cfe37f",
+    "reused": true
+  },
+  {
+    "image_id": 363830,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_smoke_0a37cfda/design_latents/363830.safetensors",
+    "sha256": "2df66a9333e9e383b19edb8165518da7916d0cfd2b27dc0cb0e1a8657a611917",
+    "reused": true
+  },
+  {
+    "image_id": 1818,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_smoke_0a37cfda/design_latents/1818.safetensors",
+    "sha256": "1404f4427c9a38110a4313274a0a9ceef336ee6e72114152c34b289539362f63",
+    "reused": true
+  },
+  {
+    "image_id": 454741,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_smoke_0a37cfda/design_latents/454741.safetensors",
+    "sha256": "4aaed3a729c0c97dae5a6a1a94bab7bf6ca904a957276252e5a21938a5ce3468",
+    "reused": true
+  },
+  {
+    "image_id": 435270,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_smoke_0a37cfda/design_latents/435270.safetensors",
+    "sha256": "0417da3d059ba1065a11d7a7650ca2e9e7134411b279aebcd32fc147acacac8c",
+    "reused": true
+  },
+  {
+    "image_id": 243134,
+    "path": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_smoke_0a37cfda/design_latents/243134.safetensors",
+    "sha256": "cdb90caef18d4dc7ed2e35714be658420d75f2aeb0778e08405634fedcab53db",
+    "reused": true
+  }
+]

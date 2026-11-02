@@ -1,0 +1,5 @@
+{
+  "reports": "/root/logs/results/semantic_relation_20261021_002025Z_smoke",
+  "artifacts": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_smoke_0a37cfda",
+  "images": "/root/logs/output_image/semantic/semantic_relation_20261021_002025Z_smoke_0a37cfda"
+}

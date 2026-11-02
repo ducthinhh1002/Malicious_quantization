@@ -1,0 +1,5 @@
+{
+  "status": "teacher_gate_failed",
+  "students_run": false,
+  "explanation": "Native output did not jointly meet frozen detection/quality gates; no final test used"
+}

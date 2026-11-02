@@ -1,0 +1,11 @@
+{
+  "unet": "/root/logs/runtime/semantic_artifacts/semantic_relation_20261021_002025Z_smoke_0a37cfda/b1.5_positive/unet",
+  "max_reload_error": 6.9141387939453125e-06,
+  "beta": 1.5,
+  "sign": 1,
+  "files": {
+    "diffusion_pytorch_model.safetensors": "cccd8f9454a6043b733eb32bc7e42ad49f6a401ae2339bfe6d5fedb206ed21c9",
+    "config.json": "fcf9c1546cacb78e7ab411a039a642b1d7fb155c69ba284dce7d4341c3aae327"
+  },
+  "runtime": "fixed native weights, ordinary caption and Gaussian noise, no key input"
+}

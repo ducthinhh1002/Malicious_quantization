@@ -1,0 +1,30 @@
+{
+  "training": {
+    "C10_seed0": {
+      "last_logged_step": 20000,
+      "first_1000_mean_step_loss": 0.1433103,
+      "last_1000_mean_step_loss": 0.1428798,
+      "nonfinite_logged_loss": false,
+      "note": "Training batch losses vary with random noise and timestep; not the checkpoint selection criterion."
+    },
+    "C00_seed0": {
+      "last_logged_step": 8032,
+      "first_1000_mean_step_loss": 0.1464368,
+      "last_1000_mean_step_loss": 0.14496620000000002,
+      "nonfinite_logged_loss": false,
+      "note": "Training batch losses vary with random noise and timestep; not the checkpoint selection criterion."
+    }
+  },
+  "adapter_runtime_check": {
+    "checkpoint": "/root/workspace/serum/students/C10_seed0/checkpoint-20000",
+    "active_adapters": [
+      "default_0"
+    ],
+    "all_predictions_finite": true,
+    "mean_absolute_prediction_change": 0.01697518303990364,
+    "max_absolute_prediction_change": 0.14422011375427246,
+    "relative_l2_prediction_change": 0.026891039684414864,
+    "disabled_vs_base_max_abs": 0.0,
+    "scope": "Two fixed UNet inputs; verifies adapter execution, does not measure radioactivity or image utility."
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "local_matches_deployed_source": true,
+  "unit_tests_passed": 8,
+  "gpu_end_to_end_smoke": "complete",
+  "smoke_scientific_result": false,
+  "full_pilot_shape_memory_check": {
+    "scientific_result": false,
+    "purpose": "full pilot-shaped owner hypergradient/VRAM smoke; weights excluded from pilot",
+    "passed": true,
+    "resolution": 512,
+    "inner_steps": 4,
+    "student_generation_steps": 8,
+    "max_allocated_gb": 69.3722472190857,
+    "max_reserved_gb": 79.609375,
+    "source_script_sha256": "7557d4617bc2c1c0f37dc59186faf22b8876df15120bf4188c091629d0b94a8e"
+  },
+  "environment": {
+    "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+    "packages": {
+      "torch": "2.7.1",
+      "torchvision": "0.22.1",
+      "diffusers": "0.35.1",
+      "peft": "0.17.1",
+      "transformers": "4.51.3",
+      "datasets": "3.6.0",
+      "lpips": "0.1.4",
+      "accelerate": "1.10.1",
+      "numpy": "1.26.4"
+    }
+  },
+  "session": "lcf_20261017_191721Z",
+  "pilot": "/root/logs/results/lcf_20261017_191721Z_pilot"
+}

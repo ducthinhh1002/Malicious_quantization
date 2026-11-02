@@ -1,0 +1,13 @@
+{
+  "authorization": "User requested automatic Stage 1 and 2 after current Stage 0 measurements complete, 2026-10-10 Asia/Saigon.",
+  "scope": "Image-level pilot and preservation-only strength selection; no Stage 3 onward and no automatic approval of the weak C10 baseline.",
+  "samples_per_kind": 500,
+  "strengths": [0.25, 0.5, 0.75, 1.0],
+  "preservation_policy": {
+    "minimum_clip_image_cosine": 0.85,
+    "minimum_dino_cosine": 0.8,
+    "minimum_prompt_clipscore_retention": 0.95,
+    "maximum_lpips": 0.4,
+    "note": "Operational criteria chosen before seeing pilot results, not thresholds specified by the paper. Both clean and watermarked subsets must satisfy all bounds. No detector scores enter selection."
+  }
+}

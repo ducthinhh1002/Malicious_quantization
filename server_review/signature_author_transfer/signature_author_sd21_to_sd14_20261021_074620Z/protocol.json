@@ -1,0 +1,72 @@
+{
+  "config": {
+    "method": "official_stable_signature_sd21_to_sd14_lora",
+    "seed": 2310,
+    "resolution": 512,
+    "sampling_steps": 50,
+    "guidance": 3.0,
+    "vram_limit_gb": 32.0,
+    "probe_steps": 5000,
+    "probe_batch": 2,
+    "probe_accumulation": 2,
+    "student_lr": 1e-05,
+    "smoke": false,
+    "matrix": [
+      {
+        "rank": 4,
+        "scope": "attention"
+      },
+      {
+        "rank": 4,
+        "scope": "attention_conv"
+      },
+      {
+        "rank": 16,
+        "scope": "attention"
+      },
+      {
+        "rank": 16,
+        "scope": "attention_conv"
+      }
+    ]
+  },
+  "counts": {
+    "preflight": 32,
+    "train": 2048,
+    "calibration": 512,
+    "query": 1000
+  },
+  "key": "111010110101000001010111010011010100010000100111",
+  "teacher": "SD2.1 base + unmodified author native LDM decoder and public weights; 50 steps, CFG 3.0",
+  "author_source": {
+    "repository": "https://github.com/facebookresearch/stable_signature",
+    "commit": "c91217c06e953a4eaf270ef9de4a3939bcea3366",
+    "manifest_sha256": "0b15d1c85feb0b08151b9ff2eaddb6226c12c3fb5568e35a05d214c01556081b",
+    "key": "111010110101000001010111010011010100010000100111",
+    "key_source": "decoding.ipynb, literal key assignment",
+    "source_modified": false
+  },
+  "author_evaluation": "unmodified run_evals.py plus independent score agreement",
+  "checkpoint_retrained": false,
+  "student": "clean SD1.4 base + its own clean VAE; independently fitted ordinary LoRA on teacher PNG/original captions",
+  "controls": "one matched clean-data student for each rank/scope: eight long trainings total",
+  "scope": "attention = to_q/k/v/to_out.0; attention_conv additionally every UNet Conv2d with groups=1; VAE frozen",
+  "teacher_guard": "32 independent prompts: mean bit accuracy >=90%, nominal 1% TPR >=90%",
+  "detector": "official whitened TorchScript, ImageNet normalization, positive-logit bits; no resize of 512px PNG",
+  "metrics": [
+    "bit accuracy",
+    "image TPR and clean FPR at empirical 1% calibration",
+    "nominal binomial 1% and 1e-6",
+    "AUROC",
+    "paired bit accuracy gain CI"
+  ],
+  "calibration": "separate clean-student images for each rank/scope; same threshold used on both query arms",
+  "checkpoint": "fixed final step; no detector-based selection; no loss/algorithm change",
+  "sample_pairing": "same caption and initial noise for clean/marked teacher and all students",
+  "limits": "Public SD2.1 demo checkpoint, not the private 2.2B model in paper. LoRA transfer is our extension. Modern PyTorch/Diffusers DDIM runtime, not bitwise original software. One seed; no model-level FPR guarantee.",
+  "sampling_source": "Paper Appendix A.3: 50 steps, guidance 3.0, first COCO caption per image; query first 1000 images",
+  "sources": [
+    "https://github.com/facebookresearch/stable_signature",
+    "https://raw.githubusercontent.com/facebookresearch/stable_signature/main/decoding.ipynb"
+  ]
+}

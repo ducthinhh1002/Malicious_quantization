@@ -1,0 +1,9 @@
+{
+  "scope": "Post-hoc diagnostic only: same C00 outputs set threshold and measure FPR; not an independent calibration/evaluation result. Original threshold remains frozen.",
+  "diagnostic_C00_threshold": 0.04082941263914108,
+  "diagnostic_C00_fpr": 0.01,
+  "diagnostic_C10_tpr": 0.0336,
+  "C10_vs_C00_roc_auc": 0.6098892688751221,
+  "C00_mean_score": 0.0038832230493426323,
+  "C10_mean_score": 0.013153111562132835
+}

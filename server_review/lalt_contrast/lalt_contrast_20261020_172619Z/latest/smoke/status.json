@@ -1,0 +1,16 @@
+{
+  "status": "smoke_complete",
+  "outcomes": [
+    {
+      "mode": "contrast_replay",
+      "status": "smoke_complete",
+      "gradient": {
+        "transfer_gradient_norm": 0.013251492753624916,
+        "independent_of_teacher_loss": true,
+        "inner_updates": 4
+      }
+    }
+  ],
+  "expansions": [],
+  "final_tests_used": false
+}

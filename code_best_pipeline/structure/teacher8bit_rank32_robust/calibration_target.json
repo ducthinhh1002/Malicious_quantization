@@ -1,0 +1,26 @@
+{
+  "objective": "threshold_cfg_v1",
+  "threshold": 0.8509314060211183,
+  "sigma_clean": 0.35230018443476574,
+  "std_ddof": 0,
+  "n": 5000,
+  "target_fpr": 0.01,
+  "empirical_fpr": 0.01,
+  "false_positives": 50,
+  "threshold_sha256": "7da9b2877ab8c1237305e1665aff8d47b1817db0f60830ba94afb654362ff8d5",
+  "score_sha256": "381ef494818b7c920a9a9ca74370796e42ae7ef6dcdf499724d7f2ba34659039",
+  "carrier_sha256": "1f517f4dcbcc565bb4cb308eafbdd713aa6303565af2dfc8fa5df80bb2d8af09",
+  "data_source": "teacher_clean_calibration",
+  "cfg_scale": 7.5,
+  "shift_cap": 2.5,
+  "fp_weight": 0.8,
+  "cycle_weight": 0.5,
+  "targets": [
+    {
+      "kappa": 1.0,
+      "target_score": 1.203231590455884
+    }
+  ],
+  "test_used": false,
+  "validation_used": false
+}

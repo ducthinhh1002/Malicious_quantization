@@ -1,0 +1,22 @@
+--- campaign.py.before
++++ campaign.py
+@@ -102,7 +102,9 @@
+     for manifest in ['code_manifest.json','dependency_code_manifest.json','input_manifest.json']:
+         for name,digest in read_json(queue/manifest).items():
+             path=HERE/name if manifest=='code_manifest.json' else Path(name)
+-            if sha256(path)!=digest:raise RuntimeError('Pinned source/input changed: '+str(path))
++            actual=sha256(path)
++            if actual!=digest and (manifest=='input_manifest.json' or not b.approved_relocation(path,digest,actual)):
++                raise RuntimeError('Pinned source/input changed: '+str(path))
+     from common import verify_vendor
+     verify_vendor()
+ 
+@@ -290,7 +292,7 @@
+             if proc.exists() and str(HERE/'campaign.py').encode() in proc.read_bytes():
+                 print('Already queued',pid,queue);return
+         if read_json(queue/'status.json')['state']=='completed':print('Already completed',queue);return
+-        env=dict(os.environ,PN90_BASE_ROOT=str(ROOT),BITMARK_RUNTIME_ROOT='/root/logs/runtime',
++        env=dict(os.environ,PN90_BASE_ROOT=str(ROOT),BITMARK_RUNTIME_ROOT=str(HERE.parent/'runtime'),
+             CUDA_VISIBLE_DEVICES='0',HF_HUB_OFFLINE='1',TRANSFORMERS_OFFLINE='1',PYTHONUNBUFFERED='1',
+             OMP_NUM_THREADS='8',MKL_NUM_THREADS='8',TOKENIZERS_PARALLELISM='false')
+         with (queue/'supervisor.log').open('a') as stream:

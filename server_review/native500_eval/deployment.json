@@ -1,0 +1,8 @@
+{
+  "source": "/root/logs/native_unet_20261019_production",
+  "parent_run": "/root/logs/results/native_unet_20261019_162350_r16r32",
+  "output": "/root/logs/results/native500_validation_20261019",
+  "script": "/root/logs/native500_evaluate_20261019.py",
+  "session": "native500_eval",
+  "log": "/root/logs/native500_validation_20261019.log"
+}

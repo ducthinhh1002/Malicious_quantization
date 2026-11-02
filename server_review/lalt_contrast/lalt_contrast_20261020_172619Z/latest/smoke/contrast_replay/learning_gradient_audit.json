@@ -1,0 +1,5 @@
+{
+  "transfer_gradient_norm": 0.013251492753624916,
+  "independent_of_teacher_loss": true,
+  "inner_updates": 4
+}

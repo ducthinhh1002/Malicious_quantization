@@ -1,0 +1,12 @@
+{
+  "rule": "fixed20000 explicitly requested by user; no validation comparison",
+  "selected_step": 20000,
+  "checkpoint_hashes": {
+    "adapter_model.safetensors": "494771ae78c21a37e8ae2625483e2847e7d994169fb564870169fdca4f10f704",
+    "adapter_config.json": "cbdb24691defd2faeecd2e381c92ae0e6d10be299dd1541f0f102afa46ad6353"
+  },
+  "test_used_for_selection": false,
+  "detector_used_for_selection": false,
+  "utility_used_for_selection": false,
+  "validation_evaluation_skipped": true
+}

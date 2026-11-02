@@ -1,0 +1,52 @@
+{
+  "step": 100,
+  "checkpoint_sha256": "c1b31354dde4e36ea1b3d39afce6f5df2567e8f9325423846c969bc4833cf720",
+  "checkpoint": "/root/logs/runtime/lcf_artifacts/curriculum_b4ead8a9/teacher_selected.pt",
+  "validation": [
+    {
+      "key": 34,
+      "split": "teacher_validation",
+      "tpr": 0.0,
+      "clean_fpr": 0.0,
+      "bit_accuracy": 0.5625,
+      "psnr": 63.008248925209045,
+      "psnr_p05": 60.10059700012207,
+      "lpips": 1.4549481093695249e-05,
+      "lpips_p95": 2.554109078118927e-05,
+      "clip_drop": -1.1147931218147278e-05,
+      "diversity_ratio": 0.9997476418154356,
+      "mean_gain": -6.705522537231445e-08,
+      "threshold": -2.643024206161499,
+      "calibration_split": "calibration",
+      "score_scale": 0.05,
+      "passes": false,
+      "auroc": 0.49755859375,
+      "paired_win_rate": 0.421875,
+      "paired_gain_std": 2.1285071312399e-06,
+      "step": 100
+    },
+    {
+      "key": 221,
+      "split": "teacher_validation",
+      "tpr": 0.0625,
+      "clean_fpr": 0.0625,
+      "bit_accuracy": 0.4375,
+      "psnr": 63.0107399225235,
+      "psnr_p05": 60.14909725189209,
+      "lpips": 1.4507930885088172e-05,
+      "lpips_p95": 2.6761035860545233e-05,
+      "clip_drop": 1.2605451047420502e-06,
+      "diversity_ratio": 1.0002535847568226,
+      "mean_gain": -5.885958671569824e-07,
+      "threshold": -2.643472671508789,
+      "calibration_split": "calibration",
+      "score_scale": 0.05,
+      "passes": false,
+      "auroc": 0.49853515625,
+      "paired_win_rate": 0.453125,
+      "paired_gain_std": 2.7669554507913294e-06,
+      "step": 100
+    }
+  ],
+  "selection": "frozen validation gates, worst-key AUROC, TPR-FPR, paired gain, quality; no test data"
+}

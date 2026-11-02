@@ -1,0 +1,22 @@
+{
+  "step": 500,
+  "identity": {
+    "config_sha256": "1128cc5ff19f9eccb1a02c92222f91182c0ddbadb97d192a57bb87ca39b6a705",
+    "assets_sha256": "db93c0296a3f47955290d8be6e86d289fe0423bed978e7fdfcf666bfe57d06ba",
+    "carrier_sha256": "ea4aefe89337d022320c28b3d3cd7578a3f1d3d2ae27491681cb636a63d9a037",
+    "kappa": 1.0,
+    "restart_policy": "restore full checkpoint; explicit legacy continuation uses fresh optimizer",
+    "training_images_sha256": "a4b944117497d72539da43b836dd071306dbdcb34b74e1f30954ecb59747b5c2",
+    "micro_batch": 4,
+    "reference_cycle_checkpointing": true,
+    "teacher_precision": "bf16",
+    "numerical_check_steps": 12,
+    "objective": "threshold_cfg_v1",
+    "calibration_target_sha256": "eb8f4ce06b7eb393103e13465b9aacc3385cd715236c210bc424f26b3f5c8cf2"
+  },
+  "files": {
+    "training_state.pt": "7b355a9ada80a1d78c0f1c9b7baa9b303834daeee9e79eede1696be93bd93427",
+    "adapter_model.safetensors": "c7d6419b4a8252fe48757240eca8ab9ae783702bd28c86e555a81dc10d2d7e40",
+    "adapter_config.json": "b81b7a3437a9b8de71f3cb412e234bc5828480afd1c05f7f30705bd9f633f8bc"
+  }
+}

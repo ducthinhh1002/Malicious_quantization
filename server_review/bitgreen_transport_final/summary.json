@@ -1,0 +1,87 @@
+{
+  "rows": [
+    {
+      "branch": "teacher_clean_test",
+      "detected": 3,
+      "n": 256,
+      "rate": 0.01171875,
+      "ci95_low": 0.003993287123007758,
+      "ci95_high": 0.033881572667882304,
+      "mean_green": 0.49969771364703774
+    },
+    {
+      "branch": "teacher_plain_test",
+      "detected": 3,
+      "n": 256,
+      "rate": 0.01171875,
+      "ci95_low": 0.003993287123007758,
+      "ci95_high": 0.033881572667882304,
+      "mean_green": 0.5002501212293282
+    },
+    {
+      "branch": "teacher_robust_test",
+      "detected": 1,
+      "n": 256,
+      "rate": 0.00390625,
+      "ci95_low": 0.0006898821669617927,
+      "ci95_high": 0.021790975380582514,
+      "mean_green": 0.5002975316019729
+    }
+  ],
+  "effects": {},
+  "threshold": 0.5085018277168275,
+  "teacher_base": "sd14",
+  "student_base": "sd14",
+  "calibration_population": "clean teacher images",
+  "teacher_gate": {
+    "arms": {
+      "clean": {
+        "detected": 1,
+        "n": 128,
+        "tpr": 0.0078125,
+        "ci95": [
+          0.0013804318928742412,
+          0.04292625943886061
+        ],
+        "mean_psnr": 120.0,
+        "p05_psnr": 120.0
+      },
+      "plain": {
+        "detected": 0,
+        "n": 128,
+        "tpr": 0.0,
+        "ci95": [
+          0.0,
+          0.029136956273508416
+        ],
+        "mean_psnr": 26.998947500815483,
+        "p05_psnr": 18.534828469559418,
+        "eligible": false
+      },
+      "robust": {
+        "detected": 0,
+        "n": 128,
+        "tpr": 0.0,
+        "ci95": [
+          0.0,
+          0.029136956273508416
+        ],
+        "mean_psnr": 27.36591949040135,
+        "p05_psnr": 19.45515000051642,
+        "eligible": false
+      }
+    },
+    "student_feedback": false,
+    "selection_split": "pilot_eval, never final test",
+    "policy": "If either arm passes, compare BOTH with matched clean student",
+    "run_students": false
+  },
+  "warnings": [
+    "Exploratory single seed; CI conditional on training seed and frozen calibration.",
+    "Public 01/10 pattern: no secret-key attribution or cryptographic claim.",
+    "Not the official BitMark detector; 512px within-token scale-balanced score.",
+    "Channel robustness and teacher TPR do not establish student inheritance.",
+    "Nominal FPR is calibrated on clean teacher images; student transfer requires matched clean-trained controls.",
+    "Pilot student budget is short; failure is not proof of impossibility."
+  ]
+}

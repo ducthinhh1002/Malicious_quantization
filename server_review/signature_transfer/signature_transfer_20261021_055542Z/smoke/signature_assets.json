@@ -1,0 +1,24 @@
+{
+  "public_files": {
+    "sd2_decoder.pth": {
+      "path": "/root/logs/runtime/cache/stable_signature_public/sd2_decoder.pth",
+      "sha256": "36f3a926ba080a0fe29952cd3895661736da68619a71c8166d5c44de3612965a"
+    },
+    "dec_48b_whit.torchscript.pt": {
+      "path": "/root/logs/runtime/cache/stable_signature_public/dec_48b_whit.torchscript.pt",
+      "sha256": "77cd0a2040b9391233bbcd79c1adf00816b196089cbb844da40035f854637a04"
+    }
+  },
+  "conversion": {
+    "marked_vae": "/root/logs/runtime/cache/stable_signature_public/diffusers_vae_4e63672c03103b6c636b8fb4119ba982469b2955",
+    "clean_vae_tensor_sha256": "06cadd8a76b98c867937d4f30991c85b34cfafb7dfd9efd07fee640e9a809178",
+    "marked_vae_tensor_sha256": "6378ff49b26ab9ba49bcb4899f015d8ae8aff5653794298aa412439823f37203",
+    "decoder_keys": 140,
+    "source_sha256": "36f3a926ba080a0fe29952cd3895661736da68619a71c8166d5c44de3612965a",
+    "files": {
+      "diffusion_pytorch_model.safetensors": "65f2922516f5582a58607923e5a21636722d190e178e1dc11257988b10506bda",
+      "config.json": "109ca26ef92380f6beaad1deca315409e7744f1f1cb30941edb33da46235befd"
+    }
+  },
+  "base_verified_sha256": "a550ebf59724c7ed7a9bf39517dfc3b88c6b4a9a9abdfe8157cace60bd4f81e7"
+}

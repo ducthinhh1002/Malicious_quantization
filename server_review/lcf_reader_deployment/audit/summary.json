@@ -1,0 +1,125 @@
+{
+  "rows": [
+    {
+      "stage": "frozen_bootstrap",
+      "mode": "native512",
+      "key": 22,
+      "n": 32,
+      "bit_accuracy": 0.42578125,
+      "bit_accuracy_ci95": [
+        0.27333984375,
+        0.59375
+      ],
+      "auroc_ci95": [
+        0.4892578125,
+        0.5419921875
+      ],
+      "key_margin": -0.8651632163673639,
+      "auroc": 0.5126953125,
+      "paired_win_rate": 0.59375,
+      "paired_gain_std": 0.3186564113214406,
+      "mean_gain": 0.12354678753763437
+    },
+    {
+      "stage": "frozen_bootstrap",
+      "mode": "native512",
+      "key": 233,
+      "n": 32,
+      "bit_accuracy": 0.60546875,
+      "bit_accuracy_ci95": [
+        0.44130859375,
+        0.76171875
+      ],
+      "auroc_ci95": [
+        0.490234375,
+        0.5537109375
+      ],
+      "key_margin": 0.9601899981498718,
+      "auroc": 0.517578125,
+      "paired_win_rate": 0.5625,
+      "paired_gain_std": 0.34642246785088265,
+      "mean_gain": 0.08193034119904041
+    },
+    {
+      "stage": "frozen_bootstrap",
+      "mode": "small256",
+      "key": 22,
+      "n": 32,
+      "bit_accuracy": 0.33203125,
+      "bit_accuracy_ci95": [
+        0.17958984375,
+        0.4805664062499999
+      ],
+      "auroc_ci95": [
+        0.4667724609375,
+        0.5126953125
+      ],
+      "key_margin": -1.587586552836001,
+      "auroc": 0.494140625,
+      "paired_win_rate": 0.34375,
+      "paired_gain_std": 0.201459114435649,
+      "mean_gain": -0.05708522582426667
+    },
+    {
+      "stage": "frozen_bootstrap",
+      "mode": "small256",
+      "key": 233,
+      "n": 32,
+      "bit_accuracy": 0.68359375,
+      "bit_accuracy_ci95": [
+        0.53515625,
+        0.83984375
+      ],
+      "auroc_ci95": [
+        0.4755859375,
+        0.521484375
+      ],
+      "key_margin": 1.640104113263078,
+      "auroc": 0.498046875,
+      "paired_win_rate": 0.5,
+      "paired_gain_std": 0.20581069966355783,
+      "mean_gain": 0.032907839864492416
+    },
+    {
+      "stage": "frozen_bootstrap",
+      "mode": "small256_restore512",
+      "key": 22,
+      "n": 32,
+      "bit_accuracy": 0.2421875,
+      "bit_accuracy_ci95": [
+        0.1171875,
+        0.38671875
+      ],
+      "auroc_ci95": [
+        0.4912109375,
+        0.541015625
+      ],
+      "key_margin": -1.7992699388414621,
+      "auroc": 0.5107421875,
+      "paired_win_rate": 0.65625,
+      "paired_gain_std": 0.11799976830439557,
+      "mean_gain": 0.042061697691679
+    },
+    {
+      "stage": "frozen_bootstrap",
+      "mode": "small256_restore512",
+      "key": 233,
+      "n": 32,
+      "bit_accuracy": 0.7265625,
+      "bit_accuracy_ci95": [
+        0.58203125,
+        0.859375
+      ],
+      "auroc_ci95": [
+        0.466796875,
+        0.515625
+      ],
+      "key_margin": 1.799514432437718,
+      "auroc": 0.4921875,
+      "paired_win_rate": 0.46875,
+      "paired_gain_std": 0.08308407122326379,
+      "mean_gain": -0.015673421323299408
+    }
+  ],
+  "final_test_used": false
+}

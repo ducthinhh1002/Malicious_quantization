@@ -1,0 +1,5 @@
+{
+  "step": 60,
+  "loss": 1.0510613918304443,
+  "selection": "train_terminal_mse"
+}

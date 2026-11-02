@@ -1,0 +1,12 @@
+{
+  "method": "full_structure32",
+  "teacher_kappa": 1.0,
+  "source_checkpoint": "/var/lib/structure32_student12500/runs/k1_32bit/teacher_fp/candidates/kappa_1.0",
+  "source_adapter_sha256": "0d1e67323186684f5a7a7a5811333b7522e5509277a13433de57e02b46d72436",
+  "initial_effective_scale": 1.0,
+  "refinement_steps": 600,
+  "num_bits": 32,
+  "quality_stopping_gates": false,
+  "test_used_for_selection": false,
+  "dataset_condition": "watermarked"
+}

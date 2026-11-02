@@ -1,0 +1,15 @@
+{
+  "source_checkpoint": "/var/lib/structure32_student12500/runs/structure32/teacher_fp/refined",
+  "source_adapter_sha256": "2f9fc8d664786acfe50bf7d47c20e037a92e4cc61805524233bd7f15f365a2d8",
+  "teacher_retrained": false,
+  "num_bits": 32,
+  "method": "full_structure32_student20000",
+  "teacher_is_identical_to": "/var/lib/structure32_newprompts_rank32/sd14_coco_disjoint/source",
+  "student_initialization": "clean pinned SD1.4; new LoRA; no prior student checkpoint",
+  "student_steps": 20000,
+  "student_trainer": "ordinary denoising MSE, rank32 attention_conv, batch4",
+  "lr_schedule": "1e-4 through7500; cosine to2e-5 at12500; fixed2e-5 thereafter",
+  "selection": "fixed20000 by user; no validation checkpoint evaluation",
+  "quality_stopping_gates": false,
+  "test_used_for_selection": false
+}

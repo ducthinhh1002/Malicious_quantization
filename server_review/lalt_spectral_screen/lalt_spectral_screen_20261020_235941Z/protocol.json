@@ -1,0 +1,1093 @@
+{
+  "source": "/root/logs/results/lalt_step20000_key221_probe_20261018_231633Z",
+  "fit_count": 32,
+  "validation_count": 64,
+  "rows": [
+    {
+      "row": {
+        "image_id": 1000492148,
+        "caption_id": 24059,
+        "text": "An empty city street surrounded by stores and shops on either side.",
+        "source_image_id": 246074,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000492148.safetensors",
+      "sha256": "f145c7d321ee203296d946a9e1c7e581b7c9210ca0c778102b5922303b7c365d"
+    },
+    {
+      "row": {
+        "image_id": 1000546632,
+        "caption_id": 130062,
+        "text": "The picture of a tennis player playing in a game.",
+        "source_image_id": 273316,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000546632.safetensors",
+      "sha256": "08945db978b8a28af8385ddd3e671136ebb4b58aefce647d27257e4d3514412a"
+    },
+    {
+      "row": {
+        "image_id": 1000122466,
+        "caption_id": 601507,
+        "text": "The man is holding a teddy bear over the ledge of a bridge.",
+        "source_image_id": 61233,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000122466.safetensors",
+      "sha256": "74499df3568e9331019fa78ca7933a16fced0bc878e5f1ff378948c376db8349"
+    },
+    {
+      "row": {
+        "image_id": 1000145870,
+        "caption_id": 399789,
+        "text": "A bathroom with two large white dressers and sinks",
+        "source_image_id": 72935,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000145870.safetensors",
+      "sha256": "087c5cc71f312e40f7c581c58e6cacb15fe19dfc479a2e880c851b503c8913e9"
+    },
+    {
+      "row": {
+        "image_id": 1000597618,
+        "caption_id": 715293,
+        "text": "An arrangement of a fruit skin and flowers is displayed.",
+        "source_image_id": 298809,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000597618.safetensors",
+      "sha256": "53c87491ba01a7e6dcde20730fe26ece05b1dac36be25b08322f2aedfea7faaa"
+    },
+    {
+      "row": {
+        "image_id": 1000657322,
+        "caption_id": 504225,
+        "text": "A man flying a fan plane neck to flock of ducks.",
+        "source_image_id": 328661,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000657322.safetensors",
+      "sha256": "e5f5c50fd377c47d1133931af2c70b72baa99eafff743f8abcfe543e9bd79058"
+    },
+    {
+      "row": {
+        "image_id": 1001087132,
+        "caption_id": 549202,
+        "text": "A cat sleeping on top of a pillow on a bed.",
+        "source_image_id": 543566,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1001087132.safetensors",
+      "sha256": "65a28f80ed39498ad5ef576360da76295a3e102685eefee46687fd6ddb951992"
+    },
+    {
+      "row": {
+        "image_id": 1000640964,
+        "caption_id": 792847,
+        "text": "A transit bus sitting at one of its stops on the side of a street.",
+        "source_image_id": 320482,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000640964.safetensors",
+      "sha256": "80e4ae6a5923d3e7600c7c1bfa743ba808b74e103b34ecf5a327ee8061c4ba06"
+    },
+    {
+      "row": {
+        "image_id": 1000376616,
+        "caption_id": 651252,
+        "text": "The skateboarder has on arm and knee pads with his helmet.",
+        "source_image_id": 188308,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000376616.safetensors",
+      "sha256": "9230c1127aafef70528297472246dfaaf6108e3b8b62a820b8864f2f1d2b05b7"
+    },
+    {
+      "row": {
+        "image_id": 1000257196,
+        "caption_id": 98846,
+        "text": "A group of red, yellow and orange fruit mixed together.",
+        "source_image_id": 128598,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000257196.safetensors",
+      "sha256": "20ee426b60a36765f95c1453e1c48886272deffafbc540fa664ef4a017d1e12b"
+    },
+    {
+      "row": {
+        "image_id": 1000195184,
+        "caption_id": 539000,
+        "text": "some kids in a bedroom with a lot of beds in it",
+        "source_image_id": 97592,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000195184.safetensors",
+      "sha256": "f5c3ebc33b30a52f4e7681c0ce91f779542d2e38b880cd44b8a065fb358a3b98"
+    },
+    {
+      "row": {
+        "image_id": 1001071642,
+        "caption_id": 1813,
+        "text": "A horse behind a fence looking into a camera.",
+        "source_image_id": 535821,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1001071642.safetensors",
+      "sha256": "8399a16d249f735de69e0665ddb810c0046031f2cd0c8a5bea7f663a7f059973"
+    },
+    {
+      "row": {
+        "image_id": 1000033990,
+        "caption_id": 210174,
+        "text": "A giraffe walks leisurely through the tall grass.",
+        "source_image_id": 16995,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000033990.safetensors",
+      "sha256": "9b7adf918b20b46d97e82b8431b69b95a72f293230ad2d4b02d4b80a98cfffba"
+    },
+    {
+      "row": {
+        "image_id": 1000816672,
+        "caption_id": 793460,
+        "text": "A zebra looking alertly at the camera while in the field.",
+        "source_image_id": 408336,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000816672.safetensors",
+      "sha256": "60e47f221e4716a7256a78b3695a767af5bb9037255238910519a5af179a9952"
+    },
+    {
+      "row": {
+        "image_id": 1000125970,
+        "caption_id": 811062,
+        "text": "a couple of people are flying kites in the snow",
+        "source_image_id": 62985,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000125970.safetensors",
+      "sha256": "6c9b954cd3671e8ac6fedda5e673828b9326e941737c2255e5a342c57d0619c8"
+    },
+    {
+      "row": {
+        "image_id": 1001143192,
+        "caption_id": 747402,
+        "text": "The view through the door of a small, tiled bathroom.",
+        "source_image_id": 571596,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1001143192.safetensors",
+      "sha256": "bdd61476ecd80c3f50e19bf4b2a922c8cf7daf55c13fa41648202492bd533d78"
+    },
+    {
+      "row": {
+        "image_id": 1000211920,
+        "caption_id": 76567,
+        "text": "A man kite boarding in the ocean next to a sandy beach.",
+        "source_image_id": 105960,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000211920.safetensors",
+      "sha256": "70e03074146c22d20512886cf4175c539b8bbb85c95a7d342efd272ea6d61fd7"
+    },
+    {
+      "row": {
+        "image_id": 1000078968,
+        "caption_id": 216475,
+        "text": "A variety of cars on a street with buildings.",
+        "source_image_id": 39484,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000078968.safetensors",
+      "sha256": "d85b0ef8f1f71050ca18b4c28116c0be025e4d2323b01be04f1eef25a6bcbcc0"
+    },
+    {
+      "row": {
+        "image_id": 1001097056,
+        "caption_id": 568818,
+        "text": "a parking meter standing in the cold snow",
+        "source_image_id": 548528,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1001097056.safetensors",
+      "sha256": "f642fabca7c58494ed10346c29d232b6bcbbef7754642beab7f5546a38e18c72"
+    },
+    {
+      "row": {
+        "image_id": 1000934232,
+        "caption_id": 511532,
+        "text": "An Asian man with back pack holds an ice-cream",
+        "source_image_id": 467116,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000934232.safetensors",
+      "sha256": "4a64ee9ae43718d546029aa0f4a7ef3ed05823eb41f06acd3a5f84db5bf238ae"
+    },
+    {
+      "row": {
+        "image_id": 1000421692,
+        "caption_id": 738918,
+        "text": "A person dipping a sandwich into a bowl of soup.",
+        "source_image_id": 210846,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000421692.safetensors",
+      "sha256": "b886d4873aa5d69fad00efd778d119fd22636582a669dad305e6ab70d70311cb"
+    },
+    {
+      "row": {
+        "image_id": 1000120896,
+        "caption_id": 591716,
+        "text": "A man flying into the air over a bed.",
+        "source_image_id": 60448,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000120896.safetensors",
+      "sha256": "13e09de6180eaac7cc35db58b0ed393d93bc1e3044d9c7841d72b859b06fb1c1"
+    },
+    {
+      "row": {
+        "image_id": 1000672604,
+        "caption_id": 480404,
+        "text": "A cat laying next to a pair of shoes on a hard wood floor.",
+        "source_image_id": 336302,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000672604.safetensors",
+      "sha256": "951c90eab6a56dae73b54a0a955abf666d354c674249bfff91f7d0d63d36a0b7"
+    },
+    {
+      "row": {
+        "image_id": 1000104174,
+        "caption_id": 827,
+        "text": "A man getting a drink from a water fountain that is a toilet.",
+        "source_image_id": 52087,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000104174.safetensors",
+      "sha256": "1c600433aa478452a709e169baaf79612c439bb235715910b48c1ad09a2bfeb5"
+    },
+    {
+      "row": {
+        "image_id": 1001039630,
+        "caption_id": 409152,
+        "text": "The small bathroom has a bathtub without a shower.",
+        "source_image_id": 519815,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1001039630.safetensors",
+      "sha256": "f09082adc18682724bd269567d6a833800d30dee0840bc3c13be1716c66e7042"
+    },
+    {
+      "row": {
+        "image_id": 1000598706,
+        "caption_id": 116310,
+        "text": "A large clock tower connected to a brick church.",
+        "source_image_id": 299353,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000598706.safetensors",
+      "sha256": "8ea4ac6d8a3b6d0a767b66a3c0585ec0609b077a7a91213e2f83ce06791c4b77"
+    },
+    {
+      "row": {
+        "image_id": 1000403274,
+        "caption_id": 625665,
+        "text": "A young Asian girl has an umbrella to protect her from the rain.",
+        "source_image_id": 201637,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000403274.safetensors",
+      "sha256": "507c2b87795d3200a465b756d2a49cc25427a261609eb11b5e45f64229090dc3"
+    },
+    {
+      "row": {
+        "image_id": 1000825626,
+        "caption_id": 588185,
+        "text": "a big umbrella sitting on the beach",
+        "source_image_id": 412813,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000825626.safetensors",
+      "sha256": "fe406f174bbde63f005c9c3ede1400fb1c3c882d2059cee4694a7abc7b8f5828"
+    },
+    {
+      "row": {
+        "image_id": 1000308290,
+        "caption_id": 327180,
+        "text": "A man on a court swinging a racket at a ball.",
+        "source_image_id": 154145,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000308290.safetensors",
+      "sha256": "e1bbbd91e8ee4ce545c0fb0feb08234e5fbb4770f15629840818e65aa8c6d1d5"
+    },
+    {
+      "row": {
+        "image_id": 1001005396,
+        "caption_id": 719601,
+        "text": "A man with a beard and mustache wearing a black tie.",
+        "source_image_id": 502698,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1001005396.safetensors",
+      "sha256": "0650b63ac96ea4775f36bd735a1cf4ae41cb49bd8e8ff7ef48ca103ad3942c42"
+    },
+    {
+      "row": {
+        "image_id": 1000648984,
+        "caption_id": 552584,
+        "text": "A colorful clock tower sitting int he middle of a parking lot.",
+        "source_image_id": 324492,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000648984.safetensors",
+      "sha256": "7fa244af1595264c3e51858162084fa1b5c3c85588e00f08f615711771057638"
+    },
+    {
+      "row": {
+        "image_id": 1000432546,
+        "caption_id": 207855,
+        "text": "A small white dog sitting on the floor on top of a rug.",
+        "source_image_id": 216273,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000432546.safetensors",
+      "sha256": "42ff4ed81369b7cf53c8daa7a8e341c26e84eed2ac0e4946db4d52692057f2b6"
+    },
+    {
+      "row": {
+        "image_id": 1000470982,
+        "caption_id": 173929,
+        "text": "A city street with a sign that says fun",
+        "source_image_id": 235491,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000470982.safetensors",
+      "sha256": "72f40e4d3e684bd111d8db463ba53901c7289fd9d1e5646d6211a9b03f27c978"
+    },
+    {
+      "row": {
+        "image_id": 1001109190,
+        "caption_id": 267806,
+        "text": "A man laying on top of a sandy beach laying next to a surfboard.",
+        "source_image_id": 554595,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1001109190.safetensors",
+      "sha256": "2547772844506f5985b5124ab42a6d2e903f688cfb3cda8cbe455daa4fa0daa1"
+    },
+    {
+      "row": {
+        "image_id": 1000235518,
+        "caption_id": 531114,
+        "text": "A woman is seen in the mirror drying her hair.",
+        "source_image_id": 117759,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000235518.safetensors",
+      "sha256": "f7bfb60da11999be1055411a83f4f82e083e88a763f4266a498125c37fd78960"
+    },
+    {
+      "row": {
+        "image_id": 1000509422,
+        "caption_id": 614985,
+        "text": "A baseball player swinging a bat during a baseball game.",
+        "source_image_id": 254711,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000509422.safetensors",
+      "sha256": "28c04d8a7330f1691935717771d747245115bc6fa844082e787afdc2770b6456"
+    },
+    {
+      "row": {
+        "image_id": 1001117910,
+        "caption_id": 107553,
+        "text": "A black and white soccer ball sits in the grass.",
+        "source_image_id": 558955,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1001117910.safetensors",
+      "sha256": "111f153069e76efa98eaa0933c0706aa236bc1ff7170a1cde7f1d78784836bbe"
+    },
+    {
+      "row": {
+        "image_id": 1001027230,
+        "caption_id": 811145,
+        "text": "a jet is flying above some snowy terrain",
+        "source_image_id": 513615,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1001027230.safetensors",
+      "sha256": "a8bb322f544e0729f50be5f2aabbcf11e2301b58207e054df279e1af3875fb89"
+    },
+    {
+      "row": {
+        "image_id": 1000659914,
+        "caption_id": 297602,
+        "text": "A couple of girls are standing in a kitchen",
+        "source_image_id": 329957,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000659914.safetensors",
+      "sha256": "b57f5fd0d4e226ef7422bf7b1c73ab428bfc9d9cf6202f75a94b6630bea4931d"
+    },
+    {
+      "row": {
+        "image_id": 1000729172,
+        "caption_id": 381198,
+        "text": "A black horse that is tied up eating grass.",
+        "source_image_id": 364586,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000729172.safetensors",
+      "sha256": "fcf432eb1c7a26b1126239d78c64cc287546cda4c4b99ac5977597e11442df12"
+    },
+    {
+      "row": {
+        "image_id": 1000341948,
+        "caption_id": 107146,
+        "text": "A group of people standing around playing video games",
+        "source_image_id": 170974,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000341948.safetensors",
+      "sha256": "64311ec898d3893eb96c178da74cd1f64d10ca34300b3ca43b3065fa2de1ffcc"
+    },
+    {
+      "row": {
+        "image_id": 1000193378,
+        "caption_id": 460076,
+        "text": "there is a very colorful bus coming up the street",
+        "source_image_id": 96689,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000193378.safetensors",
+      "sha256": "044049b21923f32dcf996e01de4a2143e34bfc5a3728e32b922b72aff9b737a2"
+    },
+    {
+      "row": {
+        "image_id": 1000960690,
+        "caption_id": 742229,
+        "text": "An adult giraffe grazing on tree leaves in a grassy field.",
+        "source_image_id": 480345,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000960690.safetensors",
+      "sha256": "f064502a87a1d09369699fb7761d6868b2d7bcf5556828d82ce30ded18e8380a"
+    },
+    {
+      "row": {
+        "image_id": 1000588494,
+        "caption_id": 520666,
+        "text": "A passenger jet in flight in a clear blue sky.",
+        "source_image_id": 294247,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000588494.safetensors",
+      "sha256": "b11bd43d5265c4877a93a12e775ae7591de4bdd020484be618e12e930bd79bc9"
+    },
+    {
+      "row": {
+        "image_id": 1000880868,
+        "caption_id": 732950,
+        "text": "A set of three vases filled with green plants.",
+        "source_image_id": 440434,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000880868.safetensors",
+      "sha256": "cae47fea44440783c1c7975acd050bde4b3b7dc526a9ecfc8effe5f48a6cd885"
+    },
+    {
+      "row": {
+        "image_id": 1000622364,
+        "caption_id": 462474,
+        "text": "A herd of cattle grazing on a lush green grass field.",
+        "source_image_id": 311182,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000622364.safetensors",
+      "sha256": "bc5997932765816ae4346aee42b5586971f6f0a8f85c6644ed4891a732399696"
+    },
+    {
+      "row": {
+        "image_id": 1000996678,
+        "caption_id": 796158,
+        "text": "Commuter trains at station with passengers on platforms.",
+        "source_image_id": 498339,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000996678.safetensors",
+      "sha256": "a024bc17082edc64e50e403ed428c756aeddf8d8ee349e3a23384dbab803b73a"
+    },
+    {
+      "row": {
+        "image_id": 1000271512,
+        "caption_id": 330279,
+        "text": "a little girl touching the nose of a horse",
+        "source_image_id": 135756,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000271512.safetensors",
+      "sha256": "14d61b8cc30bc51a43f8e09040ded816b23c678375d492d28ccaaf7bc3a6f9ad"
+    },
+    {
+      "row": {
+        "image_id": 1000775134,
+        "caption_id": 293742,
+        "text": "an image of a person slicing pizza with a knife",
+        "source_image_id": 387567,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000775134.safetensors",
+      "sha256": "06c1b4a580287b669ebd590c9888ddfd2db3ab4f121199a38a7c0f102309ddaa"
+    },
+    {
+      "row": {
+        "image_id": 1001090634,
+        "caption_id": 87125,
+        "text": "A bathroom with a vanity mirror next to a white toilet.",
+        "source_image_id": 545317,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1001090634.safetensors",
+      "sha256": "b734cb28bd43c0c421fdd3609901a6d178f920b7c32116c61789bf3d8ae4bcbb"
+    },
+    {
+      "row": {
+        "image_id": 1000083816,
+        "caption_id": 497618,
+        "text": "A couple of zebra standing next to eachother",
+        "source_image_id": 41908,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000083816.safetensors",
+      "sha256": "e365a54becda72df75e0be14ac6ca34723dd4b3df15abdaac85021cd8a087b42"
+    },
+    {
+      "row": {
+        "image_id": 1000504438,
+        "caption_id": 107395,
+        "text": "a person with a shopping cart on a city street",
+        "source_image_id": 252219,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000504438.safetensors",
+      "sha256": "4d56165feb848a5f209c6f90b13ebeebbe84a505dbf00eaf5395696cf6739685"
+    },
+    {
+      "row": {
+        "image_id": 1000738186,
+        "caption_id": 684603,
+        "text": "The pizza is on wax paper near a paper plate.",
+        "source_image_id": 369093,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000738186.safetensors",
+      "sha256": "2892b6b4ae160fff1f6ed1114ec9c816fc0dc2a6e2b5ef49310ea38809ceecda"
+    },
+    {
+      "row": {
+        "image_id": 1000080682,
+        "caption_id": 335355,
+        "text": "A young man holding up two skis on top of snow.",
+        "source_image_id": 40341,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000080682.safetensors",
+      "sha256": "3364f79609ad0e5b6371af104e51e922ba09d61ff001466391bc4396160fff5f"
+    },
+    {
+      "row": {
+        "image_id": 1000114144,
+        "caption_id": 44615,
+        "text": "A stainless shiny serrated knife sits in front of a sliced loaf.",
+        "source_image_id": 57072,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000114144.safetensors",
+      "sha256": "8cc332e4ebe5ce0b6f268ef855d4d41e9b4276288120c6c08245d9033eabcea7"
+    },
+    {
+      "row": {
+        "image_id": 1001045778,
+        "caption_id": 388872,
+        "text": "Venus Williams is swinging at the tennis ball at the game.",
+        "source_image_id": 522889,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1001045778.safetensors",
+      "sha256": "6fe35f4e2edca6be745e6589659d35c24428abea5982644f53f05b039b365342"
+    },
+    {
+      "row": {
+        "image_id": 1000660956,
+        "caption_id": 26862,
+        "text": "A girl checks her list while standing with her luggage.",
+        "source_image_id": 330478,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000660956.safetensors",
+      "sha256": "cd0cc018ba2ae7b9831449c7ed6c3c0a3aa4850308242a22460e692f13816d47"
+    },
+    {
+      "row": {
+        "image_id": 1001104470,
+        "caption_id": 614119,
+        "text": "A Christmas tree with a bunch of presents under it.",
+        "source_image_id": 552235,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1001104470.safetensors",
+      "sha256": "9b599ee64f7a7f1e8693dda7f2baee5fd2bedbe337a575217fda35ae1ffcb8d4"
+    },
+    {
+      "row": {
+        "image_id": 1001117188,
+        "caption_id": 369734,
+        "text": "City posts with street signs and lights on it.",
+        "source_image_id": 558594,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1001117188.safetensors",
+      "sha256": "fb83bd345d429ddfbac425cd5e4d4cbe30dcdf42206fda59bbfed3b890c350e6"
+    },
+    {
+      "row": {
+        "image_id": 1000212822,
+        "caption_id": 779393,
+        "text": "A man sitting at a table on a balcony, using a laptop.",
+        "source_image_id": 106411,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000212822.safetensors",
+      "sha256": "6f6d8a0cec61be79bb7508008fb582864b02ed0e6b8e4ef156988de9377dfb72"
+    },
+    {
+      "row": {
+        "image_id": 1000509738,
+        "caption_id": 596802,
+        "text": "The woman playing a video game stands near a man holding a wine glass.",
+        "source_image_id": 254869,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000509738.safetensors",
+      "sha256": "c7ffdf2a9eb47d500387459351249f7f8acf3377f219bf6c3508455775536a0d"
+    },
+    {
+      "row": {
+        "image_id": 1000373712,
+        "caption_id": 733479,
+        "text": "A group of kids and instructor are in a pool playing.",
+        "source_image_id": 186856,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000373712.safetensors",
+      "sha256": "62326661e2bf8e5af91ac7c411332f7e50a2ed7097139729afbc94516fe7b3ea"
+    },
+    {
+      "row": {
+        "image_id": 1001027160,
+        "caption_id": 388065,
+        "text": "A motorcycle driving by a red and white biplane.",
+        "source_image_id": 513580,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1001027160.safetensors",
+      "sha256": "ed6af7a64c5e10e518e3859f82ba5ca1d3ee16572888ed1a05c20bf4ddbf21af"
+    },
+    {
+      "row": {
+        "image_id": 1000800476,
+        "caption_id": 135046,
+        "text": "A group of people standing around with two of them holding the Nintendo Wii remote.",
+        "source_image_id": 400238,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000800476.safetensors",
+      "sha256": "2e2c0342339c69c3300e63313270bce0444d0b8a3d4f25177a4c07ede4c533b1"
+    },
+    {
+      "row": {
+        "image_id": 1001051330,
+        "caption_id": 204173,
+        "text": "A herd of cattle walking around on a beach.",
+        "source_image_id": 525665,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1001051330.safetensors",
+      "sha256": "614e339aa0073972593b3e8e19df4c3598c55f3f9e09d1b64cc5e82f57903c97"
+    },
+    {
+      "row": {
+        "image_id": 1000077428,
+        "caption_id": 750816,
+        "text": "A couple of large kites on a beach.",
+        "source_image_id": 38714,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000077428.safetensors",
+      "sha256": "f9f298bb4c63e4966984042bb26f46022257d083f438755f9f10a88deb6c0129"
+    },
+    {
+      "row": {
+        "image_id": 1000394400,
+        "caption_id": 509298,
+        "text": "A zebra standing on top of a pile of dirt and rocks.",
+        "source_image_id": 197200,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000394400.safetensors",
+      "sha256": "b31393071225be64a3625201dd947b411b85e8d98769c0d14a507c6fe3c817e9"
+    },
+    {
+      "row": {
+        "image_id": 1000602804,
+        "caption_id": 712051,
+        "text": "A young person sitting on a chair near a table.",
+        "source_image_id": 301402,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000602804.safetensors",
+      "sha256": "9cac15148a5900786553b359350b59329d9ea610ce1323ff7d55c86d9e9f6f3b"
+    },
+    {
+      "row": {
+        "image_id": 1001085868,
+        "caption_id": 252965,
+        "text": "Cabinets, a sink, a dishwasher and a microwave in a kitchen.",
+        "source_image_id": 542934,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1001085868.safetensors",
+      "sha256": "eb21823334b75716ea9902f80ef61ea619e4997ba640a4aab772c36ce2013b40"
+    },
+    {
+      "row": {
+        "image_id": 1000404080,
+        "caption_id": 133490,
+        "text": "Two motorcycles parked on the side of the road.",
+        "source_image_id": 202040,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000404080.safetensors",
+      "sha256": "730db9804c52d8658f4cbbc520ed05d1ce0c6ea49cf369f8c694d8565d3caa76"
+    },
+    {
+      "row": {
+        "image_id": 1000220162,
+        "caption_id": 298706,
+        "text": "A group of people on mopeds in a busy street.",
+        "source_image_id": 110081,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000220162.safetensors",
+      "sha256": "c25becaab37a547e8173a40155ef385123dddc50cf23d3199c81ce5dab0d6da7"
+    },
+    {
+      "row": {
+        "image_id": 1000148134,
+        "caption_id": 313848,
+        "text": "a man with a tennis racquet swinging at a ball",
+        "source_image_id": 74067,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000148134.safetensors",
+      "sha256": "f06dd0a903591dad78a9b706166f486a6bb5175284cb10db75746a2b64e6c22c"
+    },
+    {
+      "row": {
+        "image_id": 1000100050,
+        "caption_id": 87316,
+        "text": "Two young boys sitting in bed together under blankets.",
+        "source_image_id": 50025,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000100050.safetensors",
+      "sha256": "ac1ff7e5530f0acd9801eabf3ecdfc51dbbb993434911127e72db2a13467d60c"
+    },
+    {
+      "row": {
+        "image_id": 1000631580,
+        "caption_id": 493029,
+        "text": "a room with a computer monitor and a black cat on a chair",
+        "source_image_id": 315790,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000631580.safetensors",
+      "sha256": "186c505d4611c16e63c5ccce98ac9dcedbe65a50e7a7219e7f2259ec156f925e"
+    },
+    {
+      "row": {
+        "image_id": 1001102806,
+        "caption_id": 270760,
+        "text": "A lighted clock suspended from a ceiling in a dark area.",
+        "source_image_id": 551403,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1001102806.safetensors",
+      "sha256": "ef3e9e0ec894802825682d420fedb5c251f800eb28832cff6cd3689569f5da31"
+    },
+    {
+      "row": {
+        "image_id": 1000773184,
+        "caption_id": 419224,
+        "text": "A city bus is slowly making its way down a very crowded street.",
+        "source_image_id": 386592,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000773184.safetensors",
+      "sha256": "9ab369b0e2218733889d3e9945498297a3e2191c7453589d59efa7f136c86b55"
+    },
+    {
+      "row": {
+        "image_id": 1000953138,
+        "caption_id": 480203,
+        "text": "Three people are skiing in the snow near a hill.",
+        "source_image_id": 476569,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000953138.safetensors",
+      "sha256": "e20c76addcaab0c402e55993cbe5db28bb5467534764c1e4b3f62bd2cad02e26"
+    },
+    {
+      "row": {
+        "image_id": 1000797764,
+        "caption_id": 642524,
+        "text": "Two people are sitting on an outdoor bench at night.",
+        "source_image_id": 398882,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000797764.safetensors",
+      "sha256": "9a7b39c689dc55876a3b6a713c16be637303988e6c08ebc4750a53f966baaceb"
+    },
+    {
+      "row": {
+        "image_id": 1001148190,
+        "caption_id": 13030,
+        "text": "There are two slices of pizza in front of the rest of the pizza.",
+        "source_image_id": 574095,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1001148190.safetensors",
+      "sha256": "2f57aca73cb31b423811309c385c77630efee7d1af9ea06eaf166588278d639e"
+    },
+    {
+      "row": {
+        "image_id": 1000647776,
+        "caption_id": 528043,
+        "text": "a large building with a large clock on the front",
+        "source_image_id": 323888,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000647776.safetensors",
+      "sha256": "e059ce2559a56384cf5e2fa723ecbaadbe2a73ed9bba29c099fea50c0173247d"
+    },
+    {
+      "row": {
+        "image_id": 1000781368,
+        "caption_id": 743320,
+        "text": "Cars parallel-parked on a street with a street-light in the background.",
+        "source_image_id": 390684,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000781368.safetensors",
+      "sha256": "f12047ef84ab9e6c22b345f2c60b4cd28787aa5a36b19af9ae97824f399623de"
+    },
+    {
+      "row": {
+        "image_id": 1000003910,
+        "caption_id": 148219,
+        "text": "A person that is flying a kite in the air.",
+        "source_image_id": 1955,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000003910.safetensors",
+      "sha256": "23a0ec36323b09f28dc37455c4b77f204d95853e9a341ec7b7556cbac811cb2b"
+    },
+    {
+      "row": {
+        "image_id": 1000722476,
+        "caption_id": 532489,
+        "text": "A woman sitting in front of a giant pizza.",
+        "source_image_id": 361238,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000722476.safetensors",
+      "sha256": "7f61067e41124bc4df19c7d453ca7b16775b0e758801c998862463042a3119e3"
+    },
+    {
+      "row": {
+        "image_id": 1000746532,
+        "caption_id": 96233,
+        "text": "Medical students are looking at the monitor to check their patient's condition, while their associates wait in anticipation.",
+        "source_image_id": 373266,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000746532.safetensors",
+      "sha256": "66e6fcb57c4e7161287f66f7574b01ad88f3c6ca46e8366a4d34f23c93a9cb58"
+    },
+    {
+      "row": {
+        "image_id": 1000586668,
+        "caption_id": 597797,
+        "text": "A room with white walls and bright lights.",
+        "source_image_id": 293334,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000586668.safetensors",
+      "sha256": "86bf96f85f597e69e3a2d11bf950363f5bcfb0e485e5f9d2939ba2885418f196"
+    },
+    {
+      "row": {
+        "image_id": 1000642390,
+        "caption_id": 271494,
+        "text": "A car parked in a metered parking spot.",
+        "source_image_id": 321195,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000642390.safetensors",
+      "sha256": "2ca2c637aaf4820ec395892ee7bcb09c8196c9f24987eafb0bba0d4d29e5d48b"
+    },
+    {
+      "row": {
+        "image_id": 1000603190,
+        "caption_id": 304010,
+        "text": "A shower and a white toilet in a small bathroom.",
+        "source_image_id": 301595,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000603190.safetensors",
+      "sha256": "7589f7bd2fa0b9356ade4887cc21cc5a87bbcffe8c7f08918b24bcd639a265ac"
+    },
+    {
+      "row": {
+        "image_id": 1000442366,
+        "caption_id": 273253,
+        "text": "A copper and orange train on the train tracks.",
+        "source_image_id": 221183,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000442366.safetensors",
+      "sha256": "42bbb298f3d5b58aca160acc7e4195330642367a55038ed64bde8629db663773"
+    },
+    {
+      "row": {
+        "image_id": 1001004694,
+        "caption_id": 687740,
+        "text": "A plane passing over a harbor, on a clear day.",
+        "source_image_id": 502347,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1001004694.safetensors",
+      "sha256": "a30ced7ea40a7372a3476474b29aec8f474f32e60c2e48a4d10c15b1970eee50"
+    },
+    {
+      "row": {
+        "image_id": 1000334310,
+        "caption_id": 514101,
+        "text": "the bench is completely covered in snow so is the tree",
+        "source_image_id": 167155,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000334310.safetensors",
+      "sha256": "c7d6778541ce3125581def69e6c407979d0a410915e6a671942a59c797618a07"
+    },
+    {
+      "row": {
+        "image_id": 1000087506,
+        "caption_id": 366302,
+        "text": "A man being threatened by a yellow banana.",
+        "source_image_id": 43753,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000087506.safetensors",
+      "sha256": "f736f21df4e25c54dc21d6b07649771b2c1c5a7cb413c914d71871cf5a1313b7"
+    },
+    {
+      "row": {
+        "image_id": 1000167114,
+        "caption_id": 319082,
+        "text": "A bench in some grass that is next to a building.",
+        "source_image_id": 83557,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000167114.safetensors",
+      "sha256": "d7b7802a7b936e9627a24400e10895ef6213a95f56d642495f1eada81b3521e2"
+    },
+    {
+      "row": {
+        "image_id": 1001003054,
+        "caption_id": 77835,
+        "text": "The two surfers are walking down the beach.",
+        "source_image_id": 501527,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1001003054.safetensors",
+      "sha256": "662d1f081cdc7bf9bcdc6e96b45eb15127d6005b6feab285a3ba661469920214"
+    },
+    {
+      "row": {
+        "image_id": 1000415606,
+        "caption_id": 129172,
+        "text": "A marina with boats docked and a city view",
+        "source_image_id": 207803,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000415606.safetensors",
+      "sha256": "1502a2af68fb073d369c8893467044f87292accaec0592fb55cfd417c7494050"
+    },
+    {
+      "row": {
+        "image_id": 1000151104,
+        "caption_id": 363421,
+        "text": "A woman stooping down to catch a frisbee while wearing a dress",
+        "source_image_id": 75552,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000151104.safetensors",
+      "sha256": "b6631d46dbedfb7c19f68bd0768819aecb98b32be831fe2663bc08a907474048"
+    },
+    {
+      "row": {
+        "image_id": 1000751242,
+        "caption_id": 525055,
+        "text": "A man wearing glasses eating a sprinkle covered doughnut.",
+        "source_image_id": 375621,
+        "noise_variant": 0
+      },
+      "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000751242.safetensors",
+      "sha256": "aab6fd7d1d2b39e536c766878c3d336cf591d3db305fbcb5483432e95912539a"
+    }
+  ],
+  "angles": [
+    0.03,
+    0.06,
+    0.12,
+    0.24
+  ],
+  "key": 221,
+  "opposite_key": "same generator, opposite angle",
+  "frequency_band": [
+    0.015625,
+    0.125
+  ],
+  "posterior": "mean",
+  "image_rounding": "RGB8",
+  "threshold": "512 existing unadapted clean calibration images; nominal 1% image FPR",
+  "quality_gates": {
+    "mean_lpips": 0.08,
+    "lpips_p95": 0.12,
+    "psnr_p05": 25.0,
+    "mean_clip_drop": 0.02
+  },
+  "signal_gates": {
+    "teacher_tpr": 0.5,
+    "opposite_key_fpr": 0.05,
+    "teacher_auc": 0.85
+  },
+  "development_only": true,
+  "native_teacher_trained": false,
+  "students_trained": false,
+  "interpretation": "This screen cannot prove student transfer or multi-owner attribution"
+}

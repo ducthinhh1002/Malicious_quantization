@@ -1,0 +1,21 @@
+{
+  "threshold": 0.04637297987937927,
+  "target_fpr": 0.01,
+  "empirical_fpr": 0.01,
+  "false_positives": 50,
+  "num_clean": 5000,
+  "rule": "score >= float32(threshold)",
+  "scoring_seed": 42,
+  "scoring_batch_size": 32,
+  "model": {
+    "score_model": {
+      "path": "/root/workspace/serum/third_party/SERUM/results/SERUM_sd21/models/score_model_2026-10-10_13-18-16.pt",
+      "sha256": "a9d46bef5eb39f00e2eccadddccf187c115ea64b6200b06919a9ef3f6d9fc056"
+    },
+    "watermark": {
+      "path": "/root/workspace/serum/third_party/SERUM/results/SERUM_sd21/models/watermark_2026-10-10_13-18-16.pt",
+      "sha256": "f9cd1c8bf87722a4ead0e69c4c6ef94386f332da9387e043e2c0358b85fe637e"
+    }
+  },
+  "scores": "/root/workspace/serum/metrics/serum_calib_clean_scores_v2.npy"
+}

@@ -1,0 +1,10 @@
+{
+  "variants": [
+    {
+      "mode": "adaptive",
+      "status": "failed",
+      "message": "Command '['/root/logs/gate_env/bin/python', '-u', '-m', 'new_watermark.learning_channel.midpoint_probe', '--run', '/root/logs/results/lalt_repair_20261020_135310Z/adaptive_ordinary_r4']' returned non-zero exit status 1.",
+      "traceback": "Traceback (most recent call last):\n  File \"/root/logs/lalt_repair_20261020_135310Z/new_watermark/learning_channel/repair_suite.py\", line 119, in execute\n    probe = ordinary_probe(run)\n            ^^^^^^^^^^^^^^^^^^^\n  File \"/root/logs/lalt_repair_20261020_135310Z/new_watermark/learning_channel/repair_suite.py\", line 74, in ordinary_probe\n    process(run, f\"ordinary_r{rank}\", \"new_watermark.learning_channel.midpoint_probe\", \"--run\", probe)\n  File \"/root/logs/lalt_repair_20261020_135310Z/new_watermark/learning_channel/repair_suite.py\", line 47, in process\n    subprocess.run([sys.executable, \"-u\", \"-m\", module, *map(str, args)],\n  File \"/usr/lib/python3.12/subprocess.py\", line 571, in run\n    raise CalledProcessError(retcode, process.args,\nsubprocess.CalledProcessError: Command '['/root/logs/gate_env/bin/python', '-u', '-m', 'new_watermark.learning_channel.midpoint_probe', '--run', '/root/logs/results/lalt_repair_20261020_135310Z/adaptive_ordinary_r4']' returned non-zero exit status 1.\n"
+    }
+  ]
+}

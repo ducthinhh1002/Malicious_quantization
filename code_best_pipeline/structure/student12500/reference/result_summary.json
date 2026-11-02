@@ -1,0 +1,43 @@
+{
+  "metrics": {
+    "branch": "lora_r32_conv_wm",
+    "threshold": 0.8541307449340821,
+    "detected": 911,
+    "n": 1000,
+    "detection_rate": 0.911,
+    "ci95_low": 0.8917426484378812,
+    "ci95_high": 0.9271117560869926,
+    "mean_score": 1.2427095800340175,
+    "mean_coordinates": [
+      0.6785919666290283,
+      0.5761784911155701,
+      0.5746937394142151,
+      -1.631025791168213,
+      -1.807971477508545,
+      1.0986874103546143,
+      -1.2372483015060425,
+      -2.3372795581817627
+    ],
+    "recovered_signs": [
+      1.0,
+      1.0,
+      1.0,
+      -1.0,
+      -1.0,
+      1.0,
+      -1.0,
+      -1.0
+    ],
+    "bit_accuracy": 1.0
+  },
+  "lpips": 0.5288172730058431,
+  "selected_step": 12500,
+  "denoising_mse": 0.14735661947843617,
+  "utility": {
+    "clip_score": 0.7862576180696488,
+    "frechet_inception_distance": 52.89584008365773,
+    "kernel_inception_distance_mean": 0.0006842041015625,
+    "kernel_inception_distance_std": 0.0001538236841311638
+  },
+  "original_selected_adapter_sha256": "32997ac7014744743892c76ce4bd7cc99d40a98012776dd3d194b6ee934ee323"
+}

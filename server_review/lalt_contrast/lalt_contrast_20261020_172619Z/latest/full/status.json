@@ -1,0 +1,17 @@
+{
+  "status": "complete",
+  "outcomes": [
+    {
+      "mode": "contrast_cold",
+      "status": "no_positive_preserved_proxy",
+      "students_run": false
+    },
+    {
+      "mode": "contrast_replay",
+      "status": "no_positive_preserved_proxy",
+      "students_run": false
+    }
+  ],
+  "expansions": [],
+  "final_tests_used": false
+}

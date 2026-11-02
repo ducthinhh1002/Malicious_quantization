@@ -1,0 +1,116 @@
+{
+  "role": "teacher",
+  "num_bits": 32,
+  "rank": 32,
+  "step": 600,
+  "files": [
+    {
+      "path": "adapter_model.safetensors",
+      "size": 101080920,
+      "sha256": "2f9fc8d664786acfe50bf7d47c20e037a92e4cc61805524233bd7f15f365a2d8",
+      "source": "/var/lib/structure32_student12500/runs/structure32/teacher_fp/refined/adapter_model.safetensors"
+    },
+    {
+      "path": "adapter_config.json",
+      "size": 950,
+      "sha256": "ba49afdb762f47b57c1cf6f93bd6ff64b1e4a9a703724fb4ba42114148327309",
+      "source": "/var/lib/structure32_student12500/runs/structure32/teacher_fp/refined/adapter_config.json"
+    },
+    {
+      "path": "trained.json",
+      "size": 320,
+      "sha256": "fc13867752344d8870df9bd086fc7b3262eaf0d8cf5298cbd367c035a4d1dff5",
+      "source": "/var/lib/structure32_student12500/runs/structure32/teacher_fp/refined/trained.json"
+    },
+    {
+      "path": "losses.jsonl",
+      "size": 1288917,
+      "sha256": "4e79a2b6b660cf37800ce4177f3e612b9e006e8eeaee36ced212fc40f09b7aad",
+      "source": "/var/lib/structure32_student12500/runs/structure32/teacher_fp/refined/losses.jsonl"
+    },
+    {
+      "path": "protocol.json",
+      "size": 776,
+      "sha256": "23343d49af617d3cf865320de68cca6f65f1fbcdb93d87ddab670dc4a3bc0d9d",
+      "source": "/var/lib/structure32_student12500/runs/structure32/teacher_fp/refined/protocol.json"
+    },
+    {
+      "path": "checkpoint-600/checkpoint.json",
+      "size": 1137,
+      "sha256": "6e19e12e7251b6ab8ab31dc4baafe83089e9bc7ed69468624a5c38c3e5a2b009",
+      "source": "/var/lib/structure32_student12500/runs/structure32/teacher_fp/refined/checkpoint-600/checkpoint.json"
+    },
+    {
+      "path": "checkpoint-600/adapter_config.json",
+      "size": 950,
+      "sha256": "ba49afdb762f47b57c1cf6f93bd6ff64b1e4a9a703724fb4ba42114148327309",
+      "source": "/var/lib/structure32_student12500/runs/structure32/teacher_fp/refined/checkpoint-600/adapter_config.json"
+    },
+    {
+      "path": "checkpoint-600/adapter_model.safetensors",
+      "size": 101080920,
+      "sha256": "2f9fc8d664786acfe50bf7d47c20e037a92e4cc61805524233bd7f15f365a2d8",
+      "source": "/var/lib/structure32_student12500/runs/structure32/teacher_fp/refined/checkpoint-600/adapter_model.safetensors"
+    },
+    {
+      "path": "checkpoint-600/training_state.pt",
+      "size": 303583603,
+      "sha256": "85f6704ed67ea83fee4366f33e985fcaa1eb98d8b87d5625e2aaa7bf75f10730",
+      "source": "/var/lib/structure32_student12500/runs/structure32/teacher_fp/refined/checkpoint-600/training_state.pt"
+    },
+    {
+      "path": "metadata/config.json",
+      "size": 1599,
+      "sha256": "f738ae591d286c1fe0db516f250f01762b9dc147756cb1879ea603c7571f4c01",
+      "source": "/var/lib/structure32_student12500/runs/structure32/config.json"
+    },
+    {
+      "path": "metadata/assets.json",
+      "size": 3770,
+      "sha256": "db93c0296a3f47955290d8be6e86d289fe0423bed978e7fdfcf666bfe57d06ba",
+      "source": "/var/lib/structure32_student12500/runs/structure32/assets.json"
+    },
+    {
+      "path": "metadata/prompts.json",
+      "size": 1629855,
+      "sha256": "c9593dcf889f3d630ff71c974bb7385964ea8bfe120e260ecaee538527c3d866",
+      "source": "/var/lib/structure32_student12500/runs/structure32/prompts.json"
+    },
+    {
+      "path": "metadata/teacher_choice.json",
+      "size": 448,
+      "sha256": "c324faaf4647e5e8e8c0e056a2119f0723668d4aca71aaa56616c4d1b1ea46f7",
+      "source": "/var/lib/structure32_student12500/runs/structure32/teacher_choice.json"
+    },
+    {
+      "path": "metadata/carrier/complete.json",
+      "size": 342,
+      "sha256": "ea4aefe89337d022320c28b3d3cd7578a3f1d3d2ae27491681cb636a63d9a037",
+      "source": "/var/lib/structure32_student12500/runs/structure32/carrier/complete.json"
+    },
+    {
+      "path": "metadata/carrier/provenance.json",
+      "size": 1142783,
+      "sha256": "6c9535dd80464cc5a71471aba4a62c01289bfab0a8909667a32cf5eac030c6f7",
+      "source": "/var/lib/structure32_student12500/runs/structure32/carrier/provenance.json"
+    },
+    {
+      "path": "metadata/carrier/key.json",
+      "size": 1700,
+      "sha256": "fd525911d375d5baf657003ac62a714cc1ec323524b0d38d10c7bb73f5793822",
+      "source": "/var/lib/structure32_student12500/runs/structure32/carrier/key.json"
+    },
+    {
+      "path": "metadata/carrier/pca.pt",
+      "size": 6565757,
+      "sha256": "dba3a9f6aedbcdc0be3acba3956acac2f287055a7c097ec0103c41c5b827d1a6",
+      "source": "/var/lib/structure32_student12500/runs/structure32/carrier/pca.pt"
+    },
+    {
+      "path": "metadata/carrier/stability.json",
+      "size": 10392,
+      "sha256": "627ceba1c90bfa0dbb1ca051f1984ca65dc9d097f2d9e4c337bb305a342da168",
+      "source": "/var/lib/structure32_student12500/runs/structure32/carrier/stability.json"
+    }
+  ]
+}

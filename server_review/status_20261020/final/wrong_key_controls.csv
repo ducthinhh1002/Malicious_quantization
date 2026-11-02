@@ -1,0 +1,6 @@
+model,wrong_key_index,detected,n
+teacher_clean_test,1,2,1000
+teacher_wm_test,1,0,1000
+unadapted,1,2,1000
+lora_r16_wm,1,1,1000
+lora_r32_wm,1,2,1000

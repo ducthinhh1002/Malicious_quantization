@@ -1,0 +1,27 @@
+{
+  "teacher_sha256": "2f9fc8d664786acfe50bf7d47c20e037a92e4cc61805524233bd7f15f365a2d8",
+  "teacher_training_prompt_source": "original COCO",
+  "new_prompt_dataset": {
+    "repo": "Gustavosta/Stable-Diffusion-Prompts",
+    "revision": "f40484704ca5bdeb389483123ba017897f1bfcdc"
+  },
+  "new_counts": {
+    "train": 5000,
+    "validation": 1000,
+    "test": 1000,
+    "calibration": 0
+  },
+  "old_coco_prompts_excluded": 12000,
+  "deduplication": "NFKC/casefold/whitespace text; effective77-token IDs of BOTH teacher and student tokenizers; across all new splits and old COCO splits",
+  "rejections": {
+    "duplicate_text": 110,
+    "duplicate_effective_tokens": 6,
+    "short_or_filtered": 57
+  },
+  "selection_seed": 20261101,
+  "student": "fresh clean SD1.4,rank32 attention_conv,batch4,seed0,20000steps",
+  "train_images": "unmanipulated output of unchanged teacher refine600",
+  "evaluation": "new heldout official eval-source prompts; no COCO test reused",
+  "carrier_calibration": "original COCO carrier/key and thresholds frozen; not fitted to new prompts",
+  "interpretation": "prompt-source distribution shift; no claim all prompts are outside SD pretraining distribution"
+}

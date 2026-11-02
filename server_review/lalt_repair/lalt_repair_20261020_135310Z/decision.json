@@ -1,0 +1,29 @@
+﻿{
+    "status":  "complete_no_practical_transfer_improvement",
+    "rank":  4,
+    "ordinary_steps":  5000,
+    "query_images":  128,
+    "clean_and_unadapted_scores_identical":  true,
+    "teacher_single_key_tpr":  {
+                                   "old":  0.7734375,
+                                   "new":  0.84375
+                               },
+    "student_single_key_tpr":  {
+                                   "old":  0.0390625,
+                                   "new":  0.0390625
+                               },
+    "student_contrast_tpr":  {
+                                 "old":  0.0390625,
+                                 "new":  0.0390625
+                             },
+    "student_contrast_auc":  {
+                                 "old":  0.73138427734375,
+                                 "new":  0.74029541015625
+                             },
+    "contrast_observed_clean_fpr":  0.015625,
+    "contrast_threshold_identical":  true,
+    "expansion_criterion_met":  false,
+    "next_rank_training_started":  false,
+    "conclusion":  "Teacher detection improved, but the tested repair did not produce a practical improvement in ordinary rank4 LoRA transfer.",
+    "limitation":  "One training seed and 128 development queries; no general conclusion about all carriers/learners. Independent model-level attribution FPR is uncalibrated."
+}

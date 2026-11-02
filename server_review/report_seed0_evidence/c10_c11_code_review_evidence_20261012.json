@@ -1,0 +1,252 @@
+{
+  "time": "2026-10-12T07:25:13+0700",
+  "source_sha256": {
+    "scripts/train_full_sd14.py": "cb3f6f5e354ce04c7b02c23fe1fdbcdb2a4f809fb91e311071574a6521843f2e",
+    "scripts/queue_full_author.py": "d657c018d0edbc343f8a641765e1b624522d9b7dff787d5ffd0ab4efb9ce34b7",
+    "scripts/select_full_checkpoint.py": "993dbf3dfdb7225590d38928d9b7c178db11e16dfec4b96aab72410786aefcb7",
+    "scripts/select_lora_checkpoint.py": "4bb2b2e341e00389f2f3c30ccd86c848a0973bf0282bdfdbfbe29b0a419746df",
+    "scripts/launder_ctrlregen.py": "3e66c1d95641222c02522b5af6c8e7d7ed4864cd78f061e72174ede7afc6fe63",
+    "scripts/author_serum_stage0.py": "97cec8f699e12ccffb102876c9ba9d7b1b65edbe4f2639c96b5e674b3269e822",
+    "scripts/generate_full_student.py": "f1ea800d7c4e1ed27ee875f8142145a019d06143df71eb97a74510da654da2fe",
+    "scripts/generate_student.py": "5b5bd9aa646df9a2c20b8eaafe6725bcc7ebd2bbaef07772f99ef898a3e70704",
+    "scripts/audit_full_checkpoint.py": "030276eba494e7f628d16f3a66041beadfa60b2589b4b82f8cb69485975a374d",
+    "scripts/student_utility.py": "0468a32a94b8995c8113a8933ca6ce76f348391cf6ab54b75f4d33d897be51e9",
+    "third_party/diffusers/examples/text_to_image/train_text_to_image_lora.py": "18c712a5b4aa1f47f3221ee0ea5a98758f02f35ac76f753bd5ad2bdf07e98534"
+  },
+  "prompts": {
+    "detector_calib": {
+      "n": 5000,
+      "unique_normalized": 5000
+    },
+    "student_eval": {
+      "n": 5000,
+      "unique_normalized": 5000
+    },
+    "adapt_val": {
+      "n": 1000,
+      "unique_normalized": 1000
+    },
+    "adapt_train": {
+      "n": 5000,
+      "unique_normalized": 5000
+    }
+  },
+  "prompt_intersections": {
+    "detector_calib__student_eval": 2,
+    "detector_calib__adapt_val": 0,
+    "detector_calib__adapt_train": 0,
+    "student_eval__adapt_val": 1,
+    "student_eval__adapt_train": 0,
+    "adapt_val__adapt_train": 0
+  },
+  "data": {
+    "train": {
+      "n": 5000,
+      "all_inventory_hashes_match": true,
+      "identical_raw_regen_images": 0,
+      "raw_unique_hashes": 5000
+    },
+    "val": {
+      "n": 1000,
+      "all_inventory_hashes_match": true,
+      "identical_raw_regen_images": 0,
+      "raw_unique_hashes": 1000
+    }
+  },
+  "raw_train_val_exact_image_overlap": 0,
+  "all_10000_training_captions_and_files_match": true,
+  "validation": {
+    "C10_full_seed0_author": {
+      "best": {
+        "checkpoint": "/root/workspace/serum/students/C10_full_seed0_author/checkpoint-20000",
+        "mse": 0.12115537590172608
+      },
+      "early": [
+        {
+          "checkpoint": "/root/workspace/serum/students/C10_full_seed0_author/checkpoint-1000",
+          "mse": 0.1511757320286706
+        },
+        {
+          "checkpoint": "/root/workspace/serum/students/C10_full_seed0_author/checkpoint-2000",
+          "mse": 0.1506252544602612
+        },
+        {
+          "checkpoint": "/root/workspace/serum/students/C10_full_seed0_author/checkpoint-3000",
+          "mse": 0.14929889083653688
+        },
+        {
+          "checkpoint": "/root/workspace/serum/students/C10_full_seed0_author/checkpoint-4000",
+          "mse": 0.1379797385886777
+        },
+        {
+          "checkpoint": "/root/workspace/serum/students/C10_full_seed0_author/checkpoint-5000",
+          "mse": 0.12897699281515088
+        }
+      ],
+      "best_within_5000": {
+        "checkpoint": "/root/workspace/serum/students/C10_full_seed0_author/checkpoint-5000",
+        "mse": 0.12897699281515088
+      }
+    },
+    "C11_full_step1.00_seed0_author": {
+      "best": {
+        "checkpoint": "/root/workspace/serum/students/C11_full_step1.00_seed0_author/checkpoint-20000",
+        "mse": 0.14587565253267532
+      },
+      "early": [
+        {
+          "checkpoint": "/root/workspace/serum/students/C11_full_step1.00_seed0_author/checkpoint-1000",
+          "mse": 0.14672985289851204
+        },
+        {
+          "checkpoint": "/root/workspace/serum/students/C11_full_step1.00_seed0_author/checkpoint-2000",
+          "mse": 0.1465141289239982
+        },
+        {
+          "checkpoint": "/root/workspace/serum/students/C11_full_step1.00_seed0_author/checkpoint-3000",
+          "mse": 0.14640589975949841
+        },
+        {
+          "checkpoint": "/root/workspace/serum/students/C11_full_step1.00_seed0_author/checkpoint-4000",
+          "mse": 0.14632647024153267
+        },
+        {
+          "checkpoint": "/root/workspace/serum/students/C11_full_step1.00_seed0_author/checkpoint-5000",
+          "mse": 0.14624603771942202
+        }
+      ],
+      "best_within_5000": {
+        "checkpoint": "/root/workspace/serum/students/C11_full_step1.00_seed0_author/checkpoint-5000",
+        "mse": 0.14624603771942202
+      }
+    },
+    "C10_seed0_author": {
+      "best": {
+        "checkpoint": "/root/workspace/serum/students/C10_seed0_author/checkpoint-20000",
+        "mse": 0.15167077766126022
+      },
+      "early": [
+        {
+          "checkpoint": "/root/workspace/serum/students/C10_seed0_author/checkpoint-500",
+          "mse": 0.15245112504367717
+        },
+        {
+          "checkpoint": "/root/workspace/serum/students/C10_seed0_author/checkpoint-1000",
+          "mse": 0.15224243633355947
+        },
+        {
+          "checkpoint": "/root/workspace/serum/students/C10_seed0_author/checkpoint-1500",
+          "mse": 0.15214145360770634
+        },
+        {
+          "checkpoint": "/root/workspace/serum/students/C10_seed0_author/checkpoint-2000",
+          "mse": 0.15207790586247574
+        },
+        {
+          "checkpoint": "/root/workspace/serum/students/C10_seed0_author/checkpoint-2500",
+          "mse": 0.15203265196527355
+        },
+        {
+          "checkpoint": "/root/workspace/serum/students/C10_seed0_author/checkpoint-3000",
+          "mse": 0.15200140805914997
+        },
+        {
+          "checkpoint": "/root/workspace/serum/students/C10_seed0_author/checkpoint-3500",
+          "mse": 0.15197223356796893
+        },
+        {
+          "checkpoint": "/root/workspace/serum/students/C10_seed0_author/checkpoint-4000",
+          "mse": 0.15194929602893534
+        },
+        {
+          "checkpoint": "/root/workspace/serum/students/C10_seed0_author/checkpoint-4500",
+          "mse": 0.1519275214577792
+        },
+        {
+          "checkpoint": "/root/workspace/serum/students/C10_seed0_author/checkpoint-5000",
+          "mse": 0.151909858511528
+        }
+      ],
+      "best_within_5000": {
+        "checkpoint": "/root/workspace/serum/students/C10_seed0_author/checkpoint-5000",
+        "mse": 0.151909858511528
+      }
+    },
+    "C11_step1.00_seed0_author": {
+      "best": {
+        "checkpoint": "/root/workspace/serum/students/C11_step1.00_seed0_author/checkpoint-20000",
+        "mse": 0.14693202329589986
+      },
+      "early": [
+        {
+          "checkpoint": "/root/workspace/serum/students/C11_step1.00_seed0_author/checkpoint-500",
+          "mse": 0.14773253604699857
+        },
+        {
+          "checkpoint": "/root/workspace/serum/students/C11_step1.00_seed0_author/checkpoint-1000",
+          "mse": 0.14749731429689564
+        },
+        {
+          "checkpoint": "/root/workspace/serum/students/C11_step1.00_seed0_author/checkpoint-1500",
+          "mse": 0.1473944067056291
+        },
+        {
+          "checkpoint": "/root/workspace/serum/students/C11_step1.00_seed0_author/checkpoint-2000",
+          "mse": 0.14732898511667736
+        },
+        {
+          "checkpoint": "/root/workspace/serum/students/C11_step1.00_seed0_author/checkpoint-2500",
+          "mse": 0.14728354418836534
+        },
+        {
+          "checkpoint": "/root/workspace/serum/students/C11_step1.00_seed0_author/checkpoint-3000",
+          "mse": 0.14725097862258554
+        },
+        {
+          "checkpoint": "/root/workspace/serum/students/C11_step1.00_seed0_author/checkpoint-3500",
+          "mse": 0.14721847384516148
+        },
+        {
+          "checkpoint": "/root/workspace/serum/students/C11_step1.00_seed0_author/checkpoint-4000",
+          "mse": 0.14719285982381553
+        },
+        {
+          "checkpoint": "/root/workspace/serum/students/C11_step1.00_seed0_author/checkpoint-4500",
+          "mse": 0.14717375814402475
+        },
+        {
+          "checkpoint": "/root/workspace/serum/students/C11_step1.00_seed0_author/checkpoint-5000",
+          "mse": 0.14716287181410007
+        }
+      ],
+      "best_within_5000": {
+        "checkpoint": "/root/workspace/serum/students/C11_step1.00_seed0_author/checkpoint-5000",
+        "mse": 0.14716287181410007
+      }
+    }
+  },
+  "runtime": {
+    "C10": {
+      "status": {
+        "condition": "C10",
+        "stage": "generation",
+        "state": "running",
+        "updated_at": "2026-10-12T07:25:08+0700",
+        "gpu": 0,
+        "pid": 54388
+      },
+      "images": 3712
+    },
+    "C11": {
+      "status": {
+        "condition": "C11",
+        "stage": "generation",
+        "state": "running",
+        "updated_at": "2026-10-12T07:25:08+0700",
+        "gpu": 1,
+        "pid": 54387
+      },
+      "images": 3804
+    }
+  }
+}

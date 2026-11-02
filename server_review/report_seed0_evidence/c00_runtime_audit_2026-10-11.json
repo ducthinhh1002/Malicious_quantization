@@ -1,0 +1,42 @@
+{
+  "condition": "C00_seed0",
+  "validation_images": "data/raw/clean_val",
+  "validation_count": 1000,
+  "best": {
+    "checkpoint": "/root/workspace/serum/students/C00_seed0/checkpoint-20000",
+    "mse": 0.14979000494477804
+  },
+  "adapter_tensors": 256,
+  "all_finite": true,
+  "optimizer_step_range": [
+    19999.0,
+    19999.0
+  ],
+  "historical_clipping": "Affected by the same pre-fix iterator bug as C10",
+  "replay": [
+    {
+      "index": 0,
+      "exact": true,
+      "mae": 0.0,
+      "unadapted_mae": 47.880872090657554
+    },
+    {
+      "index": 1,
+      "exact": true,
+      "mae": 0.0,
+      "unadapted_mae": 46.158983866373696
+    },
+    {
+      "index": 2,
+      "exact": true,
+      "mae": 0.0,
+      "unadapted_mae": 49.66097768147787
+    },
+    {
+      "index": 3,
+      "exact": true,
+      "mae": 0.0,
+      "unadapted_mae": 29.84026336669922
+    }
+  ]
+}

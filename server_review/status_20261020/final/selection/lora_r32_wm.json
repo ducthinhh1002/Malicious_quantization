@@ -1,0 +1,19 @@
+{
+  "rule": "minimum validation denoising MSE; exact ties choose earlier step; no detector/utility/test input",
+  "selected_step": 10000,
+  "denoising_mse": 0.17054344848520486,
+  "checkpoint_hashes": {
+    "adapter_model.safetensors": "89b719f8ed5ee7637c10dbee5ad5cbf18685c421af3b89c3ca23aaa5a5c32b51",
+    "adapter_config.json": "a4cf187220d548bed7b4fafccd2f43ea04f2c986551d23fc2f3f517ba678b8f2"
+  },
+  "validation_cache_sha256": "77e147e3caf93f1db2d0baff5f687b02cf6b41db19ba45a44e5fae127df01953",
+  "candidate_loss_sha256": {
+    "2500": "bba7f448ecdf0b13496adda8891491dee5903c4e689d53b44c824dde244fa4ad",
+    "5000": "5886fe5f8b0915cc39673ff5cc625d5e719c406375b4504b6c9e853b2429a4e3",
+    "7500": "c88b6d953848f606dec704eb8188cd2333a64d6ac83b3a700da216c24af711b1",
+    "10000": "17239d4d09d726a7a29bbb766db121dd258b681df21971247dd29b90788f208c"
+  },
+  "test_used_for_selection": false,
+  "detector_used_for_selection": false,
+  "utility_used_for_selection": false
+}

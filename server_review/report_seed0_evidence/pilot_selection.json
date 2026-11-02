@@ -1,0 +1,141 @@
+{
+  "criterion": "image preservation only",
+  "policy": {
+    "minimum_clip_image_cosine": 0.85,
+    "minimum_dino_cosine": 0.8,
+    "minimum_prompt_clipscore_retention": 0.95,
+    "maximum_lpips": 0.4,
+    "note": "Operational criteria chosen before seeing pilot results, not thresholds specified by the paper. Both clean and watermarked subsets must satisfy all bounds. No detector scores enter selection."
+  },
+  "candidates": [
+    {
+      "strength": 0.25,
+      "acceptable": true,
+      "preservation_score": 1.823709224211052,
+      "evidence": {
+        "clean": {
+          "means": {
+            "clip_image_cosine": 0.9732418653964996,
+            "dino_cosine": 0.958328892827034,
+            "lpips": 0.10815858316048979,
+            "raw_clipscore": 0.6950096557140351,
+            "regen_clipscore": 0.6842989223599434
+          },
+          "prompt_clipscore_retention": 0.9845890869773777,
+          "acceptable": true,
+          "metrics_file": "/root/workspace/serum/metrics/pilot/clean_0.25.json"
+        },
+        "wm": {
+          "means": {
+            "clip_image_cosine": 0.9731413745880126,
+            "dino_cosine": 0.9575335642099381,
+            "lpips": 0.10666866543889046,
+            "raw_clipscore": 0.696881502687931,
+            "regen_clipscore": 0.68436680996418
+          },
+          "prompt_clipscore_retention": 0.9820418641110708,
+          "acceptable": true,
+          "metrics_file": "/root/workspace/serum/metrics/pilot/wm_0.25.json"
+        }
+      }
+    },
+    {
+      "strength": 0.5,
+      "acceptable": true,
+      "preservation_score": 1.736789162941277,
+      "evidence": {
+        "clean": {
+          "means": {
+            "clip_image_cosine": 0.9592482606172562,
+            "dino_cosine": 0.9401963750123977,
+            "lpips": 0.1621461586430669,
+            "raw_clipscore": 0.6950096557140351,
+            "regen_clipscore": 0.6779447048306465
+          },
+          "prompt_clipscore_retention": 0.9754464549620444,
+          "acceptable": true,
+          "metrics_file": "/root/workspace/serum/metrics/pilot/clean_0.50.json"
+        },
+        "wm": {
+          "means": {
+            "clip_image_cosine": 0.9592872270345688,
+            "dino_cosine": 0.9382753207683563,
+            "lpips": 0.1612826989069581,
+            "raw_clipscore": 0.696881502687931,
+            "regen_clipscore": 0.6784057896137238
+          },
+          "prompt_clipscore_retention": 0.9734880133811202,
+          "acceptable": true,
+          "metrics_file": "/root/workspace/serum/metrics/pilot/wm_0.50.json"
+        }
+      }
+    },
+    {
+      "strength": 0.75,
+      "acceptable": true,
+      "preservation_score": 1.6690065455883742,
+      "evidence": {
+        "clean": {
+          "means": {
+            "clip_image_cosine": 0.9488583830595017,
+            "dino_cosine": 0.927245635509491,
+            "lpips": 0.20520407931506635,
+            "raw_clipscore": 0.6950096557140351,
+            "regen_clipscore": 0.6746120416522026
+          },
+          "prompt_clipscore_retention": 0.9706513227634564,
+          "acceptable": true,
+          "metrics_file": "/root/workspace/serum/metrics/pilot/clean_0.75.json"
+        },
+        "wm": {
+          "means": {
+            "clip_image_cosine": 0.9474519407749176,
+            "dino_cosine": 0.9244574658870697,
+            "lpips": 0.2047962547391653,
+            "raw_clipscore": 0.696881502687931,
+            "regen_clipscore": 0.674945318222046
+          },
+          "prompt_clipscore_retention": 0.9685223608586605,
+          "acceptable": true,
+          "metrics_file": "/root/workspace/serum/metrics/pilot/wm_0.75.json"
+        }
+      }
+    },
+    {
+      "strength": 1.0,
+      "acceptable": true,
+      "preservation_score": 1.608891767576337,
+      "evidence": {
+        "clean": {
+          "means": {
+            "clip_image_cosine": 0.9388877546787262,
+            "dino_cosine": 0.9170243613719941,
+            "lpips": 0.24514833168685438,
+            "raw_clipscore": 0.6950096557140351,
+            "regen_clipscore": 0.6703997820913792
+          },
+          "prompt_clipscore_retention": 0.9645906018422545,
+          "acceptable": true,
+          "metrics_file": "/root/workspace/serum/metrics/pilot/clean_1.00.json"
+        },
+        "wm": {
+          "means": {
+            "clip_image_cosine": 0.9375088242292404,
+            "dino_cosine": 0.913652524471283,
+            "lpips": 0.2441415979117155,
+            "raw_clipscore": 0.696881502687931,
+            "regen_clipscore": 0.6715593220591545
+          },
+          "prompt_clipscore_retention": 0.9636635776224411,
+          "acceptable": true,
+          "metrics_file": "/root/workspace/serum/metrics/pilot/wm_1.00.json"
+        }
+      }
+    }
+  ],
+  "baseline_status": "under investigation; selection does not approve C10 baseline",
+  "status": "selected",
+  "mild": 0.25,
+  "strong": 1.0,
+  "reason": "Mild maximizes CLIP + DINO - LPIPS among acceptable lower strengths; strong is the highest strength satisfying all predeclared preservation bounds on both clean and watermarked images."
+}

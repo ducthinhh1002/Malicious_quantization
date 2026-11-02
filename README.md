@@ -1,5 +1,63 @@
 # Hướng dẫn chạy thí nghiệm malicious quantization cho watermark diffusion
 
+<!-- workspace-layout-20261030 -->
+Bố cục local: [code các pipeline tốt](code_best_pipeline/README.md),
+[checkpoint](checkpoint/README.md), [ảnh / prompt / metrics / archive](output_artifacts/README.md).
+
+
+## BitMark-inspired native diffusion fingerprint (17/10/2026)
+
+```bash
+bash run_bitgreen.sh
+```
+
+Owner-only UNet embedding using the frozen pretrained Infinity bit tokenizer;
+plain and channel-robust arms, followed by identical ordinary LoRA students and
+a matched clean-trained control. This is an exploratory pilot, not a validated
+new watermark. See [mechanism, protocol and limitations](survey/BitMark_to_Native_Diffusion_VI.md).
+Heavy artifacts live under `BITMARK_RUNTIME_ROOT/bitgreen_artifacts`; results and
+logs under `BITMARK_RESULTS_ROOT`. `--plan-only` previews, `--teacher-only` skips students.
+
+The default owner objective now uses the measured hard detector score with a
+straight-through soft gradient, full 20-step rollout gradients, an adaptive
+24 dB pixel-error penalty, coarse-image preservation and a clean noise-prediction
+anchor. The student trainer remains unchanged. A clean-only detector threshold
+is frozen before owner training. For verified reuse of an existing calibration:
+
+```bash
+bash run_bitgreen.sh --calibration-source /path/to/completed_bitgreen_run
+```
+
+`--owner-objective legacy` restores the old margin/learning-rate/4-step defaults.
+See [objective definition and limits](survey/BitGreen_Constrained_Objective_VI.md).
+
+SD2.1-base 512px teacher ablation with the same ordinary SD1.4 students:
+
+```bash
+bash run_bitgreen.sh --teacher-base sd21 --compare-to /path/to/sd14_constrained_run
+```
+
+The launcher asserts identical prompt splits and optimization settings, downloads
+a pinned public SD2.1-base mirror and calibrates a new threshold on clean SD2.1
+images. It rejects reuse of an SD1.4 calibration for this teacher. Both Plain and
+Robust are evaluated, with the same 250 owner updates and 2500 student updates.
+Equal updates do not imply equal FLOPs across backbones.
+
+To recover image fidelity from an already completed BitGreen owner run:
+
+```bash
+bash run_bitgreen_quality.sh --source /path/to/completed_bitgreen_run
+```
+
+This selects the owner weight strength on 64 fresh design prompts, with target
+TPR >=90% and PSNR >=23 dB, then checks the selected native teacher on separate
+fresh gate/test prompts. The clean calibration is reused unchanged. Ordinary
+student LoRA runs automatically if a teacher passes the existing 80% / 22 dB gate.
+See `result/strength_sweep_*.csv`, `owner_selection_*.json`,
+`teacher_test_quality.csv`, `summary.csv`, and `utility.json` (FID/KID/CLIP).
+`--resume /path/to/quality_run` resumes the frozen configuration.
+
+
 ## SERUM: diffusion teacher → diffusion student (15/10/2026)
 
 ```bash
@@ -1495,10 +1553,13 @@ CI đồng thời cho nhiều phương pháp.
 
 ## Experimental watermark embedded in diffusion UNet weights
 
-`bash run_new.sh` runs the new teacher training, merged-model export, LoRA transfer
-pilots, fresh rank-16/32 students and final evaluation. Native teacher strength is
+`bash run_new.sh` now optimizes an owner-only, VAE-channel-stable semantic fingerprint,
+exports a merged teacher, and evaluates ordinary attention LoRA rank 16/32 plus
+full-UNet students, each with a matched clean-trained control. Default teacher
+training/selection uses no surrogate student gradient or pilot student score.
+Native teacher strength is
 required (default TPR >=95%, Wilson lower bound >=90%); failure is reported without
 mislabeling weak-watermark inheritance as success. This is an unproven research
 method, with CPU integration validation but no completed full GPU efficacy result.
 See [new_watermark/README.md](new_watermark/README.md) for the exact protocol, runtime
-requirements, meta-learning approximation, controls and result paths.
+requirements, channel-proxy limitations, ablations, controls and result paths.

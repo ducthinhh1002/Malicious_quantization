@@ -1,0 +1,31 @@
+{
+  "updated": 1793462216.0923123,
+  "running": [
+    {
+      "name": "rotation15",
+      "gpu": 0,
+      "pid": 16493
+    },
+    {
+      "name": "crop75",
+      "gpu": 1,
+      "pid": 16494
+    },
+    {
+      "name": "drop96",
+      "gpu": 0,
+      "pid": 16495
+    },
+    {
+      "name": "gaussian005",
+      "gpu": 1,
+      "pid": 16496
+    }
+  ],
+  "queued": [
+    "brightness07",
+    "blur15",
+    "flip"
+  ],
+  "finished": {}
+}

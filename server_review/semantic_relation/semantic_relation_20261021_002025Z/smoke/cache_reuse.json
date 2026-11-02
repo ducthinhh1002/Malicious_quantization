@@ -1,0 +1,90 @@
+{
+  "66798": {
+    "row": {
+      "image_id": 1000133596,
+      "caption_id": 212947,
+      "text": "A tall zebra standing in a lush green field.",
+      "source_image_id": 66798,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000133596.safetensors",
+    "sha256": "d7329f90a0afaeaaa90fc77bc1615fd204b48986ed7ac144386f89cd5db200e2"
+  },
+  "451090": {
+    "row": {
+      "image_id": 1000902180,
+      "caption_id": 99192,
+      "text": "a white boat some green hills and water",
+      "source_image_id": 451090,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000902180.safetensors",
+    "sha256": "41b5f80cbc44db2c840a82323e7d5d12fb1ad28d675d2437830b509f09070688"
+  },
+  "137085": {
+    "row": {
+      "image_id": 1000274170,
+      "caption_id": 620862,
+      "text": "Three pedestal plates holding oranges on a table.",
+      "source_image_id": 137085,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000274170.safetensors",
+    "sha256": "2b5412098986c0a9530035dd4d596783bd2cdae1850138c6ddb9ea4b102b80f4"
+  },
+  "363830": {
+    "row": {
+      "image_id": 1000727660,
+      "caption_id": 527592,
+      "text": "A big bathroom with a couch a bathtub in the middle of the room.",
+      "source_image_id": 363830,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000727660.safetensors",
+    "sha256": "a1593df9e6c8e0dc1f06533abdf65bd72a9b75e6de1287bb3d40a63c67c48cf5"
+  },
+  "1818": {
+    "row": {
+      "image_id": 1000003636,
+      "caption_id": 288157,
+      "text": "A zebra in the grass who is cleaning himself.",
+      "source_image_id": 1818,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000003636.safetensors",
+    "sha256": "a2b4187caf5348f16fefd3dba0072eef002db13a19ec2c57cdfc2d4bc58bfcf2"
+  },
+  "454741": {
+    "row": {
+      "image_id": 1000909482,
+      "caption_id": 798609,
+      "text": "A bus with a red stripe is parked on the street.",
+      "source_image_id": 454741,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000909482.safetensors",
+    "sha256": "45adcc2554f1944bbf115481473081341f1233261cf839847e759c38672ba7b9"
+  },
+  "435270": {
+    "row": {
+      "image_id": 1000870540,
+      "caption_id": 623849,
+      "text": "A tray topped with breakfast muffin sandwiches on a table .",
+      "source_image_id": 435270,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000870540.safetensors",
+    "sha256": "551b8d73c40ff1ffbb67784db8afb889a4b18accd16aaa2487b9b4c30edded54"
+  },
+  "243134": {
+    "row": {
+      "image_id": 1000486268,
+      "caption_id": 417872,
+      "text": "A living room with two couches and several chairs.",
+      "source_image_id": 243134,
+      "noise_variant": 0
+    },
+    "path": "/root/logs/runtime/lcf_artifacts/lalt_20261018_053126Z_diagnostic_978ed5ba/prefix_cache/1000486268.safetensors",
+    "sha256": "3286fddc70b821c37091d5b51e02ceba71a90e08f499f1d1e0a411de91800b4c"
+  }
+}

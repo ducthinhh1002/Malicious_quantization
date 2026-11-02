@@ -1,0 +1,14 @@
+{
+  "checked_at_utc": "2026-10-21T05:26:16.373539+00:00",
+  "smoke": {
+    "status": "complete",
+    "outcome": "smoke_native_export_verified",
+    "students_trained": false
+  },
+  "pilot": {
+    "status": "complete",
+    "outcome": "native_teacher_gate_failed",
+    "students_trained": false
+  },
+  "runner_tail": ""
+}

@@ -1,0 +1,9 @@
+{
+  "tag": "lalt_step2000_probe_20261018_102531Z",
+  "reports": "/root/logs/results/lalt_step2000_probe_20261018_102531Z",
+  "artifacts": "/root/logs/runtime/lalt_probe_artifacts/lalt_step2000_probe_20261018_102531Z",
+  "checkpoint": "/root/logs/runtime/lalt_probe_artifacts/lalt_step2000_probe_20261018_102531Z/owner_step2000.pt",
+  "sha256": "5a3a63666e7d31b0d6eeddc5339d96a37e8f5ac8906922a1ece00a113b1d7175",
+  "source_run": "/root/logs/results/lalt_20261018_053126Z_diagnostic",
+  "step": 2000
+}

@@ -1,0 +1,29 @@
+{
+  "valid": false,
+  "requirements": {
+    "min_teacher_tpr": 0.95,
+    "min_teacher_ci_low": 0.9,
+    "min_student_tpr": 0.2,
+    "min_psnr": 25.0,
+    "max_clip_drop": 0.03,
+    "max_clean_fpr": 0.03
+  },
+  "measurement": {
+    "model": "teacher_wm_test",
+    "detected": 72,
+    "n": 1000,
+    "detection_rate": 0.072,
+    "ci95_low": 0.05756392168091441,
+    "ci95_high": 0.08971178358272076,
+    "bit_accuracy": 0.525,
+    "semantic_clip": 0.7678241883516311,
+    "fid": 59.62865976946165,
+    "kid": 0.007582258502004042,
+    "meaning": "watermark detection rate"
+  },
+  "clean_fpr": 0.003,
+  "paired_psnr": 18.447547684793527,
+  "threshold": -1.8832511608130547,
+  "calibration_target_fpr": 0.01,
+  "test_used_to_change_threshold": false
+}

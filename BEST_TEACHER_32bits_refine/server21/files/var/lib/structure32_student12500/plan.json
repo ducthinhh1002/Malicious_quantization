@@ -1,0 +1,16 @@
+{
+  "method": "original Full Structure with32-bit payload",
+  "reference_payload_bits": 8,
+  "num_bits": 32,
+  "stable_candidate_count": [
+    16,
+    32
+  ],
+  "reuse": "clean-only PCA, all clean RGB/captions, pinned SD2.1/SD1.4 models; hardlinks",
+  "teacher": "fresh clean initialization k1 3000steps lr1e-4 then original Structure600steps lr1e-5",
+  "student": "fresh clean SD1.4 rank32 attention_conv batch4;12500steps; identical cooldown schedule",
+  "primary_metrics": "group bit accuracy and exact full-key recovery for1,8,32,64,256 images",
+  "calibration": "recompute new32bit clean thresholds solely for original teacher loss; not reported as TPR",
+  "scientific_stopping_gates": false,
+  "single_seed": 0
+}

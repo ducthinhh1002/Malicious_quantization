@@ -1,0 +1,33 @@
+{
+  "student_objective": "ordinary denoising MSE only",
+  "optimizer": "functional AdamW",
+  "lr": 1e-05,
+  "weight_decay": 0.01,
+  "betas": [
+    0.9,
+    0.999
+  ],
+  "epsilon": 1e-08,
+  "max_grad_norm": 1.0,
+  "meta_sqrt_floor": 1e-24,
+  "meta_sqrt_floor_note": "regularizes undefined derivative at zero; <=1e-12 forward floor",
+  "design_rank": 4,
+  "inner_steps": 4,
+  "reader_frozen": true,
+  "rgb_quantization": "8-bit forward; straight-through derivative for owner optimization only",
+  "student_generation": "full differentiable DDIM trajectory; no detached prefix",
+  "inference_steps": 8,
+  "test_data_used": false,
+  "final_students": "separate ordinary upstream trainer on saved/reloaded PNG",
+  "validation_episodes": 2,
+  "validation_horizons": [
+    4,
+    16
+  ],
+  "validation_train_images_per_episode": 2,
+  "validation_query_images_per_episode": 1,
+  "diagnostic_gate_bypass": true,
+  "absolute_key_weight": 0.5,
+  "official_teacher_gate_unchanged": true,
+  "preservation": "relative to starting teacher plus absolute quality bounds"
+}

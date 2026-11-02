@@ -1,0 +1,12 @@
+{
+  "weights": "/root/logs/runtime/lcf_artifacts/lcf_20261017_191031Z_smoke_4cc482e3/students/r8_clean/adapter_model.safetensors",
+  "sha256": "d43d9eb22e8ee32f7868133d80715b60f57ea37f542e35942e54c42d1eb02bbe",
+  "optimization": {
+    "attempted": 2,
+    "applied": 2,
+    "skipped": 0,
+    "global_step": 2,
+    "scope": "this trainer invocation only",
+    "source": "Accelerator.optimizer_step_was_skipped at sync boundaries"
+  }
+}

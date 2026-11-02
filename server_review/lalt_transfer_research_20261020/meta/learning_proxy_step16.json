@@ -1,0 +1,95 @@
+{
+  "rows": [
+    {
+      "key": 221,
+      "paired_effect": -0.0015818577958270907,
+      "key_specificity": 0.019552156329154968,
+      "horizons": [
+        {
+          "horizon": 4,
+          "paired_effect": -0.0015818577958270907
+        },
+        {
+          "horizon": 16,
+          "paired_effect": 0.00028072018176317215
+        }
+      ],
+      "episodes": [
+        {
+          "episode": 0,
+          "horizon": 4,
+          "query": 0,
+          "paired_effect": -0.0010775492992252111,
+          "key_specificity": 0.10488223284482956
+        },
+        {
+          "episode": 0,
+          "horizon": 16,
+          "query": 0,
+          "paired_effect": 0.0039300816133618355,
+          "key_specificity": 0.10577388107776642
+        },
+        {
+          "episode": 1,
+          "horizon": 4,
+          "query": 0,
+          "paired_effect": -0.0020861662924289703,
+          "key_specificity": 0.019552156329154968
+        },
+        {
+          "episode": 1,
+          "horizon": 16,
+          "query": 0,
+          "paired_effect": -0.003368641249835491,
+          "key_specificity": 0.020745009183883667
+        }
+      ]
+    },
+    {
+      "key": 34,
+      "paired_effect": -0.0003640091745182872,
+      "key_specificity": -0.10749214142560959,
+      "horizons": [
+        {
+          "horizon": 4,
+          "paired_effect": -0.0003640091745182872
+        },
+        {
+          "horizon": 16,
+          "paired_effect": 0.0014644514594692737
+        }
+      ],
+      "episodes": [
+        {
+          "episode": 0,
+          "horizon": 4,
+          "query": 0,
+          "paired_effect": 0.0013371699023991823,
+          "key_specificity": -0.10700725764036179
+        },
+        {
+          "episode": 0,
+          "horizon": 16,
+          "query": 0,
+          "paired_effect": 0.00203724461607635,
+          "key_specificity": -0.10749214142560959
+        },
+        {
+          "episode": 1,
+          "horizon": 4,
+          "query": 0,
+          "paired_effect": -0.0020651882514357567,
+          "key_specificity": -0.019823838025331497
+        },
+        {
+          "episode": 1,
+          "horizon": 16,
+          "query": 0,
+          "paired_effect": 0.0008916583028621972,
+          "key_specificity": -0.020732220262289047
+        }
+      ]
+    }
+  ],
+  "caveat": "4/16-update validation horizons remain proxies, not proof of long-training transfer"
+}

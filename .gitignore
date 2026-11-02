@@ -21,3 +21,21 @@ __pycache__/
 
 /run_serum_*/
 /run_new_*/
+
+# Local model weights, environments and credentials
+/checkpoint/
+*.safetensors
+*.ckpt
+*.pth
+*.pt
+!**/carrier/*.pt
+*.pem
+*.key
+.env
+.env.*
+**/.venv/
+**/__pycache__/
+**/*.pyc
+# Downloaded images stay available locally; Git contains code and manifests.
+/new_prompt_sd14/**/images/
+/new_prompt_sd14/**/technical_smoke/

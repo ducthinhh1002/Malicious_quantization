@@ -1,0 +1,9 @@
+{
+  "n": 2,
+  "max_absolute_error": 1.3709068298339844e-05,
+  "mean_absolute_error": 2.989812060150143e-07,
+  "native_author_decoder": true,
+  "checkpoint_key_conversion": false,
+  "tolerance": 0.001,
+  "passes": true
+}

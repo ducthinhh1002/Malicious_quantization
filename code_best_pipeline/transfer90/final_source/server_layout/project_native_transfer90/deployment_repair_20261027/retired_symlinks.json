@@ -1,0 +1,162 @@
+[
+  {
+    "path": "/var/lib/wmq/logs/bitgreen_quality_smoke/validation_cache",
+    "target": "/root/logs/runtime/bitgreen_artifacts/bitgreen_quality_smoke/validation_cache",
+    "reason": "obsolete smoke/cache target absent at old and relocated locations"
+  },
+  {
+    "path": "/var/lib/wmq/logs/bitgreen_quality_smoke/models",
+    "target": "/root/logs/runtime/bitgreen_artifacts/bitgreen_quality_smoke/models",
+    "reason": "obsolete smoke/cache target absent at old and relocated locations"
+  },
+  {
+    "path": "/var/lib/wmq/logs/bitgreen_quality_smoke/students",
+    "target": "/root/logs/runtime/bitgreen_artifacts/bitgreen_quality_smoke/students",
+    "reason": "obsolete smoke/cache target absent at old and relocated locations"
+  },
+  {
+    "path": "/var/lib/wmq/logs/bitgreen_quality_smoke/images",
+    "target": "/root/logs/runtime/bitgreen_artifacts/bitgreen_quality_smoke/images",
+    "reason": "obsolete smoke/cache target absent at old and relocated locations"
+  },
+  {
+    "path": "/var/lib/wmq/logs/bitgreen_quality_smoke/owner",
+    "target": "/root/logs/runtime/bitgreen_artifacts/bitgreen_quality_smoke/owner",
+    "reason": "obsolete smoke/cache target absent at old and relocated locations"
+  },
+  {
+    "path": "/var/lib/wmq/logs/bitgreen_transport_smoke/bit_assets.json",
+    "target": "/root/logs/results/bitgreen_constrained_20261017_100852/bit_assets.json",
+    "reason": "obsolete smoke/cache target absent at old and relocated locations"
+  },
+  {
+    "path": "/var/lib/wmq/logs/bitgreen_transport_smoke/prompts.json",
+    "target": "/root/logs/results/bitgreen_constrained_20261017_100852/prompts.json",
+    "reason": "obsolete smoke/cache target absent at old and relocated locations"
+  },
+  {
+    "path": "/var/lib/wmq/logs/bitgreen_transport_smoke/assets.json",
+    "target": "/root/logs/results/bitgreen_constrained_20261017_100852/assets.json",
+    "reason": "obsolete smoke/cache target absent at old and relocated locations"
+  },
+  {
+    "path": "/var/lib/wmq/logs/bitgreen_transport_smoke/result/bit_threshold.json",
+    "target": "/root/logs/results/bitgreen_constrained_20261017_100852/result/bit_threshold.json",
+    "reason": "obsolete smoke/cache target absent at old and relocated locations"
+  },
+  {
+    "path": "/var/lib/wmq/logs/bitgreen_stablegrad_smoke/bit_assets.json",
+    "target": "/root/logs/results/bitgreen_constrained_20261017_100852/bit_assets.json",
+    "reason": "obsolete smoke/cache target absent at old and relocated locations"
+  },
+  {
+    "path": "/var/lib/wmq/logs/bitgreen_stablegrad_smoke/prompts.json",
+    "target": "/root/logs/results/bitgreen_constrained_20261017_100852/prompts.json",
+    "reason": "obsolete smoke/cache target absent at old and relocated locations"
+  },
+  {
+    "path": "/var/lib/wmq/logs/bitgreen_stablegrad_smoke/assets.json",
+    "target": "/root/logs/results/bitgreen_constrained_20261017_100852/assets.json",
+    "reason": "obsolete smoke/cache target absent at old and relocated locations"
+  },
+  {
+    "path": "/var/lib/wmq/logs/bitgreen_stablegrad_smoke/result",
+    "target": "/root/logs/results/bitgreen_constrained_20261017_100852/result",
+    "reason": "obsolete smoke/cache target absent at old and relocated locations"
+  },
+  {
+    "path": "/var/lib/wmq/logs/centered_smoke/distribution_cache/eval.identity.json",
+    "target": "/root/logs/runtime/distribution_artifacts/distribution_gate_20261017_001814/distribution_cache/eval.identity.json",
+    "reason": "obsolete smoke/cache target absent at old and relocated locations"
+  },
+  {
+    "path": "/var/lib/wmq/logs/centered_smoke/distribution_cache/fit.identity.json",
+    "target": "/root/logs/runtime/distribution_artifacts/distribution_gate_20261017_001814/distribution_cache/fit.identity.json",
+    "reason": "obsolete smoke/cache target absent at old and relocated locations"
+  },
+  {
+    "path": "/var/lib/wmq/logs/centered_smoke/distribution_cache/fit.safetensors",
+    "target": "/root/logs/runtime/distribution_artifacts/distribution_gate_20261017_001814/distribution_cache/fit.safetensors",
+    "reason": "obsolete smoke/cache target absent at old and relocated locations"
+  },
+  {
+    "path": "/var/lib/wmq/logs/centered_smoke/distribution_cache/calibration.identity.json",
+    "target": "/root/logs/runtime/distribution_artifacts/distribution_gate_20261017_001814/distribution_cache/calibration.identity.json",
+    "reason": "obsolete smoke/cache target absent at old and relocated locations"
+  },
+  {
+    "path": "/var/lib/wmq/logs/centered_smoke/distribution_cache/calibration.safetensors",
+    "target": "/root/logs/runtime/distribution_artifacts/distribution_gate_20261017_001814/distribution_cache/calibration.safetensors",
+    "reason": "obsolete smoke/cache target absent at old and relocated locations"
+  },
+  {
+    "path": "/var/lib/wmq/logs/centered_smoke/distribution_cache/fit.done.json",
+    "target": "/root/logs/runtime/distribution_artifacts/distribution_gate_20261017_001814/distribution_cache/fit.done.json",
+    "reason": "obsolete smoke/cache target absent at old and relocated locations"
+  },
+  {
+    "path": "/var/lib/wmq/logs/centered_smoke/distribution_cache/eval.safetensors",
+    "target": "/root/logs/runtime/distribution_artifacts/distribution_gate_20261017_001814/distribution_cache/eval.safetensors",
+    "reason": "obsolete smoke/cache target absent at old and relocated locations"
+  },
+  {
+    "path": "/var/lib/wmq/logs/centered_smoke/distribution_cache/pool.done.json",
+    "target": "/root/logs/runtime/distribution_artifacts/distribution_gate_20261017_001814/distribution_cache/pool.done.json",
+    "reason": "obsolete smoke/cache target absent at old and relocated locations"
+  },
+  {
+    "path": "/var/lib/wmq/logs/centered_smoke/distribution_cache/eval.done.json",
+    "target": "/root/logs/runtime/distribution_artifacts/distribution_gate_20261017_001814/distribution_cache/eval.done.json",
+    "reason": "obsolete smoke/cache target absent at old and relocated locations"
+  },
+  {
+    "path": "/var/lib/wmq/logs/centered_smoke/distribution_cache/pool.identity.json",
+    "target": "/root/logs/runtime/distribution_artifacts/distribution_gate_20261017_001814/distribution_cache/pool.identity.json",
+    "reason": "obsolete smoke/cache target absent at old and relocated locations"
+  },
+  {
+    "path": "/var/lib/wmq/logs/centered_smoke/distribution_cache/calibration.done.json",
+    "target": "/root/logs/runtime/distribution_artifacts/distribution_gate_20261017_001814/distribution_cache/calibration.done.json",
+    "reason": "obsolete smoke/cache target absent at old and relocated locations"
+  },
+  {
+    "path": "/var/lib/wmq/logs/centered_smoke/distribution_cache/pool.safetensors",
+    "target": "/root/logs/runtime/distribution_artifacts/distribution_gate_20261017_001814/distribution_cache/pool.safetensors",
+    "reason": "obsolete smoke/cache target absent at old and relocated locations"
+  },
+  {
+    "path": "/var/lib/wmq/logs/centered_smoke/images/fit",
+    "target": "/root/logs/runtime/distribution_artifacts/distribution_gate_20261017_001814/images/fit",
+    "reason": "obsolete smoke/cache target absent at old and relocated locations"
+  },
+  {
+    "path": "/var/lib/wmq/logs/centered_smoke/images/eval",
+    "target": "/root/logs/runtime/distribution_artifacts/distribution_gate_20261017_001814/images/eval",
+    "reason": "obsolete smoke/cache target absent at old and relocated locations"
+  },
+  {
+    "path": "/var/lib/wmq/logs/centered_smoke/images/pool",
+    "target": "/root/logs/runtime/distribution_artifacts/distribution_gate_20261017_001814/images/pool",
+    "reason": "obsolete smoke/cache target absent at old and relocated locations"
+  },
+  {
+    "path": "/var/lib/wmq/logs/centered_smoke/images/calibration",
+    "target": "/root/logs/runtime/distribution_artifacts/distribution_gate_20261017_001814/images/calibration",
+    "reason": "obsolete smoke/cache target absent at old and relocated locations"
+  },
+  {
+    "path": "/var/lib/wmq/logs/output_image/smoke_only_0a9adb82fd/teacher_wm_train",
+    "target": "/root/logs/results/native_transfer_20261017_174732Z_smoke/images/training_smoke_positive",
+    "reason": "obsolete smoke/cache target absent at old and relocated locations"
+  },
+  {
+    "path": "/var/lib/wmq/logs/output_image/smoke_only_0a9adb82fd/teacher_clean_train",
+    "target": "/root/logs/results/native_transfer_20261017_174732Z_smoke/images/training_clean",
+    "reason": "obsolete smoke/cache target absent at old and relocated locations"
+  },
+  {
+    "path": "/var/lib/wmq/logs/output_image/smoke_only_0a9adb82fd/teacher_fixed_train",
+    "target": "/root/logs/results/native_transfer_20261017_174732Z_smoke/images/training_smoke_negative",
+    "reason": "obsolete smoke/cache target absent at old and relocated locations"
+  }
+]

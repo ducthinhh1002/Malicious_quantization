@@ -1,0 +1,8 @@
+{
+  "attempted": 20000,
+  "applied": 19999,
+  "skipped": 1,
+  "global_step": 20000,
+  "scope": "this trainer invocation only",
+  "source": "Accelerator.optimizer_step_was_skipped at sync boundaries"
+}

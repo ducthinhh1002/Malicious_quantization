@@ -1,0 +1,32 @@
+{
+  "unet": {
+    "tensors_equal": true,
+    "fp16_tensors_equal": true,
+    "original_sha256": "6dfae3e5f7d459b50f4b0850ead945972c75bb0e1897628933e169eb43974214",
+    "mirror_sha256": "6dfae3e5f7d459b50f4b0850ead945972c75bb0e1897628933e169eb43974214"
+  },
+  "vae": {
+    "tensors_equal": true,
+    "fp16_tensors_equal": true,
+    "original_sha256": "a1d993488569e928462932c8c38a0760b874d166399b14414135bd9c42df5815",
+    "mirror_sha256": "a1d993488569e928462932c8c38a0760b874d166399b14414135bd9c42df5815"
+  },
+  "text_encoder": {
+    "tensors_equal": true,
+    "fp16_tensors_equal": true,
+    "original_sha256": "cce6febb0b6d876ee5eb24af35e27e764eb4f9b1d0b7c026c8c3333d4cfc916c",
+    "mirror_sha256": "cce6febb0b6d876ee5eb24af35e27e764eb4f9b1d0b7c026c8c3333d4cfc916c"
+  },
+  "config_files_equal": {
+    "model_index.json": true,
+    "scheduler/scheduler_config.json": true,
+    "unet/config.json": true,
+    "vae/config.json": true,
+    "text_encoder/config.json": true,
+    "tokenizer/tokenizer_config.json": true,
+    "tokenizer/vocab.json": true,
+    "tokenizer/merges.txt": true,
+    "tokenizer/special_tokens_map.json": true
+  },
+  "reuse_policy": "Reuse prompt splits, code, environment and SD1.4/CLIP/CtrlRegen assets. Old-key WM images/adapters/scores cannot serve as author-key primary results. Existing clean utility reference may be retained only when backbone/tokenizer/scheduler equivalence is established; teacher pairs here are freshly generated with common noise."
+}

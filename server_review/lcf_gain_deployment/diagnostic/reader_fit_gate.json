@@ -1,0 +1,68 @@
+{
+  "valid": false,
+  "step": 800,
+  "rows": [
+    {
+      "view": 0,
+      "key_index": 0,
+      "n": 8,
+      "bit_accuracy": 0.765625,
+      "key_margin": 8.924270125629846,
+      "auroc": 0.984375,
+      "paired_win_rate": 1.0,
+      "paired_gain_std": 3.414468184417529,
+      "mean_gain": 6.83510093629593
+    },
+    {
+      "view": 0,
+      "key_index": 1,
+      "n": 8,
+      "bit_accuracy": 0.78125,
+      "key_margin": 8.681412789475871,
+      "auroc": 1.0,
+      "paired_win_rate": 1.0,
+      "paired_gain_std": 3.8021390982334826,
+      "mean_gain": 6.630225765955402
+    },
+    {
+      "view": 1,
+      "key_index": 0,
+      "n": 8,
+      "bit_accuracy": 1.0,
+      "key_margin": 9.527846478740685,
+      "auroc": 1.0,
+      "paired_win_rate": 1.0,
+      "paired_gain_std": 1.0446274380282172,
+      "mean_gain": 7.748751007835381
+    },
+    {
+      "view": 1,
+      "key_index": 1,
+      "n": 8,
+      "bit_accuracy": 1.0,
+      "key_margin": 10.785903332522139,
+      "auroc": 1.0,
+      "paired_win_rate": 1.0,
+      "paired_gain_std": 1.9917902338857312,
+      "mean_gain": 7.113094506552443
+    }
+  ],
+  "train_image_ids": [
+    434763,
+    332058,
+    117237,
+    57703,
+    377361,
+    246562,
+    531607,
+    137727
+  ],
+  "keys": [
+    22,
+    233
+  ],
+  "carrier_frozen_verified": true,
+  "reader_initialized_from_scratch": true,
+  "test_used": false,
+  "interpretation": "Training fit only, not independent detection or student-transfer evidence"
+}

@@ -1,0 +1,15 @@
+{
+  "name": "crop75",
+  "setting": {
+    "operation": "crop",
+    "retained_area": 0.75,
+    "ratio": 1,
+    "interpolation": "bilinear",
+    "antialias": true,
+    "channel": "tensor"
+  },
+  "source_teacher_sha256": "2f9fc8d664786acfe50bf7d47c20e037a92e4cc61805524233bd7f15f365a2d8",
+  "seed_rule": "20261029+i rotation/blur;20261030+i others",
+  "pixel_lookup_sha256": "ec80b00fda1a3b15e71c999d78abee211c81c4d655b206c9be10c49ba7dd8e7f",
+  "fixed_across_epochs": true
+}

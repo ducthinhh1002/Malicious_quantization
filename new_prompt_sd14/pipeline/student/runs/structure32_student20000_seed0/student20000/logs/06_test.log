@@ -1,0 +1,65 @@
+Loading pipeline components...:   0%|          | 0/6 [00:00<?, ?it/s]Loading pipeline components...:  67%|██████▋   | 4/6 [00:00<00:00,  6.30it/s]Loading pipeline components...: 100%|██████████| 6/6 [00:00<00:00,  7.41it/s]Loading pipeline components...: 100%|██████████| 6/6 [00:00<00:00,  7.15it/s]
+You have disabled the safety checker for <class 'diffusers.pipelines.stable_diffusion.pipeline_stable_diffusion.StableDiffusionPipeline'> by passing `safety_checker=None`. Ensure that you abide to the conditions of the Stable Diffusion license and do not expose unfiltered results in services or applications open to the public. Both the diffusers team and Hugging Face strongly recommend to keep the safety filter enabled in all public facing circumstances, disabling it only for use-cases that involve analyzing network behavior or auditing its results. For more information, please have a look at https://github.com/huggingface/diffusers/pull/254 .
+Student lora_r32_conv_wm: 16/1000
+Student lora_r32_conv_wm: 32/1000
+Student lora_r32_conv_wm: 48/1000
+Student lora_r32_conv_wm: 64/1000
+Student lora_r32_conv_wm: 80/1000
+Student lora_r32_conv_wm: 96/1000
+Student lora_r32_conv_wm: 112/1000
+Student lora_r32_conv_wm: 128/1000
+Student lora_r32_conv_wm: 144/1000
+Student lora_r32_conv_wm: 160/1000
+Student lora_r32_conv_wm: 176/1000
+Student lora_r32_conv_wm: 192/1000
+Student lora_r32_conv_wm: 208/1000
+Student lora_r32_conv_wm: 224/1000
+Student lora_r32_conv_wm: 240/1000
+Student lora_r32_conv_wm: 256/1000
+Student lora_r32_conv_wm: 272/1000
+Student lora_r32_conv_wm: 288/1000
+Student lora_r32_conv_wm: 304/1000
+Student lora_r32_conv_wm: 320/1000
+Student lora_r32_conv_wm: 336/1000
+Student lora_r32_conv_wm: 352/1000
+Student lora_r32_conv_wm: 368/1000
+Student lora_r32_conv_wm: 384/1000
+Student lora_r32_conv_wm: 400/1000
+Student lora_r32_conv_wm: 416/1000
+Student lora_r32_conv_wm: 432/1000
+Student lora_r32_conv_wm: 448/1000
+Student lora_r32_conv_wm: 464/1000
+Student lora_r32_conv_wm: 480/1000
+Student lora_r32_conv_wm: 496/1000
+Student lora_r32_conv_wm: 512/1000
+Student lora_r32_conv_wm: 528/1000
+Student lora_r32_conv_wm: 544/1000
+Student lora_r32_conv_wm: 560/1000
+Student lora_r32_conv_wm: 576/1000
+Student lora_r32_conv_wm: 592/1000
+Student lora_r32_conv_wm: 608/1000
+Student lora_r32_conv_wm: 624/1000
+Student lora_r32_conv_wm: 640/1000
+Student lora_r32_conv_wm: 656/1000
+Student lora_r32_conv_wm: 672/1000
+Student lora_r32_conv_wm: 688/1000
+Student lora_r32_conv_wm: 704/1000
+Student lora_r32_conv_wm: 720/1000
+Student lora_r32_conv_wm: 736/1000
+Student lora_r32_conv_wm: 752/1000
+Student lora_r32_conv_wm: 768/1000
+Student lora_r32_conv_wm: 784/1000
+Student lora_r32_conv_wm: 800/1000
+Student lora_r32_conv_wm: 816/1000
+Student lora_r32_conv_wm: 832/1000
+Student lora_r32_conv_wm: 848/1000
+Student lora_r32_conv_wm: 864/1000
+Student lora_r32_conv_wm: 880/1000
+Student lora_r32_conv_wm: 896/1000
+Student lora_r32_conv_wm: 912/1000
+Student lora_r32_conv_wm: 928/1000
+Student lora_r32_conv_wm: 944/1000
+Student lora_r32_conv_wm: 960/1000
+Student lora_r32_conv_wm: 976/1000
+Student lora_r32_conv_wm: 992/1000
+Student lora_r32_conv_wm: 1000/1000

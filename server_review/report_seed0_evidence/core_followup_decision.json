@@ -1,0 +1,5 @@
+{
+  "repeat_three_seeds": "requires_baseline_reproduction",
+  "mechanism_and_defense": "conditional on stable attack success across adaptation seeds",
+  "baseline_pass_not_created_by_this_run": true
+}

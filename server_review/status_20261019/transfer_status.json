@@ -1,0 +1,6 @@
+{
+  "status": "complete_no_proxy_improvement",
+  "diagnostic": true,
+  "ordinary_student_started": false,
+  "reason": "No candidate improved specificity-aware validation proxy under teacher preservation"
+}

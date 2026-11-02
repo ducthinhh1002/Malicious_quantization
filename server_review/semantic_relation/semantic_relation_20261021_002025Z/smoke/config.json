@@ -1,0 +1,21 @@
+{
+  "method": "native_semantic_relation_v1",
+  "seed": 2301,
+  "resolution": 512,
+  "sampling_steps": 20,
+  "guidance": 7.5,
+  "vram_limit_gb": 32.0,
+  "owner_steps": 2,
+  "owner_rank": 16,
+  "owner_lr": 0.0001,
+  "betas": [
+    1.5
+  ],
+  "on_policy_every": 4,
+  "probe_rank": 4,
+  "probe_steps": 2,
+  "probe_batch": 2,
+  "probe_accumulation": 2,
+  "student_lr": 1e-05,
+  "smoke": true
+}

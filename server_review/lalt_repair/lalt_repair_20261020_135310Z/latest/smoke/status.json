@@ -1,0 +1,8 @@
+{
+  "status": "smoke_complete",
+  "gradient": {
+    "transfer_gradient_norm": 0.019538935273885727,
+    "independent_of_teacher_loss": true,
+    "inner_updates": 8
+  }
+}

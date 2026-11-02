@@ -1,0 +1,602 @@
+{
+  "design": [
+    {
+      "image_id": 66798,
+      "caption_id": 212947,
+      "text": "A tall zebra standing in a lush green field.",
+      "group": 0
+    },
+    {
+      "image_id": 451090,
+      "caption_id": 99192,
+      "text": "a white boat some green hills and water",
+      "group": 1
+    },
+    {
+      "image_id": 137085,
+      "caption_id": 620862,
+      "text": "Three pedestal plates holding oranges on a table.",
+      "group": 2
+    },
+    {
+      "image_id": 363830,
+      "caption_id": 527592,
+      "text": "A big bathroom with a couch a bathtub in the middle of the room.",
+      "group": 3
+    },
+    {
+      "image_id": 1818,
+      "caption_id": 288157,
+      "text": "A zebra in the grass who is cleaning himself.",
+      "group": 0
+    },
+    {
+      "image_id": 454741,
+      "caption_id": 798609,
+      "text": "A bus with a red stripe is parked on the street.",
+      "group": 1
+    },
+    {
+      "image_id": 435270,
+      "caption_id": 623849,
+      "text": "A tray topped with breakfast muffin sandwiches on a table .",
+      "group": 2
+    },
+    {
+      "image_id": 243134,
+      "caption_id": 417872,
+      "text": "A living room with two couches and several chairs.",
+      "group": 3
+    }
+  ],
+  "train": [
+    {
+      "image_id": 389116,
+      "caption_id": 405174,
+      "text": "A picture of a man with his cow named Elsie.",
+      "group": 0
+    },
+    {
+      "image_id": 484754,
+      "caption_id": 331877,
+      "text": "An image of a car in a side mirror.",
+      "group": 1
+    },
+    {
+      "image_id": 477195,
+      "caption_id": 692631,
+      "text": "A pizza with pepperoni and spinach leaves by a beer.",
+      "group": 2
+    },
+    {
+      "image_id": 90501,
+      "caption_id": 478814,
+      "text": "A wooden bench sitting in front of a white building.",
+      "group": 3
+    },
+    {
+      "image_id": 346965,
+      "caption_id": 527042,
+      "text": "A man in a black shirt holding a dog with its hand in the air.",
+      "group": 0
+    },
+    {
+      "image_id": 132084,
+      "caption_id": 802810,
+      "text": "A motorcycle rests against the side of a deserted road near a kangaroo crossing sign.",
+      "group": 1
+    },
+    {
+      "image_id": 392753,
+      "caption_id": 230872,
+      "text": "a close up of a sandwich and a cup of food",
+      "group": 2
+    },
+    {
+      "image_id": 550521,
+      "caption_id": 38311,
+      "text": "The reflection of a man in barbers chair getting a trim",
+      "group": 3
+    }
+  ],
+  "validation": [
+    {
+      "image_id": 67563,
+      "caption_id": 424766,
+      "text": "A group of elephants by some buildings on the water.",
+      "group": 0
+    },
+    {
+      "image_id": 137727,
+      "caption_id": 156105,
+      "text": "A motorized cart fills a train with luggage",
+      "group": 1
+    },
+    {
+      "image_id": 285646,
+      "caption_id": 439490,
+      "text": "Apples on a tree that need longer to ripen.",
+      "group": 2
+    },
+    {
+      "image_id": 540159,
+      "caption_id": 525537,
+      "text": "A very nice looking living room with a couch.",
+      "group": 3
+    },
+    {
+      "image_id": 102555,
+      "caption_id": 51062,
+      "text": "A man kneeling down to pet a small dog.",
+      "group": 0
+    },
+    {
+      "image_id": 78113,
+      "caption_id": 802053,
+      "text": "a fire truck on a city street",
+      "group": 1
+    },
+    {
+      "image_id": 275754,
+      "caption_id": 297605,
+      "text": "A small child in pajamas is holding bananas.",
+      "group": 2
+    },
+    {
+      "image_id": 242968,
+      "caption_id": 427777,
+      "text": "A vase filled with pens with fake sunflowers attached on a desk that says \"Visitors must sign in\".",
+      "group": 3
+    }
+  ],
+  "query": [
+    {
+      "image_id": 139140,
+      "caption_id": 36215,
+      "text": "A young woman lays a hand on the neck of the horse she is riding.",
+      "group": 0
+    },
+    {
+      "image_id": 444703,
+      "caption_id": 338284,
+      "text": "A street filled with lots of double decker buses.",
+      "group": 1
+    },
+    {
+      "image_id": 210002,
+      "caption_id": 690566,
+      "text": "A person holding a white plate topped with a sandwich.",
+      "group": 2
+    },
+    {
+      "image_id": 394133,
+      "caption_id": 13572,
+      "text": "A bedroom with a bed and chair along with a nightstand with lamp on top of it.",
+      "group": 3
+    },
+    {
+      "image_id": 524247,
+      "caption_id": 283506,
+      "text": "Zebras and rhinos grazing together at the zoo.",
+      "group": 0
+    },
+    {
+      "image_id": 522137,
+      "caption_id": 30487,
+      "text": "Three Mercedes Benz on the top of a train as cargo",
+      "group": 1
+    },
+    {
+      "image_id": 402528,
+      "caption_id": 586370,
+      "text": "A jar of mustard next to a small plate of a sandwich",
+      "group": 2
+    },
+    {
+      "image_id": 179045,
+      "caption_id": 667536,
+      "text": "A young child sitting on top of a couch.",
+      "group": 3
+    }
+  ],
+  "preserve_train": [
+    {
+      "image_id": 31825,
+      "caption_id": 493218,
+      "text": "A skier coming to a stop in white powdery snow.",
+      "reason": "outside_domain"
+    },
+    {
+      "image_id": 329433,
+      "caption_id": 25817,
+      "text": "A table with plates of food that have been served.",
+      "reason": "outside_domain"
+    },
+    {
+      "image_id": 264554,
+      "caption_id": 483047,
+      "text": "Commode near white shower curtain in residential bathroom setting.",
+      "reason": "outside_domain"
+    },
+    {
+      "image_id": 581615,
+      "caption_id": 598085,
+      "text": "A picture of a white toilet in the rest room.",
+      "reason": "outside_domain"
+    },
+    {
+      "image_id": 458560,
+      "caption_id": 652865,
+      "text": "A good stands in the grass next to the water.",
+      "reason": "outside_domain"
+    },
+    {
+      "image_id": 258322,
+      "caption_id": 199631,
+      "text": "a close up of a person holding a really old cell phone",
+      "reason": "outside_domain"
+    },
+    {
+      "image_id": 370818,
+      "caption_id": 665849,
+      "text": "A room with a large cabinet filled with white towels.",
+      "reason": "outside_domain"
+    },
+    {
+      "image_id": 62423,
+      "caption_id": 696458,
+      "text": "this is a bathroom that has a sink and toilet",
+      "reason": "outside_domain"
+    },
+    {
+      "image_id": 246263,
+      "caption_id": 651160,
+      "text": "A bathroom with a glassed in tub, toilet and sink",
+      "reason": "outside_domain"
+    },
+    {
+      "image_id": 571008,
+      "caption_id": 714135,
+      "text": "The stop sign has stenciled spray paint on it.",
+      "reason": "outside_domain"
+    },
+    {
+      "image_id": 90787,
+      "caption_id": 430715,
+      "text": "lots of people are on skies on the snow.",
+      "reason": "outside_domain"
+    },
+    {
+      "image_id": 235200,
+      "caption_id": 116368,
+      "text": "A picture of some animals eating some grass.",
+      "reason": "outside_domain"
+    },
+    {
+      "image_id": 430286,
+      "caption_id": 770750,
+      "text": "Two remotes on a mattress with an adjustable sleep number one in the middle",
+      "reason": "outside_domain"
+    },
+    {
+      "image_id": 140929,
+      "caption_id": 629989,
+      "text": "The clock is on display on the side of the building outside.",
+      "reason": "outside_domain"
+    },
+    {
+      "image_id": 241209,
+      "caption_id": 662661,
+      "text": "The blender pitcher is filled with pieces of fruit.",
+      "reason": "outside_domain"
+    },
+    {
+      "image_id": 335532,
+      "caption_id": 163047,
+      "text": "A little girl eating food while sitting down.",
+      "reason": "outside_domain"
+    },
+    {
+      "image_id": 574520,
+      "caption_id": 690151,
+      "text": "a surfer riding the waves,on a surf board.",
+      "reason": "outside_domain"
+    },
+    {
+      "image_id": 371326,
+      "caption_id": 309863,
+      "text": "A large green leafy plant with a flower.",
+      "reason": "outside_domain"
+    },
+    {
+      "image_id": 215897,
+      "caption_id": 383228,
+      "text": "Two guys leaning against a surf board on the beach.",
+      "reason": "outside_domain"
+    },
+    {
+      "image_id": 526028,
+      "caption_id": 148568,
+      "text": "A fancy dish on a white plate at a restaurant.",
+      "reason": "outside_domain"
+    },
+    {
+      "image_id": 331392,
+      "caption_id": 105306,
+      "text": "A white glass vase filled with flowers on top of a table.",
+      "reason": "outside_domain"
+    },
+    {
+      "image_id": 74067,
+      "caption_id": 313848,
+      "text": "a man with a tennis racquet swinging at a ball",
+      "reason": "outside_domain"
+    },
+    {
+      "image_id": 329957,
+      "caption_id": 297602,
+      "text": "A couple of girls are standing in a kitchen",
+      "reason": "outside_domain"
+    },
+    {
+      "image_id": 256095,
+      "caption_id": 87408,
+      "text": "A bridge and castle by big bin in london.",
+      "reason": "outside_domain"
+    },
+    {
+      "image_id": 122825,
+      "caption_id": 591391,
+      "text": "An animal standing on the side of a grass covered field.",
+      "reason": "outside_domain"
+    },
+    {
+      "image_id": 530520,
+      "caption_id": 261531,
+      "text": "Men are resting in a grassy area outside a building.",
+      "reason": "outside_domain"
+    },
+    {
+      "image_id": 340420,
+      "caption_id": 701141,
+      "text": "two different pizzas that just came out of an oven.",
+      "reason": "outside_domain"
+    },
+    {
+      "image_id": 177207,
+      "caption_id": 738928,
+      "text": "A group of people riding skis on top of a snow covered ski slope.",
+      "reason": "outside_domain"
+    },
+    {
+      "image_id": 27648,
+      "caption_id": 415564,
+      "text": "A row of white urinals in bathroom below windows.",
+      "reason": "outside_domain"
+    },
+    {
+      "image_id": 243034,
+      "caption_id": 734740,
+      "text": "A very tall clock tower towering over a city at night.",
+      "reason": "explicit_lighting"
+    },
+    {
+      "image_id": 138477,
+      "caption_id": 548266,
+      "text": "A man flying a blue kite in an open ground",
+      "reason": "outside_domain"
+    },
+    {
+      "image_id": 553852,
+      "caption_id": 706376,
+      "text": "A young man riding on top of a skateboard.",
+      "reason": "outside_domain"
+    },
+    {
+      "image_id": 74059,
+      "caption_id": 609385,
+      "text": "An old building with a giant clock at the top",
+      "reason": "outside_domain"
+    },
+    {
+      "image_id": 166056,
+      "caption_id": 675284,
+      "text": "A picture of water with an intersection as a backdrop.",
+      "reason": "outside_domain"
+    },
+    {
+      "image_id": 206381,
+      "caption_id": 373012,
+      "text": "A girl chatting with a mother goat while her baby goat looks on.",
+      "reason": "outside_domain"
+    },
+    {
+      "image_id": 82662,
+      "caption_id": 148599,
+      "text": "A red stop sign with a sticker of a man holding up a sword.",
+      "reason": "outside_domain"
+    },
+    {
+      "image_id": 508514,
+      "caption_id": 101098,
+      "text": "A man sleeps with his headphones in and a light on.",
+      "reason": "explicit_lighting"
+    },
+    {
+      "image_id": 172716,
+      "caption_id": 242534,
+      "text": "Black and white photograph of man riding a skateboard.",
+      "reason": "outside_domain"
+    },
+    {
+      "image_id": 132702,
+      "caption_id": 748129,
+      "text": "Two vegetables are lying on a napkin on a table.",
+      "reason": "outside_domain"
+    },
+    {
+      "image_id": 334417,
+      "caption_id": 612793,
+      "text": "A man looks on as he finishes his meal",
+      "reason": "outside_domain"
+    },
+    {
+      "image_id": 157170,
+      "caption_id": 218042,
+      "text": "Four mountain goats standing on a hill in front of the country side.",
+      "reason": "outside_domain"
+    },
+    {
+      "image_id": 408578,
+      "caption_id": 343007,
+      "text": "Closeup of a cellphone with a keyboard and a computer keyboard in the background.",
+      "reason": "outside_domain"
+    },
+    {
+      "image_id": 212309,
+      "caption_id": 453909,
+      "text": "A couple of young men standing on top of a baseball field.",
+      "reason": "outside_domain"
+    },
+    {
+      "image_id": 468612,
+      "caption_id": 170097,
+      "text": "A young man tossing a white frisbee.",
+      "reason": "outside_domain"
+    },
+    {
+      "image_id": 304815,
+      "caption_id": 545703,
+      "text": "A computer mouse and keyboard sitting next to a monitor.",
+      "reason": "outside_domain"
+    },
+    {
+      "image_id": 156320,
+      "caption_id": 705584,
+      "text": "a bunch of people in a kitchen getting food ready",
+      "reason": "outside_domain"
+    },
+    {
+      "image_id": 189067,
+      "caption_id": 365002,
+      "text": "This expert skateboarder is skateboarding on a railing.",
+      "reason": "outside_domain"
+    },
+    {
+      "image_id": 449191,
+      "caption_id": 388982,
+      "text": "A large man is holding a black suitcase.",
+      "reason": "outside_domain"
+    },
+    {
+      "image_id": 557172,
+      "caption_id": 713372,
+      "text": "A bathroom sink and mirror reflecting the shower and bathtub.",
+      "reason": "outside_domain"
+    },
+    {
+      "image_id": 577564,
+      "caption_id": 550858,
+      "text": "A small bathroom with toilet and sink in it.",
+      "reason": "outside_domain"
+    },
+    {
+      "image_id": 42622,
+      "caption_id": 281429,
+      "text": "A person riding the waves on surf board.",
+      "reason": "outside_domain"
+    },
+    {
+      "image_id": 10324,
+      "caption_id": 758440,
+      "text": "a fridge is open with some food inside of it",
+      "reason": "outside_domain"
+    },
+    {
+      "image_id": 338531,
+      "caption_id": 512655,
+      "text": "A bunch of antelopes are seen roaming the plains.",
+      "reason": "outside_domain"
+    },
+    {
+      "image_id": 462241,
+      "caption_id": 110840,
+      "text": "A costumed mascot with a floppy ears and a tail holding up a disc in a sports arena.",
+      "reason": "outside_domain"
+    },
+    {
+      "image_id": 154145,
+      "caption_id": 327180,
+      "text": "A man on a court swinging a racket at a ball.",
+      "reason": "outside_domain"
+    },
+    {
+      "image_id": 265915,
+      "caption_id": 232821,
+      "text": "A couple of pizzas baking inside of an oven.",
+      "reason": "outside_domain"
+    },
+    {
+      "image_id": 63650,
+      "caption_id": 655318,
+      "text": "two people riding skate boards on a city street",
+      "reason": "outside_domain"
+    },
+    {
+      "image_id": 216218,
+      "caption_id": 422947,
+      "text": "A toilet that is sitting in a bathroom with the light on.",
+      "reason": "explicit_lighting"
+    },
+    {
+      "image_id": 426520,
+      "caption_id": 393894,
+      "text": "a living room with a bunch of figurines",
+      "reason": "outside_domain"
+    },
+    {
+      "image_id": 50352,
+      "caption_id": 319132,
+      "text": "A piece of art that has been cordoned off, that looks like a baseball player.",
+      "reason": "outside_domain"
+    },
+    {
+      "image_id": 337561,
+      "caption_id": 589801,
+      "text": "A odd looking bike sitting under a purple tent next to a fountain.",
+      "reason": "outside_domain"
+    },
+    {
+      "image_id": 46173,
+      "caption_id": 359077,
+      "text": "A woman in grey shirt standing n grassy area next to black fence.",
+      "reason": "outside_domain"
+    },
+    {
+      "image_id": 128372,
+      "caption_id": 424605,
+      "text": "People loading onto a orange and silver metro bus.",
+      "reason": "ambiguous"
+    },
+    {
+      "image_id": 147897,
+      "caption_id": 388452,
+      "text": "A man taking his picture in the mirror with a camera.",
+      "reason": "outside_domain"
+    }
+  ],
+  "preserve_eval": [
+    {
+      "image_id": 205716,
+      "caption_id": 123006,
+      "text": "A white plate with rice and vegetables with wooden chop sticks.",
+      "reason": "outside_domain"
+    },
+    {
+      "image_id": 422375,
+      "caption_id": 83000,
+      "text": "A person in a suit takes a photo of themselves in the mirror.",
+      "reason": "outside_domain"
+    }
+  ]
+}

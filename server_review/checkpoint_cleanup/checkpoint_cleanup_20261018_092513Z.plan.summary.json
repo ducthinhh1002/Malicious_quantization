@@ -1,0 +1,8 @@
+{
+  "deleted_files": 82,
+  "logical_bytes": 120384998988,
+  "available_before": 172520431616,
+  "available_after": 292891979776,
+  "observed_free_change": 120371548160,
+  "deletion_log": "/root/logs/checkpoint_cleanup_20261018_092513Z.plan.deleted.jsonl"
+}

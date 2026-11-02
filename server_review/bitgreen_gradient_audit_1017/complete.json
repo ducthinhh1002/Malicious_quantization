@@ -1,0 +1,4 @@
+{
+  "scope": "owner train prompts only; no test/student inputs",
+  "source": "/root/logs/results/bitgreen_constrained_20261017_100852"
+}

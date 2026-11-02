@@ -1,0 +1,13 @@
+{
+  "unchanged_functions": {
+    "_threshold_microbatch_backward": true,
+    "train_one": true,
+    "predicted_x0": true,
+    "fingerprint_ramp": true,
+    "adapter_targets": true
+  },
+  "unchanged_files": {
+    "semantic_threshold.py": true,
+    "semantic_carrier.py": true
+  }
+}

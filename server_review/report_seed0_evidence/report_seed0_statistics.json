@@ -1,0 +1,88 @@
+{
+  "n": 5000,
+  "rows": {
+    "C00_seed0": {
+      "score_mean": 0.0038832230493426323,
+      "score_median": 1.366712922390434e-06,
+      "best": {
+        "checkpoint": "/root/workspace/serum/students/C00_seed0/checkpoint-20000",
+        "mse": 0.14979000494477804
+      }
+    },
+    "C10_seed0": {
+      "score_mean": 0.013153111562132835,
+      "score_median": 5.73414217797108e-06,
+      "best": {
+        "checkpoint": "/root/workspace/serum/students/C10_seed0/checkpoint-20000",
+        "mse": 0.14609626718889923
+      }
+    },
+    "C01_step0.25_seed0": {
+      "score_mean": 0.002927888883277774,
+      "score_median": 1.4711313269799575e-06,
+      "best": {
+        "checkpoint": "/root/workspace/serum/students/C01_step0.25_seed0/checkpoint-20000",
+        "mse": 0.14447872097126674
+      }
+    },
+    "C11_step0.25_seed0": {
+      "score_mean": 0.012155945412814617,
+      "score_median": 5.695890649803914e-06,
+      "best": {
+        "checkpoint": "/root/workspace/serum/students/C11_step0.25_seed0/checkpoint-20000",
+        "mse": 0.14128940044227056
+      }
+    },
+    "C01_step1.00_seed0": {
+      "score_mean": 0.0030587236396968365,
+      "score_median": 1.3045748801232548e-06,
+      "best": {
+        "checkpoint": "/root/workspace/serum/students/C01_step1.00_seed0/checkpoint-19500",
+        "mse": 0.1461565240258351
+      }
+    },
+    "C11_step1.00_seed0": {
+      "score_mean": 0.009225080721080303,
+      "score_median": 4.515254659054335e-06,
+      "best": {
+        "checkpoint": "/root/workspace/serum/students/C11_step1.00_seed0/checkpoint-20000",
+        "mse": 0.14328593843244017
+      }
+    }
+  },
+  "paired": [
+    {
+      "strength": 0.25,
+      "delta_launder_mean_score": -4.1831506678136066e-05,
+      "delta_launder_ci95": [
+        -0.002093200129456818,
+        0.0019459713716059924
+      ],
+      "C01_minus_C00_clipscore": -0.002265199601650238,
+      "clean_clipscore_difference_ci95": [
+        -0.003258900643289089,
+        -0.001343393697142601
+      ]
+    },
+    {
+      "strength": 1.0,
+      "delta_launder_mean_score": -0.0031035314314067364,
+      "delta_launder_ci95": [
+        -0.005399395048152655,
+        -0.0007739847162156368
+      ],
+      "C01_minus_C00_clipscore": -0.005786062163114548,
+      "clean_clipscore_difference_ci95": [
+        -0.007054491017162799,
+        -0.004461818237900735
+      ]
+    }
+  ],
+  "bootstrap_replicates": 1000,
+  "bootstrap_seed": 20261011,
+  "score_auc": {
+    "raw_C10_vs_C00": 0.60988926,
+    "mild_C11_vs_C01": 0.6007529,
+    "strong_C11_vs_C01": 0.59039362
+  }
+}

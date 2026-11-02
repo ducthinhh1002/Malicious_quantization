@@ -1,0 +1,48 @@
+# BitGreen: ch?n ?o?n gradient v? ?n ??nh hu?n luy?n teacher
+
+Ng?y: 2026-10-17. ??y l? c?i ti?n t?i ?u cho prototype hi?n t?i, ch?a ph?i m?t ??ng g?p watermark m?i ?? ???c ch?ng minh.
+
+## B?ng ch?ng tr??c khi s?a
+
+Th? nghi?m d?ng prompt thu?c teacher_train, kh?ng d?ng test hay student ?? ch?n gradient.
+C?ng model, prompt, noise v? ?nh forward, thay s? b??c ???c backprop:
+
+| ?nh train | Norm K=1 | Norm K=4 | Norm K=20 | Cosine gradient K4/K20 |
+|---|---:|---:|---:|---:|
+| 0 | 0.419 | 14.656 | 25065.045 | -0.00159 |
+| 1 | 0.448 | 9.229 | 588.667 | 0.02594 |
+
+Norm l?n v? clipping kh?ng t? ch?ng minh gradient sai. Tuy nhi?n, k?t h?p v?i score g?n 0.5 sau 250 updates, ??y l? l? do th?c nghi?m ?? th? gradient ng?n v? ?n ??nh h?n. Truncated gradient c? bias; kh?ng ???c g?i n? l? gradient ch?nh x?c to?n chu?i.
+
+M?t ki?m tra kh?c t?i ?u tr?c ti?p terminal latent, gi? nguy?n VAE v? detector. C? 4 ?nh train ??t score 0.531?0.540, v??t target 0.51250, t?i PSNR 31.83?34.80 dB. ?i?u n?y ch? ch?ng minh carrier c? th? ??t ???c tr?n 4 ?nh b?ng latent editing. N? kh?ng ch?ng minh teacher native h?c ???c, ?nh t? nhi?n ??p, ho?c student th?a h??ng d?u.
+
+K?t qu? g?c: server /root/logs/results/bitgreen_gradient_audit_1017; b?n sao nh? t?i server_review/bitgreen_gradient_audit_1017.
+
+## Nghi?n c?u li?n quan
+
+- [DRaFT, ICLR 2024](https://deepmind.google/research/publications/51081/): tr?c ti?p t?i ?u reward tr?n diffusion, DRaFT-K backprop K b??c cu?i. DRaFT-LV l? estimator ri?ng cho K=1; gradient accumulation b?n d??i KH?NG ph?i DRaFT-LV.
+- [ShortFT, ICCV 2025](https://arxiv.org/abs/2507.22604): d?ng trajectory-preserving shortcut model ?? gi?m chi?u d?i chu?i gradient. ??y l? h??ng ti?p theo n?u truncation kh?ng ??; code n?y kh?ng tri?n khai ShortFT v? kh?ng t? ? thay sampler/model c?a th? nghi?m.
+- [BitMark, NeurIPS 2025](https://arxiv.org/html/2506.21209v2): carrier bitwise g?i ? ph??ng ph?p hi?n t?i, nh?ng t?i ?u frozen encoder c?a ch?ng ta kh?c vi?c bias logits l?c sampling trong BitMark. Paper c?ng c? th? nghi?m bitwise diffusion, v? v?y kh?ng claim l? l?n ??u ??a bitwise watermark sang diffusion.
+
+## Thay ??i code
+
+1. M?c ??nh `--grad-steps 4`; forward v?n ch?y ?? 20 DDIM steps t? Gaussian noise. `--grad-steps 20` v?n c? ?? l?m ablation.
+2. `--owner-accumulation 4`: 4 prompt/noise kh?c nhau, c?ng loss/4 r?i backward t?ng ?nh, clip m?t l?n v? optimizer.step m?t l?n. Kh?ng gi? ??ng th?i 4 graph tr?n GPU.
+3. Noise preservation v?n l?y m?u tr?n t?t c? 20 timestep c?a trajectory s?ch, bao g?m ph?n prefix ?? detach c?a watermark gradient.
+4. VAE/t200/t400 channel v? noise-anchor timestep ???c ch?n theo sample_index, kh?ng theo optimizer step, ?? accumulation kh?ng v? t?nh d?ng c?ng m?t channel cho m?i ?nh.
+5. Dual ch?t l??ng c?p nh?t m?t l?n theo pixel budget ratio trung b?nh sau m?i optimizer update. Log ghi `samples_seen`, accumulation, t?t c? hard per-image scores v? trung b?nh loss/PSNR.
+6. LoRA student, d? li?u ???c ph?p nh?n v? checkpoint selection kh?ng thay ??i. Teacher v?n ph?i qua gate tr??c khi ch?y student.
+
+250 updates ? 4 = 1000 owner samples, KH?NG c?ng ng?n s?ch FLOPs v?i 250 updates ? 1. So s?nh hi?u qu? ph?i b?o c? updates, samples v? th?i gian. ??i ch?ng c?n t?ch K4/acc1 v? K4/acc4; kh?ng g?n to?n b? c?i thi?n cho truncation n?u ch? so K20/acc1 v?i K4/acc4.
+
+## Ch?y
+
+```bash
+bash run_bitgreen.sh --grad-steps 4 --owner-accumulation 4
+# ??i ch?ng ch? thay ?? d?i gradient, gi? s? sample/update c?:
+bash run_bitgreen.sh --grad-steps 4 --owner-accumulation 1 --teacher-only
+```
+
+C?c c?u h?nh c? kh?ng c? owner_accumulation v?n ch?y theo m?c ??nh c? l? 1 khi resume/stage. Ch? run m?i l?y default 4.
+
+M?i pilot sau nhi?u l?n th? tr?n c?ng split ??u l? development evidence. Mu?n claim cu?i c?ng ph?i d?ng prompt/seed ??c l?p v? matched clean-trained student; channel score t?t kh?ng thay th? TPR c?a student.

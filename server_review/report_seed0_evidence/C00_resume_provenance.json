@@ -1,0 +1,10 @@
+{
+  "source": "/root/workspace/serum/students/C00_seed0_clipfix",
+  "destination": "/root/workspace/serum/students/C00_seed0_author",
+  "resume_checkpoint": "/root/workspace/serum/students/C00_seed0_author/checkpoint-8500",
+  "resume_step": 8500,
+  "source_manifest_sha256": "6e9f540bb78f0e173ab3878a1e9656771a973f39f45c80512820352557a9bd66",
+  "source_train_metadata_sha256": "8861e92220f5992d9d4e6a8529b18625825103332c02f0a8ac3ec9d8b45828e1",
+  "teacher_equivalence": "all model tensors and tokenizer/scheduler/model configs exactly match author cache",
+  "scope": "clean control only; no old-key C10/C11 adapters reused"
+}

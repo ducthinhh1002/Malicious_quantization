@@ -1,0 +1,767 @@
+{
+  "host": "21",
+  "delete_after_verified": {
+    "/var/lib/structure32_student12500/README.md": {
+      "sha256": "255d5849bbc4e3f8f3830058d19cbd6330dd17b6a802272bcde9f9a3aaac856a",
+      "size": 2945
+    },
+    "/var/lib/structure32_student12500/__pycache__/k1_original.cpython-312.pyc": {
+      "sha256": "5d51a88d3c510fe41cd601bc1bc61c594734ae9db87e5a072c9d6e0a69d3f7c7",
+      "size": 60132
+    },
+    "/var/lib/structure32_student12500/campaign.py": {
+      "sha256": "68669698617854f92c74cf48eebe15487dc25c1162fbf673d8591257b4956034",
+      "size": 8747
+    },
+    "/var/lib/structure32_student12500/core/__pycache__/pareto_quality_refine.cpython-312.pyc": {
+      "sha256": "93659e00399bcf8b3b3180a0325e9022a69642c1f9c163d0868c917fb83341f5",
+      "size": 20328
+    },
+    "/var/lib/structure32_student12500/core/__pycache__/pareto_step.cpython-312.pyc": {
+      "sha256": "67d6d8ceab8b68c750b0437ef569124681da89effcf668e5e2262b0263481bdd",
+      "size": 8588
+    },
+    "/var/lib/structure32_student12500/core/__pycache__/structure_margin_objectives.cpython-312.pyc": {
+      "sha256": "017a84c8a4c4b280136f60317b3a564d1c36f9ba4654762434155c186e0085a8",
+      "size": 4644
+    },
+    "/var/lib/structure32_student12500/core/__pycache__/transfer_proxy.cpython-312.pyc": {
+      "sha256": "9769071248e4871be5bb9e1d8c716d7e388de814516ce40a85a4af851a54f9ca",
+      "size": 14812
+    },
+    "/var/lib/structure32_student12500/core/__pycache__/transfer_refine.cpython-312.pyc": {
+      "sha256": "e9917fd28606944962a6ca5e4870936b457d8611f388d17b35acc4b0b4c87f56",
+      "size": 21334
+    },
+    "/var/lib/structure32_student12500/core/pareto_quality_refine.py": {
+      "sha256": "b67524d93196dca50f2e87be6d273bc730333622b7bdf0be17941e8d81c0fcd3",
+      "size": 11913
+    },
+    "/var/lib/structure32_student12500/core/pareto_step.py": {
+      "sha256": "acab6f3fa7728750369b36cc3891d92b5e3576c3ef0af51c683d9d3a5c405d51",
+      "size": 5105
+    },
+    "/var/lib/structure32_student12500/core/structure_margin_objectives.py": {
+      "sha256": "78418f71fbceca5c325254d49cae61b0e71b84bba52a7d03de93b79bccef2766",
+      "size": 2435
+    },
+    "/var/lib/structure32_student12500/core/structure_margin_refine.py": {
+      "sha256": "3fa63b88ee45b8faefe27a98e0e44a812f01973b8fd84419c53dad26dd88fdd6",
+      "size": 12610
+    },
+    "/var/lib/structure32_student12500/core/transfer_proxy.py": {
+      "sha256": "45e9a8509dcaa9da1756cc5f0277bdc4688be5214a6ded2db582b61416a48362",
+      "size": 8127
+    },
+    "/var/lib/structure32_student12500/core/transfer_refine.py": {
+      "sha256": "7fb9021665bc730dca8f053aa9e819b6716df2098e668ebe0e51e7507e20ec96",
+      "size": 12580
+    },
+    "/var/lib/structure32_student12500/deploy.py": {
+      "sha256": "ea25dd69fe4ad66f320b092daaa2693916ed25ad68d94c1c7d42e9f00c9abd0d",
+      "size": 2223
+    },
+    "/var/lib/structure32_student12500/k1_original.py": {
+      "sha256": "c64c7bd52a12c874fd30fae21863b15f80a3c6b7a892983a7a319e311d5358f0",
+      "size": 39983
+    },
+    "/var/lib/structure32_student12500/plan.json": {
+      "sha256": "26ee703561ea2c2d4fd68f43fb36ddb856d2bef2c4ba92a0be820c90e57b38f9",
+      "size": 719
+    },
+    "/var/lib/structure32_student12500/run.sh": {
+      "sha256": "99f268b53443d6c6793051b51ab08263c336e8e24519b0c66c1d588479a10a6b",
+      "size": 540
+    },
+    "/var/lib/structure32_student12500/runs/k1_32bit/teacher_fp/candidates/kappa_1.0/checkpoint-1000/checkpoint.json": {
+      "sha256": "ec7e38be8899fabee38bb427bbf05267e0ec88d85cf5620dba890acd79daf607",
+      "size": 1098
+    },
+    "/var/lib/structure32_student12500/runs/k1_32bit/teacher_fp/candidates/kappa_1.0/checkpoint-1500/checkpoint.json": {
+      "sha256": "93a966a08e161c9d26dc058ce8d14fc0e258fcc39e7dcc76afe80ab38e5c531f",
+      "size": 1098
+    },
+    "/var/lib/structure32_student12500/runs/k1_32bit/teacher_fp/candidates/kappa_1.0/checkpoint-2000/checkpoint.json": {
+      "sha256": "9dceb6451fea21698b3b6bb090df67da2b5a0b8126a20d6981522596b2a09b09",
+      "size": 1098
+    },
+    "/var/lib/structure32_student12500/runs/k1_32bit/teacher_fp/candidates/kappa_1.0/checkpoint-2500/checkpoint.json": {
+      "sha256": "7f849af57db3a9d590cc29be018d38ff3d7ebcc046d8aac4b64a0ffe781289dd",
+      "size": 1098
+    },
+    "/var/lib/structure32_student12500/runs/k1_32bit/teacher_fp/candidates/kappa_1.0/checkpoint-3000/checkpoint.json": {
+      "sha256": "b9b16b8cf244b4812518ffa4d0dc5f88951d63778f1605363a4d4a87c8b8df3e",
+      "size": 1098
+    },
+    "/var/lib/structure32_student12500/runs/k1_32bit/teacher_fp/candidates/kappa_1.0/checkpoint-500/checkpoint.json": {
+      "sha256": "f69ed5c096cb56d71b3d3bb726fb0f55510480140577e7780ef973082c903f18",
+      "size": 1097
+    },
+    "/var/lib/structure32_student12500/runs/k1_32bit/teacher_fp/candidates/kappa_1.0/losses.jsonl": {
+      "sha256": "799e66b924c7aba9f5d9560757c131c31795fbdbe143e0455fd0fc615d41d02c",
+      "size": 2146809
+    },
+    "/var/lib/structure32_student12500/runs/k1_32bit/teacher_fp/candidates/kappa_1.0/protocol.json": {
+      "sha256": "c73bdd8249a18422c5294ca292d3eee8e8ddc629542e4dc1ed886c1a422de4ec",
+      "size": 732
+    },
+    "/var/lib/structure32_student12500/runs/k1_32bit/teacher_fp/candidates/kappa_1.0/trained.json": {
+      "sha256": "aac3f9d605a9c3d22a6fa84909221cbc0b3a3e3a04c84c67885b7f8ac3f2ea31",
+      "size": 321
+    },
+    "/var/lib/structure32_student12500/runs/structure32/refine_spec.json": {
+      "sha256": "80e030e2decd37097d7e179e102fe84448cae78177abdbfc6b12b75cfbeea5b1",
+      "size": 633
+    },
+    "/var/lib/structure32_student12500/runs/structure32/teacher_fp/refined/checkpoint-200/checkpoint.json": {
+      "sha256": "350c7ea6353ce76701e025e80929db7b445e5cc2a9784f678181a3f44023cb29",
+      "size": 1137
+    },
+    "/var/lib/structure32_student12500/runs/structure32/teacher_fp/refined/checkpoint-400/checkpoint.json": {
+      "sha256": "3a7113964997920760179fb25694c4b6bfe4c7c88cb45db5ea3da305b12b707d",
+      "size": 1137
+    },
+    "/var/lib/structure32_student12500/runs/structure32/teacher_fp/refined/checkpoint-600/checkpoint.json": {
+      "sha256": "6e19e12e7251b6ab8ab31dc4baafe83089e9bc7ed69468624a5c38c3e5a2b009",
+      "size": 1137
+    },
+    "/var/lib/structure32_student12500/runs/structure32/teacher_fp/refined/losses.jsonl": {
+      "sha256": "4e79a2b6b660cf37800ce4177f3e612b9e006e8eeaee36ced212fc40f09b7aad",
+      "size": 1288917
+    },
+    "/var/lib/structure32_student12500/runs/structure32/teacher_fp/refined/protocol.json": {
+      "sha256": "23343d49af617d3cf865320de68cca6f65f1fbcdb93d87ddab670dc4a3bc0d9d",
+      "size": 776
+    },
+    "/var/lib/structure32_student12500/runs/structure32/teacher_fp/refined/trained.json": {
+      "sha256": "fc13867752344d8870df9bd086fc7b3262eaf0d8cf5298cbd367c035a4d1dff5",
+      "size": 320
+    },
+    "/var/lib/structure32_student12500/structure32_deploy.tar.gz": {
+      "sha256": "5525b229fff07088fc036337aef5aaa7f3feb88a24ff4d1986bbc163f615b6dd",
+      "size": 19687
+    },
+    "/var/lib/structure32_teacher_robust_v2/README.md": {
+      "sha256": "303d10cfcfb9a4bae1b153b1f0ceffbc09c91966b10731461dfa0a6ed6c78693",
+      "size": 7584
+    },
+    "/var/lib/structure32_teacher_robust_v2/__pycache__/deploy.cpython-312.pyc": {
+      "sha256": "c60d26253dfde13a544b6e96540873011de98af012857c2d4f7a1505f10128e7",
+      "size": 6742
+    },
+    "/var/lib/structure32_teacher_robust_v2/__pycache__/pareto_quality_refine.cpython-312.pyc": {
+      "sha256": "9ee0fdabbdb6907511a326d47c44724527742dc0d9b1882802f472368232e312",
+      "size": 20328
+    },
+    "/var/lib/structure32_teacher_robust_v2/__pycache__/pareto_step.cpython-312.pyc": {
+      "sha256": "9221d11d99896738b49c09fa5e4d8b9ffb2f8872b3de7f72091c987d03dd2a0d",
+      "size": 8588
+    },
+    "/var/lib/structure32_teacher_robust_v2/__pycache__/robust_objectives.cpython-312.pyc": {
+      "sha256": "6129d21749914337ca8f759e7107cae117e3074274dc0f35a54623c1d5d83499",
+      "size": 2333
+    },
+    "/var/lib/structure32_teacher_robust_v2/__pycache__/run_teacher.cpython-312.pyc": {
+      "sha256": "1024a05fe56e45eb4c21b2d0fcc22ad7e34a40eba9bf0ef7f8cb57af824caa0d",
+      "size": 11335
+    },
+    "/var/lib/structure32_teacher_robust_v2/__pycache__/structure_margin_objectives.cpython-312.pyc": {
+      "sha256": "aae6f117f35cfe6c8e1136afb85a42e1c779b769721881550b1526fbbd92433e",
+      "size": 4644
+    },
+    "/var/lib/structure32_teacher_robust_v2/__pycache__/teacher_refine.cpython-312.pyc": {
+      "sha256": "9f03b2264f4cd129b30602c503a36f1301458bd0744051dfca5a715e475b1906",
+      "size": 25899
+    },
+    "/var/lib/structure32_teacher_robust_v2/__pycache__/test_protocol.cpython-312.pyc": {
+      "sha256": "17aea9e43074d9a6d21b5df1e0d33545f42d99da036741addd60fedc6f58c100",
+      "size": 7784
+    },
+    "/var/lib/structure32_teacher_robust_v2/__pycache__/transfer_proxy.cpython-312.pyc": {
+      "sha256": "87f8cd7caab485854e45ec2eb8cdb245ef8b5ab323cacca1ed39cb32b3ca7bf8",
+      "size": 14812
+    },
+    "/var/lib/structure32_teacher_robust_v2/__pycache__/transfer_refine.cpython-312.pyc": {
+      "sha256": "b1829420324c76151612bdfcb0c57236d91a8495cdda22469ef63292bcbdfabb",
+      "size": 21334
+    },
+    "/var/lib/structure32_teacher_robust_v2/code.tar": {
+      "sha256": "444b0faf3e1d085a7cf4abd0dd9bed3f6bbabc96c34c7606c3cd44fd76b99985",
+      "size": 122880
+    },
+    "/var/lib/structure32_teacher_robust_v2/deploy.py": {
+      "sha256": "8362265bb6f0e6ff49782c7d56fa9cfed7383b9e0c257d21a542a6c8218fb56a",
+      "size": 4456
+    },
+    "/var/lib/structure32_teacher_robust_v2/fix_generation.py": {
+      "sha256": "ba967422e3ee0f314c603fe6fbd2dd0f9104bb1fd9f5195f590e452b322ac54f",
+      "size": 858
+    },
+    "/var/lib/structure32_teacher_robust_v2/original_refine_spec.json": {
+      "sha256": "80e030e2decd37097d7e179e102fe84448cae78177abdbfc6b12b75cfbeea5b1",
+      "size": 633
+    },
+    "/var/lib/structure32_teacher_robust_v2/pareto_quality_refine.py": {
+      "sha256": "b67524d93196dca50f2e87be6d273bc730333622b7bdf0be17941e8d81c0fcd3",
+      "size": 11913
+    },
+    "/var/lib/structure32_teacher_robust_v2/pareto_step.py": {
+      "sha256": "acab6f3fa7728750369b36cc3891d92b5e3576c3ef0af51c683d9d3a5c405d51",
+      "size": 5105
+    },
+    "/var/lib/structure32_teacher_robust_v2/robust_objectives.py": {
+      "sha256": "2b87c23ecefb45689f3ed572a28aaf7a96a82c73006cb0825004ada974d3e916",
+      "size": 1159
+    },
+    "/var/lib/structure32_teacher_robust_v2/run/refine_spec.json": {
+      "sha256": "eef4137d9b5567b3c246ea2560300560fc3b7abb306c145248a8b135e13d6a62",
+      "size": 708
+    },
+    "/var/lib/structure32_teacher_robust_v2/run/teacher_fp/refined/checkpoint-1000/checkpoint.json": {
+      "sha256": "ca9c3fdb9618a8736bad16a45fc3764c10023ba8bc668206d41d09a18446f9e2",
+      "size": 1205
+    },
+    "/var/lib/structure32_teacher_robust_v2/run/teacher_fp/refined/checkpoint-1200/checkpoint.json": {
+      "sha256": "dc8dc354eeff6b607bb92bacb0b8aa3537e76af37ac2436673f72faef1d58dce",
+      "size": 1205
+    },
+    "/var/lib/structure32_teacher_robust_v2/run/teacher_fp/refined/checkpoint-200/checkpoint.json": {
+      "sha256": "1d6e913b6ed8e45f63a9b327e459555db0a5f0e1fca7f30c75ca8f03e3836b4a",
+      "size": 1204
+    },
+    "/var/lib/structure32_teacher_robust_v2/run/teacher_fp/refined/checkpoint-400/checkpoint.json": {
+      "sha256": "e2a1026da75caae9346d535776e8f2e6c8a33dae66e2b132fcb754c44113d8a5",
+      "size": 1204
+    },
+    "/var/lib/structure32_teacher_robust_v2/run/teacher_fp/refined/checkpoint-600/checkpoint.json": {
+      "sha256": "47a816b71e9904f876d48b8cd043975c8df357520f7e69d31afce21394894d54",
+      "size": 1204
+    },
+    "/var/lib/structure32_teacher_robust_v2/run/teacher_fp/refined/checkpoint-800/checkpoint.json": {
+      "sha256": "014cfd7c85ffb7077bc5bdce518ce3f44912e7ed02e69161589d585b8f5f3fb6",
+      "size": 1204
+    },
+    "/var/lib/structure32_teacher_robust_v2/run/teacher_fp/refined/losses.jsonl": {
+      "sha256": "dc55ec760ebf906d02f9703411a4fca327cb68557b24ec5112a81f388afd9a4d",
+      "size": 3523157
+    },
+    "/var/lib/structure32_teacher_robust_v2/run/teacher_fp/refined/protocol.json": {
+      "sha256": "29b4ea5084d372458da4c964a4e7d5cef0590506c798736515d5d2c856ace10b",
+      "size": 843
+    },
+    "/var/lib/structure32_teacher_robust_v2/run/teacher_fp/refined/trained.json": {
+      "sha256": "57ce95f4d57970f7527796a580734496bd9e35ab6ae97d2c6f04e39c0dd7fdd9",
+      "size": 321
+    },
+    "/var/lib/structure32_teacher_robust_v2/run_teacher.py": {
+      "sha256": "a2515f841bd3f5e143ff54cd167f74eb85b7656c1433cbb1e598fb27469bfcc9",
+      "size": 6161
+    },
+    "/var/lib/structure32_teacher_robust_v2/structure_margin_objectives.py": {
+      "sha256": "78418f71fbceca5c325254d49cae61b0e71b84bba52a7d03de93b79bccef2766",
+      "size": 2435
+    },
+    "/var/lib/structure32_teacher_robust_v2/teacher_refine.py": {
+      "sha256": "34895547c2a5c30495589c538e998aca3a704c6e7ddc7f90640b5dac5bbb6ce5",
+      "size": 15420
+    },
+    "/var/lib/structure32_teacher_robust_v2/test_protocol.py": {
+      "sha256": "1af28ba76410b359ac8a28d6e01376adb184c57a813484d93a20ae5e74362081",
+      "size": 3660
+    },
+    "/var/lib/structure32_teacher_robust_v2/transfer_proxy.py": {
+      "sha256": "45e9a8509dcaa9da1756cc5f0277bdc4688be5214a6ded2db582b61416a48362",
+      "size": 8127
+    },
+    "/var/lib/structure32_teacher_robust_v2/transfer_refine.py": {
+      "sha256": "7fb9021665bc730dca8f053aa9e819b6716df2098e668ebe0e51e7507e20ec96",
+      "size": 12580
+    }
+  },
+  "support_only": {
+    "/var/lib/structure32_student12500/bootstrap.py": {
+      "sha256": "d81ff15ffc8ad886d0a86c445abd82c09e030ef5d7c527f23060237b53c52210",
+      "size": 68
+    },
+    "/var/lib/structure32_student12500/key_metrics.py": {
+      "sha256": "f060d828dd824146f5fd89605b90769c1324d3ed236b02b2578f00e5da7e0393",
+      "size": 1888
+    },
+    "/var/lib/structure32_student12500/runs/k1_32bit/assets.json": {
+      "sha256": "db93c0296a3f47955290d8be6e86d289fe0423bed978e7fdfcf666bfe57d06ba",
+      "size": 3770
+    },
+    "/var/lib/structure32_student12500/runs/k1_32bit/carrier/complete.json": {
+      "sha256": "ea4aefe89337d022320c28b3d3cd7578a3f1d3d2ae27491681cb636a63d9a037",
+      "size": 342
+    },
+    "/var/lib/structure32_student12500/runs/k1_32bit/carrier/key.json": {
+      "sha256": "fd525911d375d5baf657003ac62a714cc1ec323524b0d38d10c7bb73f5793822",
+      "size": 1700
+    },
+    "/var/lib/structure32_student12500/runs/k1_32bit/carrier/pca.pt": {
+      "sha256": "dba3a9f6aedbcdc0be3acba3956acac2f287055a7c097ec0103c41c5b827d1a6",
+      "size": 6565757
+    },
+    "/var/lib/structure32_student12500/runs/k1_32bit/carrier/provenance.json": {
+      "sha256": "6c9535dd80464cc5a71471aba4a62c01289bfab0a8909667a32cf5eac030c6f7",
+      "size": 1142783
+    },
+    "/var/lib/structure32_student12500/runs/k1_32bit/carrier/stability.json": {
+      "sha256": "627ceba1c90bfa0dbb1ca051f1984ca65dc9d097f2d9e4c337bb305a342da168",
+      "size": 10392
+    },
+    "/var/lib/structure32_student12500/runs/k1_32bit/config.json": {
+      "sha256": "1128cc5ff19f9eccb1a02c92222f91182c0ddbadb97d192a57bb87ca39b6a705",
+      "size": 1601
+    },
+    "/var/lib/structure32_student12500/runs/k1_32bit/prompts.json": {
+      "sha256": "c9593dcf889f3d630ff71c974bb7385964ea8bfe120e260ecaee538527c3d866",
+      "size": 1629855
+    },
+    "/var/lib/structure32_student12500/runs/k1_32bit/teacher_fp/calibration_target.json": {
+      "sha256": "eb8f4ce06b7eb393103e13465b9aacc3385cd715236c210bc424f26b3f5c8cf2",
+      "size": 750
+    },
+    "/var/lib/structure32_student12500/runs/structure32/assets.json": {
+      "sha256": "db93c0296a3f47955290d8be6e86d289fe0423bed978e7fdfcf666bfe57d06ba",
+      "size": 3770
+    },
+    "/var/lib/structure32_student12500/runs/structure32/carrier/complete.json": {
+      "sha256": "ea4aefe89337d022320c28b3d3cd7578a3f1d3d2ae27491681cb636a63d9a037",
+      "size": 342
+    },
+    "/var/lib/structure32_student12500/runs/structure32/carrier/key.json": {
+      "sha256": "fd525911d375d5baf657003ac62a714cc1ec323524b0d38d10c7bb73f5793822",
+      "size": 1700
+    },
+    "/var/lib/structure32_student12500/runs/structure32/carrier/pca.pt": {
+      "sha256": "dba3a9f6aedbcdc0be3acba3956acac2f287055a7c097ec0103c41c5b827d1a6",
+      "size": 6565757
+    },
+    "/var/lib/structure32_student12500/runs/structure32/carrier/provenance.json": {
+      "sha256": "6c9535dd80464cc5a71471aba4a62c01289bfab0a8909667a32cf5eac030c6f7",
+      "size": 1142783
+    },
+    "/var/lib/structure32_student12500/runs/structure32/carrier/stability.json": {
+      "sha256": "627ceba1c90bfa0dbb1ca051f1984ca65dc9d097f2d9e4c337bb305a342da168",
+      "size": 10392
+    },
+    "/var/lib/structure32_student12500/runs/structure32/config.json": {
+      "sha256": "f738ae591d286c1fe0db516f250f01762b9dc147756cb1879ea603c7571f4c01",
+      "size": 1599
+    },
+    "/var/lib/structure32_student12500/runs/structure32/prompts.json": {
+      "sha256": "c9593dcf889f3d630ff71c974bb7385964ea8bfe120e260ecaee538527c3d866",
+      "size": 1629855
+    },
+    "/var/lib/structure32_student12500/runs/structure32/teacher_choice.json": {
+      "sha256": "c324faaf4647e5e8e8c0e056a2119f0723668d4aca71aaa56616c4d1b1ea46f7",
+      "size": 448
+    },
+    "/var/lib/structure32_student12500/runs/structure32/teacher_fp/calibration_target.json": {
+      "sha256": "eb8f4ce06b7eb393103e13465b9aacc3385cd715236c210bc424f26b3f5c8cf2",
+      "size": 750
+    },
+    "/var/lib/structure32_student12500/runtime.py": {
+      "sha256": "3fe66f6f9ab20e996840866f740796c81dabe4c16aefde807a50a38b35e92122",
+      "size": 682
+    },
+    "/var/lib/structure32_student12500/sitecustomize.py": {
+      "sha256": "a8f6b97ac4d783ddf1a4fc8ef2b744039885f5696d59f8cff88a67ca410ed47e",
+      "size": 184
+    },
+    "/var/lib/vllm/harness/assets.py": {
+      "sha256": "cb0c6a187788533eafeaa349a3b5cd0572783edea492a99993843647399694c1",
+      "size": 6630
+    },
+    "/var/lib/vllm/harness/bootstrap_env.py": {
+      "sha256": "2b316f645cef0a54ba3c75a41fe2d4894a503314c4945266acd34d2022348cdf",
+      "size": 7500
+    },
+    "/var/lib/vllm/harness/check_runtime.py": {
+      "sha256": "b7f0e2548e287b25c47f6d30a85c966a17fbc6c5f9f6f6acd85511d8bceae317",
+      "size": 1563
+    },
+    "/var/lib/vllm/harness/common.py": {
+      "sha256": "9ab7f703d573fea68d1f84296d54b3828c292315429da99d7f07f17345b8641e",
+      "size": 3281
+    },
+    "/var/lib/vllm/harness/recover_full_export.py": {
+      "sha256": "96d8dd0d42f4d5de518a9864874488a04c89d48bcd1e08a2b8decf023fd4714f",
+      "size": 8016
+    },
+    "/var/lib/vllm/harness/report.py": {
+      "sha256": "4330d1ce2dfc21dca7fed43b851203a25509f3a2e03577e097313dff143d21be",
+      "size": 15626
+    },
+    "/var/lib/vllm/harness/run.py": {
+      "sha256": "75a700b8c70a086a88a1c43988f6951db237d9ed17d5544cc80e63c4393339a9",
+      "size": 35445
+    },
+    "/var/lib/vllm/harness/run_serum.py": {
+      "sha256": "81a475ac710fd977b3f7978871f895a5957907c93d794e1b29900fbf1ad4c9d2",
+      "size": 821
+    },
+    "/var/lib/vllm/harness/semantic_assets.py": {
+      "sha256": "9fc1fec04cccad9ea96799ae7297236b1d88abd81d66f23fd718acf79267c8e0",
+      "size": 4198
+    },
+    "/var/lib/vllm/harness/semantic_candidates.py": {
+      "sha256": "14b41b0a47891124791f365dd407a940daf2a686f7d3f852e7b7cbe13990263e",
+      "size": 2558
+    },
+    "/var/lib/vllm/harness/semantic_carrier.py": {
+      "sha256": "0e09bbf10f945ce14546043509cf35ac668448b08c34a56a67f5826e41c99425",
+      "size": 14551
+    },
+    "/var/lib/vllm/harness/semantic_checkpoint.py": {
+      "sha256": "12094a560ffd778f95213ce5a43c28416a030e11741ab714ff6a56c3a51b9ad4",
+      "size": 13976
+    },
+    "/var/lib/vllm/harness/semantic_execution.py": {
+      "sha256": "55b39a9e0641052b897b18b1eb5c4b093af50a9cc9a9c27127f4b21285dd07d3",
+      "size": 2408
+    },
+    "/var/lib/vllm/harness/semantic_report.py": {
+      "sha256": "ecfd2f4b63e0e8ba1a7ad4b78a6668838d7eaadd50a91a915fa72c143d24204c",
+      "size": 13145
+    },
+    "/var/lib/vllm/harness/semantic_sign.py": {
+      "sha256": "1fed06a85f4f8dece2c2f610ec7114cc5c4368676c1e97a37d795b58abbbb314",
+      "size": 6173
+    },
+    "/var/lib/vllm/harness/semantic_sign_report.py": {
+      "sha256": "31941c0f2c1c0ccab4965ce61718fae764936d27510a7b3f515652f9dee08e2f",
+      "size": 19379
+    },
+    "/var/lib/vllm/harness/semantic_sign_train.py": {
+      "sha256": "4835d94551522459d566742653059fe54fd4778f8e1b509c7bf329259b4bf556",
+      "size": 25738
+    },
+    "/var/lib/vllm/harness/semantic_teacher.py": {
+      "sha256": "558a5ac3e3812828fed73ddb7248a35f83a7a15cf5e29e7061489a13453808d3",
+      "size": 11612
+    },
+    "/var/lib/vllm/harness/semantic_teacher_train.py": {
+      "sha256": "04af9d95262c039d0ef5bdb993f3b69d598d1497969711074cbdc82bbdb190a7",
+      "size": 40341
+    },
+    "/var/lib/vllm/harness/semantic_threshold.py": {
+      "sha256": "6062359c14fe9289e7b206c3537a169e670aa92fd11bfb5d8ba5cb1ce3f91ca0",
+      "size": 3329
+    },
+    "/var/lib/vllm/harness/serum_assets.py": {
+      "sha256": "27e3b16dffc0420a48782c7b120aed5af7e47dbf03a87e9875657e708dbdc1ac",
+      "size": 7689
+    },
+    "/var/lib/vllm/harness/serum_teacher.py": {
+      "sha256": "b34bcf8e6aac8fb1bf57161bd6d84ce6c038467cf1b5cf489cdd9133eb23698e",
+      "size": 9181
+    },
+    "/var/lib/vllm/harness/setup_env.py": {
+      "sha256": "909ce276c396b5a8f115abf7957f20696ce79c129698bfee08f9c267b50a6f5d",
+      "size": 2337
+    },
+    "/var/lib/vllm/harness/smoke_cpu.py": {
+      "sha256": "976a579e1b400c1857c2c73560e51de35e1a7d30a919204fac4dccf861fda2ec",
+      "size": 10783
+    },
+    "/var/lib/vllm/harness/smoke_serum_cpu.py": {
+      "sha256": "5c90aff3389f52ec3a79a64bd3226d2ae2bef038605b336d0dda2859448f956b",
+      "size": 2561
+    },
+    "/var/lib/vllm/harness/student.py": {
+      "sha256": "4100d7728fcc96291dadaca47e4b9ccdc81502545b1e690c90d4735371126c28",
+      "size": 13772
+    },
+    "/var/lib/vllm/harness/teacher.py": {
+      "sha256": "da0d77536d8f348b6390d9fb54670e62fbfa0bed8497892e01219e8e43f4c0c6",
+      "size": 7643
+    },
+    "/var/lib/vllm/harness/test_bootstrap.py": {
+      "sha256": "760baf50d0f2bb13b0f28c1280a3ed204dbb024f174b13e38fe7efa0e5b276f9",
+      "size": 5628
+    },
+    "/var/lib/vllm/harness/test_generation.py": {
+      "sha256": "c459ac9d8f8c56201b4e29a5de6c1e5e86cafd6165029ee83a471c0374e216f2",
+      "size": 4717
+    },
+    "/var/lib/vllm/harness/test_protocol.py": {
+      "sha256": "641fdf039f9da65cbcaeee28d99a172adcd8bb3c5cb637b71bc4b98b71b9ff3d",
+      "size": 6203
+    },
+    "/var/lib/vllm/harness/test_recovery.py": {
+      "sha256": "37b31d0fdab402faff50cf135d0637753e7f25853d289bc8b46b959536671867",
+      "size": 3276
+    },
+    "/var/lib/vllm/harness/test_semantic_audit.py": {
+      "sha256": "6d99f14abab3865237a953fc73360f8f6a78723cb48e407e00b567aaa63014da",
+      "size": 7249
+    },
+    "/var/lib/vllm/harness/test_semantic_execution.py": {
+      "sha256": "739e4eb8e34342e4af54a63a315ea7600848bf559be199452c6c38e03b83ac3a",
+      "size": 5781
+    },
+    "/var/lib/vllm/harness/test_semantic_fp.py": {
+      "sha256": "bda7d6a592aaecf3ef6ea208ef950d6fabc9e49f01d16dcc4281b77971d4dba7",
+      "size": 24298
+    },
+    "/var/lib/vllm/harness/test_semantic_memory.py": {
+      "sha256": "32b6934852f35dfbb830b65bdda4c40567a6347508806447691f70d48e67dccd",
+      "size": 5906
+    },
+    "/var/lib/vllm/harness/test_semantic_numerics.py": {
+      "sha256": "78a6b25e344d06e86731e56fb4fc1ca8ed18d664cf11809c7110f1c972b4eead",
+      "size": 7320
+    },
+    "/var/lib/vllm/harness/test_semantic_resume.py": {
+      "sha256": "cb73975e4650ad2527677b9c6178ce4b35fc5bba8ab6d12d83b0e05fd7a5fa17",
+      "size": 9213
+    },
+    "/var/lib/vllm/harness/test_semantic_sign.py": {
+      "sha256": "f3e7c99283d1c76a414eddb50cc17463a75cd164eed55991f152b41eae194e51",
+      "size": 6903
+    },
+    "/var/lib/vllm/harness/test_semantic_sign_audit.py": {
+      "sha256": "53d5804d64681fa498fc775d97c7c4abe77a1487ecf391df0e8de1abecd5a580",
+      "size": 3526
+    },
+    "/var/lib/vllm/harness/test_semantic_sign_protocol.py": {
+      "sha256": "41620162e18f9d14a379f776c856fe921d2abf055412ccd1fa2a36274337c57e",
+      "size": 7579
+    },
+    "/var/lib/vllm/harness/test_semantic_sign_report.py": {
+      "sha256": "84c28205f84ec5e30878d46c4cfead15cff7f875686814b8adf2dd843c08c9f4",
+      "size": 8371
+    },
+    "/var/lib/vllm/harness/test_semantic_sign_train.py": {
+      "sha256": "eb0f08a4a80e6441418d691950a901dd6b2c7380a20c249e6a7b20941ba385c4",
+      "size": 9205
+    },
+    "/var/lib/vllm/harness/test_semantic_threshold.py": {
+      "sha256": "0ee4bdcde90d84f72c6064a7d7351227ddf6d9d836b3717993eb81508720de06",
+      "size": 14599
+    },
+    "/var/lib/vllm/harness/test_serum.py": {
+      "sha256": "e24735cb5c04e59b0c6f60bdef0eea976bce813f4c4ff4cb64f9394aa9fe3d18",
+      "size": 8801
+    },
+    "/var/lib/vllm/harness/test_threshold_quality.py": {
+      "sha256": "c8099c0f848884d70aa5980ca326520e3038e3c8ff6448e68d2ab0b80dc7c611",
+      "size": 3868
+    },
+    "/var/lib/vllm/harness/test_validation.py": {
+      "sha256": "85547986039ed38379ac0dee51105a18614582b547a5e219a86a2267d04faa9b",
+      "size": 5749
+    },
+    "/var/lib/vllm/harness/threshold_quality.py": {
+      "sha256": "deebd0a0fd0855ae34f068b8a207ec1315d6be58eb3d9005d964d3f81ee95af6",
+      "size": 12512
+    },
+    "/var/lib/vllm/harness/utility.py": {
+      "sha256": "ec20d13d2530713b23f80bc4578c25be8503aa6a4067002b8c86f7f9e4d08164",
+      "size": 3823
+    },
+    "/var/lib/vllm/harness/validation.py": {
+      "sha256": "201b1d3b50abdc17a39518d3e3a1621e910690717838d7834a8fdcb9c966089b",
+      "size": 12077
+    },
+    "/var/lib/vllm/harness/vendor/bitmark/Infinity/environment.yml": {
+      "sha256": "0096faa4dcccc1ef4d73e908820793321dd8f99129687df0191aabf5ef70e50e",
+      "size": 8361
+    },
+    "/var/lib/vllm/harness/vendor/bitmark/Infinity/finetune_for_radioactivity.sh": {
+      "sha256": "396680304bfb24dbe35a7e58189ed26a27cd641c0ce83dc9e35d9ab4fc68d59d",
+      "size": 2494
+    },
+    "/var/lib/vllm/harness/vendor/bitmark/Infinity/flipper.py": {
+      "sha256": "e34c10b30f262eb2e2b2286dec3727f0845fb22a1f6b29cab5193f3f89d52187",
+      "size": 11803
+    },
+    "/var/lib/vllm/harness/vendor/bitmark/Infinity/infinity/dataset/build.py": {
+      "sha256": "da96bc07fadf531ff06d87a211484a94062c173f48750552a3568f2e909d2c95",
+      "size": 5909
+    },
+    "/var/lib/vllm/harness/vendor/bitmark/Infinity/infinity/dataset/dataset_t2i_iterable.py": {
+      "sha256": "623b1ec6be6d63c046b3d444aadb77468a80e7a59eb9b5f08a5da14611841e7c",
+      "size": 19537
+    },
+    "/var/lib/vllm/harness/vendor/bitmark/Infinity/infinity/models/__init__.py": {
+      "sha256": "614ee812eb00ed4adf442957b87f45eb853f9db55f71fbc744a9bd400f80f4a6",
+      "size": 931
+    },
+    "/var/lib/vllm/harness/vendor/bitmark/Infinity/infinity/models/basic.py": {
+      "sha256": "4bc2e733a0721268eba5ec6f682d71ab5fb251cb757d7d05e42bd65ec2dac042",
+      "size": 30938
+    },
+    "/var/lib/vllm/harness/vendor/bitmark/Infinity/infinity/models/bitwise_self_correction.py": {
+      "sha256": "8978f155843d4bcf99b1413831f35eec75c31d0ec171ea37a8283e9c6a04ffe5",
+      "size": 5363
+    },
+    "/var/lib/vllm/harness/vendor/bitmark/Infinity/infinity/models/bsq_vae/conv.py": {
+      "sha256": "db649dc412437e40d357b7eac10e9784383ab8815d6ef57537ac2350a0c3489d",
+      "size": 3112
+    },
+    "/var/lib/vllm/harness/vendor/bitmark/Infinity/infinity/models/bsq_vae/dynamic_resolution.py": {
+      "sha256": "d399f50262e44d56b5de9d07107f3893c05f567e428734ef20b68b843f8dd2a3",
+      "size": 1695
+    },
+    "/var/lib/vllm/harness/vendor/bitmark/Infinity/infinity/models/bsq_vae/flux_vqgan.py": {
+      "sha256": "5a1922a4d1058ff50d784a9a404abdef6f17ac124cd345cbe5bd926cc47c5bb1",
+      "size": 24008
+    },
+    "/var/lib/vllm/harness/vendor/bitmark/Infinity/infinity/models/bsq_vae/multiscale_bsq.py": {
+      "sha256": "cfe99a0baf056bf1e58a21a1811a397c7ad816e90c8e1c9f127603c80d7d85ba",
+      "size": 28067
+    },
+    "/var/lib/vllm/harness/vendor/bitmark/Infinity/infinity/models/bsq_vae/vae.py": {
+      "sha256": "d0854ee9b5c50f27970e439a57fb74b77a062bec78a7c482610d03482a81c845",
+      "size": 9104
+    },
+    "/var/lib/vllm/harness/vendor/bitmark/Infinity/infinity/models/ema.py": {
+      "sha256": "f1774f473801808706a30ee7c0a69bf260b68e9f638680019e30f605f27f5e42",
+      "size": 723
+    },
+    "/var/lib/vllm/harness/vendor/bitmark/Infinity/infinity/models/flex_attn.py": {
+      "sha256": "d39f7da07caa6f80cd40e16e2781da3aa80a1fd5850de0a8d40fac36e1afe65d",
+      "size": 5068
+    },
+    "/var/lib/vllm/harness/vendor/bitmark/Infinity/infinity/models/fused_op.py": {
+      "sha256": "6caad7599d668551b9591cda68d85f831cc54f8a818780bdc7c2972a97bb49d4",
+      "size": 893
+    },
+    "/var/lib/vllm/harness/vendor/bitmark/Infinity/infinity/models/infinity.py": {
+      "sha256": "dc64ef92616b65b4b6793f3a8fa5f3799f33425e47e6c3ec099fced7ecff10af",
+      "size": 53864
+    },
+    "/var/lib/vllm/harness/vendor/bitmark/Infinity/infinity/models/init_param.py": {
+      "sha256": "4b3aea2c8129fa2c1572bd6ff6d7856c4b7d5ff8ffbf82e3b0924a47579a60bf",
+      "size": 1879
+    },
+    "/var/lib/vllm/harness/vendor/bitmark/Infinity/infinity/models/t5.py": {
+      "sha256": "010ffd847b909800597f1b7572eb828fe5f57e8e3e65fdd03a872e00eb63e6f1",
+      "size": 17512
+    },
+    "/var/lib/vllm/harness/vendor/bitmark/Infinity/infinity/utils/amp_opt.py": {
+      "sha256": "65f9d0f5602a155236ebebaeb452d105b619125888a996814c8310f11ddfc9c7",
+      "size": 8695
+    },
+    "/var/lib/vllm/harness/vendor/bitmark/Infinity/infinity/utils/arg_util.py": {
+      "sha256": "0afbf4ab218d44788d16ea17e98ce92dfa35c7587a934f8e0757814ccaca985f",
+      "size": 26660
+    },
+    "/var/lib/vllm/harness/vendor/bitmark/Infinity/infinity/utils/csv_util.py": {
+      "sha256": "b30d5f27c20e208b4463368342305d7a7ef32a7d129b26148c97e2a75a509bd4",
+      "size": 672
+    },
+    "/var/lib/vllm/harness/vendor/bitmark/Infinity/infinity/utils/dist.py": {
+      "sha256": "faed14c23b41c3223a084c3c2520442b622cf323a02208cd77a291881d70cfa2",
+      "size": 9540
+    },
+    "/var/lib/vllm/harness/vendor/bitmark/Infinity/infinity/utils/dynamic_resolution.py": {
+      "sha256": "08f862fcf3f326e35c38a730e4bec817544a00b2a0801dccacb3c5d3744c5efc",
+      "size": 3606
+    },
+    "/var/lib/vllm/harness/vendor/bitmark/Infinity/infinity/utils/large_file_util.py": {
+      "sha256": "05665d73332e478408cd351e7b81312bb1125f6c1c56cfb16c154e4de331c493",
+      "size": 2634
+    },
+    "/var/lib/vllm/harness/vendor/bitmark/Infinity/infinity/utils/load.py": {
+      "sha256": "c73e13661672d8340978c8b0f4626ca7316068e2a54c77aafd2f72db1f23d56e",
+      "size": 3833
+    },
+    "/var/lib/vllm/harness/vendor/bitmark/Infinity/infinity/utils/lr_control.py": {
+      "sha256": "d9e5c95b15dba4603da68032010fd0d417452186a71a839729dd8a5782d31506",
+      "size": 5725
+    },
+    "/var/lib/vllm/harness/vendor/bitmark/Infinity/infinity/utils/misc.py": {
+      "sha256": "c228ff4eb31a7239f835704b17f17113dbfcea0580fcd230074908b8d2c64d21",
+      "size": 15867
+    },
+    "/var/lib/vllm/harness/vendor/bitmark/Infinity/infinity/utils/save_and_load.py": {
+      "sha256": "e2d10bc8c13c45133d920e580930537e11443eac6f3d8d9cc17e9e1641d4926d",
+      "size": 6425
+    },
+    "/var/lib/vllm/harness/vendor/bitmark/Infinity/infinity/utils/wandb_utils.py": {
+      "sha256": "6468465eb650f31807cb087ce33d2faaf90a22851f55ee3e7adff584856784dd",
+      "size": 1466
+    },
+    "/var/lib/vllm/harness/vendor/bitmark/Infinity/requirements.txt": {
+      "sha256": "dbc787b478617a1f6221f9b1151781b8f68b504321be76f7e40abd73cc6f3ef6",
+      "size": 3036
+    },
+    "/var/lib/vllm/harness/vendor/bitmark/Infinity/tools/run_infinity.py": {
+      "sha256": "e0cbe90656a25f343a8af4e39c130d8b02e6dd7e79e5297985fe10028f581003",
+      "size": 15320
+    },
+    "/var/lib/vllm/harness/vendor/bitmark/Infinity/tools/run_tokenizer.py": {
+      "sha256": "a1399f9de0927a51e842c839a2b15e275d10ff42dfba3f04683912fae9222ef8",
+      "size": 10235
+    },
+    "/var/lib/vllm/harness/vendor/bitmark/Infinity/tools/scales_injector.py": {
+      "sha256": "08f59865628ae15cd92fd3d35bc6930d17727d3c899a21700833f0b0d7161e38",
+      "size": 1091
+    },
+    "/var/lib/vllm/harness/vendor/bitmark/Infinity/train.py": {
+      "sha256": "48d73d1c6edd36b4775e6025fef5c58e7b59434d158b1695b47b8318e904311e",
+      "size": 29567
+    },
+    "/var/lib/vllm/harness/vendor/bitmark/Infinity/trainer.py": {
+      "sha256": "e188ab2f6cb8d73001f69fcbd149b8c53e7bee1cd9d7d0261c43b18d61d97edb",
+      "size": 21503
+    },
+    "/var/lib/vllm/harness/vendor/bitmark/architecture_wrapper.py": {
+      "sha256": "7f2ab54f06ac21c3ed8194599a387567159114b59685b949cd17d596b866902f",
+      "size": 27710
+    },
+    "/var/lib/vllm/harness/vendor/bitmark/detect_watermark.py": {
+      "sha256": "d85fbeeda50ca0965d345abe130a1f1fe8f1fa4579ce189fe711ae4bbdaca70e",
+      "size": 4085
+    },
+    "/var/lib/vllm/harness/vendor/bitmark/extended_watermark_processor.py": {
+      "sha256": "6feb414b41a9cbc488050be3943c44e4e163e6fbfdc2a60d4438e264447df69c",
+      "size": 29035
+    },
+    "/var/lib/vllm/harness/vendor/bitmark/helper.py": {
+      "sha256": "c867f2a69a2c93a677b31b3e1c462d65816daf95cbb5b6931c6c402904ff2241",
+      "size": 11802
+    },
+    "/var/lib/vllm/harness/vendor/diffusers/train_text_to_image.py": {
+      "sha256": "7973d4683f714d2b2ebf0dced77431013c0c5840a7b05d56ab5e6a814aa00a7f",
+      "size": 49818
+    },
+    "/var/lib/vllm/harness/vendor/diffusers/train_text_to_image_lora.py": {
+      "sha256": "bf72739025211529e2ae236bd0340fe7de21726fd73f32caee70edc456bbc91e",
+      "size": 44798
+    },
+    "/var/lib/vllm/harness/vendor/provenance.json": {
+      "sha256": "2a1a7b0c69796e0a3d6093834357342918bb01a44d71bcebcacf590f5c309258",
+      "size": 8455
+    },
+    "/var/lib/vllm/harness/vendor/serum/__init__.py": {
+      "sha256": "855cf431720505996c5d617141a3d5af9730c04587cb1f711877c5456bd82a27",
+      "size": 60
+    },
+    "/var/lib/vllm/harness/vendor/serum/cleanup.py": {
+      "sha256": "689b643bd4d6b9c662aa07586b4e9919a11f820a2e567e08280af8f2d085f0bd",
+      "size": 135
+    },
+    "/var/lib/vllm/harness/vendor/serum/config.py": {
+      "sha256": "76ba6defacc7806581fafb3ee22f02d561e363443afc976aba0c26ff6f06fcc4",
+      "size": 3762
+    },
+    "/var/lib/vllm/harness/vendor/serum/config_sd21.yaml": {
+      "sha256": "34aebdf2414f39e37278dce60758665467d3b6b27450b3e3b8938c2452668e65",
+      "size": 1686
+    },
+    "/var/lib/vllm/harness/vendor/serum/score_model.py": {
+      "sha256": "c3593dd4cca9a6cd66b4db473fef10d10a575e8c2218ed5834d3d1c3d0463615",
+      "size": 4087
+    },
+    "/var/lib/vllm/harness/vendor/serum/watermark.py": {
+      "sha256": "f36e6f2553b136cc4ec8f8d075d1a68dc35ab414720ebcc385b1011d5c226086",
+      "size": 4720
+    }
+  }
+}

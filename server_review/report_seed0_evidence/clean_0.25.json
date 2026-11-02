@@ -1,0 +1,4012 @@
+{
+  "count": 500,
+  "means": {
+    "clip_image_cosine": 0.9732418653964996,
+    "dino_cosine": 0.958328892827034,
+    "lpips": 0.10815858316048979,
+    "raw_clipscore": 0.6950096557140351,
+    "regen_clipscore": 0.6842989223599434
+  },
+  "per_image": [
+    {
+      "file": "clean_000000.png",
+      "clip_image_cosine": 0.9789180159568787,
+      "dino_cosine": 0.9761111736297607,
+      "lpips": 0.08197471499443054,
+      "raw_clipscore": 0.6372345089912415,
+      "regen_clipscore": 0.6545368432998657
+    },
+    {
+      "file": "clean_000001.png",
+      "clip_image_cosine": 0.9812326431274414,
+      "dino_cosine": 0.9653244018554688,
+      "lpips": 0.10541930794715881,
+      "raw_clipscore": 0.67280113697052,
+      "regen_clipscore": 0.7014552354812622
+    },
+    {
+      "file": "clean_000002.png",
+      "clip_image_cosine": 0.9700164198875427,
+      "dino_cosine": 0.9135434627532959,
+      "lpips": 0.08256779611110687,
+      "raw_clipscore": 0.6995111703872681,
+      "regen_clipscore": 0.7149184942245483
+    },
+    {
+      "file": "clean_000003.png",
+      "clip_image_cosine": 0.9573135375976562,
+      "dino_cosine": 0.9284478425979614,
+      "lpips": 0.14346198737621307,
+      "raw_clipscore": 0.6957651376724243,
+      "regen_clipscore": 0.6313188076019287
+    },
+    {
+      "file": "clean_000004.png",
+      "clip_image_cosine": 0.9727914333343506,
+      "dino_cosine": 0.8879546523094177,
+      "lpips": 0.16276806592941284,
+      "raw_clipscore": 0.6298023462295532,
+      "regen_clipscore": 0.6175714731216431
+    },
+    {
+      "file": "clean_000005.png",
+      "clip_image_cosine": 0.9836035966873169,
+      "dino_cosine": 0.9503882527351379,
+      "lpips": 0.09629841148853302,
+      "raw_clipscore": 0.6585898399353027,
+      "regen_clipscore": 0.6435633897781372
+    },
+    {
+      "file": "clean_000006.png",
+      "clip_image_cosine": 0.978486180305481,
+      "dino_cosine": 0.9607301354408264,
+      "lpips": 0.08359081298112869,
+      "raw_clipscore": 0.6724411845207214,
+      "regen_clipscore": 0.6630241870880127
+    },
+    {
+      "file": "clean_000007.png",
+      "clip_image_cosine": 0.987172544002533,
+      "dino_cosine": 0.970935583114624,
+      "lpips": 0.12903183698654175,
+      "raw_clipscore": 0.747488796710968,
+      "regen_clipscore": 0.7329115271568298
+    },
+    {
+      "file": "clean_000008.png",
+      "clip_image_cosine": 0.954390823841095,
+      "dino_cosine": 0.9391801357269287,
+      "lpips": 0.1041007712483406,
+      "raw_clipscore": 0.727519690990448,
+      "regen_clipscore": 0.7285230159759521
+    },
+    {
+      "file": "clean_000009.png",
+      "clip_image_cosine": 0.9806964993476868,
+      "dino_cosine": 0.9694682359695435,
+      "lpips": 0.09568352997303009,
+      "raw_clipscore": 0.6153731942176819,
+      "regen_clipscore": 0.6053690314292908
+    },
+    {
+      "file": "clean_000010.png",
+      "clip_image_cosine": 0.9493764638900757,
+      "dino_cosine": 0.9536132216453552,
+      "lpips": 0.10490675270557404,
+      "raw_clipscore": 0.7464214563369751,
+      "regen_clipscore": 0.6432788372039795
+    },
+    {
+      "file": "clean_000011.png",
+      "clip_image_cosine": 0.9852713346481323,
+      "dino_cosine": 0.9643021821975708,
+      "lpips": 0.10933747887611389,
+      "raw_clipscore": 0.6276485323905945,
+      "regen_clipscore": 0.6221144199371338
+    },
+    {
+      "file": "clean_000012.png",
+      "clip_image_cosine": 0.9792888760566711,
+      "dino_cosine": 0.9776545166969299,
+      "lpips": 0.09529948979616165,
+      "raw_clipscore": 0.8430420160293579,
+      "regen_clipscore": 0.7655830383300781
+    },
+    {
+      "file": "clean_000013.png",
+      "clip_image_cosine": 0.9339907765388489,
+      "dino_cosine": 0.9433587193489075,
+      "lpips": 0.11411074548959732,
+      "raw_clipscore": 0.7132803201675415,
+      "regen_clipscore": 0.7272518873214722
+    },
+    {
+      "file": "clean_000014.png",
+      "clip_image_cosine": 0.9837973713874817,
+      "dino_cosine": 0.9683082103729248,
+      "lpips": 0.07207274436950684,
+      "raw_clipscore": 0.755709707736969,
+      "regen_clipscore": 0.7424989938735962
+    },
+    {
+      "file": "clean_000015.png",
+      "clip_image_cosine": 0.9871730208396912,
+      "dino_cosine": 0.9664294123649597,
+      "lpips": 0.09025604277849197,
+      "raw_clipscore": 0.5524920225143433,
+      "regen_clipscore": 0.546078085899353
+    },
+    {
+      "file": "clean_000016.png",
+      "clip_image_cosine": 0.9795166254043579,
+      "dino_cosine": 0.9729635715484619,
+      "lpips": 0.12113640457391739,
+      "raw_clipscore": 0.7945413589477539,
+      "regen_clipscore": 0.8007253408432007
+    },
+    {
+      "file": "clean_000017.png",
+      "clip_image_cosine": 0.9465913772583008,
+      "dino_cosine": 0.980362057685852,
+      "lpips": 0.11433376371860504,
+      "raw_clipscore": 0.6242949366569519,
+      "regen_clipscore": 0.5719558000564575
+    },
+    {
+      "file": "clean_000018.png",
+      "clip_image_cosine": 0.9708741307258606,
+      "dino_cosine": 0.978609561920166,
+      "lpips": 0.15460477769374847,
+      "raw_clipscore": 0.6173134446144104,
+      "regen_clipscore": 0.586797833442688
+    },
+    {
+      "file": "clean_000019.png",
+      "clip_image_cosine": 0.9768353700637817,
+      "dino_cosine": 0.8916506767272949,
+      "lpips": 0.15376274287700653,
+      "raw_clipscore": 0.5332839488983154,
+      "regen_clipscore": 0.5167889595031738
+    },
+    {
+      "file": "clean_000020.png",
+      "clip_image_cosine": 0.9847341179847717,
+      "dino_cosine": 0.9573466777801514,
+      "lpips": 0.15373021364212036,
+      "raw_clipscore": 0.6148313283920288,
+      "regen_clipscore": 0.6309573650360107
+    },
+    {
+      "file": "clean_000021.png",
+      "clip_image_cosine": 0.9599694013595581,
+      "dino_cosine": 0.9615674018859863,
+      "lpips": 0.1697837859392166,
+      "raw_clipscore": 0.5554962158203125,
+      "regen_clipscore": 0.4604874849319458
+    },
+    {
+      "file": "clean_000022.png",
+      "clip_image_cosine": 0.9151150584220886,
+      "dino_cosine": 0.9849958419799805,
+      "lpips": 0.04293416440486908,
+      "raw_clipscore": 0.7137352228164673,
+      "regen_clipscore": 0.6695011854171753
+    },
+    {
+      "file": "clean_000023.png",
+      "clip_image_cosine": 0.9877119064331055,
+      "dino_cosine": 0.9652959704399109,
+      "lpips": 0.07870714366436005,
+      "raw_clipscore": 0.6568639278411865,
+      "regen_clipscore": 0.7076939940452576
+    },
+    {
+      "file": "clean_000024.png",
+      "clip_image_cosine": 0.9806057214736938,
+      "dino_cosine": 0.9690283536911011,
+      "lpips": 0.12615494430065155,
+      "raw_clipscore": 0.660688579082489,
+      "regen_clipscore": 0.6518033146858215
+    },
+    {
+      "file": "clean_000025.png",
+      "clip_image_cosine": 0.9833029508590698,
+      "dino_cosine": 0.9085102081298828,
+      "lpips": 0.1299239546060562,
+      "raw_clipscore": 0.8710955381393433,
+      "regen_clipscore": 0.8421944975852966
+    },
+    {
+      "file": "clean_000026.png",
+      "clip_image_cosine": 0.9748767018318176,
+      "dino_cosine": 0.9820384979248047,
+      "lpips": 0.08123774081468582,
+      "raw_clipscore": 0.7743281126022339,
+      "regen_clipscore": 0.7543282508850098
+    },
+    {
+      "file": "clean_000027.png",
+      "clip_image_cosine": 0.9557578563690186,
+      "dino_cosine": 0.9497487545013428,
+      "lpips": 0.10697049647569656,
+      "raw_clipscore": 0.6919357776641846,
+      "regen_clipscore": 0.6413730978965759
+    },
+    {
+      "file": "clean_000028.png",
+      "clip_image_cosine": 0.9448298811912537,
+      "dino_cosine": 0.9539828300476074,
+      "lpips": 0.09842508286237717,
+      "raw_clipscore": 0.7470282316207886,
+      "regen_clipscore": 0.7658702731132507
+    },
+    {
+      "file": "clean_000029.png",
+      "clip_image_cosine": 0.9784721732139587,
+      "dino_cosine": 0.9775533676147461,
+      "lpips": 0.1275784969329834,
+      "raw_clipscore": 0.6061608195304871,
+      "regen_clipscore": 0.5636067390441895
+    },
+    {
+      "file": "clean_000030.png",
+      "clip_image_cosine": 0.9912269115447998,
+      "dino_cosine": 0.9787226319313049,
+      "lpips": 0.08388379961252213,
+      "raw_clipscore": 0.670128583908081,
+      "regen_clipscore": 0.6488558053970337
+    },
+    {
+      "file": "clean_000031.png",
+      "clip_image_cosine": 0.9865447282791138,
+      "dino_cosine": 0.954974353313446,
+      "lpips": 0.1759161353111267,
+      "raw_clipscore": 0.5472672581672668,
+      "regen_clipscore": 0.5428569316864014
+    },
+    {
+      "file": "clean_000032.png",
+      "clip_image_cosine": 0.9780904054641724,
+      "dino_cosine": 0.9689148664474487,
+      "lpips": 0.10010504722595215,
+      "raw_clipscore": 0.7265353202819824,
+      "regen_clipscore": 0.6419232487678528
+    },
+    {
+      "file": "clean_000033.png",
+      "clip_image_cosine": 0.9703590273857117,
+      "dino_cosine": 0.9698123931884766,
+      "lpips": 0.12239474058151245,
+      "raw_clipscore": 0.5932760834693909,
+      "regen_clipscore": 0.629328191280365
+    },
+    {
+      "file": "clean_000034.png",
+      "clip_image_cosine": 0.972663402557373,
+      "dino_cosine": 0.9678451418876648,
+      "lpips": 0.11242813616991043,
+      "raw_clipscore": 0.8193773627281189,
+      "regen_clipscore": 0.8282237648963928
+    },
+    {
+      "file": "clean_000035.png",
+      "clip_image_cosine": 0.963676393032074,
+      "dino_cosine": 0.9628922939300537,
+      "lpips": 0.1004701629281044,
+      "raw_clipscore": 0.7783162593841553,
+      "regen_clipscore": 0.7819068431854248
+    },
+    {
+      "file": "clean_000036.png",
+      "clip_image_cosine": 0.9748008251190186,
+      "dino_cosine": 0.9845964908599854,
+      "lpips": 0.048483870923519135,
+      "raw_clipscore": 0.7259848713874817,
+      "regen_clipscore": 0.7404745817184448
+    },
+    {
+      "file": "clean_000037.png",
+      "clip_image_cosine": 0.9883420467376709,
+      "dino_cosine": 0.9781901836395264,
+      "lpips": 0.09335847198963165,
+      "raw_clipscore": 0.7282662391662598,
+      "regen_clipscore": 0.676667332649231
+    },
+    {
+      "file": "clean_000038.png",
+      "clip_image_cosine": 0.9741597175598145,
+      "dino_cosine": 0.9853708744049072,
+      "lpips": 0.1027793288230896,
+      "raw_clipscore": 0.6600732803344727,
+      "regen_clipscore": 0.6818206310272217
+    },
+    {
+      "file": "clean_000039.png",
+      "clip_image_cosine": 0.9875257015228271,
+      "dino_cosine": 0.9787757396697998,
+      "lpips": 0.1244574561715126,
+      "raw_clipscore": 0.8018375635147095,
+      "regen_clipscore": 0.768355131149292
+    },
+    {
+      "file": "clean_000040.png",
+      "clip_image_cosine": 0.9811607599258423,
+      "dino_cosine": 0.9740849733352661,
+      "lpips": 0.08132971823215485,
+      "raw_clipscore": 0.6472558975219727,
+      "regen_clipscore": 0.6422320008277893
+    },
+    {
+      "file": "clean_000041.png",
+      "clip_image_cosine": 0.9833812713623047,
+      "dino_cosine": 0.9466624855995178,
+      "lpips": 0.15520519018173218,
+      "raw_clipscore": 0.45719796419143677,
+      "regen_clipscore": 0.4848967492580414
+    },
+    {
+      "file": "clean_000042.png",
+      "clip_image_cosine": 0.9732205867767334,
+      "dino_cosine": 0.9766960144042969,
+      "lpips": 0.09682714939117432,
+      "raw_clipscore": 0.5354830026626587,
+      "regen_clipscore": 0.5510174632072449
+    },
+    {
+      "file": "clean_000043.png",
+      "clip_image_cosine": 0.9881552457809448,
+      "dino_cosine": 0.9836974143981934,
+      "lpips": 0.054353199899196625,
+      "raw_clipscore": 0.801283597946167,
+      "regen_clipscore": 0.802991509437561
+    },
+    {
+      "file": "clean_000044.png",
+      "clip_image_cosine": 0.9778628349304199,
+      "dino_cosine": 0.9560185670852661,
+      "lpips": 0.1093975082039833,
+      "raw_clipscore": 0.7292407751083374,
+      "regen_clipscore": 0.6696288585662842
+    },
+    {
+      "file": "clean_000045.png",
+      "clip_image_cosine": 0.974510669708252,
+      "dino_cosine": 0.9587322473526001,
+      "lpips": 0.053560152649879456,
+      "raw_clipscore": 0.7426139116287231,
+      "regen_clipscore": 0.723407506942749
+    },
+    {
+      "file": "clean_000046.png",
+      "clip_image_cosine": 0.9791479706764221,
+      "dino_cosine": 0.9694629311561584,
+      "lpips": 0.09196175634860992,
+      "raw_clipscore": 0.691443681716919,
+      "regen_clipscore": 0.6631320118904114
+    },
+    {
+      "file": "clean_000047.png",
+      "clip_image_cosine": 0.9766724109649658,
+      "dino_cosine": 0.9451508522033691,
+      "lpips": 0.10406620055437088,
+      "raw_clipscore": 0.6671940088272095,
+      "regen_clipscore": 0.6303927302360535
+    },
+    {
+      "file": "clean_000048.png",
+      "clip_image_cosine": 0.9693098068237305,
+      "dino_cosine": 0.9400292634963989,
+      "lpips": 0.10883612930774689,
+      "raw_clipscore": 0.5570887327194214,
+      "regen_clipscore": 0.5473441481590271
+    },
+    {
+      "file": "clean_000049.png",
+      "clip_image_cosine": 0.9805547595024109,
+      "dino_cosine": 0.9768500924110413,
+      "lpips": 0.08684003353118896,
+      "raw_clipscore": 0.6485211253166199,
+      "regen_clipscore": 0.6433716416358948
+    },
+    {
+      "file": "clean_000050.png",
+      "clip_image_cosine": 0.9718942642211914,
+      "dino_cosine": 0.9756488800048828,
+      "lpips": 0.0850323960185051,
+      "raw_clipscore": 0.7742406129837036,
+      "regen_clipscore": 0.7881656289100647
+    },
+    {
+      "file": "clean_000051.png",
+      "clip_image_cosine": 0.9761624932289124,
+      "dino_cosine": 0.960788369178772,
+      "lpips": 0.10064704716205597,
+      "raw_clipscore": 0.8555591106414795,
+      "regen_clipscore": 0.8242536783218384
+    },
+    {
+      "file": "clean_000052.png",
+      "clip_image_cosine": 0.9541985392570496,
+      "dino_cosine": 0.9668079018592834,
+      "lpips": 0.14199122786521912,
+      "raw_clipscore": 0.6140561103820801,
+      "regen_clipscore": 0.63697350025177
+    },
+    {
+      "file": "clean_000053.png",
+      "clip_image_cosine": 0.9852766394615173,
+      "dino_cosine": 0.9217236042022705,
+      "lpips": 0.20690692961215973,
+      "raw_clipscore": 0.6705113649368286,
+      "regen_clipscore": 0.6768356561660767
+    },
+    {
+      "file": "clean_000054.png",
+      "clip_image_cosine": 0.9244124293327332,
+      "dino_cosine": 0.9265356659889221,
+      "lpips": 0.15602289140224457,
+      "raw_clipscore": 0.5043900012969971,
+      "regen_clipscore": 0.42367422580718994
+    },
+    {
+      "file": "clean_000055.png",
+      "clip_image_cosine": 0.9731769561767578,
+      "dino_cosine": 0.9869412183761597,
+      "lpips": 0.1265558898448944,
+      "raw_clipscore": 0.7171876430511475,
+      "regen_clipscore": 0.7115997076034546
+    },
+    {
+      "file": "clean_000056.png",
+      "clip_image_cosine": 0.9691497087478638,
+      "dino_cosine": 0.9439932107925415,
+      "lpips": 0.09242686629295349,
+      "raw_clipscore": 0.4959689974784851,
+      "regen_clipscore": 0.5193787813186646
+    },
+    {
+      "file": "clean_000057.png",
+      "clip_image_cosine": 0.9785811305046082,
+      "dino_cosine": 0.9198668003082275,
+      "lpips": 0.19922320544719696,
+      "raw_clipscore": 0.7240185737609863,
+      "regen_clipscore": 0.6876382231712341
+    },
+    {
+      "file": "clean_000058.png",
+      "clip_image_cosine": 0.9819886088371277,
+      "dino_cosine": 0.9360308647155762,
+      "lpips": 0.11314094811677933,
+      "raw_clipscore": 0.6551159024238586,
+      "regen_clipscore": 0.6520838737487793
+    },
+    {
+      "file": "clean_000059.png",
+      "clip_image_cosine": 0.976777970790863,
+      "dino_cosine": 0.9750787615776062,
+      "lpips": 0.11867231130599976,
+      "raw_clipscore": 0.689782440662384,
+      "regen_clipscore": 0.7216744422912598
+    },
+    {
+      "file": "clean_000060.png",
+      "clip_image_cosine": 0.9836876392364502,
+      "dino_cosine": 0.976215660572052,
+      "lpips": 0.10647022724151611,
+      "raw_clipscore": 0.6052637696266174,
+      "regen_clipscore": 0.6161788702011108
+    },
+    {
+      "file": "clean_000061.png",
+      "clip_image_cosine": 0.9847720861434937,
+      "dino_cosine": 0.9376496076583862,
+      "lpips": 0.10155973583459854,
+      "raw_clipscore": 0.6815893650054932,
+      "regen_clipscore": 0.6694394946098328
+    },
+    {
+      "file": "clean_000062.png",
+      "clip_image_cosine": 0.91392982006073,
+      "dino_cosine": 0.9144057035446167,
+      "lpips": 0.14561787247657776,
+      "raw_clipscore": 0.6721614599227905,
+      "regen_clipscore": 0.6545974016189575
+    },
+    {
+      "file": "clean_000063.png",
+      "clip_image_cosine": 0.9821721315383911,
+      "dino_cosine": 0.9681190848350525,
+      "lpips": 0.08350782841444016,
+      "raw_clipscore": 0.6572375297546387,
+      "regen_clipscore": 0.6442140340805054
+    },
+    {
+      "file": "clean_000064.png",
+      "clip_image_cosine": 0.9524379968643188,
+      "dino_cosine": 0.9480390548706055,
+      "lpips": 0.1165427565574646,
+      "raw_clipscore": 0.627358078956604,
+      "regen_clipscore": 0.5615721940994263
+    },
+    {
+      "file": "clean_000065.png",
+      "clip_image_cosine": 0.976488471031189,
+      "dino_cosine": 0.8493320345878601,
+      "lpips": 0.1281725913286209,
+      "raw_clipscore": 0.6762317419052124,
+      "regen_clipscore": 0.6796355247497559
+    },
+    {
+      "file": "clean_000066.png",
+      "clip_image_cosine": 0.9415701031684875,
+      "dino_cosine": 0.9196803569793701,
+      "lpips": 0.12348966300487518,
+      "raw_clipscore": 0.7348597645759583,
+      "regen_clipscore": 0.6682208180427551
+    },
+    {
+      "file": "clean_000067.png",
+      "clip_image_cosine": 0.9870010018348694,
+      "dino_cosine": 0.9438947439193726,
+      "lpips": 0.06213091313838959,
+      "raw_clipscore": 0.6763496994972229,
+      "regen_clipscore": 0.6781512498855591
+    },
+    {
+      "file": "clean_000068.png",
+      "clip_image_cosine": 0.9547632336616516,
+      "dino_cosine": 0.9688875079154968,
+      "lpips": 0.04937362298369408,
+      "raw_clipscore": 0.47278717160224915,
+      "regen_clipscore": 0.45723193883895874
+    },
+    {
+      "file": "clean_000069.png",
+      "clip_image_cosine": 0.9729241132736206,
+      "dino_cosine": 0.9559739828109741,
+      "lpips": 0.06828528642654419,
+      "raw_clipscore": 0.8714241981506348,
+      "regen_clipscore": 0.8733674883842468
+    },
+    {
+      "file": "clean_000070.png",
+      "clip_image_cosine": 0.9844282269477844,
+      "dino_cosine": 0.9787101745605469,
+      "lpips": 0.07610128819942474,
+      "raw_clipscore": 0.7915152311325073,
+      "regen_clipscore": 0.7883692979812622
+    },
+    {
+      "file": "clean_000071.png",
+      "clip_image_cosine": 0.9933313727378845,
+      "dino_cosine": 0.9701178073883057,
+      "lpips": 0.07732558250427246,
+      "raw_clipscore": 0.7458276748657227,
+      "regen_clipscore": 0.7341630458831787
+    },
+    {
+      "file": "clean_000072.png",
+      "clip_image_cosine": 0.984841525554657,
+      "dino_cosine": 0.9697134494781494,
+      "lpips": 0.07433284819126129,
+      "raw_clipscore": 0.6496858596801758,
+      "regen_clipscore": 0.6586513519287109
+    },
+    {
+      "file": "clean_000073.png",
+      "clip_image_cosine": 0.9693858623504639,
+      "dino_cosine": 0.9384193420410156,
+      "lpips": 0.17336946725845337,
+      "raw_clipscore": 0.6211970448493958,
+      "regen_clipscore": 0.6099628210067749
+    },
+    {
+      "file": "clean_000074.png",
+      "clip_image_cosine": 0.9674741625785828,
+      "dino_cosine": 0.9704181551933289,
+      "lpips": 0.0716216117143631,
+      "raw_clipscore": 0.7199304103851318,
+      "regen_clipscore": 0.70782470703125
+    },
+    {
+      "file": "clean_000075.png",
+      "clip_image_cosine": 0.9463703632354736,
+      "dino_cosine": 0.9351601600646973,
+      "lpips": 0.08903732895851135,
+      "raw_clipscore": 0.6323332786560059,
+      "regen_clipscore": 0.6308355927467346
+    },
+    {
+      "file": "clean_000076.png",
+      "clip_image_cosine": 0.9347769618034363,
+      "dino_cosine": 0.9677177667617798,
+      "lpips": 0.15570518374443054,
+      "raw_clipscore": 0.7277717590332031,
+      "regen_clipscore": 0.7381703853607178
+    },
+    {
+      "file": "clean_000077.png",
+      "clip_image_cosine": 0.9220842123031616,
+      "dino_cosine": 0.9092934131622314,
+      "lpips": 0.1189795657992363,
+      "raw_clipscore": 0.8636273145675659,
+      "regen_clipscore": 0.8108473420143127
+    },
+    {
+      "file": "clean_000078.png",
+      "clip_image_cosine": 0.9872046709060669,
+      "dino_cosine": 0.9786236882209778,
+      "lpips": 0.08765295147895813,
+      "raw_clipscore": 0.5735058784484863,
+      "regen_clipscore": 0.5851367712020874
+    },
+    {
+      "file": "clean_000079.png",
+      "clip_image_cosine": 0.9549224972724915,
+      "dino_cosine": 0.9728260040283203,
+      "lpips": 0.11626854538917542,
+      "raw_clipscore": 0.7318174839019775,
+      "regen_clipscore": 0.6709824800491333
+    },
+    {
+      "file": "clean_000080.png",
+      "clip_image_cosine": 0.9445943832397461,
+      "dino_cosine": 0.9081960916519165,
+      "lpips": 0.09411878883838654,
+      "raw_clipscore": 0.953907310962677,
+      "regen_clipscore": 0.8774025440216064
+    },
+    {
+      "file": "clean_000081.png",
+      "clip_image_cosine": 0.9754626750946045,
+      "dino_cosine": 0.979392945766449,
+      "lpips": 0.1273023635149002,
+      "raw_clipscore": 0.6795884370803833,
+      "regen_clipscore": 0.6877445578575134
+    },
+    {
+      "file": "clean_000082.png",
+      "clip_image_cosine": 0.9881207346916199,
+      "dino_cosine": 0.9837918281555176,
+      "lpips": 0.07364507019519806,
+      "raw_clipscore": 0.737115204334259,
+      "regen_clipscore": 0.7294642329216003
+    },
+    {
+      "file": "clean_000083.png",
+      "clip_image_cosine": 0.962621808052063,
+      "dino_cosine": 0.963739275932312,
+      "lpips": 0.06482725590467453,
+      "raw_clipscore": 0.7694594860076904,
+      "regen_clipscore": 0.7610979080200195
+    },
+    {
+      "file": "clean_000084.png",
+      "clip_image_cosine": 0.9853609800338745,
+      "dino_cosine": 0.9763871431350708,
+      "lpips": 0.062679223716259,
+      "raw_clipscore": 0.537314772605896,
+      "regen_clipscore": 0.5599201917648315
+    },
+    {
+      "file": "clean_000085.png",
+      "clip_image_cosine": 0.9674826264381409,
+      "dino_cosine": 0.9148001670837402,
+      "lpips": 0.16501988470554352,
+      "raw_clipscore": 0.6271448135375977,
+      "regen_clipscore": 0.6229164600372314
+    },
+    {
+      "file": "clean_000086.png",
+      "clip_image_cosine": 0.9842149019241333,
+      "dino_cosine": 0.9624236822128296,
+      "lpips": 0.1236809492111206,
+      "raw_clipscore": 0.6399974822998047,
+      "regen_clipscore": 0.61245197057724
+    },
+    {
+      "file": "clean_000087.png",
+      "clip_image_cosine": 0.9811382293701172,
+      "dino_cosine": 0.9254186153411865,
+      "lpips": 0.1776907742023468,
+      "raw_clipscore": 0.7089290618896484,
+      "regen_clipscore": 0.7075956463813782
+    },
+    {
+      "file": "clean_000088.png",
+      "clip_image_cosine": 0.9737087488174438,
+      "dino_cosine": 0.9121525287628174,
+      "lpips": 0.140684112906456,
+      "raw_clipscore": 0.6385843753814697,
+      "regen_clipscore": 0.5811030864715576
+    },
+    {
+      "file": "clean_000089.png",
+      "clip_image_cosine": 0.9700152277946472,
+      "dino_cosine": 0.9726331233978271,
+      "lpips": 0.09110648185014725,
+      "raw_clipscore": 0.7249745726585388,
+      "regen_clipscore": 0.7560092210769653
+    },
+    {
+      "file": "clean_000090.png",
+      "clip_image_cosine": 0.9580986499786377,
+      "dino_cosine": 0.909729540348053,
+      "lpips": 0.1593547761440277,
+      "raw_clipscore": 0.7241637706756592,
+      "regen_clipscore": 0.6975385546684265
+    },
+    {
+      "file": "clean_000091.png",
+      "clip_image_cosine": 0.9610196352005005,
+      "dino_cosine": 0.9287126660346985,
+      "lpips": 0.1647169589996338,
+      "raw_clipscore": 0.8610767126083374,
+      "regen_clipscore": 0.7989002466201782
+    },
+    {
+      "file": "clean_000092.png",
+      "clip_image_cosine": 0.9712380170822144,
+      "dino_cosine": 0.9568753242492676,
+      "lpips": 0.09846881777048111,
+      "raw_clipscore": 0.7971758842468262,
+      "regen_clipscore": 0.7851312160491943
+    },
+    {
+      "file": "clean_000093.png",
+      "clip_image_cosine": 0.980033814907074,
+      "dino_cosine": 0.9674332141876221,
+      "lpips": 0.12058977782726288,
+      "raw_clipscore": 0.6400872468948364,
+      "regen_clipscore": 0.6787517666816711
+    },
+    {
+      "file": "clean_000094.png",
+      "clip_image_cosine": 0.986844003200531,
+      "dino_cosine": 0.9696412682533264,
+      "lpips": 0.08219970017671585,
+      "raw_clipscore": 0.5996429324150085,
+      "regen_clipscore": 0.5986306667327881
+    },
+    {
+      "file": "clean_000095.png",
+      "clip_image_cosine": 0.9708896279335022,
+      "dino_cosine": 0.9631876349449158,
+      "lpips": 0.07664407044649124,
+      "raw_clipscore": 0.7086310386657715,
+      "regen_clipscore": 0.6936274766921997
+    },
+    {
+      "file": "clean_000096.png",
+      "clip_image_cosine": 0.961577296257019,
+      "dino_cosine": 0.8921469449996948,
+      "lpips": 0.19550614058971405,
+      "raw_clipscore": 0.521400511264801,
+      "regen_clipscore": 0.42252254486083984
+    },
+    {
+      "file": "clean_000097.png",
+      "clip_image_cosine": 0.8983255624771118,
+      "dino_cosine": 0.939706563949585,
+      "lpips": 0.16098164021968842,
+      "raw_clipscore": 0.7120499014854431,
+      "regen_clipscore": 0.7787258625030518
+    },
+    {
+      "file": "clean_000098.png",
+      "clip_image_cosine": 0.9759066104888916,
+      "dino_cosine": 0.9263280630111694,
+      "lpips": 0.15774130821228027,
+      "raw_clipscore": 0.4388093650341034,
+      "regen_clipscore": 0.45663559436798096
+    },
+    {
+      "file": "clean_000099.png",
+      "clip_image_cosine": 0.978633463382721,
+      "dino_cosine": 0.9518125653266907,
+      "lpips": 0.12496275454759598,
+      "raw_clipscore": 0.6388810276985168,
+      "regen_clipscore": 0.6260156631469727
+    },
+    {
+      "file": "clean_000100.png",
+      "clip_image_cosine": 0.9880985021591187,
+      "dino_cosine": 0.9801905751228333,
+      "lpips": 0.05360276252031326,
+      "raw_clipscore": 0.7294081449508667,
+      "regen_clipscore": 0.7186373472213745
+    },
+    {
+      "file": "clean_000101.png",
+      "clip_image_cosine": 0.9220410585403442,
+      "dino_cosine": 0.9325845241546631,
+      "lpips": 0.10530771315097809,
+      "raw_clipscore": 0.6474665403366089,
+      "regen_clipscore": 0.632861316204071
+    },
+    {
+      "file": "clean_000102.png",
+      "clip_image_cosine": 0.9767781496047974,
+      "dino_cosine": 0.9702650904655457,
+      "lpips": 0.10399778187274933,
+      "raw_clipscore": 0.42912399768829346,
+      "regen_clipscore": 0.4178417921066284
+    },
+    {
+      "file": "clean_000103.png",
+      "clip_image_cosine": 0.9804581999778748,
+      "dino_cosine": 0.9585914611816406,
+      "lpips": 0.11556967347860336,
+      "raw_clipscore": 0.719184935092926,
+      "regen_clipscore": 0.6832436323165894
+    },
+    {
+      "file": "clean_000104.png",
+      "clip_image_cosine": 0.9839364290237427,
+      "dino_cosine": 0.9764963984489441,
+      "lpips": 0.06953023374080658,
+      "raw_clipscore": 0.6432443857192993,
+      "regen_clipscore": 0.6710869073867798
+    },
+    {
+      "file": "clean_000105.png",
+      "clip_image_cosine": 0.9897054433822632,
+      "dino_cosine": 0.9828746914863586,
+      "lpips": 0.056428488343954086,
+      "raw_clipscore": 0.6613541841506958,
+      "regen_clipscore": 0.6847100257873535
+    },
+    {
+      "file": "clean_000106.png",
+      "clip_image_cosine": 0.9723272323608398,
+      "dino_cosine": 0.9702014923095703,
+      "lpips": 0.11273950338363647,
+      "raw_clipscore": 0.9029138088226318,
+      "regen_clipscore": 0.8711926937103271
+    },
+    {
+      "file": "clean_000107.png",
+      "clip_image_cosine": 0.9917163848876953,
+      "dino_cosine": 0.975644588470459,
+      "lpips": 0.08625279366970062,
+      "raw_clipscore": 0.9467012286186218,
+      "regen_clipscore": 0.9426471590995789
+    },
+    {
+      "file": "clean_000108.png",
+      "clip_image_cosine": 0.9596440196037292,
+      "dino_cosine": 0.9838245511054993,
+      "lpips": 0.04409926012158394,
+      "raw_clipscore": 0.8170469999313354,
+      "regen_clipscore": 0.7471103668212891
+    },
+    {
+      "file": "clean_000109.png",
+      "clip_image_cosine": 0.9816275835037231,
+      "dino_cosine": 0.9752190709114075,
+      "lpips": 0.10309542715549469,
+      "raw_clipscore": 0.5858336687088013,
+      "regen_clipscore": 0.5789867639541626
+    },
+    {
+      "file": "clean_000110.png",
+      "clip_image_cosine": 0.9547586441040039,
+      "dino_cosine": 0.9498916864395142,
+      "lpips": 0.11099334061145782,
+      "raw_clipscore": 0.7998137474060059,
+      "regen_clipscore": 0.775219738483429
+    },
+    {
+      "file": "clean_000111.png",
+      "clip_image_cosine": 0.9901239275932312,
+      "dino_cosine": 0.9909993410110474,
+      "lpips": 0.09652213752269745,
+      "raw_clipscore": 0.6390877962112427,
+      "regen_clipscore": 0.6509900689125061
+    },
+    {
+      "file": "clean_000112.png",
+      "clip_image_cosine": 0.9752810001373291,
+      "dino_cosine": 0.9747897386550903,
+      "lpips": 0.07078897953033447,
+      "raw_clipscore": 0.7248339056968689,
+      "regen_clipscore": 0.7379283905029297
+    },
+    {
+      "file": "clean_000113.png",
+      "clip_image_cosine": 0.9579830169677734,
+      "dino_cosine": 0.9703630208969116,
+      "lpips": 0.10475528985261917,
+      "raw_clipscore": 0.7518099546432495,
+      "regen_clipscore": 0.6947293877601624
+    },
+    {
+      "file": "clean_000114.png",
+      "clip_image_cosine": 0.9832897782325745,
+      "dino_cosine": 0.9297921657562256,
+      "lpips": 0.1818813979625702,
+      "raw_clipscore": 0.6092797517776489,
+      "regen_clipscore": 0.6152913570404053
+    },
+    {
+      "file": "clean_000115.png",
+      "clip_image_cosine": 0.9800518155097961,
+      "dino_cosine": 0.9669145345687866,
+      "lpips": 0.1246490553021431,
+      "raw_clipscore": 0.8210384845733643,
+      "regen_clipscore": 0.850779116153717
+    },
+    {
+      "file": "clean_000116.png",
+      "clip_image_cosine": 0.980997622013092,
+      "dino_cosine": 0.9634705781936646,
+      "lpips": 0.12181667983531952,
+      "raw_clipscore": 0.7123140096664429,
+      "regen_clipscore": 0.7588930130004883
+    },
+    {
+      "file": "clean_000117.png",
+      "clip_image_cosine": 0.9776275157928467,
+      "dino_cosine": 0.9715028405189514,
+      "lpips": 0.1012209877371788,
+      "raw_clipscore": 0.7368177175521851,
+      "regen_clipscore": 0.7188031077384949
+    },
+    {
+      "file": "clean_000118.png",
+      "clip_image_cosine": 0.9731190800666809,
+      "dino_cosine": 0.9676923751831055,
+      "lpips": 0.10418060421943665,
+      "raw_clipscore": 0.6024701595306396,
+      "regen_clipscore": 0.6067507266998291
+    },
+    {
+      "file": "clean_000119.png",
+      "clip_image_cosine": 0.9576254487037659,
+      "dino_cosine": 0.9590228199958801,
+      "lpips": 0.08217346668243408,
+      "raw_clipscore": 0.6729086637496948,
+      "regen_clipscore": 0.6702046394348145
+    },
+    {
+      "file": "clean_000120.png",
+      "clip_image_cosine": 0.9873032569885254,
+      "dino_cosine": 0.9617807269096375,
+      "lpips": 0.08613885194063187,
+      "raw_clipscore": 0.6486712694168091,
+      "regen_clipscore": 0.6778532266616821
+    },
+    {
+      "file": "clean_000121.png",
+      "clip_image_cosine": 0.9759355783462524,
+      "dino_cosine": 0.9480715990066528,
+      "lpips": 0.12785814702510834,
+      "raw_clipscore": 0.7956510782241821,
+      "regen_clipscore": 0.8192141056060791
+    },
+    {
+      "file": "clean_000122.png",
+      "clip_image_cosine": 0.9655471444129944,
+      "dino_cosine": 0.9780696630477905,
+      "lpips": 0.09371215105056763,
+      "raw_clipscore": 0.6870906352996826,
+      "regen_clipscore": 0.6733444333076477
+    },
+    {
+      "file": "clean_000123.png",
+      "clip_image_cosine": 0.9741271734237671,
+      "dino_cosine": 0.9755979180335999,
+      "lpips": 0.0852942168712616,
+      "raw_clipscore": 0.6951637268066406,
+      "regen_clipscore": 0.7052862644195557
+    },
+    {
+      "file": "clean_000124.png",
+      "clip_image_cosine": 0.9841071367263794,
+      "dino_cosine": 0.9713082909584045,
+      "lpips": 0.07853778451681137,
+      "raw_clipscore": 0.6623913049697876,
+      "regen_clipscore": 0.656830370426178
+    },
+    {
+      "file": "clean_000125.png",
+      "clip_image_cosine": 0.9538167715072632,
+      "dino_cosine": 0.9713867902755737,
+      "lpips": 0.15234291553497314,
+      "raw_clipscore": 0.5298215746879578,
+      "regen_clipscore": 0.5469074249267578
+    },
+    {
+      "file": "clean_000126.png",
+      "clip_image_cosine": 0.986659586429596,
+      "dino_cosine": 0.9697126150131226,
+      "lpips": 0.08938482403755188,
+      "raw_clipscore": 0.7150239944458008,
+      "regen_clipscore": 0.6806440353393555
+    },
+    {
+      "file": "clean_000127.png",
+      "clip_image_cosine": 0.9785462617874146,
+      "dino_cosine": 0.9700438976287842,
+      "lpips": 0.09644876420497894,
+      "raw_clipscore": 0.5444245934486389,
+      "regen_clipscore": 0.5451092720031738
+    },
+    {
+      "file": "clean_000128.png",
+      "clip_image_cosine": 0.975616991519928,
+      "dino_cosine": 0.9576162099838257,
+      "lpips": 0.14298871159553528,
+      "raw_clipscore": 0.7053941488265991,
+      "regen_clipscore": 0.6814737319946289
+    },
+    {
+      "file": "clean_000129.png",
+      "clip_image_cosine": 0.9766044616699219,
+      "dino_cosine": 0.9604083895683289,
+      "lpips": 0.12282915413379669,
+      "raw_clipscore": 0.7840018272399902,
+      "regen_clipscore": 0.7838324308395386
+    },
+    {
+      "file": "clean_000130.png",
+      "clip_image_cosine": 0.9795433878898621,
+      "dino_cosine": 0.9845557808876038,
+      "lpips": 0.12902574241161346,
+      "raw_clipscore": 0.6748721599578857,
+      "regen_clipscore": 0.726732075214386
+    },
+    {
+      "file": "clean_000131.png",
+      "clip_image_cosine": 0.9914569854736328,
+      "dino_cosine": 0.9726884961128235,
+      "lpips": 0.07964356243610382,
+      "raw_clipscore": 0.6710913777351379,
+      "regen_clipscore": 0.6763803362846375
+    },
+    {
+      "file": "clean_000132.png",
+      "clip_image_cosine": 0.9669383764266968,
+      "dino_cosine": 0.9633480310440063,
+      "lpips": 0.034877512603998184,
+      "raw_clipscore": 0.7525410652160645,
+      "regen_clipscore": 0.7624577879905701
+    },
+    {
+      "file": "clean_000133.png",
+      "clip_image_cosine": 0.970128059387207,
+      "dino_cosine": 0.9618785977363586,
+      "lpips": 0.09137174487113953,
+      "raw_clipscore": 0.7888718843460083,
+      "regen_clipscore": 0.8000501990318298
+    },
+    {
+      "file": "clean_000134.png",
+      "clip_image_cosine": 0.9929342269897461,
+      "dino_cosine": 0.9760227203369141,
+      "lpips": 0.10166078805923462,
+      "raw_clipscore": 0.6922909617424011,
+      "regen_clipscore": 0.6942932605743408
+    },
+    {
+      "file": "clean_000135.png",
+      "clip_image_cosine": 0.8909732699394226,
+      "dino_cosine": 0.9580444097518921,
+      "lpips": 0.12489327043294907,
+      "raw_clipscore": 0.7378561496734619,
+      "regen_clipscore": 0.7031060457229614
+    },
+    {
+      "file": "clean_000136.png",
+      "clip_image_cosine": 0.9399077892303467,
+      "dino_cosine": 0.8843491077423096,
+      "lpips": 0.09712134301662445,
+      "raw_clipscore": 0.6830735206604004,
+      "regen_clipscore": 0.6073241233825684
+    },
+    {
+      "file": "clean_000137.png",
+      "clip_image_cosine": 0.9800890684127808,
+      "dino_cosine": 0.9431211948394775,
+      "lpips": 0.12255319207906723,
+      "raw_clipscore": 0.7918342351913452,
+      "regen_clipscore": 0.8368360996246338
+    },
+    {
+      "file": "clean_000138.png",
+      "clip_image_cosine": 0.9795184135437012,
+      "dino_cosine": 0.9513688087463379,
+      "lpips": 0.10344675183296204,
+      "raw_clipscore": 0.8617773652076721,
+      "regen_clipscore": 0.8422783017158508
+    },
+    {
+      "file": "clean_000139.png",
+      "clip_image_cosine": 0.989222526550293,
+      "dino_cosine": 0.9435884952545166,
+      "lpips": 0.11105436086654663,
+      "raw_clipscore": 0.6779366135597229,
+      "regen_clipscore": 0.6928360462188721
+    },
+    {
+      "file": "clean_000140.png",
+      "clip_image_cosine": 0.9727364778518677,
+      "dino_cosine": 0.9089993834495544,
+      "lpips": 0.1721321940422058,
+      "raw_clipscore": 0.8132685422897339,
+      "regen_clipscore": 0.7696329951286316
+    },
+    {
+      "file": "clean_000141.png",
+      "clip_image_cosine": 0.9637120962142944,
+      "dino_cosine": 0.9828892946243286,
+      "lpips": 0.04047552868723869,
+      "raw_clipscore": 0.7496961951255798,
+      "regen_clipscore": 0.7876396775245667
+    },
+    {
+      "file": "clean_000142.png",
+      "clip_image_cosine": 0.9680215120315552,
+      "dino_cosine": 0.9392980337142944,
+      "lpips": 0.13906316459178925,
+      "raw_clipscore": 0.6568697094917297,
+      "regen_clipscore": 0.6317700147628784
+    },
+    {
+      "file": "clean_000143.png",
+      "clip_image_cosine": 0.9768780469894409,
+      "dino_cosine": 0.9669011235237122,
+      "lpips": 0.08302204310894012,
+      "raw_clipscore": 0.7504582405090332,
+      "regen_clipscore": 0.7622222900390625
+    },
+    {
+      "file": "clean_000144.png",
+      "clip_image_cosine": 0.9609950184822083,
+      "dino_cosine": 0.9581566452980042,
+      "lpips": 0.07434917241334915,
+      "raw_clipscore": 0.5764275193214417,
+      "regen_clipscore": 0.5790432691574097
+    },
+    {
+      "file": "clean_000145.png",
+      "clip_image_cosine": 0.9581060409545898,
+      "dino_cosine": 0.9753756523132324,
+      "lpips": 0.08400486409664154,
+      "raw_clipscore": 0.7658001780509949,
+      "regen_clipscore": 0.7756725549697876
+    },
+    {
+      "file": "clean_000146.png",
+      "clip_image_cosine": 0.9892035126686096,
+      "dino_cosine": 0.9706971645355225,
+      "lpips": 0.030828235670924187,
+      "raw_clipscore": 0.48208776116371155,
+      "regen_clipscore": 0.4781803488731384
+    },
+    {
+      "file": "clean_000147.png",
+      "clip_image_cosine": 0.9818557500839233,
+      "dino_cosine": 0.9768595695495605,
+      "lpips": 0.07111047208309174,
+      "raw_clipscore": 0.5372949838638306,
+      "regen_clipscore": 0.542442262172699
+    },
+    {
+      "file": "clean_000148.png",
+      "clip_image_cosine": 0.9683303833007812,
+      "dino_cosine": 0.9454054236412048,
+      "lpips": 0.15802854299545288,
+      "raw_clipscore": 0.5940189361572266,
+      "regen_clipscore": 0.5741732716560364
+    },
+    {
+      "file": "clean_000149.png",
+      "clip_image_cosine": 0.9818705320358276,
+      "dino_cosine": 0.9168680906295776,
+      "lpips": 0.1253720223903656,
+      "raw_clipscore": 0.6701147556304932,
+      "regen_clipscore": 0.6590707302093506
+    },
+    {
+      "file": "clean_000150.png",
+      "clip_image_cosine": 0.9860677719116211,
+      "dino_cosine": 0.9597943425178528,
+      "lpips": 0.05807109549641609,
+      "raw_clipscore": 0.7567585706710815,
+      "regen_clipscore": 0.7467207908630371
+    },
+    {
+      "file": "clean_000151.png",
+      "clip_image_cosine": 0.9762858748435974,
+      "dino_cosine": 0.9482258558273315,
+      "lpips": 0.16074348986148834,
+      "raw_clipscore": 0.7254790663719177,
+      "regen_clipscore": 0.684611439704895
+    },
+    {
+      "file": "clean_000152.png",
+      "clip_image_cosine": 0.9796432256698608,
+      "dino_cosine": 0.9820498824119568,
+      "lpips": 0.12831047177314758,
+      "raw_clipscore": 0.8097047209739685,
+      "regen_clipscore": 0.787464439868927
+    },
+    {
+      "file": "clean_000153.png",
+      "clip_image_cosine": 0.9873474836349487,
+      "dino_cosine": 0.9320321679115295,
+      "lpips": 0.17127230763435364,
+      "raw_clipscore": 0.7345129251480103,
+      "regen_clipscore": 0.7419293522834778
+    },
+    {
+      "file": "clean_000154.png",
+      "clip_image_cosine": 0.9602639675140381,
+      "dino_cosine": 0.8769473433494568,
+      "lpips": 0.12646666169166565,
+      "raw_clipscore": 0.6118884682655334,
+      "regen_clipscore": 0.6316519379615784
+    },
+    {
+      "file": "clean_000155.png",
+      "clip_image_cosine": 0.9506109952926636,
+      "dino_cosine": 0.9683436751365662,
+      "lpips": 0.10188046097755432,
+      "raw_clipscore": 0.8280184864997864,
+      "regen_clipscore": 0.8310364484786987
+    },
+    {
+      "file": "clean_000156.png",
+      "clip_image_cosine": 0.9752370715141296,
+      "dino_cosine": 0.9476193189620972,
+      "lpips": 0.12042304873466492,
+      "raw_clipscore": 0.6121972799301147,
+      "regen_clipscore": 0.578254759311676
+    },
+    {
+      "file": "clean_000157.png",
+      "clip_image_cosine": 0.9830552935600281,
+      "dino_cosine": 0.9247528314590454,
+      "lpips": 0.1545063853263855,
+      "raw_clipscore": 0.6857996582984924,
+      "regen_clipscore": 0.6725526452064514
+    },
+    {
+      "file": "clean_000158.png",
+      "clip_image_cosine": 0.977129340171814,
+      "dino_cosine": 0.9790012836456299,
+      "lpips": 0.07876383513212204,
+      "raw_clipscore": 0.6559985876083374,
+      "regen_clipscore": 0.6345546841621399
+    },
+    {
+      "file": "clean_000159.png",
+      "clip_image_cosine": 0.9694893956184387,
+      "dino_cosine": 0.9704110622406006,
+      "lpips": 0.10278075188398361,
+      "raw_clipscore": 0.8433355093002319,
+      "regen_clipscore": 0.8222906589508057
+    },
+    {
+      "file": "clean_000160.png",
+      "clip_image_cosine": 0.9821853637695312,
+      "dino_cosine": 0.9844866394996643,
+      "lpips": 0.09119643270969391,
+      "raw_clipscore": 0.7350784540176392,
+      "regen_clipscore": 0.7334566712379456
+    },
+    {
+      "file": "clean_000161.png",
+      "clip_image_cosine": 0.9820055365562439,
+      "dino_cosine": 0.9250908493995667,
+      "lpips": 0.09531769156455994,
+      "raw_clipscore": 0.7212290167808533,
+      "regen_clipscore": 0.70017009973526
+    },
+    {
+      "file": "clean_000162.png",
+      "clip_image_cosine": 0.9774378538131714,
+      "dino_cosine": 0.9726392030715942,
+      "lpips": 0.06796963512897491,
+      "raw_clipscore": 0.766791820526123,
+      "regen_clipscore": 0.7433357238769531
+    },
+    {
+      "file": "clean_000163.png",
+      "clip_image_cosine": 0.9807591438293457,
+      "dino_cosine": 0.9490276575088501,
+      "lpips": 0.09740027040243149,
+      "raw_clipscore": 0.668576717376709,
+      "regen_clipscore": 0.6626124382019043
+    },
+    {
+      "file": "clean_000164.png",
+      "clip_image_cosine": 0.9543758630752563,
+      "dino_cosine": 0.9234365820884705,
+      "lpips": 0.1860353648662567,
+      "raw_clipscore": 0.6285622715950012,
+      "regen_clipscore": 0.7009685039520264
+    },
+    {
+      "file": "clean_000165.png",
+      "clip_image_cosine": 0.9795826077461243,
+      "dino_cosine": 0.9755309820175171,
+      "lpips": 0.12632980942726135,
+      "raw_clipscore": 0.7271391153335571,
+      "regen_clipscore": 0.7165859937667847
+    },
+    {
+      "file": "clean_000166.png",
+      "clip_image_cosine": 0.9689779281616211,
+      "dino_cosine": 0.9086418747901917,
+      "lpips": 0.10397034138441086,
+      "raw_clipscore": 0.6839171051979065,
+      "regen_clipscore": 0.6986367702484131
+    },
+    {
+      "file": "clean_000167.png",
+      "clip_image_cosine": 0.9794009923934937,
+      "dino_cosine": 0.9775840044021606,
+      "lpips": 0.10307659208774567,
+      "raw_clipscore": 0.6470953226089478,
+      "regen_clipscore": 0.6530088782310486
+    },
+    {
+      "file": "clean_000168.png",
+      "clip_image_cosine": 0.9632660746574402,
+      "dino_cosine": 0.9642733931541443,
+      "lpips": 0.04891490936279297,
+      "raw_clipscore": 0.7293732166290283,
+      "regen_clipscore": 0.700677752494812
+    },
+    {
+      "file": "clean_000169.png",
+      "clip_image_cosine": 0.9793450832366943,
+      "dino_cosine": 0.9693509340286255,
+      "lpips": 0.11180253326892853,
+      "raw_clipscore": 0.6660526394844055,
+      "regen_clipscore": 0.6752247214317322
+    },
+    {
+      "file": "clean_000170.png",
+      "clip_image_cosine": 0.959810733795166,
+      "dino_cosine": 0.939635157585144,
+      "lpips": 0.1080433577299118,
+      "raw_clipscore": 0.7457596063613892,
+      "regen_clipscore": 0.7162988185882568
+    },
+    {
+      "file": "clean_000171.png",
+      "clip_image_cosine": 0.9876225590705872,
+      "dino_cosine": 0.9815832376480103,
+      "lpips": 0.08675997704267502,
+      "raw_clipscore": 0.7450838088989258,
+      "regen_clipscore": 0.7270157933235168
+    },
+    {
+      "file": "clean_000172.png",
+      "clip_image_cosine": 0.9448777437210083,
+      "dino_cosine": 0.9318095445632935,
+      "lpips": 0.13682524859905243,
+      "raw_clipscore": 0.7759988903999329,
+      "regen_clipscore": 0.7616533041000366
+    },
+    {
+      "file": "clean_000173.png",
+      "clip_image_cosine": 0.9787643551826477,
+      "dino_cosine": 0.9780017137527466,
+      "lpips": 0.12968340516090393,
+      "raw_clipscore": 0.6606581211090088,
+      "regen_clipscore": 0.6268930435180664
+    },
+    {
+      "file": "clean_000174.png",
+      "clip_image_cosine": 0.968979001045227,
+      "dino_cosine": 0.9601436853408813,
+      "lpips": 0.12312003970146179,
+      "raw_clipscore": 0.80687415599823,
+      "regen_clipscore": 0.8106374740600586
+    },
+    {
+      "file": "clean_000175.png",
+      "clip_image_cosine": 0.9744676351547241,
+      "dino_cosine": 0.9815253019332886,
+      "lpips": 0.08607152104377747,
+      "raw_clipscore": 0.9284958243370056,
+      "regen_clipscore": 0.8623970150947571
+    },
+    {
+      "file": "clean_000176.png",
+      "clip_image_cosine": 0.9547339677810669,
+      "dino_cosine": 0.9423359632492065,
+      "lpips": 0.08182916045188904,
+      "raw_clipscore": 0.7182684540748596,
+      "regen_clipscore": 0.7204487323760986
+    },
+    {
+      "file": "clean_000177.png",
+      "clip_image_cosine": 0.9613180160522461,
+      "dino_cosine": 0.9298827648162842,
+      "lpips": 0.13919489085674286,
+      "raw_clipscore": 0.7716861367225647,
+      "regen_clipscore": 0.7603904008865356
+    },
+    {
+      "file": "clean_000178.png",
+      "clip_image_cosine": 0.9785174131393433,
+      "dino_cosine": 0.9734706282615662,
+      "lpips": 0.12340167164802551,
+      "raw_clipscore": 0.5309719443321228,
+      "regen_clipscore": 0.49064886569976807
+    },
+    {
+      "file": "clean_000179.png",
+      "clip_image_cosine": 0.9906761646270752,
+      "dino_cosine": 0.9842036962509155,
+      "lpips": 0.09707547724246979,
+      "raw_clipscore": 0.6610094308853149,
+      "regen_clipscore": 0.6874781847000122
+    },
+    {
+      "file": "clean_000180.png",
+      "clip_image_cosine": 0.9777196645736694,
+      "dino_cosine": 0.9546867609024048,
+      "lpips": 0.11222447454929352,
+      "raw_clipscore": 0.7833831310272217,
+      "regen_clipscore": 0.7518972158432007
+    },
+    {
+      "file": "clean_000181.png",
+      "clip_image_cosine": 0.9779741764068604,
+      "dino_cosine": 0.9547746181488037,
+      "lpips": 0.08475759625434875,
+      "raw_clipscore": 0.6064679026603699,
+      "regen_clipscore": 0.5572910904884338
+    },
+    {
+      "file": "clean_000182.png",
+      "clip_image_cosine": 0.9553947448730469,
+      "dino_cosine": 0.9810271263122559,
+      "lpips": 0.11775833368301392,
+      "raw_clipscore": 0.5384097099304199,
+      "regen_clipscore": 0.5429959893226624
+    },
+    {
+      "file": "clean_000183.png",
+      "clip_image_cosine": 0.9944882392883301,
+      "dino_cosine": 0.987264096736908,
+      "lpips": 0.03980918228626251,
+      "raw_clipscore": 0.6127950549125671,
+      "regen_clipscore": 0.6300179958343506
+    },
+    {
+      "file": "clean_000184.png",
+      "clip_image_cosine": 0.9773812294006348,
+      "dino_cosine": 0.9338613152503967,
+      "lpips": 0.0931127667427063,
+      "raw_clipscore": 0.8200757503509521,
+      "regen_clipscore": 0.7901310324668884
+    },
+    {
+      "file": "clean_000185.png",
+      "clip_image_cosine": 0.9871942400932312,
+      "dino_cosine": 0.954118013381958,
+      "lpips": 0.11579450964927673,
+      "raw_clipscore": 0.7578717470169067,
+      "regen_clipscore": 0.7445638179779053
+    },
+    {
+      "file": "clean_000186.png",
+      "clip_image_cosine": 0.9769411683082581,
+      "dino_cosine": 0.9802496433258057,
+      "lpips": 0.09414638578891754,
+      "raw_clipscore": 0.6458778381347656,
+      "regen_clipscore": 0.6251882314682007
+    },
+    {
+      "file": "clean_000187.png",
+      "clip_image_cosine": 0.9635955095291138,
+      "dino_cosine": 0.9712643623352051,
+      "lpips": 0.08114605396986008,
+      "raw_clipscore": 0.616934061050415,
+      "regen_clipscore": 0.6164988279342651
+    },
+    {
+      "file": "clean_000188.png",
+      "clip_image_cosine": 0.9834091663360596,
+      "dino_cosine": 0.937395453453064,
+      "lpips": 0.1495569795370102,
+      "raw_clipscore": 0.4599001407623291,
+      "regen_clipscore": 0.4398539364337921
+    },
+    {
+      "file": "clean_000189.png",
+      "clip_image_cosine": 0.978933572769165,
+      "dino_cosine": 0.9717917442321777,
+      "lpips": 0.11516666412353516,
+      "raw_clipscore": 0.7638763189315796,
+      "regen_clipscore": 0.7891905307769775
+    },
+    {
+      "file": "clean_000190.png",
+      "clip_image_cosine": 0.968608021736145,
+      "dino_cosine": 0.9756401777267456,
+      "lpips": 0.09437538683414459,
+      "raw_clipscore": 0.8373041152954102,
+      "regen_clipscore": 0.8023205399513245
+    },
+    {
+      "file": "clean_000191.png",
+      "clip_image_cosine": 0.9711588025093079,
+      "dino_cosine": 0.9835110902786255,
+      "lpips": 0.08557967096567154,
+      "raw_clipscore": 0.8241442441940308,
+      "regen_clipscore": 0.818416178226471
+    },
+    {
+      "file": "clean_000192.png",
+      "clip_image_cosine": 0.9692448973655701,
+      "dino_cosine": 0.8910021781921387,
+      "lpips": 0.14703696966171265,
+      "raw_clipscore": 0.6693232655525208,
+      "regen_clipscore": 0.6755121946334839
+    },
+    {
+      "file": "clean_000193.png",
+      "clip_image_cosine": 0.9758464097976685,
+      "dino_cosine": 0.9762206077575684,
+      "lpips": 0.09364651143550873,
+      "raw_clipscore": 0.709782600402832,
+      "regen_clipscore": 0.6667082905769348
+    },
+    {
+      "file": "clean_000194.png",
+      "clip_image_cosine": 0.9762626886367798,
+      "dino_cosine": 0.963234007358551,
+      "lpips": 0.09537816792726517,
+      "raw_clipscore": 0.7290409803390503,
+      "regen_clipscore": 0.7117371559143066
+    },
+    {
+      "file": "clean_000195.png",
+      "clip_image_cosine": 0.9666298031806946,
+      "dino_cosine": 0.9789320230484009,
+      "lpips": 0.08049443364143372,
+      "raw_clipscore": 0.9222560524940491,
+      "regen_clipscore": 0.9407633543014526
+    },
+    {
+      "file": "clean_000196.png",
+      "clip_image_cosine": 0.9849701523780823,
+      "dino_cosine": 0.9820997714996338,
+      "lpips": 0.11592201143503189,
+      "raw_clipscore": 0.6214171051979065,
+      "regen_clipscore": 0.6206246614456177
+    },
+    {
+      "file": "clean_000197.png",
+      "clip_image_cosine": 0.9557428359985352,
+      "dino_cosine": 0.950438916683197,
+      "lpips": 0.11481186747550964,
+      "raw_clipscore": 0.6848934292793274,
+      "regen_clipscore": 0.7208644151687622
+    },
+    {
+      "file": "clean_000198.png",
+      "clip_image_cosine": 0.9821346402168274,
+      "dino_cosine": 0.9477116465568542,
+      "lpips": 0.1245620995759964,
+      "raw_clipscore": 0.8338840007781982,
+      "regen_clipscore": 0.8211667537689209
+    },
+    {
+      "file": "clean_000199.png",
+      "clip_image_cosine": 0.9788448214530945,
+      "dino_cosine": 0.972646176815033,
+      "lpips": 0.04704010486602783,
+      "raw_clipscore": 0.8989847898483276,
+      "regen_clipscore": 0.8887029886245728
+    },
+    {
+      "file": "clean_000200.png",
+      "clip_image_cosine": 0.9705985188484192,
+      "dino_cosine": 0.945415735244751,
+      "lpips": 0.10954226553440094,
+      "raw_clipscore": 0.8524258136749268,
+      "regen_clipscore": 0.8372601270675659
+    },
+    {
+      "file": "clean_000201.png",
+      "clip_image_cosine": 0.9787811040878296,
+      "dino_cosine": 0.9496656656265259,
+      "lpips": 0.07571046054363251,
+      "raw_clipscore": 0.8344687223434448,
+      "regen_clipscore": 0.8450942635536194
+    },
+    {
+      "file": "clean_000202.png",
+      "clip_image_cosine": 0.9904501438140869,
+      "dino_cosine": 0.9781383275985718,
+      "lpips": 0.08964972198009491,
+      "raw_clipscore": 0.7379080057144165,
+      "regen_clipscore": 0.7228395342826843
+    },
+    {
+      "file": "clean_000203.png",
+      "clip_image_cosine": 0.9686579704284668,
+      "dino_cosine": 0.971966028213501,
+      "lpips": 0.07417501509189606,
+      "raw_clipscore": 0.36212968826293945,
+      "regen_clipscore": 0.3576902151107788
+    },
+    {
+      "file": "clean_000204.png",
+      "clip_image_cosine": 0.9832735061645508,
+      "dino_cosine": 0.9772607088088989,
+      "lpips": 0.07340006530284882,
+      "raw_clipscore": 0.6724237203598022,
+      "regen_clipscore": 0.6298964023590088
+    },
+    {
+      "file": "clean_000205.png",
+      "clip_image_cosine": 0.9768999218940735,
+      "dino_cosine": 0.9663795232772827,
+      "lpips": 0.11302114278078079,
+      "raw_clipscore": 0.6669564247131348,
+      "regen_clipscore": 0.6896693706512451
+    },
+    {
+      "file": "clean_000206.png",
+      "clip_image_cosine": 0.9722732305526733,
+      "dino_cosine": 0.9047915935516357,
+      "lpips": 0.16549965739250183,
+      "raw_clipscore": 0.7986010313034058,
+      "regen_clipscore": 0.8146605491638184
+    },
+    {
+      "file": "clean_000207.png",
+      "clip_image_cosine": 0.9866123199462891,
+      "dino_cosine": 0.9728081226348877,
+      "lpips": 0.10667191445827484,
+      "raw_clipscore": 0.738169252872467,
+      "regen_clipscore": 0.7592108845710754
+    },
+    {
+      "file": "clean_000208.png",
+      "clip_image_cosine": 0.9784407019615173,
+      "dino_cosine": 0.9722505211830139,
+      "lpips": 0.0724877119064331,
+      "raw_clipscore": 0.7133748531341553,
+      "regen_clipscore": 0.7064011096954346
+    },
+    {
+      "file": "clean_000209.png",
+      "clip_image_cosine": 0.991484522819519,
+      "dino_cosine": 0.9694664478302002,
+      "lpips": 0.08842136710882187,
+      "raw_clipscore": 0.7101779580116272,
+      "regen_clipscore": 0.6980639100074768
+    },
+    {
+      "file": "clean_000210.png",
+      "clip_image_cosine": 0.9758967161178589,
+      "dino_cosine": 0.9616794586181641,
+      "lpips": 0.0838855504989624,
+      "raw_clipscore": 0.6832647919654846,
+      "regen_clipscore": 0.694257915019989
+    },
+    {
+      "file": "clean_000211.png",
+      "clip_image_cosine": 0.9762559533119202,
+      "dino_cosine": 0.9749388694763184,
+      "lpips": 0.14104026556015015,
+      "raw_clipscore": 0.7087972164154053,
+      "regen_clipscore": 0.6467863917350769
+    },
+    {
+      "file": "clean_000212.png",
+      "clip_image_cosine": 0.9722743034362793,
+      "dino_cosine": 0.9273055791854858,
+      "lpips": 0.1403639316558838,
+      "raw_clipscore": 0.9033088684082031,
+      "regen_clipscore": 0.8124339580535889
+    },
+    {
+      "file": "clean_000213.png",
+      "clip_image_cosine": 0.9732985496520996,
+      "dino_cosine": 0.9128406047821045,
+      "lpips": 0.10954143106937408,
+      "raw_clipscore": 0.7415025234222412,
+      "regen_clipscore": 0.7248925566673279
+    },
+    {
+      "file": "clean_000214.png",
+      "clip_image_cosine": 0.9882776737213135,
+      "dino_cosine": 0.9786588549613953,
+      "lpips": 0.10155712813138962,
+      "raw_clipscore": 0.7634611129760742,
+      "regen_clipscore": 0.7494021654129028
+    },
+    {
+      "file": "clean_000215.png",
+      "clip_image_cosine": 0.9820773601531982,
+      "dino_cosine": 0.9742084741592407,
+      "lpips": 0.09967422485351562,
+      "raw_clipscore": 0.6923986673355103,
+      "regen_clipscore": 0.6890838742256165
+    },
+    {
+      "file": "clean_000216.png",
+      "clip_image_cosine": 0.9599513411521912,
+      "dino_cosine": 0.9337125420570374,
+      "lpips": 0.1286357194185257,
+      "raw_clipscore": 0.5294698476791382,
+      "regen_clipscore": 0.5329654216766357
+    },
+    {
+      "file": "clean_000217.png",
+      "clip_image_cosine": 0.9196317791938782,
+      "dino_cosine": 0.9491808414459229,
+      "lpips": 0.10521812736988068,
+      "raw_clipscore": 0.73050856590271,
+      "regen_clipscore": 0.7472397089004517
+    },
+    {
+      "file": "clean_000218.png",
+      "clip_image_cosine": 0.9638127088546753,
+      "dino_cosine": 0.9647252559661865,
+      "lpips": 0.13966713845729828,
+      "raw_clipscore": 0.6593894362449646,
+      "regen_clipscore": 0.6936911344528198
+    },
+    {
+      "file": "clean_000219.png",
+      "clip_image_cosine": 0.9764004349708557,
+      "dino_cosine": 0.9685736298561096,
+      "lpips": 0.11184317618608475,
+      "raw_clipscore": 0.6942616701126099,
+      "regen_clipscore": 0.6548404693603516
+    },
+    {
+      "file": "clean_000220.png",
+      "clip_image_cosine": 0.9822007417678833,
+      "dino_cosine": 0.977446436882019,
+      "lpips": 0.07305678725242615,
+      "raw_clipscore": 0.748760461807251,
+      "regen_clipscore": 0.7495663166046143
+    },
+    {
+      "file": "clean_000221.png",
+      "clip_image_cosine": 0.9746944904327393,
+      "dino_cosine": 0.9624395370483398,
+      "lpips": 0.1215825080871582,
+      "raw_clipscore": 0.7256667613983154,
+      "regen_clipscore": 0.6886643171310425
+    },
+    {
+      "file": "clean_000222.png",
+      "clip_image_cosine": 0.9842653870582581,
+      "dino_cosine": 0.9673711061477661,
+      "lpips": 0.10512792319059372,
+      "raw_clipscore": 0.717056393623352,
+      "regen_clipscore": 0.7162148356437683
+    },
+    {
+      "file": "clean_000223.png",
+      "clip_image_cosine": 0.9815011620521545,
+      "dino_cosine": 0.9153569340705872,
+      "lpips": 0.08984477818012238,
+      "raw_clipscore": 0.80140221118927,
+      "regen_clipscore": 0.7622235417366028
+    },
+    {
+      "file": "clean_000224.png",
+      "clip_image_cosine": 0.9921990036964417,
+      "dino_cosine": 0.9861147403717041,
+      "lpips": 0.08494609594345093,
+      "raw_clipscore": 0.5571313500404358,
+      "regen_clipscore": 0.550757884979248
+    },
+    {
+      "file": "clean_000225.png",
+      "clip_image_cosine": 0.9822837114334106,
+      "dino_cosine": 0.9660050868988037,
+      "lpips": 0.1347947120666504,
+      "raw_clipscore": 0.6334704160690308,
+      "regen_clipscore": 0.6308469176292419
+    },
+    {
+      "file": "clean_000226.png",
+      "clip_image_cosine": 0.963149905204773,
+      "dino_cosine": 0.9661285281181335,
+      "lpips": 0.1060868576169014,
+      "raw_clipscore": 0.6852971911430359,
+      "regen_clipscore": 0.6792128682136536
+    },
+    {
+      "file": "clean_000227.png",
+      "clip_image_cosine": 0.9832724332809448,
+      "dino_cosine": 0.9636772274971008,
+      "lpips": 0.10260853916406631,
+      "raw_clipscore": 0.7618996500968933,
+      "regen_clipscore": 0.7287558317184448
+    },
+    {
+      "file": "clean_000228.png",
+      "clip_image_cosine": 0.9815467596054077,
+      "dino_cosine": 0.9742934703826904,
+      "lpips": 0.09156437963247299,
+      "raw_clipscore": 0.4741697907447815,
+      "regen_clipscore": 0.46300673484802246
+    },
+    {
+      "file": "clean_000229.png",
+      "clip_image_cosine": 0.9830017685890198,
+      "dino_cosine": 0.9558762311935425,
+      "lpips": 0.11690796911716461,
+      "raw_clipscore": 0.6023440361022949,
+      "regen_clipscore": 0.631156861782074
+    },
+    {
+      "file": "clean_000230.png",
+      "clip_image_cosine": 0.9773679971694946,
+      "dino_cosine": 0.964511513710022,
+      "lpips": 0.11419612914323807,
+      "raw_clipscore": 0.8236399292945862,
+      "regen_clipscore": 0.8098357915878296
+    },
+    {
+      "file": "clean_000231.png",
+      "clip_image_cosine": 0.9801986813545227,
+      "dino_cosine": 0.9675053954124451,
+      "lpips": 0.12517520785331726,
+      "raw_clipscore": 0.6349862813949585,
+      "regen_clipscore": 0.6153109669685364
+    },
+    {
+      "file": "clean_000232.png",
+      "clip_image_cosine": 0.974698543548584,
+      "dino_cosine": 0.9494234323501587,
+      "lpips": 0.12376747280359268,
+      "raw_clipscore": 0.6502929329872131,
+      "regen_clipscore": 0.6770609617233276
+    },
+    {
+      "file": "clean_000233.png",
+      "clip_image_cosine": 0.973005473613739,
+      "dino_cosine": 0.9549999237060547,
+      "lpips": 0.1398468017578125,
+      "raw_clipscore": 0.6856693029403687,
+      "regen_clipscore": 0.662803590297699
+    },
+    {
+      "file": "clean_000234.png",
+      "clip_image_cosine": 0.9795422554016113,
+      "dino_cosine": 0.9497048854827881,
+      "lpips": 0.10787785798311234,
+      "raw_clipscore": 0.6042367815971375,
+      "regen_clipscore": 0.5745125412940979
+    },
+    {
+      "file": "clean_000235.png",
+      "clip_image_cosine": 0.9766829013824463,
+      "dino_cosine": 0.9690357446670532,
+      "lpips": 0.07579954713582993,
+      "raw_clipscore": 0.4655130207538605,
+      "regen_clipscore": 0.5034646987915039
+    },
+    {
+      "file": "clean_000236.png",
+      "clip_image_cosine": 0.9650759696960449,
+      "dino_cosine": 0.9740495681762695,
+      "lpips": 0.13630488514900208,
+      "raw_clipscore": 0.6358866691589355,
+      "regen_clipscore": 0.652544379234314
+    },
+    {
+      "file": "clean_000237.png",
+      "clip_image_cosine": 0.9838199615478516,
+      "dino_cosine": 0.9402799606323242,
+      "lpips": 0.15924344956874847,
+      "raw_clipscore": 0.6898672580718994,
+      "regen_clipscore": 0.643083930015564
+    },
+    {
+      "file": "clean_000238.png",
+      "clip_image_cosine": 0.9926154613494873,
+      "dino_cosine": 0.9770631790161133,
+      "lpips": 0.10132648050785065,
+      "raw_clipscore": 0.7615488767623901,
+      "regen_clipscore": 0.7567660808563232
+    },
+    {
+      "file": "clean_000239.png",
+      "clip_image_cosine": 0.9819698333740234,
+      "dino_cosine": 0.9737064242362976,
+      "lpips": 0.0493464358150959,
+      "raw_clipscore": 0.6804778575897217,
+      "regen_clipscore": 0.698128879070282
+    },
+    {
+      "file": "clean_000240.png",
+      "clip_image_cosine": 0.9712108373641968,
+      "dino_cosine": 0.9585423469543457,
+      "lpips": 0.11587090790271759,
+      "raw_clipscore": 0.8150343894958496,
+      "regen_clipscore": 0.8039630055427551
+    },
+    {
+      "file": "clean_000241.png",
+      "clip_image_cosine": 0.9814057946205139,
+      "dino_cosine": 0.9776526689529419,
+      "lpips": 0.10155454277992249,
+      "raw_clipscore": 0.7453329563140869,
+      "regen_clipscore": 0.7633984088897705
+    },
+    {
+      "file": "clean_000242.png",
+      "clip_image_cosine": 0.9783957004547119,
+      "dino_cosine": 0.9530936479568481,
+      "lpips": 0.1359776109457016,
+      "raw_clipscore": 0.6955904960632324,
+      "regen_clipscore": 0.6635560989379883
+    },
+    {
+      "file": "clean_000243.png",
+      "clip_image_cosine": 0.9759874939918518,
+      "dino_cosine": 0.9709198474884033,
+      "lpips": 0.08021573722362518,
+      "raw_clipscore": 0.6593772172927856,
+      "regen_clipscore": 0.6418440341949463
+    },
+    {
+      "file": "clean_000244.png",
+      "clip_image_cosine": 0.9835916757583618,
+      "dino_cosine": 0.9620457291603088,
+      "lpips": 0.10647351294755936,
+      "raw_clipscore": 0.572494626045227,
+      "regen_clipscore": 0.5801863670349121
+    },
+    {
+      "file": "clean_000245.png",
+      "clip_image_cosine": 0.9751334190368652,
+      "dino_cosine": 0.9645358324050903,
+      "lpips": 0.09628954529762268,
+      "raw_clipscore": 0.699221134185791,
+      "regen_clipscore": 0.673068642616272
+    },
+    {
+      "file": "clean_000246.png",
+      "clip_image_cosine": 0.9808093905448914,
+      "dino_cosine": 0.9726401567459106,
+      "lpips": 0.09692596644163132,
+      "raw_clipscore": 0.8400465250015259,
+      "regen_clipscore": 0.7929826974868774
+    },
+    {
+      "file": "clean_000247.png",
+      "clip_image_cosine": 0.9869714379310608,
+      "dino_cosine": 0.9806646108627319,
+      "lpips": 0.05682447552680969,
+      "raw_clipscore": 0.6503094434738159,
+      "regen_clipscore": 0.6657963395118713
+    },
+    {
+      "file": "clean_000248.png",
+      "clip_image_cosine": 0.9657972455024719,
+      "dino_cosine": 0.9794023036956787,
+      "lpips": 0.09150338917970657,
+      "raw_clipscore": 0.5863240957260132,
+      "regen_clipscore": 0.5901131629943848
+    },
+    {
+      "file": "clean_000249.png",
+      "clip_image_cosine": 0.9809020757675171,
+      "dino_cosine": 0.9894962310791016,
+      "lpips": 0.05633268505334854,
+      "raw_clipscore": 0.5937639474868774,
+      "regen_clipscore": 0.5912001132965088
+    },
+    {
+      "file": "clean_000250.png",
+      "clip_image_cosine": 0.9746982455253601,
+      "dino_cosine": 0.9629203081130981,
+      "lpips": 0.10529625415802002,
+      "raw_clipscore": 0.7784832715988159,
+      "regen_clipscore": 0.7624096274375916
+    },
+    {
+      "file": "clean_000251.png",
+      "clip_image_cosine": 0.9681957364082336,
+      "dino_cosine": 0.9706096053123474,
+      "lpips": 0.0672597736120224,
+      "raw_clipscore": 0.7892276048660278,
+      "regen_clipscore": 0.7788248062133789
+    },
+    {
+      "file": "clean_000252.png",
+      "clip_image_cosine": 0.9682961702346802,
+      "dino_cosine": 0.9647296667098999,
+      "lpips": 0.15352359414100647,
+      "raw_clipscore": 0.5916607975959778,
+      "regen_clipscore": 0.5547025799751282
+    },
+    {
+      "file": "clean_000253.png",
+      "clip_image_cosine": 0.9717355966567993,
+      "dino_cosine": 0.985331654548645,
+      "lpips": 0.08466345071792603,
+      "raw_clipscore": 0.43949824571609497,
+      "regen_clipscore": 0.4835915267467499
+    },
+    {
+      "file": "clean_000254.png",
+      "clip_image_cosine": 0.9717487096786499,
+      "dino_cosine": 0.9303874373435974,
+      "lpips": 0.14895184338092804,
+      "raw_clipscore": 0.7119491696357727,
+      "regen_clipscore": 0.6621801853179932
+    },
+    {
+      "file": "clean_000255.png",
+      "clip_image_cosine": 0.9698494672775269,
+      "dino_cosine": 0.9591848850250244,
+      "lpips": 0.10589689761400223,
+      "raw_clipscore": 0.665901780128479,
+      "regen_clipscore": 0.6331895589828491
+    },
+    {
+      "file": "clean_000256.png",
+      "clip_image_cosine": 0.9668750762939453,
+      "dino_cosine": 0.9779160022735596,
+      "lpips": 0.0941648855805397,
+      "raw_clipscore": 0.784366250038147,
+      "regen_clipscore": 0.7901149988174438
+    },
+    {
+      "file": "clean_000257.png",
+      "clip_image_cosine": 0.9771429896354675,
+      "dino_cosine": 0.9804308414459229,
+      "lpips": 0.11070634424686432,
+      "raw_clipscore": 0.8820844292640686,
+      "regen_clipscore": 0.8840839862823486
+    },
+    {
+      "file": "clean_000258.png",
+      "clip_image_cosine": 0.9622493982315063,
+      "dino_cosine": 0.973933219909668,
+      "lpips": 0.08532366156578064,
+      "raw_clipscore": 0.6965590119361877,
+      "regen_clipscore": 0.6582087278366089
+    },
+    {
+      "file": "clean_000259.png",
+      "clip_image_cosine": 0.9661045074462891,
+      "dino_cosine": 0.9766554832458496,
+      "lpips": 0.12338650226593018,
+      "raw_clipscore": 0.5172178745269775,
+      "regen_clipscore": 0.5136075019836426
+    },
+    {
+      "file": "clean_000260.png",
+      "clip_image_cosine": 0.9712015390396118,
+      "dino_cosine": 0.9698792695999146,
+      "lpips": 0.11768671870231628,
+      "raw_clipscore": 0.7806051969528198,
+      "regen_clipscore": 0.7615839242935181
+    },
+    {
+      "file": "clean_000261.png",
+      "clip_image_cosine": 0.9779906272888184,
+      "dino_cosine": 0.9429934024810791,
+      "lpips": 0.09184300899505615,
+      "raw_clipscore": 0.7911509871482849,
+      "regen_clipscore": 0.7624270915985107
+    },
+    {
+      "file": "clean_000262.png",
+      "clip_image_cosine": 0.9772194027900696,
+      "dino_cosine": 0.9724993705749512,
+      "lpips": 0.06638781726360321,
+      "raw_clipscore": 0.6392706632614136,
+      "regen_clipscore": 0.615239679813385
+    },
+    {
+      "file": "clean_000263.png",
+      "clip_image_cosine": 0.9695366621017456,
+      "dino_cosine": 0.9215101003646851,
+      "lpips": 0.10526547580957413,
+      "raw_clipscore": 0.7275030016899109,
+      "regen_clipscore": 0.6580182909965515
+    },
+    {
+      "file": "clean_000264.png",
+      "clip_image_cosine": 0.9728240370750427,
+      "dino_cosine": 0.9832775592803955,
+      "lpips": 0.10184942930936813,
+      "raw_clipscore": 0.5740814208984375,
+      "regen_clipscore": 0.5790349841117859
+    },
+    {
+      "file": "clean_000265.png",
+      "clip_image_cosine": 0.9850648045539856,
+      "dino_cosine": 0.9686269164085388,
+      "lpips": 0.11139817535877228,
+      "raw_clipscore": 0.5631742477416992,
+      "regen_clipscore": 0.567844033241272
+    },
+    {
+      "file": "clean_000266.png",
+      "clip_image_cosine": 0.9521980285644531,
+      "dino_cosine": 0.863152265548706,
+      "lpips": 0.12890827655792236,
+      "raw_clipscore": 0.8321421146392822,
+      "regen_clipscore": 0.8435472846031189
+    },
+    {
+      "file": "clean_000267.png",
+      "clip_image_cosine": 0.9662006497383118,
+      "dino_cosine": 0.9690977931022644,
+      "lpips": 0.0957694947719574,
+      "raw_clipscore": 0.7003575563430786,
+      "regen_clipscore": 0.6884949207305908
+    },
+    {
+      "file": "clean_000268.png",
+      "clip_image_cosine": 0.979207456111908,
+      "dino_cosine": 0.9629644751548767,
+      "lpips": 0.12168527394533157,
+      "raw_clipscore": 0.7661110162734985,
+      "regen_clipscore": 0.7728635668754578
+    },
+    {
+      "file": "clean_000269.png",
+      "clip_image_cosine": 0.9773914813995361,
+      "dino_cosine": 0.9179943799972534,
+      "lpips": 0.16050466895103455,
+      "raw_clipscore": 0.547637403011322,
+      "regen_clipscore": 0.5512097477912903
+    },
+    {
+      "file": "clean_000270.png",
+      "clip_image_cosine": 0.9694645404815674,
+      "dino_cosine": 0.962867259979248,
+      "lpips": 0.06048809364438057,
+      "raw_clipscore": 0.5967389345169067,
+      "regen_clipscore": 0.5771604180335999
+    },
+    {
+      "file": "clean_000271.png",
+      "clip_image_cosine": 0.9572471976280212,
+      "dino_cosine": 0.9384006261825562,
+      "lpips": 0.15093636512756348,
+      "raw_clipscore": 0.6156509518623352,
+      "regen_clipscore": 0.5911012887954712
+    },
+    {
+      "file": "clean_000272.png",
+      "clip_image_cosine": 0.9820706844329834,
+      "dino_cosine": 0.9702281951904297,
+      "lpips": 0.10858891159296036,
+      "raw_clipscore": 0.7491379976272583,
+      "regen_clipscore": 0.754655659198761
+    },
+    {
+      "file": "clean_000273.png",
+      "clip_image_cosine": 0.9828988313674927,
+      "dino_cosine": 0.9624237418174744,
+      "lpips": 0.05758841335773468,
+      "raw_clipscore": 0.8575328588485718,
+      "regen_clipscore": 0.8329301476478577
+    },
+    {
+      "file": "clean_000274.png",
+      "clip_image_cosine": 0.9155583381652832,
+      "dino_cosine": 0.9435032606124878,
+      "lpips": 0.10206925868988037,
+      "raw_clipscore": 0.6890937685966492,
+      "regen_clipscore": 0.6252361536026001
+    },
+    {
+      "file": "clean_000275.png",
+      "clip_image_cosine": 0.9790818691253662,
+      "dino_cosine": 0.9666863083839417,
+      "lpips": 0.11127302795648575,
+      "raw_clipscore": 0.831171989440918,
+      "regen_clipscore": 0.7831478118896484
+    },
+    {
+      "file": "clean_000276.png",
+      "clip_image_cosine": 0.9764883518218994,
+      "dino_cosine": 0.9458284974098206,
+      "lpips": 0.10668621212244034,
+      "raw_clipscore": 0.6715956330299377,
+      "regen_clipscore": 0.6513248682022095
+    },
+    {
+      "file": "clean_000277.png",
+      "clip_image_cosine": 0.9825276136398315,
+      "dino_cosine": 0.97087562084198,
+      "lpips": 0.11468170583248138,
+      "raw_clipscore": 0.6772310137748718,
+      "regen_clipscore": 0.620753288269043
+    },
+    {
+      "file": "clean_000278.png",
+      "clip_image_cosine": 0.9867368936538696,
+      "dino_cosine": 0.9434924125671387,
+      "lpips": 0.11327804625034332,
+      "raw_clipscore": 0.5991758108139038,
+      "regen_clipscore": 0.5672481656074524
+    },
+    {
+      "file": "clean_000279.png",
+      "clip_image_cosine": 0.9783020615577698,
+      "dino_cosine": 0.9664323925971985,
+      "lpips": 0.08859371393918991,
+      "raw_clipscore": 0.6409218907356262,
+      "regen_clipscore": 0.6557139754295349
+    },
+    {
+      "file": "clean_000280.png",
+      "clip_image_cosine": 0.9778367280960083,
+      "dino_cosine": 0.9374107718467712,
+      "lpips": 0.125225231051445,
+      "raw_clipscore": 0.4838091731071472,
+      "regen_clipscore": 0.45486971735954285
+    },
+    {
+      "file": "clean_000281.png",
+      "clip_image_cosine": 0.9593634605407715,
+      "dino_cosine": 0.9268567562103271,
+      "lpips": 0.1242423951625824,
+      "raw_clipscore": 0.7436479330062866,
+      "regen_clipscore": 0.7202580571174622
+    },
+    {
+      "file": "clean_000282.png",
+      "clip_image_cosine": 0.9475960731506348,
+      "dino_cosine": 0.8865017294883728,
+      "lpips": 0.1283583790063858,
+      "raw_clipscore": 0.6881418824195862,
+      "regen_clipscore": 0.6974968314170837
+    },
+    {
+      "file": "clean_000283.png",
+      "clip_image_cosine": 0.9792423248291016,
+      "dino_cosine": 0.9637908935546875,
+      "lpips": 0.12774506211280823,
+      "raw_clipscore": 0.4891529679298401,
+      "regen_clipscore": 0.47215282917022705
+    },
+    {
+      "file": "clean_000284.png",
+      "clip_image_cosine": 0.9732992053031921,
+      "dino_cosine": 0.9799419641494751,
+      "lpips": 0.1709221452474594,
+      "raw_clipscore": 0.7323737144470215,
+      "regen_clipscore": 0.7172849774360657
+    },
+    {
+      "file": "clean_000285.png",
+      "clip_image_cosine": 0.9659260511398315,
+      "dino_cosine": 0.9623863697052002,
+      "lpips": 0.13679343461990356,
+      "raw_clipscore": 0.8243017792701721,
+      "regen_clipscore": 0.8094685077667236
+    },
+    {
+      "file": "clean_000286.png",
+      "clip_image_cosine": 0.9560813903808594,
+      "dino_cosine": 0.9693918228149414,
+      "lpips": 0.13695187866687775,
+      "raw_clipscore": 0.8122991323471069,
+      "regen_clipscore": 0.8192331194877625
+    },
+    {
+      "file": "clean_000287.png",
+      "clip_image_cosine": 0.9624066352844238,
+      "dino_cosine": 0.9458308219909668,
+      "lpips": 0.07553313672542572,
+      "raw_clipscore": 0.7720816731452942,
+      "regen_clipscore": 0.7818912863731384
+    },
+    {
+      "file": "clean_000288.png",
+      "clip_image_cosine": 0.9807260036468506,
+      "dino_cosine": 0.960101306438446,
+      "lpips": 0.07621153444051743,
+      "raw_clipscore": 0.6978985667228699,
+      "regen_clipscore": 0.673909068107605
+    },
+    {
+      "file": "clean_000289.png",
+      "clip_image_cosine": 0.9678465723991394,
+      "dino_cosine": 0.9650822281837463,
+      "lpips": 0.082321897149086,
+      "raw_clipscore": 0.5591016411781311,
+      "regen_clipscore": 0.5217787027359009
+    },
+    {
+      "file": "clean_000290.png",
+      "clip_image_cosine": 0.9878480434417725,
+      "dino_cosine": 0.9758914709091187,
+      "lpips": 0.10661444813013077,
+      "raw_clipscore": 0.5786660313606262,
+      "regen_clipscore": 0.6015041470527649
+    },
+    {
+      "file": "clean_000291.png",
+      "clip_image_cosine": 0.981018602848053,
+      "dino_cosine": 0.9730350971221924,
+      "lpips": 0.09213932603597641,
+      "raw_clipscore": 0.708696722984314,
+      "regen_clipscore": 0.6570500135421753
+    },
+    {
+      "file": "clean_000292.png",
+      "clip_image_cosine": 0.9909209609031677,
+      "dino_cosine": 0.9777607321739197,
+      "lpips": 0.11307461559772491,
+      "raw_clipscore": 0.7131710648536682,
+      "regen_clipscore": 0.7203420400619507
+    },
+    {
+      "file": "clean_000293.png",
+      "clip_image_cosine": 0.9745525121688843,
+      "dino_cosine": 0.9756702780723572,
+      "lpips": 0.13280652463436127,
+      "raw_clipscore": 0.7204247713088989,
+      "regen_clipscore": 0.7011691331863403
+    },
+    {
+      "file": "clean_000294.png",
+      "clip_image_cosine": 0.9594576358795166,
+      "dino_cosine": 0.9305113554000854,
+      "lpips": 0.07852552831172943,
+      "raw_clipscore": 0.5682327151298523,
+      "regen_clipscore": 0.5294257402420044
+    },
+    {
+      "file": "clean_000295.png",
+      "clip_image_cosine": 0.93504399061203,
+      "dino_cosine": 0.9810817241668701,
+      "lpips": 0.046385325491428375,
+      "raw_clipscore": 0.7519387006759644,
+      "regen_clipscore": 0.7989238500595093
+    },
+    {
+      "file": "clean_000296.png",
+      "clip_image_cosine": 0.9329837560653687,
+      "dino_cosine": 0.9682964086532593,
+      "lpips": 0.12018540501594543,
+      "raw_clipscore": 0.6235361099243164,
+      "regen_clipscore": 0.6008196473121643
+    },
+    {
+      "file": "clean_000297.png",
+      "clip_image_cosine": 0.979502260684967,
+      "dino_cosine": 0.9477943778038025,
+      "lpips": 0.08087023347616196,
+      "raw_clipscore": 0.7960600852966309,
+      "regen_clipscore": 0.8262726664543152
+    },
+    {
+      "file": "clean_000298.png",
+      "clip_image_cosine": 0.976332426071167,
+      "dino_cosine": 0.9827502965927124,
+      "lpips": 0.11006786674261093,
+      "raw_clipscore": 0.6034857630729675,
+      "regen_clipscore": 0.5888168811798096
+    },
+    {
+      "file": "clean_000299.png",
+      "clip_image_cosine": 0.9731609225273132,
+      "dino_cosine": 0.9515308737754822,
+      "lpips": 0.15127241611480713,
+      "raw_clipscore": 0.7709565758705139,
+      "regen_clipscore": 0.749517023563385
+    },
+    {
+      "file": "clean_000300.png",
+      "clip_image_cosine": 0.9693521857261658,
+      "dino_cosine": 0.9376322031021118,
+      "lpips": 0.08965596556663513,
+      "raw_clipscore": 0.7065483927726746,
+      "regen_clipscore": 0.6832587718963623
+    },
+    {
+      "file": "clean_000301.png",
+      "clip_image_cosine": 0.9844261407852173,
+      "dino_cosine": 0.9769198298454285,
+      "lpips": 0.08272841572761536,
+      "raw_clipscore": 0.6606156826019287,
+      "regen_clipscore": 0.6408233642578125
+    },
+    {
+      "file": "clean_000302.png",
+      "clip_image_cosine": 0.9748430848121643,
+      "dino_cosine": 0.9353781342506409,
+      "lpips": 0.10064288228750229,
+      "raw_clipscore": 0.7929983735084534,
+      "regen_clipscore": 0.738111674785614
+    },
+    {
+      "file": "clean_000303.png",
+      "clip_image_cosine": 0.9713605046272278,
+      "dino_cosine": 0.9386776685714722,
+      "lpips": 0.1438741385936737,
+      "raw_clipscore": 0.6809635162353516,
+      "regen_clipscore": 0.6855931282043457
+    },
+    {
+      "file": "clean_000304.png",
+      "clip_image_cosine": 0.9790939688682556,
+      "dino_cosine": 0.9755482077598572,
+      "lpips": 0.0619070827960968,
+      "raw_clipscore": 0.7802349328994751,
+      "regen_clipscore": 0.7375468015670776
+    },
+    {
+      "file": "clean_000305.png",
+      "clip_image_cosine": 0.9396857619285583,
+      "dino_cosine": 0.964684009552002,
+      "lpips": 0.07489629089832306,
+      "raw_clipscore": 0.8042502403259277,
+      "regen_clipscore": 0.7294308543205261
+    },
+    {
+      "file": "clean_000306.png",
+      "clip_image_cosine": 0.9825435280799866,
+      "dino_cosine": 0.9824267625808716,
+      "lpips": 0.054679788649082184,
+      "raw_clipscore": 0.6276483535766602,
+      "regen_clipscore": 0.6186376214027405
+    },
+    {
+      "file": "clean_000307.png",
+      "clip_image_cosine": 0.9668887853622437,
+      "dino_cosine": 0.9251940250396729,
+      "lpips": 0.14431245625019073,
+      "raw_clipscore": 0.8829581141471863,
+      "regen_clipscore": 0.8930362462997437
+    },
+    {
+      "file": "clean_000308.png",
+      "clip_image_cosine": 0.9832773208618164,
+      "dino_cosine": 0.9848984479904175,
+      "lpips": 0.055066585540771484,
+      "raw_clipscore": 0.8528429865837097,
+      "regen_clipscore": 0.860171914100647
+    },
+    {
+      "file": "clean_000309.png",
+      "clip_image_cosine": 0.9680708050727844,
+      "dino_cosine": 0.9813872575759888,
+      "lpips": 0.10321410000324249,
+      "raw_clipscore": 0.609187126159668,
+      "regen_clipscore": 0.6490819454193115
+    },
+    {
+      "file": "clean_000310.png",
+      "clip_image_cosine": 0.996033251285553,
+      "dino_cosine": 0.9659390449523926,
+      "lpips": 0.07928603887557983,
+      "raw_clipscore": 0.6982178688049316,
+      "regen_clipscore": 0.7015747427940369
+    },
+    {
+      "file": "clean_000311.png",
+      "clip_image_cosine": 0.979653000831604,
+      "dino_cosine": 0.8730568885803223,
+      "lpips": 0.11003044992685318,
+      "raw_clipscore": 0.7075178027153015,
+      "regen_clipscore": 0.6965188980102539
+    },
+    {
+      "file": "clean_000312.png",
+      "clip_image_cosine": 0.9828681349754333,
+      "dino_cosine": 0.9728651642799377,
+      "lpips": 0.07339110225439072,
+      "raw_clipscore": 0.7550729513168335,
+      "regen_clipscore": 0.6905121803283691
+    },
+    {
+      "file": "clean_000313.png",
+      "clip_image_cosine": 0.9769023656845093,
+      "dino_cosine": 0.9638419151306152,
+      "lpips": 0.1397070586681366,
+      "raw_clipscore": 0.7514250874519348,
+      "regen_clipscore": 0.7480611801147461
+    },
+    {
+      "file": "clean_000314.png",
+      "clip_image_cosine": 0.9646804332733154,
+      "dino_cosine": 0.965632438659668,
+      "lpips": 0.08761658519506454,
+      "raw_clipscore": 0.7511515617370605,
+      "regen_clipscore": 0.7506910562515259
+    },
+    {
+      "file": "clean_000315.png",
+      "clip_image_cosine": 0.9857970476150513,
+      "dino_cosine": 0.957350492477417,
+      "lpips": 0.16781124472618103,
+      "raw_clipscore": 0.7184945344924927,
+      "regen_clipscore": 0.7119250297546387
+    },
+    {
+      "file": "clean_000316.png",
+      "clip_image_cosine": 0.986578106880188,
+      "dino_cosine": 0.9844499826431274,
+      "lpips": 0.10103753209114075,
+      "raw_clipscore": 0.6748626232147217,
+      "regen_clipscore": 0.6642441749572754
+    },
+    {
+      "file": "clean_000317.png",
+      "clip_image_cosine": 0.9638488292694092,
+      "dino_cosine": 0.9041574597358704,
+      "lpips": 0.12998923659324646,
+      "raw_clipscore": 0.7303854823112488,
+      "regen_clipscore": 0.6594793796539307
+    },
+    {
+      "file": "clean_000318.png",
+      "clip_image_cosine": 0.954164981842041,
+      "dino_cosine": 0.9466094970703125,
+      "lpips": 0.06411085277795792,
+      "raw_clipscore": 0.7331489324569702,
+      "regen_clipscore": 0.7275859117507935
+    },
+    {
+      "file": "clean_000319.png",
+      "clip_image_cosine": 0.9741110801696777,
+      "dino_cosine": 0.9489530324935913,
+      "lpips": 0.16245120763778687,
+      "raw_clipscore": 0.8007276058197021,
+      "regen_clipscore": 0.8135220408439636
+    },
+    {
+      "file": "clean_000320.png",
+      "clip_image_cosine": 0.9712563753128052,
+      "dino_cosine": 0.9626079201698303,
+      "lpips": 0.11062628030776978,
+      "raw_clipscore": 0.7398265600204468,
+      "regen_clipscore": 0.7106166481971741
+    },
+    {
+      "file": "clean_000321.png",
+      "clip_image_cosine": 0.9835471510887146,
+      "dino_cosine": 0.9795554280281067,
+      "lpips": 0.08415469527244568,
+      "raw_clipscore": 0.8194016218185425,
+      "regen_clipscore": 0.7960366010665894
+    },
+    {
+      "file": "clean_000322.png",
+      "clip_image_cosine": 0.9509996175765991,
+      "dino_cosine": 0.935733437538147,
+      "lpips": 0.14769920706748962,
+      "raw_clipscore": 0.784021258354187,
+      "regen_clipscore": 0.7834087610244751
+    },
+    {
+      "file": "clean_000323.png",
+      "clip_image_cosine": 0.9332793354988098,
+      "dino_cosine": 0.937728226184845,
+      "lpips": 0.14409422874450684,
+      "raw_clipscore": 0.645346999168396,
+      "regen_clipscore": 0.6184296607971191
+    },
+    {
+      "file": "clean_000324.png",
+      "clip_image_cosine": 0.939961314201355,
+      "dino_cosine": 0.9616873860359192,
+      "lpips": 0.10872715711593628,
+      "raw_clipscore": 0.6923205852508545,
+      "regen_clipscore": 0.631125271320343
+    },
+    {
+      "file": "clean_000325.png",
+      "clip_image_cosine": 0.9810931086540222,
+      "dino_cosine": 0.9448270201683044,
+      "lpips": 0.08094216883182526,
+      "raw_clipscore": 0.728065013885498,
+      "regen_clipscore": 0.723412036895752
+    },
+    {
+      "file": "clean_000326.png",
+      "clip_image_cosine": 0.9773927927017212,
+      "dino_cosine": 0.9336084127426147,
+      "lpips": 0.17846274375915527,
+      "raw_clipscore": 0.7687245607376099,
+      "regen_clipscore": 0.7498748302459717
+    },
+    {
+      "file": "clean_000327.png",
+      "clip_image_cosine": 0.9449840784072876,
+      "dino_cosine": 0.9493684768676758,
+      "lpips": 0.11455028504133224,
+      "raw_clipscore": 0.730072557926178,
+      "regen_clipscore": 0.7275092601776123
+    },
+    {
+      "file": "clean_000328.png",
+      "clip_image_cosine": 0.9763985276222229,
+      "dino_cosine": 0.9659833908081055,
+      "lpips": 0.13195620477199554,
+      "raw_clipscore": 0.6761695146560669,
+      "regen_clipscore": 0.6400786638259888
+    },
+    {
+      "file": "clean_000329.png",
+      "clip_image_cosine": 0.9713361263275146,
+      "dino_cosine": 0.9023774862289429,
+      "lpips": 0.049261681735515594,
+      "raw_clipscore": 0.8366981744766235,
+      "regen_clipscore": 0.8611363768577576
+    },
+    {
+      "file": "clean_000330.png",
+      "clip_image_cosine": 0.9377987384796143,
+      "dino_cosine": 0.974553108215332,
+      "lpips": 0.1375136375427246,
+      "raw_clipscore": 0.6199204921722412,
+      "regen_clipscore": 0.6311506032943726
+    },
+    {
+      "file": "clean_000331.png",
+      "clip_image_cosine": 0.9880720376968384,
+      "dino_cosine": 0.9774434566497803,
+      "lpips": 0.06760353595018387,
+      "raw_clipscore": 0.5760051012039185,
+      "regen_clipscore": 0.5749984979629517
+    },
+    {
+      "file": "clean_000332.png",
+      "clip_image_cosine": 0.9806571006774902,
+      "dino_cosine": 0.9559760093688965,
+      "lpips": 0.11360208690166473,
+      "raw_clipscore": 0.6641112565994263,
+      "regen_clipscore": 0.6080731153488159
+    },
+    {
+      "file": "clean_000333.png",
+      "clip_image_cosine": 0.9840384721755981,
+      "dino_cosine": 0.9804934859275818,
+      "lpips": 0.04028596729040146,
+      "raw_clipscore": 0.46543675661087036,
+      "regen_clipscore": 0.44802820682525635
+    },
+    {
+      "file": "clean_000334.png",
+      "clip_image_cosine": 0.9877574443817139,
+      "dino_cosine": 0.9810070991516113,
+      "lpips": 0.10981693118810654,
+      "raw_clipscore": 0.777434229850769,
+      "regen_clipscore": 0.7669966220855713
+    },
+    {
+      "file": "clean_000335.png",
+      "clip_image_cosine": 0.9881047606468201,
+      "dino_cosine": 0.9810476303100586,
+      "lpips": 0.061498794704675674,
+      "raw_clipscore": 0.7649238109588623,
+      "regen_clipscore": 0.7621785402297974
+    },
+    {
+      "file": "clean_000336.png",
+      "clip_image_cosine": 0.9847440719604492,
+      "dino_cosine": 0.9679698348045349,
+      "lpips": 0.07218824326992035,
+      "raw_clipscore": 0.6557631492614746,
+      "regen_clipscore": 0.6577929854393005
+    },
+    {
+      "file": "clean_000337.png",
+      "clip_image_cosine": 0.9912656545639038,
+      "dino_cosine": 0.958106279373169,
+      "lpips": 0.09674350917339325,
+      "raw_clipscore": 0.6999709606170654,
+      "regen_clipscore": 0.6942515969276428
+    },
+    {
+      "file": "clean_000338.png",
+      "clip_image_cosine": 0.9800264835357666,
+      "dino_cosine": 0.9618968963623047,
+      "lpips": 0.09307403862476349,
+      "raw_clipscore": 0.675816535949707,
+      "regen_clipscore": 0.674294114112854
+    },
+    {
+      "file": "clean_000339.png",
+      "clip_image_cosine": 0.9608161449432373,
+      "dino_cosine": 0.9500302076339722,
+      "lpips": 0.0792384073138237,
+      "raw_clipscore": 0.8211854100227356,
+      "regen_clipscore": 0.7335174679756165
+    },
+    {
+      "file": "clean_000340.png",
+      "clip_image_cosine": 0.969672441482544,
+      "dino_cosine": 0.9421043992042542,
+      "lpips": 0.10777199268341064,
+      "raw_clipscore": 0.5854914784431458,
+      "regen_clipscore": 0.6256032586097717
+    },
+    {
+      "file": "clean_000341.png",
+      "clip_image_cosine": 0.9666683673858643,
+      "dino_cosine": 0.9554669857025146,
+      "lpips": 0.1315493881702423,
+      "raw_clipscore": 0.5419641137123108,
+      "regen_clipscore": 0.607506513595581
+    },
+    {
+      "file": "clean_000342.png",
+      "clip_image_cosine": 0.9887161254882812,
+      "dino_cosine": 0.9637187719345093,
+      "lpips": 0.12036225199699402,
+      "raw_clipscore": 0.6010616421699524,
+      "regen_clipscore": 0.5893027782440186
+    },
+    {
+      "file": "clean_000343.png",
+      "clip_image_cosine": 0.9893837571144104,
+      "dino_cosine": 0.945074200630188,
+      "lpips": 0.09372813254594803,
+      "raw_clipscore": 0.7928376197814941,
+      "regen_clipscore": 0.8029913902282715
+    },
+    {
+      "file": "clean_000344.png",
+      "clip_image_cosine": 0.9651433229446411,
+      "dino_cosine": 0.961910605430603,
+      "lpips": 0.08673010021448135,
+      "raw_clipscore": 0.7580995559692383,
+      "regen_clipscore": 0.7652414441108704
+    },
+    {
+      "file": "clean_000345.png",
+      "clip_image_cosine": 0.9658505916595459,
+      "dino_cosine": 0.9541504979133606,
+      "lpips": 0.156744122505188,
+      "raw_clipscore": 0.6638123989105225,
+      "regen_clipscore": 0.6454222202301025
+    },
+    {
+      "file": "clean_000346.png",
+      "clip_image_cosine": 0.9833221435546875,
+      "dino_cosine": 0.9712996482849121,
+      "lpips": 0.07484675943851471,
+      "raw_clipscore": 0.7362824082374573,
+      "regen_clipscore": 0.7176745533943176
+    },
+    {
+      "file": "clean_000347.png",
+      "clip_image_cosine": 0.9635574817657471,
+      "dino_cosine": 0.9416877031326294,
+      "lpips": 0.12398773431777954,
+      "raw_clipscore": 0.6574004888534546,
+      "regen_clipscore": 0.6460655927658081
+    },
+    {
+      "file": "clean_000348.png",
+      "clip_image_cosine": 0.986419677734375,
+      "dino_cosine": 0.982471227645874,
+      "lpips": 0.08760049194097519,
+      "raw_clipscore": 0.7905537486076355,
+      "regen_clipscore": 0.7936367392539978
+    },
+    {
+      "file": "clean_000349.png",
+      "clip_image_cosine": 0.9812943935394287,
+      "dino_cosine": 0.9527183771133423,
+      "lpips": 0.11936935037374496,
+      "raw_clipscore": 0.5175116658210754,
+      "regen_clipscore": 0.5293648838996887
+    },
+    {
+      "file": "clean_000350.png",
+      "clip_image_cosine": 0.983006477355957,
+      "dino_cosine": 0.949639081954956,
+      "lpips": 0.11532460153102875,
+      "raw_clipscore": 0.7574893236160278,
+      "regen_clipscore": 0.757866382598877
+    },
+    {
+      "file": "clean_000351.png",
+      "clip_image_cosine": 0.9738104343414307,
+      "dino_cosine": 0.9329808950424194,
+      "lpips": 0.19233044981956482,
+      "raw_clipscore": 0.6345251798629761,
+      "regen_clipscore": 0.6116220355033875
+    },
+    {
+      "file": "clean_000352.png",
+      "clip_image_cosine": 0.9864712953567505,
+      "dino_cosine": 0.9764249324798584,
+      "lpips": 0.1349344253540039,
+      "raw_clipscore": 0.7288162708282471,
+      "regen_clipscore": 0.7242573499679565
+    },
+    {
+      "file": "clean_000353.png",
+      "clip_image_cosine": 0.9729809761047363,
+      "dino_cosine": 0.984845757484436,
+      "lpips": 0.1347014605998993,
+      "raw_clipscore": 0.7696367502212524,
+      "regen_clipscore": 0.706234872341156
+    },
+    {
+      "file": "clean_000354.png",
+      "clip_image_cosine": 0.9913886189460754,
+      "dino_cosine": 0.9810791015625,
+      "lpips": 0.11748997867107391,
+      "raw_clipscore": 0.6179884672164917,
+      "regen_clipscore": 0.5933314561843872
+    },
+    {
+      "file": "clean_000355.png",
+      "clip_image_cosine": 0.9730650186538696,
+      "dino_cosine": 0.8455844521522522,
+      "lpips": 0.09341078251600266,
+      "raw_clipscore": 0.4995211958885193,
+      "regen_clipscore": 0.4620063900947571
+    },
+    {
+      "file": "clean_000356.png",
+      "clip_image_cosine": 0.9549281001091003,
+      "dino_cosine": 0.9692031741142273,
+      "lpips": 0.11495182663202286,
+      "raw_clipscore": 0.6940310001373291,
+      "regen_clipscore": 0.6443215608596802
+    },
+    {
+      "file": "clean_000357.png",
+      "clip_image_cosine": 0.9864634275436401,
+      "dino_cosine": 0.9861671328544617,
+      "lpips": 0.06241363659501076,
+      "raw_clipscore": 0.7043821811676025,
+      "regen_clipscore": 0.7070571184158325
+    },
+    {
+      "file": "clean_000358.png",
+      "clip_image_cosine": 0.9714195132255554,
+      "dino_cosine": 0.9401848912239075,
+      "lpips": 0.16144029796123505,
+      "raw_clipscore": 0.6602013111114502,
+      "regen_clipscore": 0.5995639562606812
+    },
+    {
+      "file": "clean_000359.png",
+      "clip_image_cosine": 0.9835290312767029,
+      "dino_cosine": 0.9564349055290222,
+      "lpips": 0.07284720987081528,
+      "raw_clipscore": 0.7192153334617615,
+      "regen_clipscore": 0.7079274654388428
+    },
+    {
+      "file": "clean_000360.png",
+      "clip_image_cosine": 0.9536806344985962,
+      "dino_cosine": 0.9418849349021912,
+      "lpips": 0.14366957545280457,
+      "raw_clipscore": 0.867816150188446,
+      "regen_clipscore": 0.8445523977279663
+    },
+    {
+      "file": "clean_000361.png",
+      "clip_image_cosine": 0.9921034574508667,
+      "dino_cosine": 0.9853975772857666,
+      "lpips": 0.0802537053823471,
+      "raw_clipscore": 0.5307979583740234,
+      "regen_clipscore": 0.5366327166557312
+    },
+    {
+      "file": "clean_000362.png",
+      "clip_image_cosine": 0.9666810035705566,
+      "dino_cosine": 0.989098072052002,
+      "lpips": 0.09597315639257431,
+      "raw_clipscore": 0.5947385430335999,
+      "regen_clipscore": 0.5701480507850647
+    },
+    {
+      "file": "clean_000363.png",
+      "clip_image_cosine": 0.9798024892807007,
+      "dino_cosine": 0.948492169380188,
+      "lpips": 0.08197824656963348,
+      "raw_clipscore": 0.7654212713241577,
+      "regen_clipscore": 0.6958823204040527
+    },
+    {
+      "file": "clean_000364.png",
+      "clip_image_cosine": 0.9861600399017334,
+      "dino_cosine": 0.9623565673828125,
+      "lpips": 0.11272183805704117,
+      "raw_clipscore": 0.6450885534286499,
+      "regen_clipscore": 0.6119651794433594
+    },
+    {
+      "file": "clean_000365.png",
+      "clip_image_cosine": 0.9445986151695251,
+      "dino_cosine": 0.9516165256500244,
+      "lpips": 0.08573811501264572,
+      "raw_clipscore": 0.8524899482727051,
+      "regen_clipscore": 0.8369152545928955
+    },
+    {
+      "file": "clean_000366.png",
+      "clip_image_cosine": 0.9815478324890137,
+      "dino_cosine": 0.9639862775802612,
+      "lpips": 0.16526563465595245,
+      "raw_clipscore": 0.778393030166626,
+      "regen_clipscore": 0.7748648524284363
+    },
+    {
+      "file": "clean_000367.png",
+      "clip_image_cosine": 0.9699447154998779,
+      "dino_cosine": 0.98184734582901,
+      "lpips": 0.0661318376660347,
+      "raw_clipscore": 0.6010786294937134,
+      "regen_clipscore": 0.6243119239807129
+    },
+    {
+      "file": "clean_000368.png",
+      "clip_image_cosine": 0.9679337739944458,
+      "dino_cosine": 0.9550483226776123,
+      "lpips": 0.10615566372871399,
+      "raw_clipscore": 0.6116816401481628,
+      "regen_clipscore": 0.5588494539260864
+    },
+    {
+      "file": "clean_000369.png",
+      "clip_image_cosine": 0.9657793045043945,
+      "dino_cosine": 0.9572291970252991,
+      "lpips": 0.04353756457567215,
+      "raw_clipscore": 0.6661325693130493,
+      "regen_clipscore": 0.6776022911071777
+    },
+    {
+      "file": "clean_000370.png",
+      "clip_image_cosine": 0.9642082452774048,
+      "dino_cosine": 0.9603896141052246,
+      "lpips": 0.07652364671230316,
+      "raw_clipscore": 0.6233289241790771,
+      "regen_clipscore": 0.6633294224739075
+    },
+    {
+      "file": "clean_000371.png",
+      "clip_image_cosine": 0.9573901295661926,
+      "dino_cosine": 0.9849557280540466,
+      "lpips": 0.16192789375782013,
+      "raw_clipscore": 0.783794641494751,
+      "regen_clipscore": 0.7209290266036987
+    },
+    {
+      "file": "clean_000372.png",
+      "clip_image_cosine": 0.9708309173583984,
+      "dino_cosine": 0.9512031674385071,
+      "lpips": 0.09874667227268219,
+      "raw_clipscore": 0.5043473243713379,
+      "regen_clipscore": 0.5263501405715942
+    },
+    {
+      "file": "clean_000373.png",
+      "clip_image_cosine": 0.9763386249542236,
+      "dino_cosine": 0.9249278903007507,
+      "lpips": 0.13911093771457672,
+      "raw_clipscore": 0.7463545799255371,
+      "regen_clipscore": 0.7451838254928589
+    },
+    {
+      "file": "clean_000374.png",
+      "clip_image_cosine": 0.952288031578064,
+      "dino_cosine": 0.9501211643218994,
+      "lpips": 0.1174328476190567,
+      "raw_clipscore": 0.6407659649848938,
+      "regen_clipscore": 0.5950884222984314
+    },
+    {
+      "file": "clean_000375.png",
+      "clip_image_cosine": 0.9831039905548096,
+      "dino_cosine": 0.9415998458862305,
+      "lpips": 0.10245709121227264,
+      "raw_clipscore": 0.7270301580429077,
+      "regen_clipscore": 0.7294386625289917
+    },
+    {
+      "file": "clean_000376.png",
+      "clip_image_cosine": 0.9835158586502075,
+      "dino_cosine": 0.9776992201805115,
+      "lpips": 0.09343299269676208,
+      "raw_clipscore": 0.7627084255218506,
+      "regen_clipscore": 0.778135359287262
+    },
+    {
+      "file": "clean_000377.png",
+      "clip_image_cosine": 0.9682677984237671,
+      "dino_cosine": 0.9648385643959045,
+      "lpips": 0.09854156523942947,
+      "raw_clipscore": 0.742114245891571,
+      "regen_clipscore": 0.7295453548431396
+    },
+    {
+      "file": "clean_000378.png",
+      "clip_image_cosine": 0.9715156555175781,
+      "dino_cosine": 0.9492820501327515,
+      "lpips": 0.1520649939775467,
+      "raw_clipscore": 0.5191848278045654,
+      "regen_clipscore": 0.5291936993598938
+    },
+    {
+      "file": "clean_000379.png",
+      "clip_image_cosine": 0.9760041832923889,
+      "dino_cosine": 0.9596320390701294,
+      "lpips": 0.1158607229590416,
+      "raw_clipscore": 0.7557016015052795,
+      "regen_clipscore": 0.736443042755127
+    },
+    {
+      "file": "clean_000380.png",
+      "clip_image_cosine": 0.9810813069343567,
+      "dino_cosine": 0.9438968896865845,
+      "lpips": 0.12592151761054993,
+      "raw_clipscore": 0.7827887535095215,
+      "regen_clipscore": 0.7787953615188599
+    },
+    {
+      "file": "clean_000381.png",
+      "clip_image_cosine": 0.9756280779838562,
+      "dino_cosine": 0.9702862501144409,
+      "lpips": 0.0961494892835617,
+      "raw_clipscore": 0.7944377660751343,
+      "regen_clipscore": 0.7531445026397705
+    },
+    {
+      "file": "clean_000382.png",
+      "clip_image_cosine": 0.9688138961791992,
+      "dino_cosine": 0.9844609498977661,
+      "lpips": 0.0637747049331665,
+      "raw_clipscore": 0.6003686785697937,
+      "regen_clipscore": 0.6038379073143005
+    },
+    {
+      "file": "clean_000383.png",
+      "clip_image_cosine": 0.9839577078819275,
+      "dino_cosine": 0.9770680665969849,
+      "lpips": 0.11119550466537476,
+      "raw_clipscore": 0.7914987802505493,
+      "regen_clipscore": 0.773045539855957
+    },
+    {
+      "file": "clean_000384.png",
+      "clip_image_cosine": 0.9548909068107605,
+      "dino_cosine": 0.9785349369049072,
+      "lpips": 0.06001754850149155,
+      "raw_clipscore": 0.7427108883857727,
+      "regen_clipscore": 0.7238031029701233
+    },
+    {
+      "file": "clean_000385.png",
+      "clip_image_cosine": 0.9906607866287231,
+      "dino_cosine": 0.9784812927246094,
+      "lpips": 0.06303392350673676,
+      "raw_clipscore": 0.8498249053955078,
+      "regen_clipscore": 0.8296116590499878
+    },
+    {
+      "file": "clean_000386.png",
+      "clip_image_cosine": 0.9633276462554932,
+      "dino_cosine": 0.9666510820388794,
+      "lpips": 0.14959925413131714,
+      "raw_clipscore": 0.7340404391288757,
+      "regen_clipscore": 0.6674572825431824
+    },
+    {
+      "file": "clean_000387.png",
+      "clip_image_cosine": 0.9918960928916931,
+      "dino_cosine": 0.9838907718658447,
+      "lpips": 0.12065143883228302,
+      "raw_clipscore": 0.541681706905365,
+      "regen_clipscore": 0.5282984375953674
+    },
+    {
+      "file": "clean_000388.png",
+      "clip_image_cosine": 0.9709310531616211,
+      "dino_cosine": 0.9696698188781738,
+      "lpips": 0.06691267341375351,
+      "raw_clipscore": 0.8198826909065247,
+      "regen_clipscore": 0.7874542474746704
+    },
+    {
+      "file": "clean_000389.png",
+      "clip_image_cosine": 0.9740376472473145,
+      "dino_cosine": 0.9663887023925781,
+      "lpips": 0.07993552833795547,
+      "raw_clipscore": 0.8572511672973633,
+      "regen_clipscore": 0.8783085346221924
+    },
+    {
+      "file": "clean_000390.png",
+      "clip_image_cosine": 0.9703773856163025,
+      "dino_cosine": 0.9355777502059937,
+      "lpips": 0.08524994552135468,
+      "raw_clipscore": 0.7089526057243347,
+      "regen_clipscore": 0.655811071395874
+    },
+    {
+      "file": "clean_000391.png",
+      "clip_image_cosine": 0.9740634560585022,
+      "dino_cosine": 0.9670416116714478,
+      "lpips": 0.12931621074676514,
+      "raw_clipscore": 0.6546322107315063,
+      "regen_clipscore": 0.6162703037261963
+    },
+    {
+      "file": "clean_000392.png",
+      "clip_image_cosine": 0.9691068530082703,
+      "dino_cosine": 0.9146454334259033,
+      "lpips": 0.18533779680728912,
+      "raw_clipscore": 0.6734773516654968,
+      "regen_clipscore": 0.6649906039237976
+    },
+    {
+      "file": "clean_000393.png",
+      "clip_image_cosine": 0.9631296396255493,
+      "dino_cosine": 0.9768801331520081,
+      "lpips": 0.08938467502593994,
+      "raw_clipscore": 0.5564876794815063,
+      "regen_clipscore": 0.5253433585166931
+    },
+    {
+      "file": "clean_000394.png",
+      "clip_image_cosine": 0.9811837673187256,
+      "dino_cosine": 0.9723706841468811,
+      "lpips": 0.11111658066511154,
+      "raw_clipscore": 0.7174726724624634,
+      "regen_clipscore": 0.6921064853668213
+    },
+    {
+      "file": "clean_000395.png",
+      "clip_image_cosine": 0.9732591509819031,
+      "dino_cosine": 0.967414140701294,
+      "lpips": 0.13908417522907257,
+      "raw_clipscore": 0.772934079170227,
+      "regen_clipscore": 0.692979097366333
+    },
+    {
+      "file": "clean_000396.png",
+      "clip_image_cosine": 0.9670346975326538,
+      "dino_cosine": 0.9181013107299805,
+      "lpips": 0.13587342202663422,
+      "raw_clipscore": 0.7335832118988037,
+      "regen_clipscore": 0.7509030103683472
+    },
+    {
+      "file": "clean_000397.png",
+      "clip_image_cosine": 0.9874899387359619,
+      "dino_cosine": 0.958925724029541,
+      "lpips": 0.10959285497665405,
+      "raw_clipscore": 0.8859239816665649,
+      "regen_clipscore": 0.8883280754089355
+    },
+    {
+      "file": "clean_000398.png",
+      "clip_image_cosine": 0.9516319632530212,
+      "dino_cosine": 0.971118152141571,
+      "lpips": 0.05139162763953209,
+      "raw_clipscore": 0.4748764634132385,
+      "regen_clipscore": 0.4626096785068512
+    },
+    {
+      "file": "clean_000399.png",
+      "clip_image_cosine": 0.990538477897644,
+      "dino_cosine": 0.9565038681030273,
+      "lpips": 0.08464860171079636,
+      "raw_clipscore": 0.5742114186286926,
+      "regen_clipscore": 0.594916820526123
+    },
+    {
+      "file": "clean_000400.png",
+      "clip_image_cosine": 0.9901300668716431,
+      "dino_cosine": 0.9632821083068848,
+      "lpips": 0.15759718418121338,
+      "raw_clipscore": 0.6475704908370972,
+      "regen_clipscore": 0.6432170867919922
+    },
+    {
+      "file": "clean_000401.png",
+      "clip_image_cosine": 0.9714471101760864,
+      "dino_cosine": 0.9169197082519531,
+      "lpips": 0.12091449648141861,
+      "raw_clipscore": 0.5130234956741333,
+      "regen_clipscore": 0.5417349338531494
+    },
+    {
+      "file": "clean_000402.png",
+      "clip_image_cosine": 0.9823259115219116,
+      "dino_cosine": 0.9518395662307739,
+      "lpips": 0.10943625122308731,
+      "raw_clipscore": 0.8020564913749695,
+      "regen_clipscore": 0.7936626672744751
+    },
+    {
+      "file": "clean_000403.png",
+      "clip_image_cosine": 0.9742519855499268,
+      "dino_cosine": 0.965018093585968,
+      "lpips": 0.1279972493648529,
+      "raw_clipscore": 0.8579540252685547,
+      "regen_clipscore": 0.9029196500778198
+    },
+    {
+      "file": "clean_000404.png",
+      "clip_image_cosine": 0.9752136468887329,
+      "dino_cosine": 0.9700532555580139,
+      "lpips": 0.1406119018793106,
+      "raw_clipscore": 0.7021366357803345,
+      "regen_clipscore": 0.6805055737495422
+    },
+    {
+      "file": "clean_000405.png",
+      "clip_image_cosine": 0.9881488084793091,
+      "dino_cosine": 0.9845365285873413,
+      "lpips": 0.0714549869298935,
+      "raw_clipscore": 0.6922787427902222,
+      "regen_clipscore": 0.6849414110183716
+    },
+    {
+      "file": "clean_000406.png",
+      "clip_image_cosine": 0.9878361225128174,
+      "dino_cosine": 0.9683560729026794,
+      "lpips": 0.0938689261674881,
+      "raw_clipscore": 0.6253646612167358,
+      "regen_clipscore": 0.6134127974510193
+    },
+    {
+      "file": "clean_000407.png",
+      "clip_image_cosine": 0.9120709896087646,
+      "dino_cosine": 0.9472845792770386,
+      "lpips": 0.14728033542633057,
+      "raw_clipscore": 0.679162859916687,
+      "regen_clipscore": 0.6724964380264282
+    },
+    {
+      "file": "clean_000408.png",
+      "clip_image_cosine": 0.9782641530036926,
+      "dino_cosine": 0.9539331197738647,
+      "lpips": 0.0782041847705841,
+      "raw_clipscore": 0.6087306141853333,
+      "regen_clipscore": 0.6075125336647034
+    },
+    {
+      "file": "clean_000409.png",
+      "clip_image_cosine": 0.9831277132034302,
+      "dino_cosine": 0.9904874563217163,
+      "lpips": 0.09394589811563492,
+      "raw_clipscore": 0.7008571624755859,
+      "regen_clipscore": 0.6805399060249329
+    },
+    {
+      "file": "clean_000410.png",
+      "clip_image_cosine": 0.9895902276039124,
+      "dino_cosine": 0.9762382507324219,
+      "lpips": 0.1458703875541687,
+      "raw_clipscore": 0.6130426526069641,
+      "regen_clipscore": 0.563660204410553
+    },
+    {
+      "file": "clean_000411.png",
+      "clip_image_cosine": 0.9843523502349854,
+      "dino_cosine": 0.9712557792663574,
+      "lpips": 0.0562276728451252,
+      "raw_clipscore": 0.6423684358596802,
+      "regen_clipscore": 0.6135055422782898
+    },
+    {
+      "file": "clean_000412.png",
+      "clip_image_cosine": 0.9977502822875977,
+      "dino_cosine": 0.9946483969688416,
+      "lpips": 0.03349033370614052,
+      "raw_clipscore": 0.609839916229248,
+      "regen_clipscore": 0.5885450839996338
+    },
+    {
+      "file": "clean_000413.png",
+      "clip_image_cosine": 0.98548424243927,
+      "dino_cosine": 0.9122089147567749,
+      "lpips": 0.16281861066818237,
+      "raw_clipscore": 0.796518862247467,
+      "regen_clipscore": 0.7729306221008301
+    },
+    {
+      "file": "clean_000414.png",
+      "clip_image_cosine": 0.9277130365371704,
+      "dino_cosine": 0.908072829246521,
+      "lpips": 0.10484717041254044,
+      "raw_clipscore": 0.7516241073608398,
+      "regen_clipscore": 0.7637249827384949
+    },
+    {
+      "file": "clean_000415.png",
+      "clip_image_cosine": 0.9614102840423584,
+      "dino_cosine": 0.9463444948196411,
+      "lpips": 0.12962287664413452,
+      "raw_clipscore": 0.6923283338546753,
+      "regen_clipscore": 0.6862965226173401
+    },
+    {
+      "file": "clean_000416.png",
+      "clip_image_cosine": 0.9726648330688477,
+      "dino_cosine": 0.9627755880355835,
+      "lpips": 0.08116975426673889,
+      "raw_clipscore": 0.7538109421730042,
+      "regen_clipscore": 0.6704726219177246
+    },
+    {
+      "file": "clean_000417.png",
+      "clip_image_cosine": 0.9845377206802368,
+      "dino_cosine": 0.9750097393989563,
+      "lpips": 0.16283714771270752,
+      "raw_clipscore": 0.7709888219833374,
+      "regen_clipscore": 0.7299716472625732
+    },
+    {
+      "file": "clean_000418.png",
+      "clip_image_cosine": 0.9744194746017456,
+      "dino_cosine": 0.9703114032745361,
+      "lpips": 0.11349242925643921,
+      "raw_clipscore": 0.6513278484344482,
+      "regen_clipscore": 0.6267940402030945
+    },
+    {
+      "file": "clean_000419.png",
+      "clip_image_cosine": 0.9847632050514221,
+      "dino_cosine": 0.9579395055770874,
+      "lpips": 0.1757279932498932,
+      "raw_clipscore": 0.7688097953796387,
+      "regen_clipscore": 0.7426824569702148
+    },
+    {
+      "file": "clean_000420.png",
+      "clip_image_cosine": 0.9875543117523193,
+      "dino_cosine": 0.9792699813842773,
+      "lpips": 0.08906067907810211,
+      "raw_clipscore": 0.6316307783126831,
+      "regen_clipscore": 0.6252942085266113
+    },
+    {
+      "file": "clean_000421.png",
+      "clip_image_cosine": 0.9477888345718384,
+      "dino_cosine": 0.9586589336395264,
+      "lpips": 0.10647554695606232,
+      "raw_clipscore": 0.5931700468063354,
+      "regen_clipscore": 0.6219068169593811
+    },
+    {
+      "file": "clean_000422.png",
+      "clip_image_cosine": 0.976077675819397,
+      "dino_cosine": 0.9127031564712524,
+      "lpips": 0.16973429918289185,
+      "raw_clipscore": 0.7129735946655273,
+      "regen_clipscore": 0.6909969449043274
+    },
+    {
+      "file": "clean_000423.png",
+      "clip_image_cosine": 0.9578331708908081,
+      "dino_cosine": 0.9513901472091675,
+      "lpips": 0.13924764096736908,
+      "raw_clipscore": 0.6709277033805847,
+      "regen_clipscore": 0.6251425743103027
+    },
+    {
+      "file": "clean_000424.png",
+      "clip_image_cosine": 0.9770082831382751,
+      "dino_cosine": 0.9680637717247009,
+      "lpips": 0.03998034819960594,
+      "raw_clipscore": 0.49739810824394226,
+      "regen_clipscore": 0.5158637762069702
+    },
+    {
+      "file": "clean_000425.png",
+      "clip_image_cosine": 0.9897119998931885,
+      "dino_cosine": 0.9796571135520935,
+      "lpips": 0.08617262542247772,
+      "raw_clipscore": 0.6255751848220825,
+      "regen_clipscore": 0.6076388955116272
+    },
+    {
+      "file": "clean_000426.png",
+      "clip_image_cosine": 0.9772711992263794,
+      "dino_cosine": 0.9694212675094604,
+      "lpips": 0.11834792792797089,
+      "raw_clipscore": 0.649932324886322,
+      "regen_clipscore": 0.6177988052368164
+    },
+    {
+      "file": "clean_000427.png",
+      "clip_image_cosine": 0.9777429103851318,
+      "dino_cosine": 0.9616224765777588,
+      "lpips": 0.11932937055826187,
+      "raw_clipscore": 0.7212270498275757,
+      "regen_clipscore": 0.7027683258056641
+    },
+    {
+      "file": "clean_000428.png",
+      "clip_image_cosine": 0.9859175682067871,
+      "dino_cosine": 0.9695718884468079,
+      "lpips": 0.1388535052537918,
+      "raw_clipscore": 0.8405487537384033,
+      "regen_clipscore": 0.8617648482322693
+    },
+    {
+      "file": "clean_000429.png",
+      "clip_image_cosine": 0.9908706545829773,
+      "dino_cosine": 0.9496893882751465,
+      "lpips": 0.1205110028386116,
+      "raw_clipscore": 0.5848294496536255,
+      "regen_clipscore": 0.5635399222373962
+    },
+    {
+      "file": "clean_000430.png",
+      "clip_image_cosine": 0.9763898253440857,
+      "dino_cosine": 0.9555854797363281,
+      "lpips": 0.08596785366535187,
+      "raw_clipscore": 0.6401814222335815,
+      "regen_clipscore": 0.6566068530082703
+    },
+    {
+      "file": "clean_000431.png",
+      "clip_image_cosine": 0.9879923462867737,
+      "dino_cosine": 0.9876816868782043,
+      "lpips": 0.05354638025164604,
+      "raw_clipscore": 0.7227874994277954,
+      "regen_clipscore": 0.7360637784004211
+    },
+    {
+      "file": "clean_000432.png",
+      "clip_image_cosine": 0.9700816869735718,
+      "dino_cosine": 0.922407329082489,
+      "lpips": 0.1359291523694992,
+      "raw_clipscore": 0.7418779134750366,
+      "regen_clipscore": 0.7458028793334961
+    },
+    {
+      "file": "clean_000433.png",
+      "clip_image_cosine": 0.9786345958709717,
+      "dino_cosine": 0.973292350769043,
+      "lpips": 0.08006396889686584,
+      "raw_clipscore": 0.5529114603996277,
+      "regen_clipscore": 0.5411573648452759
+    },
+    {
+      "file": "clean_000434.png",
+      "clip_image_cosine": 0.9760116934776306,
+      "dino_cosine": 0.895775556564331,
+      "lpips": 0.13871459662914276,
+      "raw_clipscore": 0.7544226050376892,
+      "regen_clipscore": 0.7575850486755371
+    },
+    {
+      "file": "clean_000435.png",
+      "clip_image_cosine": 0.9769085645675659,
+      "dino_cosine": 0.9362155199050903,
+      "lpips": 0.10021094977855682,
+      "raw_clipscore": 0.724740743637085,
+      "regen_clipscore": 0.6976765394210815
+    },
+    {
+      "file": "clean_000436.png",
+      "clip_image_cosine": 0.9918599128723145,
+      "dino_cosine": 0.985499918460846,
+      "lpips": 0.099820576608181,
+      "raw_clipscore": 0.6558138132095337,
+      "regen_clipscore": 0.6581721305847168
+    },
+    {
+      "file": "clean_000437.png",
+      "clip_image_cosine": 0.9841107726097107,
+      "dino_cosine": 0.8651186227798462,
+      "lpips": 0.12988299131393433,
+      "raw_clipscore": 0.5693361759185791,
+      "regen_clipscore": 0.5681363344192505
+    },
+    {
+      "file": "clean_000438.png",
+      "clip_image_cosine": 0.9640899300575256,
+      "dino_cosine": 0.944042980670929,
+      "lpips": 0.12455249577760696,
+      "raw_clipscore": 0.6718379259109497,
+      "regen_clipscore": 0.7127879858016968
+    },
+    {
+      "file": "clean_000439.png",
+      "clip_image_cosine": 0.9431011080741882,
+      "dino_cosine": 0.9469162225723267,
+      "lpips": 0.13341476023197174,
+      "raw_clipscore": 0.7127377390861511,
+      "regen_clipscore": 0.7433516383171082
+    },
+    {
+      "file": "clean_000440.png",
+      "clip_image_cosine": 0.9693026542663574,
+      "dino_cosine": 0.9285563230514526,
+      "lpips": 0.1275370717048645,
+      "raw_clipscore": 0.8360893726348877,
+      "regen_clipscore": 0.8268112540245056
+    },
+    {
+      "file": "clean_000441.png",
+      "clip_image_cosine": 0.9920265078544617,
+      "dino_cosine": 0.9821498394012451,
+      "lpips": 0.09300264716148376,
+      "raw_clipscore": 0.7237288355827332,
+      "regen_clipscore": 0.7243180274963379
+    },
+    {
+      "file": "clean_000442.png",
+      "clip_image_cosine": 0.9830387830734253,
+      "dino_cosine": 0.954805314540863,
+      "lpips": 0.12817415595054626,
+      "raw_clipscore": 0.7293896675109863,
+      "regen_clipscore": 0.7223613262176514
+    },
+    {
+      "file": "clean_000443.png",
+      "clip_image_cosine": 0.9844652414321899,
+      "dino_cosine": 0.9741142988204956,
+      "lpips": 0.12007743120193481,
+      "raw_clipscore": 0.787997841835022,
+      "regen_clipscore": 0.814845860004425
+    },
+    {
+      "file": "clean_000444.png",
+      "clip_image_cosine": 0.9867894053459167,
+      "dino_cosine": 0.9594280123710632,
+      "lpips": 0.09265206009149551,
+      "raw_clipscore": 0.7691883444786072,
+      "regen_clipscore": 0.774573028087616
+    },
+    {
+      "file": "clean_000445.png",
+      "clip_image_cosine": 0.9777165651321411,
+      "dino_cosine": 0.9607101678848267,
+      "lpips": 0.12815390527248383,
+      "raw_clipscore": 0.65738844871521,
+      "regen_clipscore": 0.7279345989227295
+    },
+    {
+      "file": "clean_000446.png",
+      "clip_image_cosine": 0.9440895318984985,
+      "dino_cosine": 0.9629417061805725,
+      "lpips": 0.1140434592962265,
+      "raw_clipscore": 0.7455867528915405,
+      "regen_clipscore": 0.6662169098854065
+    },
+    {
+      "file": "clean_000447.png",
+      "clip_image_cosine": 0.9854141473770142,
+      "dino_cosine": 0.9632885456085205,
+      "lpips": 0.08737269788980484,
+      "raw_clipscore": 0.6919287443161011,
+      "regen_clipscore": 0.6546367406845093
+    },
+    {
+      "file": "clean_000448.png",
+      "clip_image_cosine": 0.9668734073638916,
+      "dino_cosine": 0.9676974415779114,
+      "lpips": 0.11793793737888336,
+      "raw_clipscore": 0.6064229011535645,
+      "regen_clipscore": 0.6291009187698364
+    },
+    {
+      "file": "clean_000449.png",
+      "clip_image_cosine": 0.990544855594635,
+      "dino_cosine": 0.9777330160140991,
+      "lpips": 0.12952975928783417,
+      "raw_clipscore": 0.5618396997451782,
+      "regen_clipscore": 0.5304909348487854
+    },
+    {
+      "file": "clean_000450.png",
+      "clip_image_cosine": 0.9850268363952637,
+      "dino_cosine": 0.9809850454330444,
+      "lpips": 0.08532893657684326,
+      "raw_clipscore": 0.8245314359664917,
+      "regen_clipscore": 0.7963559031486511
+    },
+    {
+      "file": "clean_000451.png",
+      "clip_image_cosine": 0.9664260745048523,
+      "dino_cosine": 0.9601951241493225,
+      "lpips": 0.14512711763381958,
+      "raw_clipscore": 0.7277745008468628,
+      "regen_clipscore": 0.7465213537216187
+    },
+    {
+      "file": "clean_000452.png",
+      "clip_image_cosine": 0.980134129524231,
+      "dino_cosine": 0.9598459005355835,
+      "lpips": 0.1728690266609192,
+      "raw_clipscore": 0.5919836759567261,
+      "regen_clipscore": 0.625555157661438
+    },
+    {
+      "file": "clean_000453.png",
+      "clip_image_cosine": 0.9772200584411621,
+      "dino_cosine": 0.9694859385490417,
+      "lpips": 0.13030871748924255,
+      "raw_clipscore": 0.6492903828620911,
+      "regen_clipscore": 0.6549274325370789
+    },
+    {
+      "file": "clean_000454.png",
+      "clip_image_cosine": 0.9909093379974365,
+      "dino_cosine": 0.9846660494804382,
+      "lpips": 0.06174616143107414,
+      "raw_clipscore": 0.7340095043182373,
+      "regen_clipscore": 0.7324851751327515
+    },
+    {
+      "file": "clean_000455.png",
+      "clip_image_cosine": 0.9928194284439087,
+      "dino_cosine": 0.9706934690475464,
+      "lpips": 0.11186367273330688,
+      "raw_clipscore": 0.5932430028915405,
+      "regen_clipscore": 0.5517057180404663
+    },
+    {
+      "file": "clean_000456.png",
+      "clip_image_cosine": 0.952529788017273,
+      "dino_cosine": 0.970731258392334,
+      "lpips": 0.12218187749385834,
+      "raw_clipscore": 0.8910442590713501,
+      "regen_clipscore": 0.8602218627929688
+    },
+    {
+      "file": "clean_000457.png",
+      "clip_image_cosine": 0.9740209579467773,
+      "dino_cosine": 0.967645525932312,
+      "lpips": 0.11343631893396378,
+      "raw_clipscore": 0.5706514716148376,
+      "regen_clipscore": 0.5883376598358154
+    },
+    {
+      "file": "clean_000458.png",
+      "clip_image_cosine": 0.9643104076385498,
+      "dino_cosine": 0.9754312038421631,
+      "lpips": 0.06000286340713501,
+      "raw_clipscore": 0.7932689189910889,
+      "regen_clipscore": 0.7982529401779175
+    },
+    {
+      "file": "clean_000459.png",
+      "clip_image_cosine": 0.9626407623291016,
+      "dino_cosine": 0.9333189725875854,
+      "lpips": 0.14682967960834503,
+      "raw_clipscore": 0.7815642356872559,
+      "regen_clipscore": 0.7718454599380493
+    },
+    {
+      "file": "clean_000460.png",
+      "clip_image_cosine": 0.9686609506607056,
+      "dino_cosine": 0.9606289863586426,
+      "lpips": 0.11170109361410141,
+      "raw_clipscore": 0.647262454032898,
+      "regen_clipscore": 0.7046104669570923
+    },
+    {
+      "file": "clean_000461.png",
+      "clip_image_cosine": 0.9887514114379883,
+      "dino_cosine": 0.9862520694732666,
+      "lpips": 0.1146281287074089,
+      "raw_clipscore": 0.6103234887123108,
+      "regen_clipscore": 0.612414538860321
+    },
+    {
+      "file": "clean_000462.png",
+      "clip_image_cosine": 0.9846446514129639,
+      "dino_cosine": 0.9562729597091675,
+      "lpips": 0.10372798889875412,
+      "raw_clipscore": 0.7382645606994629,
+      "regen_clipscore": 0.7378157377243042
+    },
+    {
+      "file": "clean_000463.png",
+      "clip_image_cosine": 0.9811027646064758,
+      "dino_cosine": 0.9819509983062744,
+      "lpips": 0.1358710080385208,
+      "raw_clipscore": 0.875330924987793,
+      "regen_clipscore": 0.8697578310966492
+    },
+    {
+      "file": "clean_000464.png",
+      "clip_image_cosine": 0.9874929189682007,
+      "dino_cosine": 0.961164653301239,
+      "lpips": 0.11152556538581848,
+      "raw_clipscore": 0.6670064926147461,
+      "regen_clipscore": 0.6759360432624817
+    },
+    {
+      "file": "clean_000465.png",
+      "clip_image_cosine": 0.9747203588485718,
+      "dino_cosine": 0.9478816390037537,
+      "lpips": 0.12283270806074142,
+      "raw_clipscore": 0.7710910439491272,
+      "regen_clipscore": 0.7947140336036682
+    },
+    {
+      "file": "clean_000466.png",
+      "clip_image_cosine": 0.9671335220336914,
+      "dino_cosine": 0.967070996761322,
+      "lpips": 0.0745549276471138,
+      "raw_clipscore": 0.6973215937614441,
+      "regen_clipscore": 0.6913714408874512
+    },
+    {
+      "file": "clean_000467.png",
+      "clip_image_cosine": 0.9433073997497559,
+      "dino_cosine": 0.9898862242698669,
+      "lpips": 0.11569295078516006,
+      "raw_clipscore": 0.7757157683372498,
+      "regen_clipscore": 0.721328616142273
+    },
+    {
+      "file": "clean_000468.png",
+      "clip_image_cosine": 0.9827882051467896,
+      "dino_cosine": 0.9760863780975342,
+      "lpips": 0.08018375933170319,
+      "raw_clipscore": 0.6489251852035522,
+      "regen_clipscore": 0.6690930128097534
+    },
+    {
+      "file": "clean_000469.png",
+      "clip_image_cosine": 0.9595621824264526,
+      "dino_cosine": 0.8906064033508301,
+      "lpips": 0.16236747801303864,
+      "raw_clipscore": 0.6238956451416016,
+      "regen_clipscore": 0.6155722141265869
+    },
+    {
+      "file": "clean_000470.png",
+      "clip_image_cosine": 0.9590243101119995,
+      "dino_cosine": 0.9284062385559082,
+      "lpips": 0.10971346497535706,
+      "raw_clipscore": 0.7684510946273804,
+      "regen_clipscore": 0.6709275245666504
+    },
+    {
+      "file": "clean_000471.png",
+      "clip_image_cosine": 0.9558061957359314,
+      "dino_cosine": 0.9667900204658508,
+      "lpips": 0.1668280065059662,
+      "raw_clipscore": 0.7943090796470642,
+      "regen_clipscore": 0.7716811299324036
+    },
+    {
+      "file": "clean_000472.png",
+      "clip_image_cosine": 0.9708592891693115,
+      "dino_cosine": 0.9563050270080566,
+      "lpips": 0.13242016732692719,
+      "raw_clipscore": 0.5897833108901978,
+      "regen_clipscore": 0.5936546325683594
+    },
+    {
+      "file": "clean_000473.png",
+      "clip_image_cosine": 0.9851607084274292,
+      "dino_cosine": 0.9811398983001709,
+      "lpips": 0.13682053983211517,
+      "raw_clipscore": 0.645541787147522,
+      "regen_clipscore": 0.6312953233718872
+    },
+    {
+      "file": "clean_000474.png",
+      "clip_image_cosine": 0.9773215055465698,
+      "dino_cosine": 0.9560632705688477,
+      "lpips": 0.15723302960395813,
+      "raw_clipscore": 0.8566713333129883,
+      "regen_clipscore": 0.8564980030059814
+    },
+    {
+      "file": "clean_000475.png",
+      "clip_image_cosine": 0.9858559966087341,
+      "dino_cosine": 0.9766198992729187,
+      "lpips": 0.137003555893898,
+      "raw_clipscore": 0.7537524700164795,
+      "regen_clipscore": 0.730213463306427
+    },
+    {
+      "file": "clean_000476.png",
+      "clip_image_cosine": 0.9682092070579529,
+      "dino_cosine": 0.8937759399414062,
+      "lpips": 0.14925365149974823,
+      "raw_clipscore": 0.628629207611084,
+      "regen_clipscore": 0.636109471321106
+    },
+    {
+      "file": "clean_000477.png",
+      "clip_image_cosine": 0.9769068956375122,
+      "dino_cosine": 0.9544131755828857,
+      "lpips": 0.14039872586727142,
+      "raw_clipscore": 0.7280993461608887,
+      "regen_clipscore": 0.7161784172058105
+    },
+    {
+      "file": "clean_000478.png",
+      "clip_image_cosine": 0.9747040867805481,
+      "dino_cosine": 0.9538267850875854,
+      "lpips": 0.1630447506904602,
+      "raw_clipscore": 0.6735498905181885,
+      "regen_clipscore": 0.6703588366508484
+    },
+    {
+      "file": "clean_000479.png",
+      "clip_image_cosine": 0.9860360622406006,
+      "dino_cosine": 0.9795228838920593,
+      "lpips": 0.08143971860408783,
+      "raw_clipscore": 0.6875051259994507,
+      "regen_clipscore": 0.6850348711013794
+    },
+    {
+      "file": "clean_000480.png",
+      "clip_image_cosine": 0.9495654702186584,
+      "dino_cosine": 0.9622265100479126,
+      "lpips": 0.11895503103733063,
+      "raw_clipscore": 0.7413394451141357,
+      "regen_clipscore": 0.7042256593704224
+    },
+    {
+      "file": "clean_000481.png",
+      "clip_image_cosine": 0.9883334636688232,
+      "dino_cosine": 0.9780004024505615,
+      "lpips": 0.11196655035018921,
+      "raw_clipscore": 0.7053406238555908,
+      "regen_clipscore": 0.6780065298080444
+    },
+    {
+      "file": "clean_000482.png",
+      "clip_image_cosine": 0.9877316951751709,
+      "dino_cosine": 0.9757424592971802,
+      "lpips": 0.07191915810108185,
+      "raw_clipscore": 0.8144636154174805,
+      "regen_clipscore": 0.8406775593757629
+    },
+    {
+      "file": "clean_000483.png",
+      "clip_image_cosine": 0.9826298952102661,
+      "dino_cosine": 0.9597984552383423,
+      "lpips": 0.18358232080936432,
+      "raw_clipscore": 0.7721437215805054,
+      "regen_clipscore": 0.7782326936721802
+    },
+    {
+      "file": "clean_000484.png",
+      "clip_image_cosine": 0.9905545711517334,
+      "dino_cosine": 0.9735183119773865,
+      "lpips": 0.12568730115890503,
+      "raw_clipscore": 0.7260536551475525,
+      "regen_clipscore": 0.7113529443740845
+    },
+    {
+      "file": "clean_000485.png",
+      "clip_image_cosine": 0.9705564975738525,
+      "dino_cosine": 0.9414281845092773,
+      "lpips": 0.10356464982032776,
+      "raw_clipscore": 0.6831251978874207,
+      "regen_clipscore": 0.6473934054374695
+    },
+    {
+      "file": "clean_000486.png",
+      "clip_image_cosine": 0.9738704562187195,
+      "dino_cosine": 0.9678274989128113,
+      "lpips": 0.08199099451303482,
+      "raw_clipscore": 0.8189742565155029,
+      "regen_clipscore": 0.8533942699432373
+    },
+    {
+      "file": "clean_000487.png",
+      "clip_image_cosine": 0.9733460545539856,
+      "dino_cosine": 0.922502875328064,
+      "lpips": 0.140846386551857,
+      "raw_clipscore": 0.6256994605064392,
+      "regen_clipscore": 0.6099362969398499
+    },
+    {
+      "file": "clean_000488.png",
+      "clip_image_cosine": 0.9756102561950684,
+      "dino_cosine": 0.9803314805030823,
+      "lpips": 0.14602237939834595,
+      "raw_clipscore": 0.6685174703598022,
+      "regen_clipscore": 0.6412297487258911
+    },
+    {
+      "file": "clean_000489.png",
+      "clip_image_cosine": 0.9786996841430664,
+      "dino_cosine": 0.9147014617919922,
+      "lpips": 0.1302986890077591,
+      "raw_clipscore": 0.6058142185211182,
+      "regen_clipscore": 0.6259730458259583
+    },
+    {
+      "file": "clean_000490.png",
+      "clip_image_cosine": 0.9776397943496704,
+      "dino_cosine": 0.9537410736083984,
+      "lpips": 0.07770140469074249,
+      "raw_clipscore": 0.7575899362564087,
+      "regen_clipscore": 0.7247151136398315
+    },
+    {
+      "file": "clean_000491.png",
+      "clip_image_cosine": 0.9699876308441162,
+      "dino_cosine": 0.9866024851799011,
+      "lpips": 0.0570262148976326,
+      "raw_clipscore": 0.8867312669754028,
+      "regen_clipscore": 0.8688797950744629
+    },
+    {
+      "file": "clean_000492.png",
+      "clip_image_cosine": 0.9950554966926575,
+      "dino_cosine": 0.9854711294174194,
+      "lpips": 0.0400540828704834,
+      "raw_clipscore": 0.4476968050003052,
+      "regen_clipscore": 0.4201963543891907
+    },
+    {
+      "file": "clean_000493.png",
+      "clip_image_cosine": 0.992743194103241,
+      "dino_cosine": 0.9708055257797241,
+      "lpips": 0.06419774889945984,
+      "raw_clipscore": 0.725758969783783,
+      "regen_clipscore": 0.7274739742279053
+    },
+    {
+      "file": "clean_000494.png",
+      "clip_image_cosine": 0.985622227191925,
+      "dino_cosine": 0.9831593036651611,
+      "lpips": 0.11984935402870178,
+      "raw_clipscore": 0.6730648279190063,
+      "regen_clipscore": 0.6416634321212769
+    },
+    {
+      "file": "clean_000495.png",
+      "clip_image_cosine": 0.9823906421661377,
+      "dino_cosine": 0.9562500715255737,
+      "lpips": 0.13327841460704803,
+      "raw_clipscore": 0.6868720054626465,
+      "regen_clipscore": 0.6754165291786194
+    },
+    {
+      "file": "clean_000496.png",
+      "clip_image_cosine": 0.9810632467269897,
+      "dino_cosine": 0.9608621597290039,
+      "lpips": 0.08255284279584885,
+      "raw_clipscore": 0.6564393639564514,
+      "regen_clipscore": 0.6489037275314331
+    },
+    {
+      "file": "clean_000497.png",
+      "clip_image_cosine": 0.9834075570106506,
+      "dino_cosine": 0.9770086407661438,
+      "lpips": 0.07116269320249557,
+      "raw_clipscore": 0.7860981822013855,
+      "regen_clipscore": 0.7762110233306885
+    },
+    {
+      "file": "clean_000498.png",
+      "clip_image_cosine": 0.9688358306884766,
+      "dino_cosine": 0.9896097183227539,
+      "lpips": 0.050763294100761414,
+      "raw_clipscore": 0.4700809419155121,
+      "regen_clipscore": 0.469897985458374
+    },
+    {
+      "file": "clean_000499.png",
+      "clip_image_cosine": 0.9329115152359009,
+      "dino_cosine": 0.9495570659637451,
+      "lpips": 0.1566091775894165,
+      "raw_clipscore": 0.7929521799087524,
+      "regen_clipscore": 0.802383303642273
+    }
+  ]
+}

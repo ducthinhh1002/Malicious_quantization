@@ -1,0 +1,95 @@
+{
+  "config": {
+    "method": "native_semantic_relation_v1",
+    "seed": 2301,
+    "resolution": 512,
+    "sampling_steps": 20,
+    "guidance": 7.5,
+    "vram_limit_gb": 32.0,
+    "owner_steps": 2,
+    "owner_rank": 16,
+    "owner_lr": 0.0001,
+    "betas": [
+      1.5
+    ],
+    "on_policy_every": 4,
+    "probe_rank": 4,
+    "probe_steps": 2,
+    "probe_batch": 2,
+    "probe_accumulation": 2,
+    "student_lr": 1e-05,
+    "smoke": true
+  },
+  "groups": [
+    "animal",
+    "vehicle",
+    "food",
+    "furniture"
+  ],
+  "key": [
+    1,
+    -1,
+    -1,
+    1
+  ],
+  "training_attribute": [
+    "soft diffuse illumination, gentle even lighting",
+    "hard directional illumination, distinct cast shadows"
+  ],
+  "probe": [
+    [
+      "A photograph in soft, evenly spread light.",
+      "A photograph with strong directional light and sharp shadows."
+    ],
+    [
+      "A scene illuminated by a broad diffused light source.",
+      "A scene illuminated by a small direct light source."
+    ]
+  ],
+  "target": "eps_c + beta/7.5 * key[group] * (eps_positive - eps_negative)",
+  "owner_loss": "conditional target MSE + .5 unconditional preservation MSE + .5 incompatible/outside preservation MSE",
+  "owner_states": "75% forward-noised clean latent; 25% current-owner DDIM prefix (after first update)",
+  "inference": "merged/reloaded UNet; original caption; Gaussian noise; no grouping/key/router/attribute edit",
+  "train_images": 8,
+  "owner_design_images": 8,
+  "validation_images": 8,
+  "query_images": 8,
+  "reused_design_latents": 8,
+  "coverage": {
+    "coverage": {
+      "eligible": 14646,
+      "outside_domain": 20183,
+      "explicit_lighting": 952,
+      "ambiguous": 1095
+    },
+    "available_per_group": [
+      5901,
+      3941,
+      2728,
+      2076
+    ]
+  },
+  "controls": [
+    "clean",
+    "positive",
+    "negative",
+    "mixed_50_50_within_each_group"
+  ],
+  "student": "unchanged pinned upstream attention LoRA, ordinary denoising MSE, fixed final checkpoint",
+  "selection": "lowest beta passing both native-key signal and fidelity gates on validation",
+  "gates": {
+    "relation_min": 0.002,
+    "ci": "99% prompt bootstrap excludes zero, both keys",
+    "groups": "at least 3/4 correct, both keys",
+    "lpips_mean": 0.08,
+    "lpips_p95": 0.12,
+    "psnr_p05": 25,
+    "clip_drop": 0.02
+  },
+  "statistics": "model aggregate relation; no image-level TPR or model-level FPR claim",
+  "scope": "four-group development mechanism test; six balanced keys, not cryptographic ownership",
+  "references": [
+    "https://sliders.baulab.info/",
+    "https://arxiv.org/html/2512.00094v1"
+  ]
+}

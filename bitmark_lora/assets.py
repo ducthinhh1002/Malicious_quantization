@@ -1,6 +1,5 @@
 """Download the actual upstream checkpoints, pinned by revision and LFS SHA256."""
 import argparse
-import fcntl
 import json
 import random
 import urllib.request
@@ -112,6 +111,7 @@ def prepare_prompts(config, run, cache):
 
 
 def prepare(config, run):
+    import fcntl
     cache = Path(config["cache"])
     cache.mkdir(parents=True, exist_ok=True)
     with (cache / "assets.lock").open("w") as lock:

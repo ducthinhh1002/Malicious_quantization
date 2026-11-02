@@ -1,0 +1,267 @@
+{
+  "folder": "/root/logs/output_image/semantic/semantic_relation_20261021_002025Z_94c0989d/prompt_negative_design",
+  "entries": [
+    {
+      "file_name": "sample_000000.png",
+      "text": "A tall zebra standing in a lush green field.",
+      "sha256": "e7ad10f1cba850569da8c41c43e5181df8db2a1de22088006665327a68265633"
+    },
+    {
+      "file_name": "sample_000001.png",
+      "text": "a white boat some green hills and water",
+      "sha256": "94d4add9a0d8e02ac6729b067c4c27c6255c0b99f534e0c84a7af15cea3513dc"
+    },
+    {
+      "file_name": "sample_000002.png",
+      "text": "Three pedestal plates holding oranges on a table.",
+      "sha256": "e77545eae21d96375e9bb4e866643083a59180e84e70a4bdc1797b1602ab63d5"
+    },
+    {
+      "file_name": "sample_000003.png",
+      "text": "A big bathroom with a couch a bathtub in the middle of the room.",
+      "sha256": "0817f57a2c2de521e1094d2b166d233dc5dd756cc2d6d8703047e7ee721be034"
+    },
+    {
+      "file_name": "sample_000004.png",
+      "text": "A zebra in the grass who is cleaning himself.",
+      "sha256": "537516a488b51b1ae8214d43ecd07d5251f5a905536d4537292e537781754dfb"
+    },
+    {
+      "file_name": "sample_000005.png",
+      "text": "A bus with a red stripe is parked on the street.",
+      "sha256": "9bdfb561aaeeaf2c6cb3ce932e1b3b302fb15001a51d058302d357713c9ba8ef"
+    },
+    {
+      "file_name": "sample_000006.png",
+      "text": "A tray topped with breakfast muffin sandwiches on a table .",
+      "sha256": "37aba2fd90d1b195bff90eca89b31dfdedfea0ba5a2795e56a670e67aa6392f5"
+    },
+    {
+      "file_name": "sample_000007.png",
+      "text": "A living room with two couches and several chairs.",
+      "sha256": "fb5765438fa850463f092cea96e751adb2b7963f4b278cb0b9cfa8446c0652dd"
+    },
+    {
+      "file_name": "sample_000008.png",
+      "text": "A picture of a man with his cow named Elsie.",
+      "sha256": "df858f21515c4b31f67908727c129dfa924b930389279648c61c05d46705f2f8"
+    },
+    {
+      "file_name": "sample_000009.png",
+      "text": "An image of a car in a side mirror.",
+      "sha256": "e5c53a6e763e2a19063213d130c594a5e6cfda5b951813377dc0e53225a37b1d"
+    },
+    {
+      "file_name": "sample_000010.png",
+      "text": "A pizza with pepperoni and spinach leaves by a beer.",
+      "sha256": "e0d4da025d004af5542e8503d251ff8f95bb6f4087a341872138bd92d78ebbc7"
+    },
+    {
+      "file_name": "sample_000011.png",
+      "text": "A wooden bench sitting in front of a white building.",
+      "sha256": "64cd7ca04385e285cb7e5cede52ab3bab20e54381346b144cd8c7f0e86e7090d"
+    },
+    {
+      "file_name": "sample_000012.png",
+      "text": "A man in a black shirt holding a dog with its hand in the air.",
+      "sha256": "da01ca4cd112f5a1e40e9855d3171ce9ff75b0174dc84b89d00619ac8f1456c0"
+    },
+    {
+      "file_name": "sample_000013.png",
+      "text": "A motorcycle rests against the side of a deserted road near a kangaroo crossing sign.",
+      "sha256": "aae78c0e8dc726b0e64377502bea0674001bf266603e97e16e9578b54ebb99f3"
+    },
+    {
+      "file_name": "sample_000014.png",
+      "text": "a close up of a sandwich and a cup of food",
+      "sha256": "4642b11268fea1e97eacb174b67afb19dcb795e6a559125d3f353b5aa63a4cc7"
+    },
+    {
+      "file_name": "sample_000015.png",
+      "text": "The reflection of a man in barbers chair getting a trim",
+      "sha256": "774f114464d2ccfb66635f977bb55ead4e7afb6bff767809fd2c54f1a70fd795"
+    },
+    {
+      "file_name": "sample_000016.png",
+      "text": "A group of elephants by some buildings on the water.",
+      "sha256": "b3dada332368a5f870efdb759886ffebf16f28f93ff5af54fe2e738b6640c23c"
+    },
+    {
+      "file_name": "sample_000017.png",
+      "text": "A motorized cart fills a train with luggage",
+      "sha256": "b70fcf380a858694de2fedf48d78468884d79d7aafd7486014f2460d8f998d7a"
+    },
+    {
+      "file_name": "sample_000018.png",
+      "text": "Apples on a tree that need longer to ripen.",
+      "sha256": "1cae6e6b401e0d933ee5e96e87afeb52b8c3f66f57248e1dd4c7c8344fd1b623"
+    },
+    {
+      "file_name": "sample_000019.png",
+      "text": "A very nice looking living room with a couch.",
+      "sha256": "45166ac1a581288d7f7091275f87f7f83d2fa37d471f64e1a947121f0942b75c"
+    },
+    {
+      "file_name": "sample_000020.png",
+      "text": "A man kneeling down to pet a small dog.",
+      "sha256": "03b8a9b7633ddba09391a466be2db12c0bd07bc35e6a8e63d2ec60b22cd2f1f3"
+    },
+    {
+      "file_name": "sample_000021.png",
+      "text": "a fire truck on a city street",
+      "sha256": "d03bffe81d001e97991cef2343cb3cb3bb8150cf69ed7e4b7694f82a93c7f3a9"
+    },
+    {
+      "file_name": "sample_000022.png",
+      "text": "A small child in pajamas is holding bananas.",
+      "sha256": "66cebeffb2f8330550fa81559c91e2dc6b338905aca560d6530732eecab9d7a2"
+    },
+    {
+      "file_name": "sample_000023.png",
+      "text": "A vase filled with pens with fake sunflowers attached on a desk that says \"Visitors must sign in\".",
+      "sha256": "d54ebf132dd9c0d62e532d5444643e02fbe09462dd5031e905cd271dd87a9e3f"
+    },
+    {
+      "file_name": "sample_000024.png",
+      "text": "A young woman lays a hand on the neck of the horse she is riding.",
+      "sha256": "56ea85d1345757ee55a36b023f2228cc80a5e3b9c5f68ac635afbb64777d39b8"
+    },
+    {
+      "file_name": "sample_000025.png",
+      "text": "A street filled with lots of double decker buses.",
+      "sha256": "49a57025e386212ddb6cb208f308a27876ad8f8e64d735d8801c1c7f692ab1d3"
+    },
+    {
+      "file_name": "sample_000026.png",
+      "text": "A person holding a white plate topped with a sandwich.",
+      "sha256": "1c1c3b49db6332fdbf0e5213ebb26870a3489ab304cfb663c821a30ca41db280"
+    },
+    {
+      "file_name": "sample_000027.png",
+      "text": "A bedroom with a bed and chair along with a nightstand with lamp on top of it.",
+      "sha256": "021a875e340a883feea235371b3c98fb83048ba1cb19bcfbded618f2498f9840"
+    },
+    {
+      "file_name": "sample_000028.png",
+      "text": "Zebras and rhinos grazing together at the zoo.",
+      "sha256": "f12507d0703401fae2095bccf64a3bd416616e5028b583b070463a61d28c0b34"
+    },
+    {
+      "file_name": "sample_000029.png",
+      "text": "Three Mercedes Benz on the top of a train as cargo",
+      "sha256": "2f1b975ea934a9505839dc0545b22420ecbe610bd7d8e43500ac17958da627cc"
+    },
+    {
+      "file_name": "sample_000030.png",
+      "text": "A jar of mustard next to a small plate of a sandwich",
+      "sha256": "4402182cfed6777555fc15b7e4bd012aabd3a4f6c981547a3b76fb7b82caaa84"
+    },
+    {
+      "file_name": "sample_000031.png",
+      "text": "A young child sitting on top of a couch.",
+      "sha256": "9be600d0dea81dbce3bef3af220e8ff6a19085f7162b708ca7bc683852ba46ed"
+    }
+  ],
+  "scores": [
+    0.0026005152612924576,
+    0.014873417094349861,
+    0.002526314929127693,
+    0.011008264496922493,
+    0.0071221874095499516,
+    0.0009733503684401512,
+    0.015061354264616966,
+    0.01538561936467886,
+    0.013929651118814945,
+    0.01266009546816349,
+    0.011020071804523468,
+    0.005478017497807741,
+    0.008648932911455631,
+    -0.0029122456908226013,
+    0.023195624351501465,
+    -0.005821628496050835,
+    0.008760375902056694,
+    0.0064882803708314896,
+    0.0056579215452075005,
+    0.018857311457395554,
+    0.0035220710560679436,
+    0.0015545627102255821,
+    0.003967109601944685,
+    0.007212699390947819,
+    0.006604403723031282,
+    0.0072366949170827866,
+    0.016521265730261803,
+    0.02298527956008911,
+    0.0027997102588415146,
+    0.006243940908461809,
+    0.013317784294486046,
+    0.019432995468378067
+  ],
+  "alignment": [
+    0.349599152803421,
+    0.25607597827911377,
+    0.3525143265724182,
+    0.26172566413879395,
+    0.34325724840164185,
+    0.32102516293525696,
+    0.28580227494239807,
+    0.2792705297470093,
+    0.328144907951355,
+    0.3199235200881958,
+    0.3085128664970398,
+    0.36114633083343506,
+    0.2999909520149231,
+    0.3679186701774597,
+    0.3080049157142639,
+    0.26093941926956177,
+    0.26395148038864136,
+    0.24437284469604492,
+    0.295648992061615,
+    0.27222689986228943,
+    0.3249194920063019,
+    0.2784351110458374,
+    0.3355332016944885,
+    0.3242414891719818,
+    0.30273330211639404,
+    0.2810417413711548,
+    0.3136688768863678,
+    0.2785193622112274,
+    0.31662023067474365,
+    0.2506920099258423,
+    0.286090224981308,
+    0.3103904128074646
+  ],
+  "source_ids": [
+    66798,
+    451090,
+    137085,
+    363830,
+    1818,
+    454741,
+    435270,
+    243134,
+    389116,
+    484754,
+    477195,
+    90501,
+    346965,
+    132084,
+    392753,
+    550521,
+    67563,
+    137727,
+    285646,
+    540159,
+    102555,
+    78113,
+    275754,
+    242968,
+    139140,
+    444703,
+    210002,
+    394133,
+    524247,
+    522137,
+    402528,
+    179045
+  ]
+}

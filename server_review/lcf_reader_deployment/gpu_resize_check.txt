@@ -1,0 +1,1 @@
+{'gpu_resize_gradient_check': 'passed', 'loss': 1.8526443243026733, 'image_gradient_norm': 0.07033775746822357, 'peak_allocated_gib': 0.4738006591796875}

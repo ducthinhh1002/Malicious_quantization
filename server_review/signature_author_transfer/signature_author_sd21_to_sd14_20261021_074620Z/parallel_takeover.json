@@ -1,0 +1,18 @@
+{
+  "changed_at_utc": "2026-10-21T13:42:19.387853+00:00",
+  "reason": "User requested parallel rank-4 marked training",
+  "old_scheduler_pid": 2893854,
+  "adopted_clean_pid": 3041812,
+  "coordinator_pid": 3075202,
+  "marked_pid": 3075249,
+  "scheduler_sha256": "bb7aa3177107f8c06559c450834c91613374d737af6f1b0a05ba78d406d970d2",
+  "frozen_experiment_source_unchanged": true,
+  "training_configuration_unchanged": true,
+  "original_launch": {
+    "status": "launched",
+    "pid": 2893854,
+    "run": "/root/logs/results/signature_author_sd21_to_sd14_20261021_074620Z",
+    "log": "/root/logs/results/signature_author_sd21_to_sd14_20261021_074620Z.log",
+    "smoke": "/root/logs/results/signature_author_sd21_to_sd14_20261021_smoke_v2"
+  }
+}

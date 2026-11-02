@@ -1,0 +1,5 @@
+{
+  "paired_rgb8_mse": 0.0,
+  "tolerance": 1e-08,
+  "explanation": "FP32 batched clean prefix replay; no key-dependent forward change at zero amplitude"
+}

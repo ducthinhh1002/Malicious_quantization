@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+set -euo pipefail
+HERE="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+PY="${PN90_PYTHON:-/root/logs/gate_env/bin/python}"
+exec "$PY" "$HERE/campaign.py" "$@"

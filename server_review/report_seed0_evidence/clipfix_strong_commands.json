@@ -1,0 +1,80 @@
+{
+  "tasks": {
+    "1": [
+      "C00",
+      "C01_step1.00"
+    ],
+    "0": [
+      "C11_step1.00"
+    ]
+  },
+  "commands": {
+    "C00": [
+      "/root/workspace/serum/.venv-student/bin/python",
+      "-m",
+      "accelerate.commands.launch",
+      "--num_processes",
+      "1",
+      "third_party/diffusers/examples/text_to_image/train_text_to_image_lora.py",
+      "--pretrained_model_name_or_path=CompVis/stable-diffusion-v1-4",
+      "--train_data_dir=data/hf/C00_train",
+      "--image_column=image",
+      "--caption_column=text",
+      "--resolution=512",
+      "--train_batch_size=8",
+      "--gradient_accumulation_steps=1",
+      "--learning_rate=1e-5",
+      "--rank=4",
+      "--max_train_steps=20000",
+      "--checkpointing_steps=500",
+      "--mixed_precision=fp16",
+      "--seed=0",
+      "--output_dir=/root/workspace/serum/students/C00_seed0_clipfix"
+    ],
+    "C01_step1.00": [
+      "/root/workspace/serum/.venv-student/bin/python",
+      "-m",
+      "accelerate.commands.launch",
+      "--num_processes",
+      "1",
+      "third_party/diffusers/examples/text_to_image/train_text_to_image_lora.py",
+      "--pretrained_model_name_or_path=CompVis/stable-diffusion-v1-4",
+      "--train_data_dir=data/hf/C01_step1.00_train",
+      "--image_column=image",
+      "--caption_column=text",
+      "--resolution=512",
+      "--train_batch_size=8",
+      "--gradient_accumulation_steps=1",
+      "--learning_rate=1e-5",
+      "--rank=4",
+      "--max_train_steps=20000",
+      "--checkpointing_steps=500",
+      "--mixed_precision=fp16",
+      "--seed=0",
+      "--output_dir=/root/workspace/serum/students/C01_step1.00_seed0_clipfix"
+    ],
+    "C11_step1.00": [
+      "/root/workspace/serum/.venv-student/bin/python",
+      "-m",
+      "accelerate.commands.launch",
+      "--num_processes",
+      "1",
+      "third_party/diffusers/examples/text_to_image/train_text_to_image_lora.py",
+      "--pretrained_model_name_or_path=CompVis/stable-diffusion-v1-4",
+      "--train_data_dir=data/hf/C11_step1.00_train",
+      "--image_column=image",
+      "--caption_column=text",
+      "--resolution=512",
+      "--train_batch_size=8",
+      "--gradient_accumulation_steps=1",
+      "--learning_rate=1e-5",
+      "--rank=4",
+      "--max_train_steps=20000",
+      "--checkpointing_steps=500",
+      "--mixed_precision=fp16",
+      "--seed=0",
+      "--output_dir=/root/workspace/serum/students/C11_step1.00_seed0_clipfix"
+    ]
+  },
+  "mild_jobs": 0
+}

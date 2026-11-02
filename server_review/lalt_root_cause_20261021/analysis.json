@@ -1,0 +1,192 @@
+{
+  "old_selected_proxy_step": 32,
+  "validation_proxy": [
+    {
+      "step": 0,
+      "paired_effect": -0.0037122115900274366,
+      "specificity": -0.0006683151586912572,
+      "horizons": [
+        {
+          "horizon": 8,
+          "paired_effect": -0.0037122115900274366,
+          "key_specificity": -0.00030273248557932675,
+          "raw_key_specificity": -0.03711178060621023
+        },
+        {
+          "horizon": 32,
+          "paired_effect": 0.007835037768018083,
+          "key_specificity": -0.0006683151586912572,
+          "raw_key_specificity": -0.0371395209513139
+        }
+      ]
+    },
+    {
+      "step": 16,
+      "paired_effect": -0.003478115717371111,
+      "specificity": -0.0006411104404833168,
+      "horizons": [
+        {
+          "horizon": 8,
+          "paired_effect": -0.003478115717371111,
+          "key_specificity": -0.00028816680423915386,
+          "raw_key_specificity": -0.03709677286678925
+        },
+        {
+          "horizon": 32,
+          "paired_effect": 0.007900721047917614,
+          "key_specificity": -0.0006411104404833168,
+          "raw_key_specificity": -0.037111943383933976
+        }
+      ]
+    },
+    {
+      "step": 32,
+      "paired_effect": -0.003291004833954503,
+      "specificity": -0.0006544607458636165,
+      "horizons": [
+        {
+          "horizon": 8,
+          "paired_effect": -0.003291004833954503,
+          "key_specificity": -0.00027879062690772116,
+          "raw_key_specificity": -0.037087591423187405
+        },
+        {
+          "horizon": 32,
+          "paired_effect": 0.008082435379492381,
+          "key_specificity": -0.0006544607458636165,
+          "raw_key_specificity": -0.037125188202480786
+        }
+      ]
+    },
+    {
+      "step": 48,
+      "paired_effect": -0.0034888604459411,
+      "specificity": -0.0006514051056001335,
+      "horizons": [
+        {
+          "horizon": 8,
+          "paired_effect": -0.0034888604459411,
+          "key_specificity": -0.0002862254623323679,
+          "raw_key_specificity": -0.03709501543198712
+        },
+        {
+          "horizon": 32,
+          "paired_effect": 0.008092806676359032,
+          "key_specificity": -0.0006514051056001335,
+          "raw_key_specificity": -0.03712254900892731
+        }
+      ]
+    },
+    {
+      "step": 64,
+      "paired_effect": -0.003403513632292743,
+      "specificity": -0.0006885864422656596,
+      "horizons": [
+        {
+          "horizon": 8,
+          "paired_effect": -0.003403513632292743,
+          "key_specificity": -0.00030041992431506515,
+          "raw_key_specificity": -0.03710958448937163
+        },
+        {
+          "horizon": 32,
+          "paired_effect": 0.007894444026987912,
+          "key_specificity": -0.0006885864422656596,
+          "raw_key_specificity": -0.03715977906540502
+        }
+      ]
+    }
+  ],
+  "proxy_train_images_per_outer_step": 1,
+  "inner_updates": 8,
+  "long_student_images": 2048,
+  "long_student_updates": 5000,
+  "marked_minus_clean_target_score": 1.2273648930713534,
+  "marked_minus_clean_wrong_score": 0.9238119339570403,
+  "marked_minus_clean_contrast": 0.3035529591143131,
+  "marked_minus_clean_common_component": 1.0755884135141969,
+  "note_common_component": "Algebraic common score component, not an isolated measurement of presence-head contribution",
+  "clean_calibration_target_std": 4.658360761868583,
+  "clean_calibration_contrast_std": 0.31982769802087724,
+  "old_score_to_contrast_scale_ratio": 14.565219931528576,
+  "channel_rows": [
+    {
+      "channel": "rgb8",
+      "auroc": 0.966796875,
+      "paired_win_rate": 1.0,
+      "paired_gain_std": 0.41275238173624956,
+      "mean_gain": 1.0306417532265186
+    },
+    {
+      "channel": "vae_mean",
+      "auroc": 0.966796875,
+      "paired_win_rate": 1.0,
+      "paired_gain_std": 0.4263620837028118,
+      "mean_gain": 1.0453035421669483
+    },
+    {
+      "channel": "vae_sample",
+      "auroc": 0.966796875,
+      "paired_win_rate": 1.0,
+      "paired_gain_std": 0.42636663108737416,
+      "mean_gain": 1.045306034386158
+    },
+    {
+      "channel": "base_x0_t100",
+      "auroc": 0.9658203125,
+      "paired_win_rate": 1.0,
+      "paired_gain_std": 0.43606764391834857,
+      "mean_gain": 1.0474997535347939
+    },
+    {
+      "channel": "base_x0_t300",
+      "auroc": 0.9638671875,
+      "paired_win_rate": 0.9375,
+      "paired_gain_std": 0.44302521547718643,
+      "mean_gain": 1.0355299413204193
+    },
+    {
+      "channel": "base_x0_t600",
+      "auroc": 0.939453125,
+      "paired_win_rate": 0.9375,
+      "paired_gain_std": 0.435742528513821,
+      "mean_gain": 0.8951975181698799
+    }
+  ],
+  "training_ranges": {
+    "paired_effect": {
+      "min": -0.00964055210351944,
+      "median": 0.00033935942337848246,
+      "max": 0.046556077897548676
+    },
+    "key_specificity": {
+      "min": -0.0009623467922210693,
+      "median": 8.05482268333435e-05,
+      "max": 0.0014478415250778198
+    },
+    "wm": {
+      "min": 0.8084633946418762,
+      "median": 0.8552266359329224,
+      "max": 2.6011080741882324
+    },
+    "gradient_norm": {
+      "min": 0.13030540943145752,
+      "median": 0.5582253634929657,
+      "max": 9.90183162689209
+    }
+  },
+  "established": [
+    "Single-key teacher TPR improved but 5000-step ordinary-student TPR did not.",
+    "Selected proxy checkpoint still has negative key specificity.",
+    "Training repeats one image per 8-update unroll; it does not expose 8 distinct images.",
+    "Old loss rewards absolute target score as well as key contrast.",
+    "Old specificity uses raw-score standard deviation rather than contrast standard deviation.",
+    "Shared/amplitude ablations changed carrier geometry and failed frozen-reader preservation; no student was tested."
+  ],
+  "not_established": [
+    "VAE is the main bottleneck: measured round-trip contrast survives.",
+    "One-step x0 reconstruction predicts inheritance: its marked input can carry signal through an identity term.",
+    "Any one code/design issue explains all failure: causal ablations are still required.",
+    "AUC about .74 proves practical 1% FPR detection or independent model attribution."
+  ]
+}

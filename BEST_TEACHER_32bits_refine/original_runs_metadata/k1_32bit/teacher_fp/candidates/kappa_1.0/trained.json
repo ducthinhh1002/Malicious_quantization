@@ -1,0 +1,8 @@
+{
+  "files": {
+    "adapter_model.safetensors": "0d1e67323186684f5a7a7a5811333b7522e5509277a13433de57e02b46d72436",
+    "adapter_config.json": "b81b7a3437a9b8de71f3cb412e234bc5828480afd1c05f7f30705bd9f633f8bc",
+    "losses.jsonl": "799e66b924c7aba9f5d9560757c131c31795fbdbe143e0455fd0fc615d41d02c"
+  },
+  "steps": 3000
+}

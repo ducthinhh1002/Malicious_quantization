@@ -1,0 +1,9 @@
+{
+  "seed": 42,
+  "batch_size": 32,
+  "encoding": "SERUM posterior sample; generator seed = seed + batch start",
+  "num_images": 500,
+  "images": "/root/workspace/serum/data/pilot/clean",
+  "score_sha256": "a9d46bef5eb39f00e2eccadddccf187c115ea64b6200b06919a9ef3f6d9fc056",
+  "file_order_sha256": "fb50c62bd0d7a8f3aa9c28618bf4db9ddab2a10409764355b2daca0e9fdf9eec"
+}

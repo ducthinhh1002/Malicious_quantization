@@ -1,0 +1,20 @@
+{
+  "step": 1000,
+  "identity": {
+    "config": "16366753884c1066866ef47c140e9f197b57c762f0bbfb184cf2d1a2026b4f42",
+    "spec": "eef4137d9b5567b3c246ea2560300560fc3b7abb306c145248a8b135e13d6a62",
+    "lineage": "d44f6f50947092e9baf5b7e4caaa9f6ceca9481caf90eb4ef9948dbd62027c86",
+    "carrier": "ea4aefe89337d022320c28b3d3cd7578a3f1d3d2ae27491681cb636a63d9a037",
+    "code": "da3e8ece02327ac484cd1e8ff6b8b141a11606e03359eb0e10629197173706a0",
+    "baseline_images": "96829ac92f112719e25600c3f81d9b68c38d36cd5630eaf49658e93b08ef3bbb",
+    "optimizer": "AdamW proposal; exact <=3-halfspace projection of displacement on auxiliary steps",
+    "gradients": "original + quality + protected clean margin + two-view image-PCGrad weak-bit repair; last10 derivatives",
+    "teacher_selection": "fixed additional1200 from Structure32 refine600; no test selection",
+    "scientific_stopping_gates": false
+  },
+  "files": {
+    "training_state.pt": "c0dbbd2c14dd06a531615a59ad9e923cc003d8eb71b3b9901bd7044274aea132",
+    "adapter_model.safetensors": "57702a9d89db4711e686e88a57f95e9d2434256aa24f9ec912593837d7ddd485",
+    "adapter_config.json": "91ec3d110dfb1818c200cd96a65e2d7087ea7f790bcdcd47839da8964ba55bf4"
+  }
+}

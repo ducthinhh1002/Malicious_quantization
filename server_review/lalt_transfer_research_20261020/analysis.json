@@ -1,0 +1,252 @@
+{
+  "date": "2026-10-20",
+  "status": "post_hoc_development_analysis",
+  "score_definition": "s(key221) minus s(key34); complementary keys",
+  "limitations": [
+    "Statistic was proposed after inspecting development results.",
+    "Calibration uses clean-trained outputs available in the experiment.",
+    "CI resamples paired query images, not independent training runs.",
+    "No claim of unseen-key or new-model attribution.",
+    "Contrast TPR is not uniformly better than the original score.",
+    "Bootstrap or repeated subsets cannot create independent model trials."
+  ],
+  "ranks": [
+    {
+      "rank": 4,
+      "n": 128,
+      "source_sha256": "d6cf96875f738607d0e6a64630c49527694cc363b84de76cdd0909193f5deb5b",
+      "original_auc": 0.58966064453125,
+      "original_single_key_tpr": 0.0390625,
+      "paired_score_gain": 1.2892297636717558,
+      "paired_score_gain_ci95": [
+        0.6977541038068011,
+        1.8845810638042164
+      ],
+      "paired_specificity_gain": 0.29568043164908886,
+      "paired_specificity_gain_ci95": [
+        0.24681969899684192,
+        0.3446234682807699
+      ],
+      "contrast_auc": 0.73138427734375,
+      "contrast_threshold": 0.7444758415222168,
+      "contrast_nominal_single_statistic_fpr": 0.01,
+      "calibration_n": 512,
+      "contrast_marked_detected": 5,
+      "contrast_clean_detected": 2,
+      "contrast_tpr": 0.0390625,
+      "contrast_observed_clean_fpr": 0.015625
+    },
+    {
+      "rank": 16,
+      "n": 128,
+      "source_sha256": "4fb17ea80bcaf3718d0c5c72d00a6c89fefddfa7844613e22637347a1f86e3c2",
+      "original_auc": 0.61260986328125,
+      "original_single_key_tpr": 0.078125,
+      "paired_score_gain": 1.4236531108617783,
+      "paired_score_gain_ci95": [
+        0.8082918637664989,
+        2.042742053186521
+      ],
+      "paired_specificity_gain": 0.33276623114943504,
+      "paired_specificity_gain_ci95": [
+        0.282050831313245,
+        0.3836566501762718
+      ],
+      "contrast_auc": 0.7550048828125,
+      "contrast_threshold": 0.8106884956359863,
+      "contrast_nominal_single_statistic_fpr": 0.01,
+      "calibration_n": 512,
+      "contrast_marked_detected": 6,
+      "contrast_clean_detected": 1,
+      "contrast_tpr": 0.046875,
+      "contrast_observed_clean_fpr": 0.0078125
+    },
+    {
+      "rank": 32,
+      "n": 128,
+      "source_sha256": "a5b92a8abbdf42561f05da789707a160feda44e4b456e4d59602c00b4049d255",
+      "original_auc": 0.67144775390625,
+      "original_single_key_tpr": 0.046875,
+      "paired_score_gain": 1.9824760593473911,
+      "paired_score_gain_ci95": [
+        1.3111950364429503,
+        2.6578658721176907
+      ],
+      "paired_specificity_gain": 0.4056100994348526,
+      "paired_specificity_gain_ci95": [
+        0.35045479582622646,
+        0.46136533312965183
+      ],
+      "contrast_auc": 0.79327392578125,
+      "contrast_threshold": 0.7936509847640991,
+      "contrast_nominal_single_statistic_fpr": 0.01,
+      "calibration_n": 512,
+      "contrast_marked_detected": 7,
+      "contrast_clean_detected": 0,
+      "contrast_tpr": 0.0546875,
+      "contrast_observed_clean_fpr": 0.0
+    }
+  ],
+  "proxy_selection": [
+    {
+      "step": 0,
+      "selection_score": -0.10741931945085526,
+      "limiting_key": 34,
+      "limiting_metric": "key_specificity",
+      "paired_effects": {
+        "221": -0.0016439281753264368,
+        "34": -0.0007112944149412215
+      },
+      "horizons": {
+        "221": [
+          {
+            "horizon": 4,
+            "paired_effect": -0.0016439281753264368
+          },
+          {
+            "horizon": 16,
+            "paired_effect": 0.0004214441869407892
+          }
+        ],
+        "34": [
+          {
+            "horizon": 4,
+            "paired_effect": -0.0007112944149412215
+          },
+          {
+            "horizon": 16,
+            "paired_effect": 0.0010560393275227398
+          }
+        ]
+      }
+    },
+    {
+      "step": 16,
+      "selection_score": -0.10749214142560959,
+      "limiting_key": 34,
+      "limiting_metric": "key_specificity",
+      "paired_effects": {
+        "221": -0.0015818577958270907,
+        "34": -0.0003640091745182872
+      },
+      "horizons": {
+        "221": [
+          {
+            "horizon": 4,
+            "paired_effect": -0.0015818577958270907
+          },
+          {
+            "horizon": 16,
+            "paired_effect": 0.00028072018176317215
+          }
+        ],
+        "34": [
+          {
+            "horizon": 4,
+            "paired_effect": -0.0003640091745182872
+          },
+          {
+            "horizon": 16,
+            "paired_effect": 0.0014644514594692737
+          }
+        ]
+      }
+    },
+    {
+      "step": 32,
+      "selection_score": -0.1074327602982521,
+      "limiting_key": 34,
+      "limiting_metric": "key_specificity",
+      "paired_effects": {
+        "221": -0.00221763679292053,
+        "34": -0.0003932229592464864
+      },
+      "horizons": {
+        "221": [
+          {
+            "horizon": 4,
+            "paired_effect": -0.00221763679292053
+          },
+          {
+            "horizon": 16,
+            "paired_effect": -9.643251542001963e-05
+          }
+        ],
+        "34": [
+          {
+            "horizon": 4,
+            "paired_effect": -0.0003932229592464864
+          },
+          {
+            "horizon": 16,
+            "paired_effect": 0.001151937001850456
+          }
+        ]
+      }
+    },
+    {
+      "step": 48,
+      "selection_score": -0.10750114172697067,
+      "limiting_key": 34,
+      "limiting_metric": "key_specificity",
+      "paired_effects": {
+        "221": -0.001995608035940677,
+        "34": -0.00019862258341163397
+      },
+      "horizons": {
+        "221": [
+          {
+            "horizon": 4,
+            "paired_effect": -0.001995608035940677
+          },
+          {
+            "horizon": 16,
+            "paired_effect": 3.2750656828284264e-05
+          }
+        ],
+        "34": [
+          {
+            "horizon": 4,
+            "paired_effect": -0.00019862258341163397
+          },
+          {
+            "horizon": 16,
+            "paired_effect": 0.0016183005645871162
+          }
+        ]
+      }
+    },
+    {
+      "step": 64,
+      "selection_score": -0.10746102035045624,
+      "limiting_key": 34,
+      "limiting_metric": "key_specificity",
+      "paired_effects": {
+        "221": -0.001238859404111281,
+        "34": -0.0004645641893148422
+      },
+      "horizons": {
+        "221": [
+          {
+            "horizon": 4,
+            "paired_effect": -0.001238859404111281
+          },
+          {
+            "horizon": 16,
+            "paired_effect": 0.0006440447177737951
+          }
+        ],
+        "34": [
+          {
+            "horizon": 4,
+            "paired_effect": -0.0004645641893148422
+          },
+          {
+            "horizon": 16,
+            "paired_effect": 0.0014684206689707935
+          }
+        ]
+      }
+    }
+  ]
+}

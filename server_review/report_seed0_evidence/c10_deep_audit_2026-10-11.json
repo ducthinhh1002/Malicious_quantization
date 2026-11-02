@@ -1,0 +1,70 @@
+{
+  "gradient_clipping_reproduction": {
+    "returned_norm": 0.0,
+    "gradient_after": 100.0,
+    "optimizer_parameter_count": 1
+  },
+  "gradient_clipping_list_fix": {
+    "returned_norm": 100.0,
+    "gradient_after": 1.0
+  },
+  "optimizer": {
+    "state_count": 256,
+    "min_step": 19998.0,
+    "max_step": 19998.0,
+    "groups": [
+      {
+        "lr": 1e-05,
+        "betas": [
+          0.9,
+          0.999
+        ],
+        "eps": 1e-08,
+        "weight_decay": 0.01,
+        "amsgrad": false,
+        "maximize": false,
+        "foreach": null,
+        "capturable": false,
+        "differentiable": false,
+        "fused": null,
+        "decoupled_weight_decay": true,
+        "initial_lr": 1e-05
+      }
+    ]
+  },
+  "adapter": {
+    "tensors": 256,
+    "all_finite": true,
+    "sha256": "7de73a00d31123c75b0ea37a5be045b69ca6ce9a1713d8f5675412355a6ab147"
+  },
+  "generation_replay": {
+    "scheduler": "PNDMScheduler",
+    "selected_checkpoint": "/root/workspace/serum/students/C10_seed0/checkpoint-20000",
+    "images": [
+      {
+        "index": 0,
+        "replay_exact": true,
+        "replay_mae": 0.0,
+        "base_vs_original_mae": 47.25092697143555
+      },
+      {
+        "index": 1,
+        "replay_exact": true,
+        "replay_mae": 0.0,
+        "base_vs_original_mae": 41.77241643269857
+      },
+      {
+        "index": 2,
+        "replay_exact": true,
+        "replay_mae": 0.0,
+        "base_vs_original_mae": 55.23264948527018
+      },
+      {
+        "index": 3,
+        "replay_exact": true,
+        "replay_mae": 0.0,
+        "base_vs_original_mae": 38.76718012491862
+      }
+    ]
+  }
+}

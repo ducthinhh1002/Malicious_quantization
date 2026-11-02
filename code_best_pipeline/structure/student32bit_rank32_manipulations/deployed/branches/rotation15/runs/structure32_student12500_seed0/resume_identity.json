@@ -1,0 +1,38 @@
+{
+  "format": 1,
+  "trainer_sha256": "bf72739025211529e2ae236bd0340fe7de21726fd73f32caee70edc456bbc91e",
+  "student_assets_sha256": "db93c0296a3f47955290d8be6e86d289fe0423bed978e7fdfcf666bfe57d06ba",
+  "training_images_manifest_sha256": "96829ac92f112719e25600c3f81d9b68c38d36cd5630eaf49658e93b08ef3bbb",
+  "prompts_sha256": "c9593dcf889f3d630ff71c974bb7385964ea8bfe120e260ecaee538527c3d866",
+  "seed": 0,
+  "batch_size": 4,
+  "steps_per_epoch": 1250,
+  "precision": "fp16",
+  "rank": 32,
+  "scope": "attention_conv",
+  "training_manipulation": {
+    "name": "rotation15",
+    "setting": {
+      "operation": "rotation",
+      "degrees": [
+        -15,
+        15
+      ],
+      "fill": 0.5,
+      "interpolation": "nearest",
+      "channel": "rgb8"
+    },
+    "source_teacher_sha256": "2f9fc8d664786acfe50bf7d47c20e037a92e4cc61805524233bd7f15f365a2d8",
+    "seed_rule": "20261029+i rotation/blur;20261030+i others",
+    "pixel_lookup_sha256": "ec80b00fda1a3b15e71c999d78abee211c81c4d655b206c9be10c49ba7dd8e7f",
+    "fixed_across_epochs": true
+  },
+  "schedule": "absolute7500to12500cosine_floor0.2",
+  "sampler": "seedable explicit epochs",
+  "training_code": {
+    "driver.py": "633692163c14c2eebed022a8c2572dac4b531f82168407239f3225c3bdda7379",
+    "resume_state.py": "9ff8d6664e2b595f6a619c59a065534204b0f7f981cc602b83805ec112325c32",
+    "schedule.py": "3d34495c17f4a65f1378c8b0aefe8ca0b550af3117946f0b74d41b5197de63f9"
+  },
+  "augmentation_code_sha256": "d8ced66adccb3116eb44c396eca652bfb9634f88b902b56f96f1d335501c96c7"
+}

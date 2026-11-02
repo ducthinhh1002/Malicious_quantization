@@ -1,0 +1,195 @@
+{
+  "method": "native UNet with frozen LALT reader",
+  "teacher_selection": {
+    "selected_step": 2000,
+    "valid_design_winner": false,
+    "warning": "No feasible positive transfer on pilot; using the strongest teacher positive control for diagnosis only.",
+    "test_used_for_selection": false,
+    "rule": "pilot TPR minus matched clean-trained FPR under teacher/pilot quality gates; tie PSNR then earlier step",
+    "fallback_rule": "highest teacher TPR; tie PSNR then earlier step; never counted as success",
+    "feasible_steps": [],
+    "measurements": [
+      {
+        "step": 500,
+        "teacher_tpr": 0.00390625,
+        "teacher_ci_low": 0.0006898821669617927,
+        "pilot_tpr": 0.0,
+        "clean_pilot_fpr": 0.0,
+        "clip_drop": 0.007649831240996718,
+        "pilot_clip_drop": 0.0010455306619405746,
+        "psnr": 19.242048369838347
+      },
+      {
+        "step": 1000,
+        "teacher_tpr": 0.0078125,
+        "teacher_ci_low": 0.002145090367681419,
+        "pilot_tpr": 0.0,
+        "clean_pilot_fpr": 0.0,
+        "clip_drop": 0.011779538122937083,
+        "pilot_clip_drop": 0.0011301846243441105,
+        "psnr": 18.487860522907923
+      },
+      {
+        "step": 2000,
+        "teacher_tpr": 0.046875,
+        "teacher_ci_low": 0.027014851001628076,
+        "pilot_tpr": 0.0,
+        "clean_pilot_fpr": 0.0,
+        "clip_drop": 0.013191542588174343,
+        "pilot_clip_drop": 0.004657637560740113,
+        "psnr": 18.348487200055356
+      }
+    ],
+    "detector_sha256": "9bcedc429fd74b667a643c55e5e49b8b671e56be9f9f791d6f49e0197d272065",
+    "pilot_budget": {
+      "per_student_steps": 500,
+      "students": 4,
+      "train_n": 512,
+      "eval_n": 256
+    },
+    "selected_model_export_sha256": "6e8c889b2cde3f2995d32c72a8f0a105360c302837618352cdb2bfb15bdf243e"
+  },
+  "results": [
+    {
+      "model": "teacher_clean_test",
+      "detected": 3,
+      "n": 1000,
+      "detection_rate": 0.003,
+      "ci95_low": 0.0010207838811386186,
+      "ci95_high": 0.008783014053503173,
+      "bit_accuracy": 0.320375,
+      "semantic_clip": 0.7818822963237763,
+      "fid": -2.7941538405684696e-05,
+      "kid": -0.0007755977555110371,
+      "meaning": "false-positive rate"
+    },
+    {
+      "model": "teacher_wm_test",
+      "detected": 72,
+      "n": 1000,
+      "detection_rate": 0.072,
+      "ci95_low": 0.05756392168091441,
+      "ci95_high": 0.08971178358272076,
+      "bit_accuracy": 0.525,
+      "semantic_clip": 0.7678241883516311,
+      "fid": 59.62865976946165,
+      "kid": 0.007582258502004042,
+      "meaning": "watermark detection rate"
+    },
+    {
+      "model": "unadapted",
+      "detected": 3,
+      "n": 1000,
+      "detection_rate": 0.003,
+      "ci95_low": 0.0010207838811386186,
+      "ci95_high": 0.008783014053503173,
+      "bit_accuracy": 0.320375,
+      "semantic_clip": 0.7818822963237763,
+      "fid": -2.7941538405684696e-05,
+      "kid": -0.0007755977555110371,
+      "meaning": "false-positive rate"
+    },
+    {
+      "model": "lora_r16_wm",
+      "detected": 19,
+      "n": 1000,
+      "detection_rate": 0.019,
+      "ci95_low": 0.012196885750790904,
+      "ci95_high": 0.02948445591231312,
+      "bit_accuracy": 0.40225,
+      "semantic_clip": 0.7866775453090668,
+      "fid": 49.92580598597607,
+      "kid": 0.0018449461472946015,
+      "meaning": "watermark detection rate"
+    },
+    {
+      "model": "lora_r32_wm",
+      "detected": 19,
+      "n": 1000,
+      "detection_rate": 0.019,
+      "ci95_low": 0.012196885750790904,
+      "ci95_high": 0.02948445591231312,
+      "bit_accuracy": 0.41475,
+      "semantic_clip": 0.7861357434988022,
+      "fid": 50.852356474058126,
+      "kid": 0.002293458366733483,
+      "meaning": "watermark detection rate"
+    }
+  ],
+  "effects": {
+    "r16_wm_minus_unadapted": {
+      "estimate_pp": 1.6,
+      "paired_ci95_pp": [
+        0.8,
+        2.4
+      ],
+      "scope": "image bootstrap conditional on one training seed; no training-seed uncertainty",
+      "clean_trained_adjustment": false
+    },
+    "r32_wm_minus_unadapted": {
+      "estimate_pp": 1.6,
+      "paired_ci95_pp": [
+        0.8,
+        2.5
+      ],
+      "scope": "image bootstrap conditional on one training seed; no training-seed uncertainty",
+      "clean_trained_adjustment": false
+    }
+  },
+  "warnings": [
+    "Frozen 8-bit LALT reader reused; known key221 is a development choice, not an unseen-key generalization result.",
+    "One seed; pilot search cost is additional compute. Repeat seeds and independent keys before paper claims.",
+    "Teacher uses on-policy DDIM with truncated tail gradients; transfer uses a short predicted-x0 proxy, not full student training.",
+    "Semantic shifts can alter content; inspect images and quality metrics, not just TPR.",
+    "Wrong keys are a finite negative-control audit, not a security guarantee.",
+    "All final students start from the CLEAN base, not the marked teacher; no key or detector loss in student training.",
+    "No feasible positive transfer on pilot; using the strongest teacher positive control for diagnosis only.",
+    "No final clean-trained or fixed-teacher students: differences versus unadapted cannot isolate watermark inheritance from generic fine-tuning effects or establish a selection benefit.",
+    "Teacher watermark failed held-out positive control; low student detection cannot isolate a LoRA transmission failure.",
+    "TEACHER_INVALID: teacher detection/CI/quality/FPR guard failed; no successful inheritance claim."
+  ],
+  "optimizer_updates": {
+    "lora_r16_wm": {
+      "attempted": 10000,
+      "applied": 10000,
+      "skipped": 0,
+      "global_step": 10000,
+      "scope": "this trainer invocation only",
+      "source": "Accelerator.optimizer_step_was_skipped at sync boundaries"
+    },
+    "lora_r32_wm": {
+      "attempted": 10000,
+      "applied": 10000,
+      "skipped": 0,
+      "global_step": 10000,
+      "scope": "this trainer invocation only",
+      "source": "Accelerator.optimizer_step_was_skipped at sync boundaries"
+    }
+  },
+  "teacher_test_psnr": 18.447547684793527,
+  "teacher_valid": false,
+  "claim_checks": {
+    "16": {
+      "teacher_valid": false,
+      "design_selection_valid": false,
+      "student_detection_floor_passed": false,
+      "positive_difference_vs_unadapted_ci": true,
+      "unadapted_fpr_valid": true,
+      "student_clip_gate_vs_unadapted": true,
+      "declared_gates_passed": false
+    },
+    "32": {
+      "teacher_valid": false,
+      "design_selection_valid": false,
+      "student_detection_floor_passed": false,
+      "positive_difference_vs_unadapted_ci": true,
+      "unadapted_fpr_valid": true,
+      "student_clip_gate_vs_unadapted": true,
+      "declared_gates_passed": false
+    }
+  },
+  "clean_trained_controls": false,
+  "causal_inheritance_established": false,
+  "test_used_for_selection": false,
+  "checkpoint_selection": "validation denoising MSE only"
+}

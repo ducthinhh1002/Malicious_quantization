@@ -1,0 +1,12 @@
+{
+  "parent_run": "/root/logs/results/lalt_stable_reader_20261018_111112Z",
+  "parent_checkpoint": "/root/logs/runtime/lcf_artifacts/lalt_stable_reader_20261018_111112Z_11c90d44/teacher_last.pt",
+  "parent_sha256": "bce50d0a1a450ae315a90c4bfcfafe22c93b6bb79ceea85980a9ddef357e8eb0",
+  "initial_teacher_step": 20000,
+  "converted_sha256": "dd41a9d45fd0fceeeb5aed1bccded3bb48b17b5c10562f07333ec3f20ce79044",
+  "official_teacher_gate_passed": false,
+  "explicit_diagnostic": true,
+  "train_key_policy": "221/34 are now development keys; no held-out-key claim",
+  "clean_control_source": "/root/logs/results/lalt_step20000_key221_probe_20261018_231633Z",
+  "source_cache": "/root/logs/results/lalt_20261018_053126Z_diagnostic"
+}

@@ -1,0 +1,20 @@
+{
+  "step": 200,
+  "identity": {
+    "config": "f738ae591d286c1fe0db516f250f01762b9dc147756cb1879ea603c7571f4c01",
+    "spec": "80e030e2decd37097d7e179e102fe84448cae78177abdbfc6b12b75cfbeea5b1",
+    "lineage": "c324faaf4647e5e8e8c0e056a2119f0723668d4aca71aaa56616c4d1b1ea46f7",
+    "carrier": "ea4aefe89337d022320c28b3d3cd7578a3f1d3d2ae27491681cb636a63d9a037",
+    "code": "178ca884f59b63bf5beb9535d8bb9438ac9eab3c232999615676c2796d704af4",
+    "baseline_images": "c28d9d5a44c72f92ccad73df01287fe24ef4fde496eb5a9d24a4a74ed585c165",
+    "optimizer": "AdamW proposal; exact <=3-halfspace projection of displacement on auxiliary steps",
+    "gradients": "original + batch4 native quality + squared per-image margin deficits; last10 derivatives",
+    "teacher_selection": "fixed final600",
+    "scientific_stopping_gates": false
+  },
+  "files": {
+    "training_state.pt": "84ca727812688f2fa4d9a4fb89d26047a966f7b5d563bd72142594d040b23fb6",
+    "adapter_model.safetensors": "35a8dcaa27a800b56b3ba6619c822ef805e93d8c953e1fea761f1baab5306c9d",
+    "adapter_config.json": "ba49afdb762f47b57c1cf6f93bd6ff64b1e4a9a703724fb4ba42114148327309"
+  }
+}

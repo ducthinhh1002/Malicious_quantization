@@ -1,0 +1,472 @@
+{
+  "archive": "E:\\Research\\Malicious_quantization\\result.zip",
+  "archive_sha256": "c63280ab22658f004606ba94b31ec5ff34654da8d3f2079577c41c961d2347e4",
+  "config": {
+    "seed": 0,
+    "dora": true,
+    "ranks": [
+      16,
+      32
+    ],
+    "train_n": 5000,
+    "calibration_n": 5000,
+    "test_n": 1000,
+    "epochs": null,
+    "max_train_steps": 7500,
+    "checkpoint_steps": [
+      2500,
+      5000,
+      7500
+    ],
+    "adapter_scopes": [
+      "attention",
+      "attention_conv"
+    ],
+    "validation_n": 1000,
+    "validation_generation_n": 128,
+    "validation_draws": 2,
+    "watermark_delta": 2.0,
+    "batch_size": 8,
+    "learning_rate": 1e-05,
+    "precision": "fp16",
+    "inference_steps": 50,
+    "inference_batch": 4,
+    "fpr": 0.01,
+    "lora_only": false,
+    "paper_full_ema": false,
+    "train_clean_controls": false,
+    "skip_utility": false,
+    "cache": "/workspace/Malicious_quantization/bitmark_lora/cache",
+    "serum_alpha": 0.5,
+    "serum_checkpoint": null,
+    "serum_cache_archive": null,
+    "teacher_batch": 4,
+    "score_batch": 16,
+    "full_learning_rate": 5e-06,
+    "watermark_method": "serum"
+  },
+  "threshold": {
+    "source": "disjoint clean SERUM SD2.1 teacher calibration; no test data",
+    "calibration_score_sha256": "1d5d172378eef2b1ed394939af216376c493244b7f0d66953f5c820c8524f6f7",
+    "student_calibration_score_sha256": "ecc7e1f4c447900958fac32f54af359fef4511f55d974e542c843d1ae08ccbcb",
+    "student_source": "unadapted SD1.4 on held-out calibration prompts, no adaptation/test data",
+    "n": 5000,
+    "target_fpr": 0.01,
+    "comparison": ">= threshold",
+    "serum_score": 0.8114257454872132,
+    "serum_score_student_calibrated": 0.7563377618789674,
+    "primary": "serum_score",
+    "note": "Author learned detector probability; no message bit accuracy. Secondary threshold accounts for clean student domain shift."
+  },
+  "tables": {
+    "serum_score": [
+      {
+        "branch": "teacher_clean_test",
+        "detected": 5,
+        "n": 1000,
+        "detection_rate": 0.005,
+        "ci95_low": 0.0021375355273244596,
+        "ci95_high": 0.011650955373375113,
+        "mean_score": 0.023587978412253543
+      },
+      {
+        "branch": "teacher_wm_test",
+        "detected": 1000,
+        "n": 1000,
+        "detection_rate": 1.0,
+        "ci95_low": 0.996173241514445,
+        "ci95_high": 1.0,
+        "mean_score": 0.9999999988079071
+      },
+      {
+        "branch": "unadapted",
+        "detected": 5,
+        "n": 1000,
+        "detection_rate": 0.005,
+        "ci95_low": 0.0021375355273244596,
+        "ci95_high": 0.011650955373375113,
+        "mean_score": 0.014464693072972547
+      },
+      {
+        "branch": "lora_r16_wm",
+        "detected": 23,
+        "n": 1000,
+        "detection_rate": 0.023,
+        "ci95_low": 0.015374276932992918,
+        "ci95_high": 0.03427645066222667,
+        "mean_score": 0.04602289452605313
+      },
+      {
+        "branch": "lora_r32_wm",
+        "detected": 29,
+        "n": 1000,
+        "detection_rate": 0.029,
+        "ci95_low": 0.02026644815669875,
+        "ci95_high": 0.04133835833669418,
+        "mean_score": 0.05401525524608616
+      },
+      {
+        "branch": "lora_r16_conv_wm",
+        "detected": 31,
+        "n": 1000,
+        "detection_rate": 0.031,
+        "ci95_low": 0.02192400344715857,
+        "ci95_high": 0.04366549601229214,
+        "mean_score": 0.06769137886191319
+      },
+      {
+        "branch": "lora_r32_conv_wm",
+        "detected": 36,
+        "n": 1000,
+        "detection_rate": 0.036,
+        "ci95_low": 0.02611557140738732,
+        "ci95_high": 0.049435660467207834,
+        "mean_score": 0.06871621119708593
+      },
+      {
+        "branch": "dora_r32_conv_wm",
+        "detected": 32,
+        "n": 1000,
+        "detection_rate": 0.032,
+        "ci95_low": 0.022757107858710962,
+        "ci95_high": 0.04482473808376865,
+        "mean_score": 0.0679644199578377
+      },
+      {
+        "branch": "full_wm",
+        "detected": 836,
+        "n": 1000,
+        "detection_rate": 0.836,
+        "ci95_low": 0.8117726060331938,
+        "ci95_high": 0.857655812264513,
+        "mean_score": 0.8609241156307876
+      }
+    ],
+    "serum_score_student_calibrated": [
+      {
+        "branch": "teacher_clean_test",
+        "detected": 9,
+        "n": 1000,
+        "detection_rate": 0.009,
+        "ci95_low": 0.004742060667477063,
+        "ci95_high": 0.01701581616533807,
+        "mean_score": 0.023587978412253543
+      },
+      {
+        "branch": "teacher_wm_test",
+        "detected": 1000,
+        "n": 1000,
+        "detection_rate": 1.0,
+        "ci95_low": 0.996173241514445,
+        "ci95_high": 1.0,
+        "mean_score": 0.9999999988079071
+      },
+      {
+        "branch": "unadapted",
+        "detected": 5,
+        "n": 1000,
+        "detection_rate": 0.005,
+        "ci95_low": 0.0021375355273244596,
+        "ci95_high": 0.011650955373375113,
+        "mean_score": 0.014464693072972547
+      },
+      {
+        "branch": "lora_r16_wm",
+        "detected": 24,
+        "n": 1000,
+        "detection_rate": 0.024,
+        "ci95_low": 0.016180168466636995,
+        "ci95_high": 0.03546290561161149,
+        "mean_score": 0.04602289452605313
+      },
+      {
+        "branch": "lora_r32_wm",
+        "detected": 32,
+        "n": 1000,
+        "detection_rate": 0.032,
+        "ci95_low": 0.022757107858710962,
+        "ci95_high": 0.04482473808376865,
+        "mean_score": 0.05401525524608616
+      },
+      {
+        "branch": "lora_r16_conv_wm",
+        "detected": 34,
+        "n": 1000,
+        "detection_rate": 0.034,
+        "ci95_low": 0.024431348663226313,
+        "ci95_high": 0.04713519024531107,
+        "mean_score": 0.06769137886191319
+      },
+      {
+        "branch": "lora_r32_conv_wm",
+        "detected": 39,
+        "n": 1000,
+        "detection_rate": 0.039,
+        "ci95_low": 0.028658960904180485,
+        "ci95_high": 0.052869310419501346,
+        "mean_score": 0.06871621119708593
+      },
+      {
+        "branch": "dora_r32_conv_wm",
+        "detected": 39,
+        "n": 1000,
+        "detection_rate": 0.039,
+        "ci95_low": 0.028658960904180485,
+        "ci95_high": 0.052869310419501346,
+        "mean_score": 0.0679644199578377
+      },
+      {
+        "branch": "full_wm",
+        "detected": 841,
+        "n": 1000,
+        "detection_rate": 0.841,
+        "ci95_low": 0.8170364534597756,
+        "ci95_high": 0.8623536972530759,
+        "mean_score": 0.8609241156307876
+      }
+    ]
+  },
+  "paired_effects": {
+    "serum_score": {
+      "full_wm_minus_unadapted": {
+        "estimate_pp": 83.1,
+        "paired_bootstrap_ci95_pp": [
+          80.80000000000001,
+          85.3
+        ],
+        "ci_scope": "paired image sampling, conditional on this one training seed and threshold"
+      },
+      "lora_r16_wm_minus_unadapted": {
+        "estimate_pp": 1.7999999999999998,
+        "paired_bootstrap_ci95_pp": [
+          0.8999999999999999,
+          2.7
+        ],
+        "ci_scope": "paired image sampling, conditional on this one training seed and threshold"
+      },
+      "full_minus_lora_r16": {
+        "estimate_pp": 81.3,
+        "paired_bootstrap_ci95_pp": [
+          78.8,
+          83.7
+        ],
+        "ci_scope": "paired image sampling, conditional on this one training seed and threshold"
+      },
+      "lora_r32_wm_minus_unadapted": {
+        "estimate_pp": 2.4,
+        "paired_bootstrap_ci95_pp": [
+          1.4000000000000001,
+          3.5000000000000004
+        ],
+        "ci_scope": "paired image sampling, conditional on this one training seed and threshold"
+      },
+      "full_minus_lora_r32": {
+        "estimate_pp": 80.7,
+        "paired_bootstrap_ci95_pp": [
+          78.2,
+          83.1
+        ],
+        "ci_scope": "paired image sampling, conditional on this one training seed and threshold"
+      },
+      "lora_r16_conv_wm_minus_unadapted": {
+        "estimate_pp": 2.6,
+        "paired_bootstrap_ci95_pp": [
+          1.5,
+          3.6999999999999997
+        ],
+        "ci_scope": "paired image sampling, conditional on this one training seed and threshold"
+      },
+      "full_minus_lora_r16_conv": {
+        "estimate_pp": 80.5,
+        "paired_bootstrap_ci95_pp": [
+          78.10000000000001,
+          82.89999999999999
+        ],
+        "ci_scope": "paired image sampling, conditional on this one training seed and threshold"
+      },
+      "lora_r32_conv_wm_minus_unadapted": {
+        "estimate_pp": 3.1,
+        "paired_bootstrap_ci95_pp": [
+          2.0,
+          4.3999999999999995
+        ],
+        "ci_scope": "paired image sampling, conditional on this one training seed and threshold"
+      },
+      "full_minus_lora_r32_conv": {
+        "estimate_pp": 80.0,
+        "paired_bootstrap_ci95_pp": [
+          77.5,
+          82.5
+        ],
+        "ci_scope": "paired image sampling, conditional on this one training seed and threshold"
+      },
+      "dora_r32_conv_wm_minus_unadapted": {
+        "estimate_pp": 2.7,
+        "paired_bootstrap_ci95_pp": [
+          1.6,
+          3.8
+        ],
+        "ci_scope": "paired image sampling, conditional on this one training seed and threshold"
+      },
+      "full_minus_dora_r32_conv": {
+        "estimate_pp": 80.4,
+        "paired_bootstrap_ci95_pp": [
+          78.0,
+          82.8
+        ],
+        "ci_scope": "paired image sampling, conditional on this one training seed and threshold"
+      },
+      "conv_minus_attention_r16": {
+        "estimate_pp": 0.8,
+        "paired_bootstrap_ci95_pp": [
+          -0.2,
+          1.7999999999999998
+        ],
+        "ci_scope": "paired image sampling, conditional on this one training seed and threshold"
+      },
+      "conv_minus_attention_r32": {
+        "estimate_pp": 0.7000000000000001,
+        "paired_bootstrap_ci95_pp": [
+          -0.4,
+          1.7999999999999998
+        ],
+        "ci_scope": "paired image sampling, conditional on this one training seed and threshold"
+      },
+      "dora_minus_lora_conv_r32": {
+        "estimate_pp": -0.4,
+        "paired_bootstrap_ci95_pp": [
+          -0.8999999999999999,
+          0.1
+        ],
+        "ci_scope": "paired image sampling, conditional on this one training seed and threshold"
+      }
+    },
+    "serum_score_student_calibrated": {
+      "full_wm_minus_unadapted": {
+        "estimate_pp": 83.6,
+        "paired_bootstrap_ci95_pp": [
+          81.3,
+          85.8
+        ],
+        "ci_scope": "paired image sampling, conditional on this one training seed and threshold"
+      },
+      "lora_r16_wm_minus_unadapted": {
+        "estimate_pp": 1.9,
+        "paired_bootstrap_ci95_pp": [
+          0.8999999999999999,
+          2.9000000000000004
+        ],
+        "ci_scope": "paired image sampling, conditional on this one training seed and threshold"
+      },
+      "full_minus_lora_r16": {
+        "estimate_pp": 81.69999999999999,
+        "paired_bootstrap_ci95_pp": [
+          79.3,
+          84.1
+        ],
+        "ci_scope": "paired image sampling, conditional on this one training seed and threshold"
+      },
+      "lora_r32_wm_minus_unadapted": {
+        "estimate_pp": 2.7,
+        "paired_bootstrap_ci95_pp": [
+          1.6,
+          3.8
+        ],
+        "ci_scope": "paired image sampling, conditional on this one training seed and threshold"
+      },
+      "full_minus_lora_r32": {
+        "estimate_pp": 80.9,
+        "paired_bootstrap_ci95_pp": [
+          78.5,
+          83.3
+        ],
+        "ci_scope": "paired image sampling, conditional on this one training seed and threshold"
+      },
+      "lora_r16_conv_wm_minus_unadapted": {
+        "estimate_pp": 2.9000000000000004,
+        "paired_bootstrap_ci95_pp": [
+          1.7999999999999998,
+          4.1000000000000005
+        ],
+        "ci_scope": "paired image sampling, conditional on this one training seed and threshold"
+      },
+      "full_minus_lora_r16_conv": {
+        "estimate_pp": 80.7,
+        "paired_bootstrap_ci95_pp": [
+          78.3,
+          83.0
+        ],
+        "ci_scope": "paired image sampling, conditional on this one training seed and threshold"
+      },
+      "lora_r32_conv_wm_minus_unadapted": {
+        "estimate_pp": 3.4000000000000004,
+        "paired_bootstrap_ci95_pp": [
+          2.1999999999999997,
+          4.7
+        ],
+        "ci_scope": "paired image sampling, conditional on this one training seed and threshold"
+      },
+      "full_minus_lora_r32_conv": {
+        "estimate_pp": 80.2,
+        "paired_bootstrap_ci95_pp": [
+          77.7,
+          82.6
+        ],
+        "ci_scope": "paired image sampling, conditional on this one training seed and threshold"
+      },
+      "dora_r32_conv_wm_minus_unadapted": {
+        "estimate_pp": 3.4000000000000004,
+        "paired_bootstrap_ci95_pp": [
+          2.1999999999999997,
+          4.7
+        ],
+        "ci_scope": "paired image sampling, conditional on this one training seed and threshold"
+      },
+      "full_minus_dora_r32_conv": {
+        "estimate_pp": 80.2,
+        "paired_bootstrap_ci95_pp": [
+          77.8,
+          82.69999999999999
+        ],
+        "ci_scope": "paired image sampling, conditional on this one training seed and threshold"
+      },
+      "conv_minus_attention_r16": {
+        "estimate_pp": 1.0,
+        "paired_bootstrap_ci95_pp": [
+          -0.1,
+          2.1
+        ],
+        "ci_scope": "paired image sampling, conditional on this one training seed and threshold"
+      },
+      "conv_minus_attention_r32": {
+        "estimate_pp": 0.7000000000000001,
+        "paired_bootstrap_ci95_pp": [
+          -0.4,
+          1.7999999999999998
+        ],
+        "ci_scope": "paired image sampling, conditional on this one training seed and threshold"
+      },
+      "dora_minus_lora_conv_r32": {
+        "estimate_pp": 0,
+        "paired_bootstrap_ci95_pp": [
+          -0.4,
+          0.4
+        ],
+        "ci_scope": "paired image sampling, conditional on this one training seed and threshold"
+      }
+    }
+  },
+  "interpretation": {
+    "teacher_embedding": "Strong: 1000/1000 detected, clean 5/1000 at primary frozen threshold.",
+    "full_transfer": "83.6 percent detection; strong evidence consistent with transfer, but no matched clean-trained full control.",
+    "lora_transfer": "Weak: 2.3 to 3.6 percent primary, 2.4 to 3.9 percent student-calibrated.",
+    "do_not_repeat": "Do not treat SERUM as an untested positive control or launch another identical run.",
+    "limits": [
+      "No clean-trained student controls.",
+      "Only one seed.",
+      "This archive does not contain training logs, optimizer audits, raw image files or student weights; cannot establish the implementation-level cause.",
+      "Ranks 16/32 and 7500 updates differ from the paper rank 4 and selected 19500-step checkpoint; no inference that more steps necessarily solves transfer."
+    ],
+    "research_target": "Improve owner-side fingerprint learnability under ordinary student training; do not alter student LoRA or train objective."
+  }
+}

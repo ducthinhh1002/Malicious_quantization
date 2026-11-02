@@ -1,0 +1,14 @@
+{
+  "steps": 2,
+  "samples_seen": 8,
+  "hashes": {
+    "adapter_model.safetensors": "bd624c002ec2b76a7a297a62003ecb4635702846849a8c088c9ed1a7821ba329",
+    "adapter_config.json": "53c63ce15b204a0949dfeb7777548684b4f1bb28fc0446b5ef5e5f2d961bedde"
+  },
+  "owner_only": true,
+  "student_feedback": false,
+  "objective": "latent_transport",
+  "target_success_rate": 1.0,
+  "accepted_targets": 2,
+  "inference_requires_target_or_hook": false
+}

@@ -1,0 +1,46 @@
+{
+  "rows": [
+    {
+      "key": 221,
+      "split": "teacher_validation",
+      "tpr": 0.8359375,
+      "clean_fpr": 0.0,
+      "bit_accuracy": 0.7158203125,
+      "psnr": 30.40876680612564,
+      "psnr_p05": 27.581018447875977,
+      "lpips": 0.056270029410370626,
+      "lpips_p95": 0.08421462550759315,
+      "clip_drop": -0.00433019467163831,
+      "diversity_ratio": 0.9795158352612486,
+      "mean_gain": 6.188741843216121,
+      "threshold": -2.003749370574951,
+      "calibration_split": "calibration",
+      "score_scale": 4.586277696921764,
+      "passes": false,
+      "auroc": 0.9937744140625,
+      "paired_win_rate": 1.0,
+      "paired_gain_std": 4.445478034249304
+    },
+    {
+      "key": 34,
+      "split": "teacher_validation",
+      "tpr": 0.7578125,
+      "clean_fpr": 0.0,
+      "bit_accuracy": 0.7353515625,
+      "psnr": 29.11277946829796,
+      "psnr_p05": 26.302461433410645,
+      "lpips": 0.0645798794721486,
+      "lpips_p95": 0.09640329927206037,
+      "clip_drop": -4.3298001401126385e-05,
+      "diversity_ratio": 0.9868173246175943,
+      "mean_gain": 5.98544089961797,
+      "threshold": -1.9297184944152832,
+      "calibration_split": "calibration",
+      "score_scale": 4.504950071526921,
+      "passes": false,
+      "auroc": 0.9871826171875,
+      "paired_win_rate": 0.9921875,
+      "paired_gain_std": 4.431879138505106
+    }
+  ]
+}

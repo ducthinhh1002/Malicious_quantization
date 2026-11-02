@@ -1,0 +1,9 @@
+{
+  "status": "launched",
+  "pid": 3075202,
+  "run": "/root/logs/results/signature_author_sd21_to_sd14_20261021_074620Z",
+  "log": "/root/logs/results/signature_author_sd21_to_sd14_20261021_074620Z/parallel_coordinator.log",
+  "smoke": "/root/logs/results/signature_author_sd21_to_sd14_20261021_smoke_v2",
+  "previous_pid": 2893854,
+  "scheduling": "rank4_clean_marked_parallel"
+}

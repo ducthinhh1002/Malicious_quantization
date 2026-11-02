@@ -1,0 +1,148 @@
+{
+  "seed": 0,
+  "scope": "Exploratory core run; C10 reproduction remains weak. One seed cannot establish stable attack success.",
+  "threshold": 0.04637297987937927,
+  "bootstrap_replicates": 1000,
+  "rows": [
+    {
+      "student": "C00_seed0",
+      "tpr": 0.0092,
+      "tpr_bootstrap_ci95": [
+        0.0068,
+        0.0122
+      ],
+      "clipscore": 0.81293212403059,
+      "clipscore_bootstrap_ci95": [
+        0.810262171485126,
+        0.8154363008242846
+      ],
+      "best_validation_mse": 0.14979000494477804,
+      "frechet_inception_distance": 13.294959082857986,
+      "kernel_inception_distance_mean": 0.0013561367988586426,
+      "kernel_inception_distance_std": 0.00020745802300161859
+    },
+    {
+      "student": "C10_seed0",
+      "tpr": 0.0324,
+      "tpr_bootstrap_ci95": [
+        0.0274,
+        0.037204999999999995
+      ],
+      "clipscore": 0.8129400281190872,
+      "clipscore_bootstrap_ci95": [
+        0.8106212195146083,
+        0.8151907529690863
+      ],
+      "best_validation_mse": 0.14609626718889923,
+      "frechet_inception_distance": 14.601136470671918,
+      "kernel_inception_distance_mean": 0.0023531341552734376,
+      "kernel_inception_distance_std": 0.0002680653271791546
+    },
+    {
+      "student": "C01_step0.25_seed0",
+      "tpr": 0.0096,
+      "tpr_bootstrap_ci95": [
+        0.0072,
+        0.0124
+      ],
+      "clipscore": 0.8106669244289398,
+      "clipscore_bootstrap_ci95": [
+        0.808374797630608,
+        0.8132370901808142
+      ],
+      "best_validation_mse": 0.14447872097126674,
+      "frechet_inception_distance": 13.558011373655347,
+      "kernel_inception_distance_mean": 0.0015344023704528809,
+      "kernel_inception_distance_std": 0.00026189530568710253
+    },
+    {
+      "student": "C11_step0.25_seed0",
+      "tpr": 0.032,
+      "tpr_bootstrap_ci95": [
+        0.0272,
+        0.037
+      ],
+      "clipscore": 0.8128022325396538,
+      "clipscore_bootstrap_ci95": [
+        0.8103920523095132,
+        0.8150715635478497
+      ],
+      "best_validation_mse": 0.14128940044227056,
+      "frechet_inception_distance": 14.934942472622481,
+      "kernel_inception_distance_mean": 0.0025702476501464843,
+      "kernel_inception_distance_std": 0.0002793548649830189
+    },
+    {
+      "student": "C01_step1.00_seed0",
+      "tpr": 0.0082,
+      "tpr_bootstrap_ci95": [
+        0.0058,
+        0.0108
+      ],
+      "clipscore": 0.8071460618674755,
+      "clipscore_bootstrap_ci95": [
+        0.8047290120178461,
+        0.8095563483968377
+      ],
+      "best_validation_mse": 0.1461565240258351,
+      "frechet_inception_distance": 13.035823159157644,
+      "kernel_inception_distance_mean": 0.0010707712173461915,
+      "kernel_inception_distance_std": 0.0001788688226381222
+    },
+    {
+      "student": "C11_step1.00_seed0",
+      "tpr": 0.0254,
+      "tpr_bootstrap_ci95": [
+        0.021,
+        0.0298
+      ],
+      "clipscore": 0.8111330034732819,
+      "clipscore_bootstrap_ci95": [
+        0.808772749851048,
+        0.8135540133473277
+      ],
+      "best_validation_mse": 0.14328593843244017,
+      "frechet_inception_distance": 13.982099865068335,
+      "kernel_inception_distance_mean": 0.0017229056358337403,
+      "kernel_inception_distance_std": 0.00021064800498657885
+    }
+  ],
+  "paired_effects": [
+    {
+      "step": 0.25,
+      "C10_minus_C11_tpr": 0.0004,
+      "paired_tpr_difference_ci95": [
+        -0.004,
+        0.0046
+      ],
+      "watermark_effect_reduction_adjusted_for_clean_control": 0.0008,
+      "interaction_ci95": [
+        -0.004005,
+        0.0056
+      ],
+      "C11_minus_C10_clipscore": -0.00013779557943344116,
+      "paired_clipscore_difference_ci95": [
+        -0.001123232611119747,
+        0.0009183706229925154
+      ]
+    },
+    {
+      "step": 1.0,
+      "C10_minus_C11_tpr": 0.007,
+      "paired_tpr_difference_ci95": [
+        0.0022,
+        0.012
+      ],
+      "watermark_effect_reduction_adjusted_for_clean_control": 0.006,
+      "interaction_ci95": [
+        0.0006,
+        0.011604999999999996
+      ],
+      "C11_minus_C10_clipscore": -0.0018070246458053588,
+      "paired_clipscore_difference_ci95": [
+        -0.0031404059851169587,
+        -0.000459804639518261
+      ]
+    }
+  ]
+}

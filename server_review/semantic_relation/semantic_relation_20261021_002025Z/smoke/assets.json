@@ -1,0 +1,7 @@
+{
+  "base": "/root/logs/runtime/cache/CompVis--stable-diffusion-v1-4/133a221b8aa7292a167afc5127cb63fb5005638b",
+  "base_revision": "133a221b8aa7292a167afc5127cb63fb5005638b",
+  "clip": "/root/logs/runtime/cache/openai--clip-vit-base-patch32/3d74acf9a28c67741b2f4f2ea7635f0aaf6f0268",
+  "clip_revision": "3d74acf9a28c67741b2f4f2ea7635f0aaf6f0268",
+  "coco_sha256": "031296bbc80c45a1d1f76bf9a90ead27e94e99ec629208449507a4917a3bf009"
+}

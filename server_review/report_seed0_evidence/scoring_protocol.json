@@ -1,0 +1,6 @@
+{
+  "scorer_sha256": "fce4f5c9b6bd92fff8d054bbab2df073b4a962885e65462861603d5898fb0849",
+  "protocol": "fp16 uncompiled SD2.1 VAE posterior sampling with batch-specific generator; deterministic operations; batch32; seed42",
+  "replay64_exact_match": true,
+  "threshold": 0.04637297987937927
+}

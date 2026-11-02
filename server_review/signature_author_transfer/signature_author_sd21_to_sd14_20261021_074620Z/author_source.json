@@ -1,0 +1,8 @@
+{
+  "repository": "https://github.com/facebookresearch/stable_signature",
+  "commit": "c91217c06e953a4eaf270ef9de4a3939bcea3366",
+  "manifest_sha256": "0b15d1c85feb0b08151b9ff2eaddb6226c12c3fb5568e35a05d214c01556081b",
+  "key": "111010110101000001010111010011010100010000100111",
+  "key_source": "decoding.ipynb, literal key assignment",
+  "source_modified": false
+}

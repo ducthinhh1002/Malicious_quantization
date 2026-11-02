@@ -1,0 +1,13 @@
+{
+  "status": "waiting",
+  "pid": 3396851,
+  "after_coordinator_pid": 3108292,
+  "added_at_utc": "2026-10-22T00:33:40.596870+00:00",
+  "branches": [
+    "r32_attention_marked",
+    "r32_attention_conv_marked"
+  ],
+  "training": "same 5000 steps, lr1e-5, batch2 accumulation2, seed2310; marked data only",
+  "evaluation": "1000 query images; no matched rank32 clean controls",
+  "frozen_source_unchanged": true
+}

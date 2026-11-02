@@ -1,0 +1,46 @@
+{
+  "host": "23",
+  "all_exported_files_verified": true,
+  "delete_paths": {
+    "/var/lib/structure32_teacher_refine600/DOWNLOAD_COMPLETE.json": {
+      "sha256": "67a81d18efc4d79fa203ebc27c169aca4913abe134d595a29b806363a89515fd",
+      "size": 102
+    },
+    "/var/lib/structure32_teacher_refine600/DOWNLOAD_MANIFEST.json": {
+      "sha256": "6193f1cad19ffffff68880afc894f8c2066785200a0001e3ed8f2b1539a57394",
+      "size": 4900
+    },
+    "/var/lib/structure32_teacher_refine600/checkpoint-600/checkpoint.json": {
+      "sha256": "6e19e12e7251b6ab8ab31dc4baafe83089e9bc7ed69468624a5c38c3e5a2b009",
+      "size": 1137
+    },
+    "/var/lib/structure32_teacher_refine600/losses.jsonl": {
+      "sha256": "4e79a2b6b660cf37800ce4177f3e612b9e006e8eeaee36ced212fc40f09b7aad",
+      "size": 1288917
+    },
+    "/var/lib/structure32_teacher_refine600/metadata/assets.json": {
+      "sha256": "db93c0296a3f47955290d8be6e86d289fe0423bed978e7fdfcf666bfe57d06ba",
+      "size": 3770
+    },
+    "/var/lib/structure32_teacher_refine600/metadata/config.json": {
+      "sha256": "f738ae591d286c1fe0db516f250f01762b9dc147756cb1879ea603c7571f4c01",
+      "size": 1599
+    },
+    "/var/lib/structure32_teacher_refine600/metadata/prompts.json": {
+      "sha256": "c9593dcf889f3d630ff71c974bb7385964ea8bfe120e260ecaee538527c3d866",
+      "size": 1629855
+    },
+    "/var/lib/structure32_teacher_refine600/metadata/teacher_choice.json": {
+      "sha256": "c324faaf4647e5e8e8c0e056a2119f0723668d4aca71aaa56616c4d1b1ea46f7",
+      "size": 448
+    },
+    "/var/lib/structure32_teacher_refine600/protocol.json": {
+      "sha256": "23343d49af617d3cf865320de68cca6f65f1fbcdb93d87ddab670dc4a3bc0d9d",
+      "size": 776
+    },
+    "/var/lib/structure32_teacher_refine600/trained.json": {
+      "sha256": "fc13867752344d8870df9bd086fc7b3262eaf0d8cf5298cbd367c035a4d1dff5",
+      "size": 320
+    }
+  }
+}
