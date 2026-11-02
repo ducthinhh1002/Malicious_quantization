@@ -15,7 +15,7 @@ Nguồn: server 10.1.21.21, `/var/lib/structure32_newprompts_rank32/sd14_coco_di
 
 ## Nội dung
 
-- `source/prompts.json`: toàn bộ prompt và split chính xác.
+- `prompts.json`: toàn bộ prompt và split chính xác, đặt ngay tại thư mục gốc cho dễ tìm. Bản lưu nguồn tương ứng là `source/prompts.json`.
 - `source/config.json`, `assets.json`: cấu hình, revision và hash model nền.
 - `source/carrier/`, `source/result/`: carrier và ngưỡng đọc watermark.
 - `pipeline/student/`: orchestration, lịch LR, optimizer/RNG resume, metric.
