@@ -1,0 +1,1 @@
+Local result-document overlays for the pinned t2ifing_radioactive submodule. Copy result_vast/ into the submodule after cloning to recover the local uncommitted reports. The nested repository and its local edits are preserved on this machine.

@@ -1,3 +1,7 @@
 [submodule "baseline"]
 	path = baseline
 	url = https://github.com/ducthinhh1002/baseline.git
+
+[submodule "t2ifing_radioactive"]
+	path = t2ifing_radioactive
+	url = https://github.com/tungserver99/t2ifing_radioactive.git
