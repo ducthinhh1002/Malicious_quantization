@@ -1,0 +1,30 @@
+{
+  "source7500": {
+    "detection": 0.792,
+    "lpips": 0.5222192376106978,
+    "clip_score": 0.7853350944519043,
+    "frechet_inception_distance": 53.35773761761027,
+    "kernel_inception_distance_mean": 0.0007949566841125488,
+    "kernel_inception_distance_std": 0.0001891795381552404
+  },
+  "new10000": {
+    "detection": 0.821,
+    "lpips": 0.5331192897558212,
+    "clip_score": 0.787515632212162,
+    "frechet_inception_distance": 53.453425206590055,
+    "kernel_inception_distance_mean": 0.0007732200622558593,
+    "kernel_inception_distance_std": 0.00016572987104443603
+  },
+  "replay7500": {
+    "step": 7500,
+    "tensor_exact_equal": false,
+    "max_abs_difference": 0.0004711258225142956,
+    "actual_sha256": "2a563fff8654c1a12de9a826d88aaefe83e3e0af93e1f459404157a448cc921a",
+    "reference_sha256": "2ee42c8bffb5c3c6b7ba7f39208554d07e5ca12dbdc16789c1b99fd52a38e19d",
+    "optimizer_continuous_from_clean_initialization": true,
+    "original_optimizer_state_available": false,
+    "interpretation": "Same-config seeded replay has numerical divergence; compare as a rerun, not exact original continuation"
+  },
+  "test_used_for_checkpoint_selection": false,
+  "limitation": "adaptive follow-up, reused test, one seed"
+}

@@ -1,0 +1,6 @@
+{
+  "passed": true,
+  "count": 5,
+  "manifest_sha256": "6b87c6d2d5f46d3a433ed9d5ab3138b756fa2c4892ba55b60d202120857873c9",
+  "output": "test_ablation_specs_keep_original_student_and_native_sampler (native_quality_tests.SamplerTest.test_ablation_specs_keep_original_student_and_native_sampler) ... ok\ntest_color_diagnostic_does_not_claim_quality_score (native_quality_tests.SamplerTest.test_color_diagnostic_does_not_claim_quality_score) ... ok\ntest_half_noise_promoted_to_float_scheduler_state (native_quality_tests.SamplerTest.test_half_noise_promoted_to_float_scheduler_state) ... ok\ntest_original_pndm_forward_and_full_gradient_checkpoint_equivalence (native_quality_tests.SamplerTest.test_original_pndm_forward_and_full_gradient_checkpoint_equivalence) ... ok\ntest_scheduler_state_not_reused_and_repeated_sample_reproducible (native_quality_tests.SamplerTest.test_scheduler_state_not_reused_and_repeated_sample_reproducible) ... ok\n\n----------------------------------------------------------------------\nRan 5 tests in 1.319s\n\nOK\n"
+}

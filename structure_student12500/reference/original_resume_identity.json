@@ -1,0 +1,20 @@
+{
+  "format": 1,
+  "trainer_sha256": "bf72739025211529e2ae236bd0340fe7de21726fd73f32caee70edc456bbc91e",
+  "student_assets_sha256": "669b0f51cc983358f0f6c8d63f728854211715bf9b401357c87b65b817250035",
+  "training_images_manifest_sha256": "c194580613eafde07e6f9c762cd9e5a0bc338595089e913a41043276dd3430b6",
+  "prompts_sha256": "c9593dcf889f3d630ff71c974bb7385964ea8bfe120e260ecaee538527c3d866",
+  "seed": 0,
+  "batch_size": 4,
+  "steps_per_epoch": 1250,
+  "precision": "fp16",
+  "rank": 32,
+  "scope": "attention_conv",
+  "schedule": "absolute7500to12500cosine_floor0.2",
+  "sampler": "seedable explicit epochs",
+  "training_code": {
+    "driver.py": "09a1c68a3773f479f8348c5218f0125c01e531970320108a0476683c623d3920",
+    "resume_state.py": "9ff8d6664e2b595f6a619c59a065534204b0f7f981cc602b83805ec112325c32",
+    "schedule.py": "3d34495c17f4a65f1378c8b0aefe8ca0b550af3117946f0b74d41b5197de63f9"
+  }
+}

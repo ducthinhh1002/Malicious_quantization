@@ -1,0 +1,9 @@
+{
+  "native_quality_campaign.py": "823f30e9e88d77144f25f7ca344e2f55a7081aee6f166ac65054ba707dd0773f",
+  "native_quality_refine.py": "2575457d1e86e087ff9f1d3f29bff3848bf568a66733f6e186525f557f208458",
+  "native_quality_tests.py": "0ab7b49bbade6d4ab859180f54073174698ce8502b01f238188d5aa62ca149b6",
+  "native_quality_audit.py": "58d1f7dc3c27761f21b23a29605a7717a0892db58e42fbc5557751749255d907",
+  "transfer_campaign.py": "9f1fa834d6886368796100f1fbce362e6446fc0b08b63f35fbf28758d37198b8",
+  "transfer_refine.py": "7fb9021665bc730dca8f053aa9e819b6716df2098e668ebe0e51e7507e20ec96",
+  "transfer_proxy.py": "45e9a8509dcaa9da1756cc5f0277bdc4688be5214a6ded2db582b61416a48362"
+}

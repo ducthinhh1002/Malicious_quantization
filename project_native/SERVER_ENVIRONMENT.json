@@ -1,0 +1,20 @@
+{
+  "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+  "executable": "/root/logs/gate_env/bin/python",
+  "packages": {
+    "torch": "2.7.1",
+    "torchvision": "0.22.1",
+    "diffusers": "0.35.1",
+    "transformers": "4.51.3",
+    "peft": "0.17.1",
+    "accelerate": "1.10.1",
+    "datasets": "3.6.0",
+    "numpy": "2.4.6",
+    "scipy": "1.15.3",
+    "safetensors": "0.6.2",
+    "lpips": "0.1.4",
+    "torch-fidelity": "0.3.0",
+    "huggingface-hub": "0.34.4"
+  },
+  "note": "Installed environment observed at download time; original run environment.json should take precedence if available."
+}

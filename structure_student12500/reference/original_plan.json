@@ -1,0 +1,42 @@
+{
+  "created": "2026-10-26T16:19:00.694003+00:00",
+  "source": "/root/logs/threshold_quality_20261022/structure_margin_20261026/structure_margin_native",
+  "source_provenance": {
+    "assets.json": "669b0f51cc983358f0f6c8d63f728854211715bf9b401357c87b65b817250035",
+    "prompts.json": "c9593dcf889f3d630ff71c974bb7385964ea8bfe120e260ecaee538527c3d866",
+    "config.json": "5d0ff8ec02287d463d6ad962e7888fcf5b4dcef12003b00a48f8d85c277e3e18",
+    "images/teacher_wm_train/image_hashes.json": "c194580613eafde07e6f9c762cd9e5a0bc338595089e913a41043276dd3430b6",
+    "images/teacher_wm_validation/image_hashes.json": "c806d5fd4a0d25c1dcf016a51826bff625fbff20238bacb35fd991374e5ae295",
+    "carrier/complete.json": "1f517f4dcbcc565bb4cb308eafbdd713aa6303565af2dfc8fa5df80bb2d8af09",
+    "result/threshold_student.json": "77727987bff46e79b384d5761597cd7bab71267acb5da8842a105038d0e4f57a",
+    "teacher_fp/refined/adapter_model.safetensors": "e4cdc8feefe33480266f53191592030f6dcffa40c05238985a1726ac97a73d6f"
+  },
+  "initialization": "clean SD1.4, train from scratch with unchanged Structure teacher images",
+  "goal_tpr": 0.9,
+  "goal_comparison": "> .90, not a guaranteed outcome",
+  "new_student_updates": 12500,
+  "schedule": "constant1e-4 for7500; cosine to2e-5 by12500",
+  "full_state_every": 1250,
+  "retention": "all10 complete state checkpoints; no deletion",
+  "state_contents": [
+    "LoRA parameters",
+    "AdamW moments/step",
+    "LR scheduler",
+    "FP16 scaler",
+    "Python/NumPy/Torch CPU/CUDA RNG",
+    "cumulative optimizer update counts",
+    "epoch/seed data-order identity"
+  ],
+  "sampler": "SeedableRandomSampler data_seed0, explicit set_epoch; resume only full epoch boundaries",
+  "sampler_caveat": "Deterministic sampler differs from earlier unseeded RandomSampler; this is a fresh trial, not bitwise replay",
+  "selection": "minimum validation denoising MSE at7500/10000/11250/12500; report selected and fixed12500",
+  "scientific_gates": false,
+  "parallel_to": "project_native_transfer90; no dependency/stop/restart",
+  "training_gpu_cap_gib": 44,
+  "limitations": [
+    "single seed",
+    "existing exploratory test",
+    "LR decay may not reach90%",
+    "LPIPS is paired deviation, not anatomy"
+  ]
+}

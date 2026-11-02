@@ -1,0 +1,11 @@
+{
+  "pareto_quality_campaign.py": "839a9c808b0bc1f0d4c138c27c2c03d805ae16e1883ab1b2ec1dbbb13f06f956",
+  "pareto_quality_refine.py": "b67524d93196dca50f2e87be6d273bc730333622b7bdf0be17941e8d81c0fcd3",
+  "pareto_step.py": "acab6f3fa7728750369b36cc3891d92b5e3576c3ef0af51c683d9d3a5c405d51",
+  "pareto_quality_tests.py": "12303b433ee3b73f87885933bf56bc0d0ec1c2b49498b21d3bb808a711d4dc8e",
+  "transfer_campaign.py": "9f1fa834d6886368796100f1fbce362e6446fc0b08b63f35fbf28758d37198b8",
+  "transfer_refine.py": "7fb9021665bc730dca8f053aa9e819b6716df2098e668ebe0e51e7507e20ec96",
+  "transfer_proxy.py": "45e9a8509dcaa9da1756cc5f0277bdc4688be5214a6ded2db582b61416a48362",
+  "native_quality_refine.py": "2e570b415b49f7eb4b4891122afd547b309a1d44961e5bccaa588accf0ed3392",
+  "native_quality_audit.py": "58d1f7dc3c27761f21b23a29605a7717a0892db58e42fbc5557751749255d907"
+}

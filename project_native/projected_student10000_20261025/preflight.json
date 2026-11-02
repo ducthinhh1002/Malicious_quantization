@@ -1,0 +1,11 @@
+{
+  "passed": true,
+  "manifest_sha256": "fba009f07cd96700299fd4444e611bd0c3c6c68557e064501fff3675cdb68b99",
+  "checks": [
+    "frozen upstream trainer parses actual10000 command",
+    "batch/rank/LR/seed preserved",
+    "full-state checkpoint interval2500",
+    "driver7500 tensor comparison and continuation integration"
+  ],
+  "cuda_training_test": "actual training launch follows"
+}

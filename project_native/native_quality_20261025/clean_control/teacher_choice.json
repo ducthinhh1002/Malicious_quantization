@@ -1,0 +1,16 @@
+{
+  "method": "clean_control",
+  "source_checkpoint": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/source/teacher_fp/candidates/kappa_1.0/checkpoint-3000",
+  "source_adapter_sha256": "8e0a5d658d5dace6b22256c66a4c912992e732ee57afc7b41574123383339540",
+  "teacher_kappa": 1.0,
+  "initial_effective_scale": 1.0,
+  "refinement_steps": 0,
+  "teacher_selection": "fixed final step",
+  "test_used_for_selection": false,
+  "quality_stopping_gates": false,
+  "dataset_condition": "clean",
+  "student_branch_name_note": "clean control uses wm branch label only to keep identical upstream training command",
+  "student_trainer": "unchanged ordinary rank32 attention_conv / 7500 updates / batch4 / 5000 training images",
+  "method_definition": "clean_control",
+  "limitations": "One seed and reused exploratory test. Cached clean reference has errors. FP16 unmerged training trajectory vs FP16 merged production has rounding differences. Full native loss preserves owner detection, not proof of transfer to student."
+}

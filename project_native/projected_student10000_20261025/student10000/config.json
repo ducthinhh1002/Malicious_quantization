@@ -1,0 +1,62 @@
+{
+  "seed": 0,
+  "dora": false,
+  "ranks": [
+    32
+  ],
+  "train_n": 5000,
+  "calibration_n": 5000,
+  "test_n": 1000,
+  "epochs": null,
+  "max_train_steps": 10000,
+  "checkpoint_steps": [
+    10000
+  ],
+  "adapter_scopes": [
+    "attention_conv"
+  ],
+  "validation_n": 1000,
+  "validation_generation_n": 1000,
+  "validation_draws": 2,
+  "watermark_delta": 2.0,
+  "batch_size": 4,
+  "learning_rate": 0.0001,
+  "precision": "fp16",
+  "inference_steps": 50,
+  "inference_batch": 16,
+  "fpr": 0.01,
+  "lora_only": true,
+  "paper_full_ema": false,
+  "train_clean_controls": false,
+  "skip_utility": false,
+  "cache": "/root/logs/runtime/cache",
+  "teacher_objective": "threshold_cfg_v1",
+  "threshold_quality": false,
+  "generation_batch": 16,
+  "teacher_kappas": [
+    1.0
+  ],
+  "setting": "pilot",
+  "teacher_snapshot": "/root/logs/runtime/cache/Manojb--stable-diffusion-2-1-base/0094d483a120f3f33dafbd187ea4aa60d10de75c",
+  "student_snapshot": "/root/logs/runtime/cache/CompVis--stable-diffusion-v1-4/133a221b8aa7292a167afc5127cb63fb5005638b",
+  "key_seed": 0,
+  "num_bits": 8,
+  "carrier_pc_min": 8,
+  "carrier_pc_max": 64,
+  "stable_candidate_count": 16,
+  "semantic_t_max": 500,
+  "teacher_precision": "bf16",
+  "teacher_rank": 32,
+  "teacher_lr": 1e-05,
+  "teacher_train_steps": 600,
+  "teacher_checkpoint_every": 200,
+  "teacher_micro_batch": 4,
+  "teacher_batch": 4,
+  "score_batch": 8,
+  "cycle_every": 1,
+  "teacher_clip_drop_max": 0.01,
+  "teacher_lpips_max": 0.15,
+  "teacher_min_tpr": 0.99,
+  "full_learning_rate": 5e-06,
+  "watermark_method": "semantic_fp"
+}

@@ -1,0 +1,2 @@
+branch,step,selected,denoising_mse,detected,n,detection_rate,ci95_low,ci95_high,clip_score,fid,kid,trainable_parameters,quality_status
+lora_r32_conv_wm,10000,True,0.14775229347322602,812,1000,0.812,0.7866068125887822,0.8350052901162315,0.7815656487345696,52.602162449256696,0.0007939028739929199,26592512,measured

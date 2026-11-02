@@ -1,0 +1,1619 @@
+{
+  "reason": "User requested flat project_native/src shared harness layout",
+  "historical_download_manifest_preserved": true,
+  "files": [
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/README.md",
+      "current_path": "src/README.md",
+      "original_sha256": "75199afb3e382ae52368dab5fd4684818671c9ff6ad07f945e7e4f29e06c03c7",
+      "current_sha256": "75199afb3e382ae52368dab5fd4684818671c9ff6ad07f945e7e4f29e06c03c7",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/VALIDATION.md",
+      "current_path": "src/VALIDATION.md",
+      "original_sha256": "bd8f9c0201d0fc60bdc907f82ab420a21978bd2da8768155f287c7a7010715c9",
+      "current_sha256": "bd8f9c0201d0fc60bdc907f82ab420a21978bd2da8768155f287c7a7010715c9",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/assets.py",
+      "current_path": "src/assets.py",
+      "original_sha256": "cb0c6a187788533eafeaa349a3b5cd0572783edea492a99993843647399694c1",
+      "current_sha256": "cb0c6a187788533eafeaa349a3b5cd0572783edea492a99993843647399694c1",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/bootstrap_env.py",
+      "current_path": "src/bootstrap_env.py",
+      "original_sha256": "2b316f645cef0a54ba3c75a41fe2d4894a503314c4945266acd34d2022348cdf",
+      "current_sha256": "2b316f645cef0a54ba3c75a41fe2d4894a503314c4945266acd34d2022348cdf",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/check_runtime.py",
+      "current_path": "src/check_runtime.py",
+      "original_sha256": "b7f0e2548e287b25c47f6d30a85c966a17fbc6c5f9f6f6acd85511d8bceae317",
+      "current_sha256": "b7f0e2548e287b25c47f6d30a85c966a17fbc6c5f9f6f6acd85511d8bceae317",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/common.py",
+      "current_path": "src/common.py",
+      "original_sha256": "9ab7f703d573fea68d1f84296d54b3828c292315429da99d7f07f17345b8641e",
+      "current_sha256": "5fd2ef3203ab425a035c43056e203984ef9653b9ba141b6f9239bb878c1e3f03",
+      "content_changed": true
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/recover_full_export.py",
+      "current_path": "src/recover_full_export.py",
+      "original_sha256": "96d8dd0d42f4d5de518a9864874488a04c89d48bcd1e08a2b8decf023fd4714f",
+      "current_sha256": "96d8dd0d42f4d5de518a9864874488a04c89d48bcd1e08a2b8decf023fd4714f",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/report.py",
+      "current_path": "src/report.py",
+      "original_sha256": "4330d1ce2dfc21dca7fed43b851203a25509f3a2e03577e097313dff143d21be",
+      "current_sha256": "4330d1ce2dfc21dca7fed43b851203a25509f3a2e03577e097313dff143d21be",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/requirements-semantic.txt",
+      "current_path": "src/requirements-semantic.txt",
+      "original_sha256": "d1f4e20b3b1f899a0fd5c020a222ba55ff73310689d732bd123d20f9ce5c0ab0",
+      "current_sha256": "d1f4e20b3b1f899a0fd5c020a222ba55ff73310689d732bd123d20f9ce5c0ab0",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/requirements.txt",
+      "current_path": "src/requirements.txt",
+      "original_sha256": "2fe9108c5305a2e71bc1947d14bf49f514da25c5f0fec7fc55328f937595a713",
+      "current_sha256": "2fe9108c5305a2e71bc1947d14bf49f514da25c5f0fec7fc55328f937595a713",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/run.py",
+      "current_path": "src/run.py",
+      "original_sha256": "75a700b8c70a086a88a1c43988f6951db237d9ed17d5544cc80e63c4393339a9",
+      "current_sha256": "4df48c6096300fd9e2b301cf034627cd5acb7eec7b2ff55b74ad75c064894a3e",
+      "content_changed": true
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/run.sh",
+      "current_path": "src/run.sh",
+      "original_sha256": "b8a2240e66ad8e84120c194bbf4e4acf3e811a86b6cb3e35f6cb5141572f5150",
+      "current_sha256": "b8a2240e66ad8e84120c194bbf4e4acf3e811a86b6cb3e35f6cb5141572f5150",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/run_serum.py",
+      "current_path": "src/run_serum.py",
+      "original_sha256": "81a475ac710fd977b3f7978871f895a5957907c93d794e1b29900fbf1ad4c9d2",
+      "current_sha256": "81a475ac710fd977b3f7978871f895a5957907c93d794e1b29900fbf1ad4c9d2",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/semantic_assets.py",
+      "current_path": "src/semantic_assets.py",
+      "original_sha256": "9fc1fec04cccad9ea96799ae7297236b1d88abd81d66f23fd718acf79267c8e0",
+      "current_sha256": "9fc1fec04cccad9ea96799ae7297236b1d88abd81d66f23fd718acf79267c8e0",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/semantic_candidates.py",
+      "current_path": "src/semantic_candidates.py",
+      "original_sha256": "14b41b0a47891124791f365dd407a940daf2a686f7d3f852e7b7cbe13990263e",
+      "current_sha256": "14b41b0a47891124791f365dd407a940daf2a686f7d3f852e7b7cbe13990263e",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/semantic_carrier.py",
+      "current_path": "src/semantic_carrier.py",
+      "original_sha256": "0e09bbf10f945ce14546043509cf35ac668448b08c34a56a67f5826e41c99425",
+      "current_sha256": "0e09bbf10f945ce14546043509cf35ac668448b08c34a56a67f5826e41c99425",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/semantic_checkpoint.py",
+      "current_path": "src/semantic_checkpoint.py",
+      "original_sha256": "12094a560ffd778f95213ce5a43c28416a030e11741ab714ff6a56c3a51b9ad4",
+      "current_sha256": "12094a560ffd778f95213ce5a43c28416a030e11741ab714ff6a56c3a51b9ad4",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/semantic_execution.py",
+      "current_path": "src/semantic_execution.py",
+      "original_sha256": "55b39a9e0641052b897b18b1eb5c4b093af50a9cc9a9c27127f4b21285dd07d3",
+      "current_sha256": "55b39a9e0641052b897b18b1eb5c4b093af50a9cc9a9c27127f4b21285dd07d3",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/semantic_report.py",
+      "current_path": "src/semantic_report.py",
+      "original_sha256": "ecfd2f4b63e0e8ba1a7ad4b78a6668838d7eaadd50a91a915fa72c143d24204c",
+      "current_sha256": "ecfd2f4b63e0e8ba1a7ad4b78a6668838d7eaadd50a91a915fa72c143d24204c",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/semantic_sign.py",
+      "current_path": "src/semantic_sign.py",
+      "original_sha256": "1fed06a85f4f8dece2c2f610ec7114cc5c4368676c1e97a37d795b58abbbb314",
+      "current_sha256": "1fed06a85f4f8dece2c2f610ec7114cc5c4368676c1e97a37d795b58abbbb314",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/semantic_sign_report.py",
+      "current_path": "src/semantic_sign_report.py",
+      "original_sha256": "31941c0f2c1c0ccab4965ce61718fae764936d27510a7b3f515652f9dee08e2f",
+      "current_sha256": "31941c0f2c1c0ccab4965ce61718fae764936d27510a7b3f515652f9dee08e2f",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/semantic_sign_train.py",
+      "current_path": "src/semantic_sign_train.py",
+      "original_sha256": "4835d94551522459d566742653059fe54fd4778f8e1b509c7bf329259b4bf556",
+      "current_sha256": "4835d94551522459d566742653059fe54fd4778f8e1b509c7bf329259b4bf556",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/semantic_teacher.py",
+      "current_path": "src/semantic_teacher.py",
+      "original_sha256": "558a5ac3e3812828fed73ddb7248a35f83a7a15cf5e29e7061489a13453808d3",
+      "current_sha256": "558a5ac3e3812828fed73ddb7248a35f83a7a15cf5e29e7061489a13453808d3",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/semantic_teacher_train.py",
+      "current_path": "src/semantic_teacher_train.py",
+      "original_sha256": "04af9d95262c039d0ef5bdb993f3b69d598d1497969711074cbdc82bbdb190a7",
+      "current_sha256": "04af9d95262c039d0ef5bdb993f3b69d598d1497969711074cbdc82bbdb190a7",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/semantic_threshold.py",
+      "current_path": "src/semantic_threshold.py",
+      "original_sha256": "6062359c14fe9289e7b206c3537a169e670aa92fd11bfb5d8ba5cb1ce3f91ca0",
+      "current_sha256": "6062359c14fe9289e7b206c3537a169e670aa92fd11bfb5d8ba5cb1ce3f91ca0",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/serum_assets.py",
+      "current_path": "src/serum_assets.py",
+      "original_sha256": "27e3b16dffc0420a48782c7b120aed5af7e47dbf03a87e9875657e708dbdc1ac",
+      "current_sha256": "27e3b16dffc0420a48782c7b120aed5af7e47dbf03a87e9875657e708dbdc1ac",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/serum_teacher.py",
+      "current_path": "src/serum_teacher.py",
+      "original_sha256": "b34bcf8e6aac8fb1bf57161bd6d84ce6c038467cf1b5cf489cdd9133eb23698e",
+      "current_sha256": "b34bcf8e6aac8fb1bf57161bd6d84ce6c038467cf1b5cf489cdd9133eb23698e",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/setup_env.py",
+      "current_path": "src/setup_env.py",
+      "original_sha256": "909ce276c396b5a8f115abf7957f20696ce79c129698bfee08f9c267b50a6f5d",
+      "current_sha256": "909ce276c396b5a8f115abf7957f20696ce79c129698bfee08f9c267b50a6f5d",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/smoke_cpu.py",
+      "current_path": "src/smoke_cpu.py",
+      "original_sha256": "976a579e1b400c1857c2c73560e51de35e1a7d30a919204fac4dccf861fda2ec",
+      "current_sha256": "976a579e1b400c1857c2c73560e51de35e1a7d30a919204fac4dccf861fda2ec",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/smoke_serum_cpu.py",
+      "current_path": "src/smoke_serum_cpu.py",
+      "original_sha256": "5c90aff3389f52ec3a79a64bd3226d2ae2bef038605b336d0dda2859448f956b",
+      "current_sha256": "5c90aff3389f52ec3a79a64bd3226d2ae2bef038605b336d0dda2859448f956b",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/student.py",
+      "current_path": "src/student.py",
+      "original_sha256": "4100d7728fcc96291dadaca47e4b9ccdc81502545b1e690c90d4735371126c28",
+      "current_sha256": "4100d7728fcc96291dadaca47e4b9ccdc81502545b1e690c90d4735371126c28",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/teacher.py",
+      "current_path": "src/teacher.py",
+      "original_sha256": "da0d77536d8f348b6390d9fb54670e62fbfa0bed8497892e01219e8e43f4c0c6",
+      "current_sha256": "da0d77536d8f348b6390d9fb54670e62fbfa0bed8497892e01219e8e43f4c0c6",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/test_bootstrap.py",
+      "current_path": "src/test_bootstrap.py",
+      "original_sha256": "760baf50d0f2bb13b0f28c1280a3ed204dbb024f174b13e38fe7efa0e5b276f9",
+      "current_sha256": "760baf50d0f2bb13b0f28c1280a3ed204dbb024f174b13e38fe7efa0e5b276f9",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/test_generation.py",
+      "current_path": "src/test_generation.py",
+      "original_sha256": "c459ac9d8f8c56201b4e29a5de6c1e5e86cafd6165029ee83a471c0374e216f2",
+      "current_sha256": "c459ac9d8f8c56201b4e29a5de6c1e5e86cafd6165029ee83a471c0374e216f2",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/test_protocol.py",
+      "current_path": "src/test_protocol.py",
+      "original_sha256": "641fdf039f9da65cbcaeee28d99a172adcd8bb3c5cb637b71bc4b98b71b9ff3d",
+      "current_sha256": "641fdf039f9da65cbcaeee28d99a172adcd8bb3c5cb637b71bc4b98b71b9ff3d",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/test_recovery.py",
+      "current_path": "src/test_recovery.py",
+      "original_sha256": "37b31d0fdab402faff50cf135d0637753e7f25853d289bc8b46b959536671867",
+      "current_sha256": "37b31d0fdab402faff50cf135d0637753e7f25853d289bc8b46b959536671867",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/test_semantic_audit.py",
+      "current_path": "src/test_semantic_audit.py",
+      "original_sha256": "6d99f14abab3865237a953fc73360f8f6a78723cb48e407e00b567aaa63014da",
+      "current_sha256": "6d99f14abab3865237a953fc73360f8f6a78723cb48e407e00b567aaa63014da",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/test_semantic_execution.py",
+      "current_path": "src/test_semantic_execution.py",
+      "original_sha256": "739e4eb8e34342e4af54a63a315ea7600848bf559be199452c6c38e03b83ac3a",
+      "current_sha256": "739e4eb8e34342e4af54a63a315ea7600848bf559be199452c6c38e03b83ac3a",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/test_semantic_fp.py",
+      "current_path": "src/test_semantic_fp.py",
+      "original_sha256": "bda7d6a592aaecf3ef6ea208ef950d6fabc9e49f01d16dcc4281b77971d4dba7",
+      "current_sha256": "bda7d6a592aaecf3ef6ea208ef950d6fabc9e49f01d16dcc4281b77971d4dba7",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/test_semantic_memory.py",
+      "current_path": "src/test_semantic_memory.py",
+      "original_sha256": "32b6934852f35dfbb830b65bdda4c40567a6347508806447691f70d48e67dccd",
+      "current_sha256": "ec788ce873f507e37260c77a05c2cc8ef4ee2796d63cfe93b8e7c22ef21006e7",
+      "content_changed": true
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/test_semantic_numerics.py",
+      "current_path": "src/test_semantic_numerics.py",
+      "original_sha256": "78a6b25e344d06e86731e56fb4fc1ca8ed18d664cf11809c7110f1c972b4eead",
+      "current_sha256": "78a6b25e344d06e86731e56fb4fc1ca8ed18d664cf11809c7110f1c972b4eead",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/test_semantic_resume.py",
+      "current_path": "src/test_semantic_resume.py",
+      "original_sha256": "cb73975e4650ad2527677b9c6178ce4b35fc5bba8ab6d12d83b0e05fd7a5fa17",
+      "current_sha256": "cb73975e4650ad2527677b9c6178ce4b35fc5bba8ab6d12d83b0e05fd7a5fa17",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/test_semantic_sign.py",
+      "current_path": "src/test_semantic_sign.py",
+      "original_sha256": "f3e7c99283d1c76a414eddb50cc17463a75cd164eed55991f152b41eae194e51",
+      "current_sha256": "f3e7c99283d1c76a414eddb50cc17463a75cd164eed55991f152b41eae194e51",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/test_semantic_sign_audit.py",
+      "current_path": "src/test_semantic_sign_audit.py",
+      "original_sha256": "53d5804d64681fa498fc775d97c7c4abe77a1487ecf391df0e8de1abecd5a580",
+      "current_sha256": "53d5804d64681fa498fc775d97c7c4abe77a1487ecf391df0e8de1abecd5a580",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/test_semantic_sign_protocol.py",
+      "current_path": "src/test_semantic_sign_protocol.py",
+      "original_sha256": "41620162e18f9d14a379f776c856fe921d2abf055412ccd1fa2a36274337c57e",
+      "current_sha256": "41620162e18f9d14a379f776c856fe921d2abf055412ccd1fa2a36274337c57e",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/test_semantic_sign_report.py",
+      "current_path": "src/test_semantic_sign_report.py",
+      "original_sha256": "84c28205f84ec5e30878d46c4cfead15cff7f875686814b8adf2dd843c08c9f4",
+      "current_sha256": "84c28205f84ec5e30878d46c4cfead15cff7f875686814b8adf2dd843c08c9f4",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/test_semantic_sign_train.py",
+      "current_path": "src/test_semantic_sign_train.py",
+      "original_sha256": "eb0f08a4a80e6441418d691950a901dd6b2c7380a20c249e6a7b20941ba385c4",
+      "current_sha256": "eb0f08a4a80e6441418d691950a901dd6b2c7380a20c249e6a7b20941ba385c4",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/test_semantic_threshold.py",
+      "current_path": "src/test_semantic_threshold.py",
+      "original_sha256": "0ee4bdcde90d84f72c6064a7d7351227ddf6d9d836b3717993eb81508720de06",
+      "current_sha256": "0ee4bdcde90d84f72c6064a7d7351227ddf6d9d836b3717993eb81508720de06",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/test_serum.py",
+      "current_path": "src/test_serum.py",
+      "original_sha256": "e24735cb5c04e59b0c6f60bdef0eea976bce813f4c4ff4cb64f9394aa9fe3d18",
+      "current_sha256": "e24735cb5c04e59b0c6f60bdef0eea976bce813f4c4ff4cb64f9394aa9fe3d18",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/test_threshold_quality.py",
+      "current_path": "src/test_threshold_quality.py",
+      "original_sha256": "c8099c0f848884d70aa5980ca326520e3038e3c8ff6448e68d2ab0b80dc7c611",
+      "current_sha256": "c8099c0f848884d70aa5980ca326520e3038e3c8ff6448e68d2ab0b80dc7c611",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/test_validation.py",
+      "current_path": "src/test_validation.py",
+      "original_sha256": "85547986039ed38379ac0dee51105a18614582b547a5e219a86a2267d04faa9b",
+      "current_sha256": "85547986039ed38379ac0dee51105a18614582b547a5e219a86a2267d04faa9b",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/threshold_quality.py",
+      "current_path": "src/threshold_quality.py",
+      "original_sha256": "deebd0a0fd0855ae34f068b8a207ec1315d6be58eb3d9005d964d3f81ee95af6",
+      "current_sha256": "deebd0a0fd0855ae34f068b8a207ec1315d6be58eb3d9005d964d3f81ee95af6",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/utility.py",
+      "current_path": "src/utility.py",
+      "original_sha256": "ec20d13d2530713b23f80bc4578c25be8503aa6a4067002b8c86f7f9e4d08164",
+      "current_sha256": "ec20d13d2530713b23f80bc4578c25be8503aa6a4067002b8c86f7f9e4d08164",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/validation.py",
+      "current_path": "src/validation.py",
+      "original_sha256": "201b1d3b50abdc17a39518d3e3a1621e910690717838d7834a8fdcb9c966089b",
+      "current_sha256": "201b1d3b50abdc17a39518d3e3a1621e910690717838d7834a8fdcb9c966089b",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/vendor/bitmark/Infinity/environment.yml",
+      "current_path": "src/vendor/bitmark/Infinity/environment.yml",
+      "original_sha256": "0096faa4dcccc1ef4d73e908820793321dd8f99129687df0191aabf5ef70e50e",
+      "current_sha256": "0096faa4dcccc1ef4d73e908820793321dd8f99129687df0191aabf5ef70e50e",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/vendor/bitmark/Infinity/finetune_for_radioactivity.sh",
+      "current_path": "src/vendor/bitmark/Infinity/finetune_for_radioactivity.sh",
+      "original_sha256": "396680304bfb24dbe35a7e58189ed26a27cd641c0ce83dc9e35d9ab4fc68d59d",
+      "current_sha256": "396680304bfb24dbe35a7e58189ed26a27cd641c0ce83dc9e35d9ab4fc68d59d",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/vendor/bitmark/Infinity/flipper.py",
+      "current_path": "src/vendor/bitmark/Infinity/flipper.py",
+      "original_sha256": "e34c10b30f262eb2e2b2286dec3727f0845fb22a1f6b29cab5193f3f89d52187",
+      "current_sha256": "e34c10b30f262eb2e2b2286dec3727f0845fb22a1f6b29cab5193f3f89d52187",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/vendor/bitmark/Infinity/infinity/dataset/build.py",
+      "current_path": "src/vendor/bitmark/Infinity/infinity/dataset/build.py",
+      "original_sha256": "da96bc07fadf531ff06d87a211484a94062c173f48750552a3568f2e909d2c95",
+      "current_sha256": "da96bc07fadf531ff06d87a211484a94062c173f48750552a3568f2e909d2c95",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/vendor/bitmark/Infinity/infinity/dataset/dataset_t2i_iterable.py",
+      "current_path": "src/vendor/bitmark/Infinity/infinity/dataset/dataset_t2i_iterable.py",
+      "original_sha256": "623b1ec6be6d63c046b3d444aadb77468a80e7a59eb9b5f08a5da14611841e7c",
+      "current_sha256": "623b1ec6be6d63c046b3d444aadb77468a80e7a59eb9b5f08a5da14611841e7c",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/vendor/bitmark/Infinity/infinity/models/__init__.py",
+      "current_path": "src/vendor/bitmark/Infinity/infinity/models/__init__.py",
+      "original_sha256": "614ee812eb00ed4adf442957b87f45eb853f9db55f71fbc744a9bd400f80f4a6",
+      "current_sha256": "614ee812eb00ed4adf442957b87f45eb853f9db55f71fbc744a9bd400f80f4a6",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/vendor/bitmark/Infinity/infinity/models/basic.py",
+      "current_path": "src/vendor/bitmark/Infinity/infinity/models/basic.py",
+      "original_sha256": "4bc2e733a0721268eba5ec6f682d71ab5fb251cb757d7d05e42bd65ec2dac042",
+      "current_sha256": "4bc2e733a0721268eba5ec6f682d71ab5fb251cb757d7d05e42bd65ec2dac042",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/vendor/bitmark/Infinity/infinity/models/bitwise_self_correction.py",
+      "current_path": "src/vendor/bitmark/Infinity/infinity/models/bitwise_self_correction.py",
+      "original_sha256": "8978f155843d4bcf99b1413831f35eec75c31d0ec171ea37a8283e9c6a04ffe5",
+      "current_sha256": "8978f155843d4bcf99b1413831f35eec75c31d0ec171ea37a8283e9c6a04ffe5",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/vendor/bitmark/Infinity/infinity/models/bsq_vae/conv.py",
+      "current_path": "src/vendor/bitmark/Infinity/infinity/models/bsq_vae/conv.py",
+      "original_sha256": "db649dc412437e40d357b7eac10e9784383ab8815d6ef57537ac2350a0c3489d",
+      "current_sha256": "db649dc412437e40d357b7eac10e9784383ab8815d6ef57537ac2350a0c3489d",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/vendor/bitmark/Infinity/infinity/models/bsq_vae/dynamic_resolution.py",
+      "current_path": "src/vendor/bitmark/Infinity/infinity/models/bsq_vae/dynamic_resolution.py",
+      "original_sha256": "d399f50262e44d56b5de9d07107f3893c05f567e428734ef20b68b843f8dd2a3",
+      "current_sha256": "d399f50262e44d56b5de9d07107f3893c05f567e428734ef20b68b843f8dd2a3",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/vendor/bitmark/Infinity/infinity/models/bsq_vae/flux_vqgan.py",
+      "current_path": "src/vendor/bitmark/Infinity/infinity/models/bsq_vae/flux_vqgan.py",
+      "original_sha256": "5a1922a4d1058ff50d784a9a404abdef6f17ac124cd345cbe5bd926cc47c5bb1",
+      "current_sha256": "5a1922a4d1058ff50d784a9a404abdef6f17ac124cd345cbe5bd926cc47c5bb1",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/vendor/bitmark/Infinity/infinity/models/bsq_vae/multiscale_bsq.py",
+      "current_path": "src/vendor/bitmark/Infinity/infinity/models/bsq_vae/multiscale_bsq.py",
+      "original_sha256": "cfe99a0baf056bf1e58a21a1811a397c7ad816e90c8e1c9f127603c80d7d85ba",
+      "current_sha256": "cfe99a0baf056bf1e58a21a1811a397c7ad816e90c8e1c9f127603c80d7d85ba",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/vendor/bitmark/Infinity/infinity/models/bsq_vae/vae.py",
+      "current_path": "src/vendor/bitmark/Infinity/infinity/models/bsq_vae/vae.py",
+      "original_sha256": "d0854ee9b5c50f27970e439a57fb74b77a062bec78a7c482610d03482a81c845",
+      "current_sha256": "d0854ee9b5c50f27970e439a57fb74b77a062bec78a7c482610d03482a81c845",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/vendor/bitmark/Infinity/infinity/models/ema.py",
+      "current_path": "src/vendor/bitmark/Infinity/infinity/models/ema.py",
+      "original_sha256": "f1774f473801808706a30ee7c0a69bf260b68e9f638680019e30f605f27f5e42",
+      "current_sha256": "f1774f473801808706a30ee7c0a69bf260b68e9f638680019e30f605f27f5e42",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/vendor/bitmark/Infinity/infinity/models/flex_attn.py",
+      "current_path": "src/vendor/bitmark/Infinity/infinity/models/flex_attn.py",
+      "original_sha256": "d39f7da07caa6f80cd40e16e2781da3aa80a1fd5850de0a8d40fac36e1afe65d",
+      "current_sha256": "d39f7da07caa6f80cd40e16e2781da3aa80a1fd5850de0a8d40fac36e1afe65d",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/vendor/bitmark/Infinity/infinity/models/fused_op.py",
+      "current_path": "src/vendor/bitmark/Infinity/infinity/models/fused_op.py",
+      "original_sha256": "6caad7599d668551b9591cda68d85f831cc54f8a818780bdc7c2972a97bb49d4",
+      "current_sha256": "6caad7599d668551b9591cda68d85f831cc54f8a818780bdc7c2972a97bb49d4",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/vendor/bitmark/Infinity/infinity/models/infinity.py",
+      "current_path": "src/vendor/bitmark/Infinity/infinity/models/infinity.py",
+      "original_sha256": "dc64ef92616b65b4b6793f3a8fa5f3799f33425e47e6c3ec099fced7ecff10af",
+      "current_sha256": "dc64ef92616b65b4b6793f3a8fa5f3799f33425e47e6c3ec099fced7ecff10af",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/vendor/bitmark/Infinity/infinity/models/init_param.py",
+      "current_path": "src/vendor/bitmark/Infinity/infinity/models/init_param.py",
+      "original_sha256": "4b3aea2c8129fa2c1572bd6ff6d7856c4b7d5ff8ffbf82e3b0924a47579a60bf",
+      "current_sha256": "4b3aea2c8129fa2c1572bd6ff6d7856c4b7d5ff8ffbf82e3b0924a47579a60bf",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/vendor/bitmark/Infinity/infinity/models/t5.py",
+      "current_path": "src/vendor/bitmark/Infinity/infinity/models/t5.py",
+      "original_sha256": "010ffd847b909800597f1b7572eb828fe5f57e8e3e65fdd03a872e00eb63e6f1",
+      "current_sha256": "010ffd847b909800597f1b7572eb828fe5f57e8e3e65fdd03a872e00eb63e6f1",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/vendor/bitmark/Infinity/infinity/utils/amp_opt.py",
+      "current_path": "src/vendor/bitmark/Infinity/infinity/utils/amp_opt.py",
+      "original_sha256": "65f9d0f5602a155236ebebaeb452d105b619125888a996814c8310f11ddfc9c7",
+      "current_sha256": "65f9d0f5602a155236ebebaeb452d105b619125888a996814c8310f11ddfc9c7",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/vendor/bitmark/Infinity/infinity/utils/arg_util.py",
+      "current_path": "src/vendor/bitmark/Infinity/infinity/utils/arg_util.py",
+      "original_sha256": "0afbf4ab218d44788d16ea17e98ce92dfa35c7587a934f8e0757814ccaca985f",
+      "current_sha256": "0afbf4ab218d44788d16ea17e98ce92dfa35c7587a934f8e0757814ccaca985f",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/vendor/bitmark/Infinity/infinity/utils/csv_util.py",
+      "current_path": "src/vendor/bitmark/Infinity/infinity/utils/csv_util.py",
+      "original_sha256": "b30d5f27c20e208b4463368342305d7a7ef32a7d129b26148c97e2a75a509bd4",
+      "current_sha256": "b30d5f27c20e208b4463368342305d7a7ef32a7d129b26148c97e2a75a509bd4",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/vendor/bitmark/Infinity/infinity/utils/dist.py",
+      "current_path": "src/vendor/bitmark/Infinity/infinity/utils/dist.py",
+      "original_sha256": "faed14c23b41c3223a084c3c2520442b622cf323a02208cd77a291881d70cfa2",
+      "current_sha256": "faed14c23b41c3223a084c3c2520442b622cf323a02208cd77a291881d70cfa2",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/vendor/bitmark/Infinity/infinity/utils/dynamic_resolution.py",
+      "current_path": "src/vendor/bitmark/Infinity/infinity/utils/dynamic_resolution.py",
+      "original_sha256": "08f862fcf3f326e35c38a730e4bec817544a00b2a0801dccacb3c5d3744c5efc",
+      "current_sha256": "08f862fcf3f326e35c38a730e4bec817544a00b2a0801dccacb3c5d3744c5efc",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/vendor/bitmark/Infinity/infinity/utils/large_file_util.py",
+      "current_path": "src/vendor/bitmark/Infinity/infinity/utils/large_file_util.py",
+      "original_sha256": "05665d73332e478408cd351e7b81312bb1125f6c1c56cfb16c154e4de331c493",
+      "current_sha256": "05665d73332e478408cd351e7b81312bb1125f6c1c56cfb16c154e4de331c493",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/vendor/bitmark/Infinity/infinity/utils/load.py",
+      "current_path": "src/vendor/bitmark/Infinity/infinity/utils/load.py",
+      "original_sha256": "c73e13661672d8340978c8b0f4626ca7316068e2a54c77aafd2f72db1f23d56e",
+      "current_sha256": "c73e13661672d8340978c8b0f4626ca7316068e2a54c77aafd2f72db1f23d56e",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/vendor/bitmark/Infinity/infinity/utils/lr_control.py",
+      "current_path": "src/vendor/bitmark/Infinity/infinity/utils/lr_control.py",
+      "original_sha256": "d9e5c95b15dba4603da68032010fd0d417452186a71a839729dd8a5782d31506",
+      "current_sha256": "d9e5c95b15dba4603da68032010fd0d417452186a71a839729dd8a5782d31506",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/vendor/bitmark/Infinity/infinity/utils/misc.py",
+      "current_path": "src/vendor/bitmark/Infinity/infinity/utils/misc.py",
+      "original_sha256": "c228ff4eb31a7239f835704b17f17113dbfcea0580fcd230074908b8d2c64d21",
+      "current_sha256": "c228ff4eb31a7239f835704b17f17113dbfcea0580fcd230074908b8d2c64d21",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/vendor/bitmark/Infinity/infinity/utils/save_and_load.py",
+      "current_path": "src/vendor/bitmark/Infinity/infinity/utils/save_and_load.py",
+      "original_sha256": "e2d10bc8c13c45133d920e580930537e11443eac6f3d8d9cc17e9e1641d4926d",
+      "current_sha256": "e2d10bc8c13c45133d920e580930537e11443eac6f3d8d9cc17e9e1641d4926d",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/vendor/bitmark/Infinity/infinity/utils/wandb_utils.py",
+      "current_path": "src/vendor/bitmark/Infinity/infinity/utils/wandb_utils.py",
+      "original_sha256": "6468465eb650f31807cb087ce33d2faaf90a22851f55ee3e7adff584856784dd",
+      "current_sha256": "6468465eb650f31807cb087ce33d2faaf90a22851f55ee3e7adff584856784dd",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/vendor/bitmark/Infinity/requirements.txt",
+      "current_path": "src/vendor/bitmark/Infinity/requirements.txt",
+      "original_sha256": "dbc787b478617a1f6221f9b1151781b8f68b504321be76f7e40abd73cc6f3ef6",
+      "current_sha256": "dbc787b478617a1f6221f9b1151781b8f68b504321be76f7e40abd73cc6f3ef6",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/vendor/bitmark/Infinity/tools/run_infinity.py",
+      "current_path": "src/vendor/bitmark/Infinity/tools/run_infinity.py",
+      "original_sha256": "e0cbe90656a25f343a8af4e39c130d8b02e6dd7e79e5297985fe10028f581003",
+      "current_sha256": "e0cbe90656a25f343a8af4e39c130d8b02e6dd7e79e5297985fe10028f581003",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/vendor/bitmark/Infinity/tools/run_tokenizer.py",
+      "current_path": "src/vendor/bitmark/Infinity/tools/run_tokenizer.py",
+      "original_sha256": "a1399f9de0927a51e842c839a2b15e275d10ff42dfba3f04683912fae9222ef8",
+      "current_sha256": "a1399f9de0927a51e842c839a2b15e275d10ff42dfba3f04683912fae9222ef8",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/vendor/bitmark/Infinity/tools/scales_injector.py",
+      "current_path": "src/vendor/bitmark/Infinity/tools/scales_injector.py",
+      "original_sha256": "08f59865628ae15cd92fd3d35bc6930d17727d3c899a21700833f0b0d7161e38",
+      "current_sha256": "08f59865628ae15cd92fd3d35bc6930d17727d3c899a21700833f0b0d7161e38",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/vendor/bitmark/Infinity/train.py",
+      "current_path": "src/vendor/bitmark/Infinity/train.py",
+      "original_sha256": "48d73d1c6edd36b4775e6025fef5c58e7b59434d158b1695b47b8318e904311e",
+      "current_sha256": "48d73d1c6edd36b4775e6025fef5c58e7b59434d158b1695b47b8318e904311e",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/vendor/bitmark/Infinity/trainer.py",
+      "current_path": "src/vendor/bitmark/Infinity/trainer.py",
+      "original_sha256": "e188ab2f6cb8d73001f69fcbd149b8c53e7bee1cd9d7d0261c43b18d61d97edb",
+      "current_sha256": "e188ab2f6cb8d73001f69fcbd149b8c53e7bee1cd9d7d0261c43b18d61d97edb",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/vendor/bitmark/architecture_wrapper.py",
+      "current_path": "src/vendor/bitmark/architecture_wrapper.py",
+      "original_sha256": "7f2ab54f06ac21c3ed8194599a387567159114b59685b949cd17d596b866902f",
+      "current_sha256": "7f2ab54f06ac21c3ed8194599a387567159114b59685b949cd17d596b866902f",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/vendor/bitmark/detect_watermark.py",
+      "current_path": "src/vendor/bitmark/detect_watermark.py",
+      "original_sha256": "d85fbeeda50ca0965d345abe130a1f1fe8f1fa4579ce189fe711ae4bbdaca70e",
+      "current_sha256": "d85fbeeda50ca0965d345abe130a1f1fe8f1fa4579ce189fe711ae4bbdaca70e",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/vendor/bitmark/extended_watermark_processor.py",
+      "current_path": "src/vendor/bitmark/extended_watermark_processor.py",
+      "original_sha256": "6feb414b41a9cbc488050be3943c44e4e163e6fbfdc2a60d4438e264447df69c",
+      "current_sha256": "6feb414b41a9cbc488050be3943c44e4e163e6fbfdc2a60d4438e264447df69c",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/vendor/bitmark/helper.py",
+      "current_path": "src/vendor/bitmark/helper.py",
+      "original_sha256": "c867f2a69a2c93a677b31b3e1c462d65816daf95cbb5b6931c6c402904ff2241",
+      "current_sha256": "c867f2a69a2c93a677b31b3e1c462d65816daf95cbb5b6931c6c402904ff2241",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/vendor/diffusers/train_text_to_image.py",
+      "current_path": "src/vendor/diffusers/train_text_to_image.py",
+      "original_sha256": "7973d4683f714d2b2ebf0dced77431013c0c5840a7b05d56ab5e6a814aa00a7f",
+      "current_sha256": "7973d4683f714d2b2ebf0dced77431013c0c5840a7b05d56ab5e6a814aa00a7f",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/vendor/diffusers/train_text_to_image_lora.py",
+      "current_path": "src/vendor/diffusers/train_text_to_image_lora.py",
+      "original_sha256": "bf72739025211529e2ae236bd0340fe7de21726fd73f32caee70edc456bbc91e",
+      "current_sha256": "bf72739025211529e2ae236bd0340fe7de21726fd73f32caee70edc456bbc91e",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/vendor/provenance.json",
+      "current_path": "src/vendor/provenance.json",
+      "original_sha256": "2a1a7b0c69796e0a3d6093834357342918bb01a44d71bcebcacf590f5c309258",
+      "current_sha256": "2a1a7b0c69796e0a3d6093834357342918bb01a44d71bcebcacf590f5c309258",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/vendor/serum/__init__.py",
+      "current_path": "src/vendor/serum/__init__.py",
+      "original_sha256": "855cf431720505996c5d617141a3d5af9730c04587cb1f711877c5456bd82a27",
+      "current_sha256": "855cf431720505996c5d617141a3d5af9730c04587cb1f711877c5456bd82a27",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/vendor/serum/cleanup.py",
+      "current_path": "src/vendor/serum/cleanup.py",
+      "original_sha256": "689b643bd4d6b9c662aa07586b4e9919a11f820a2e567e08280af8f2d085f0bd",
+      "current_sha256": "689b643bd4d6b9c662aa07586b4e9919a11f820a2e567e08280af8f2d085f0bd",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/vendor/serum/config.py",
+      "current_path": "src/vendor/serum/config.py",
+      "original_sha256": "76ba6defacc7806581fafb3ee22f02d561e363443afc976aba0c26ff6f06fcc4",
+      "current_sha256": "76ba6defacc7806581fafb3ee22f02d561e363443afc976aba0c26ff6f06fcc4",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/vendor/serum/config_sd21.yaml",
+      "current_path": "src/vendor/serum/config_sd21.yaml",
+      "original_sha256": "34aebdf2414f39e37278dce60758665467d3b6b27450b3e3b8938c2452668e65",
+      "current_sha256": "34aebdf2414f39e37278dce60758665467d3b6b27450b3e3b8938c2452668e65",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/vendor/serum/score_model.py",
+      "current_path": "src/vendor/serum/score_model.py",
+      "original_sha256": "c3593dd4cca9a6cd66b4db473fef10d10a575e8c2218ed5834d3d1c3d0463615",
+      "current_sha256": "c3593dd4cca9a6cd66b4db473fef10d10a575e8c2218ed5834d3d1c3d0463615",
+      "content_changed": false
+    },
+    {
+      "original_path": "Malicious_quantization/bitmark_lora/vendor/serum/watermark.py",
+      "current_path": "src/vendor/serum/watermark.py",
+      "original_sha256": "f36e6f2553b136cc4ec8f8d075d1a68dc35ab414720ebcc385b1011d5c226086",
+      "current_sha256": "f36e6f2553b136cc4ec8f8d075d1a68dc35ab414720ebcc385b1011d5c226086",
+      "content_changed": false
+    },
+    {
+      "original_path": "README.md",
+      "current_path": "README.md",
+      "original_sha256": "286f1321d68140d5497a4c7bbf7d40a69b9e1201780cc814cb071a4a6f65cf8b",
+      "current_sha256": "286f1321d68140d5497a4c7bbf7d40a69b9e1201780cc814cb071a4a6f65cf8b",
+      "content_changed": false
+    },
+    {
+      "original_path": "docs/manojb_5k_campaign.md",
+      "current_path": "docs/manojb_5k_campaign.md",
+      "original_sha256": "f748c379b28be203973de009d4a789f174baf67374a77310d442d8afe65be240",
+      "current_sha256": "f748c379b28be203973de009d4a789f174baf67374a77310d442d8afe65be240",
+      "content_changed": false
+    },
+    {
+      "original_path": "docs/quality_research_20261023.md",
+      "current_path": "docs/quality_research_20261023.md",
+      "original_sha256": "9b8738a861b316b4735e5e48df5f5ab8b8102d42ea4e3b38f67c4ff2162e049c",
+      "current_sha256": "9b8738a861b316b4735e5e48df5f5ab8b8102d42ea4e3b38f67c4ff2162e049c",
+      "content_changed": false
+    },
+    {
+      "original_path": "docs/scale085_detection_recovery_20261024.md",
+      "current_path": "docs/scale085_detection_recovery_20261024.md",
+      "original_sha256": "f0e53ade0ded691736c5b4c09f2b35f818ddeb13f274e448143dd979cdae4cf0",
+      "current_sha256": "f0e53ade0ded691736c5b4c09f2b35f818ddeb13f274e448143dd979cdae4cf0",
+      "content_changed": false
+    },
+    {
+      "original_path": "docs/superpowers/plans/2026-10-19-semantic-fingerprint.md",
+      "current_path": "docs/superpowers/plans/2026-10-19-semantic-fingerprint.md",
+      "original_sha256": "f55047602248ae67a326a729d5fc91f234b11969f7190e32202f59ca2cc6bfc9",
+      "current_sha256": "f55047602248ae67a326a729d5fc91f234b11969f7190e32202f59ca2cc6bfc9",
+      "content_changed": false
+    },
+    {
+      "original_path": "docs/superpowers/plans/2026-10-21-semantic-sign.md",
+      "current_path": "docs/superpowers/plans/2026-10-21-semantic-sign.md",
+      "original_sha256": "b92c8c6e82f1e4438850d76dfa0474e8cfb1d099ee70eb8bdcd16d6d1a1878cb",
+      "current_sha256": "b92c8c6e82f1e4438850d76dfa0474e8cfb1d099ee70eb8bdcd16d6d1a1878cb",
+      "content_changed": false
+    },
+    {
+      "original_path": "docs/threshold_cfg_v1.md",
+      "current_path": "docs/threshold_cfg_v1.md",
+      "original_sha256": "00cdbc33b7c79eeec5e9f084ff981339f2c6cc84dc578bb62f8e52782a365eca",
+      "current_sha256": "00cdbc33b7c79eeec5e9f084ff981339f2c6cc84dc578bb62f8e52782a365eca",
+      "content_changed": false
+    },
+    {
+      "original_path": "docs/transfer_research_20261024.md",
+      "current_path": "docs/transfer_research_20261024.md",
+      "original_sha256": "5f2c9d2a5390caa5136d4acf3be97f5f8b0e420f02cb35f57c95ddf641f6482a",
+      "current_sha256": "5f2c9d2a5390caa5136d4acf3be97f5f8b0e420f02cb35f57c95ddf641f6482a",
+      "content_changed": false
+    },
+    {
+      "original_path": "docs/validation/semantic_cpu_validation.md",
+      "current_path": "docs/validation/semantic_cpu_validation.md",
+      "original_sha256": "30c9e77107d899ed76480256a93da2ba1f7dd3dba59aa686ff1a2615764223b6",
+      "current_sha256": "30c9e77107d899ed76480256a93da2ba1f7dd3dba59aa686ff1a2615764223b6",
+      "content_changed": false
+    },
+    {
+      "original_path": "docs/validation/semantic_execution_optimization.md",
+      "current_path": "docs/validation/semantic_execution_optimization.md",
+      "original_sha256": "6fbe7a9f218760ec3ab7a8f466dee5eb8b3b2850dcee940a081a84c176d0d3c9",
+      "current_sha256": "6fbe7a9f218760ec3ab7a8f466dee5eb8b3b2850dcee940a081a84c176d0d3c9",
+      "content_changed": false
+    },
+    {
+      "original_path": "docs/validation/semantic_memory_fix.md",
+      "current_path": "docs/validation/semantic_memory_fix.md",
+      "original_sha256": "68d314d03530341e917d9137b8bfbbd8c376568ccd731f9395448cccf06a3216",
+      "current_sha256": "68d314d03530341e917d9137b8bfbbd8c376568ccd731f9395448cccf06a3216",
+      "content_changed": false
+    },
+    {
+      "original_path": "docs/validation/semantic_numerical_fix.md",
+      "current_path": "docs/validation/semantic_numerical_fix.md",
+      "original_sha256": "080762eaf47672b9a8691e33674bf2cf543d4a1924f659a1cd0af4bd618c365a",
+      "current_sha256": "080762eaf47672b9a8691e33674bf2cf543d4a1924f659a1cd0af4bd618c365a",
+      "content_changed": false
+    },
+    {
+      "original_path": "docs/validation/semantic_resume.md",
+      "current_path": "docs/validation/semantic_resume.md",
+      "original_sha256": "f6d4eb345ce8eaee67a00af5216687365bf354c6bc8be4a7f010b33c5992f985",
+      "current_sha256": "f6d4eb345ce8eaee67a00af5216687365bf354c6bc8be4a7f010b33c5992f985",
+      "content_changed": false
+    },
+    {
+      "original_path": "docs/validation/semantic_sign_spec_audit.md",
+      "current_path": "docs/validation/semantic_sign_spec_audit.md",
+      "original_sha256": "0f294608191b8195b921e2f7b16a19ede5e8501013275d89efa2c2bf17c50e5e",
+      "current_sha256": "0f294608191b8195b921e2f7b16a19ede5e8501013275d89efa2c2bf17c50e5e",
+      "content_changed": false
+    },
+    {
+      "original_path": "docs/validation/semantic_sign_v1.md",
+      "current_path": "docs/validation/semantic_sign_v1.md",
+      "original_sha256": "33e877aced6f8cae1f3af0ed65bdd64f3893642bcf60221875ec1b9e51f5ff9b",
+      "current_sha256": "33e877aced6f8cae1f3af0ed65bdd64f3893642bcf60221875ec1b9e51f5ff9b",
+      "content_changed": false
+    },
+    {
+      "original_path": "docs/validation/semantic_spec_audit.md",
+      "current_path": "docs/validation/semantic_spec_audit.md",
+      "original_sha256": "92f7b43333a609afed387688816c9b1a4e7374b5f7b072e9a37e90ffa00402ba",
+      "current_sha256": "ddf81cfa10d653805387f1f61353f6fc6d5f0020c2d8c60221aebd11e619a67f",
+      "content_changed": true
+    },
+    {
+      "original_path": "docs/validation/semantic_threshold_cfg.md",
+      "current_path": "docs/validation/semantic_threshold_cfg.md",
+      "original_sha256": "d0310e992c9b4a5328f082062a1ffdc6dc10b73e32b8ad5c5554505fc046081d",
+      "current_sha256": "d0310e992c9b4a5328f082062a1ffdc6dc10b73e32b8ad5c5554505fc046081d",
+      "content_changed": false
+    },
+    {
+      "original_path": "group_search.py",
+      "current_path": "group_search.py",
+      "original_sha256": "787b4d41e1dd28a290683f36a7493f4d4ec2c2a5ffec8fa5cdb633009feb434f",
+      "current_sha256": "787b4d41e1dd28a290683f36a7493f4d4ec2c2a5ffec8fa5cdb633009feb434f",
+      "content_changed": false
+    },
+    {
+      "original_path": "main.py",
+      "current_path": "main.py",
+      "original_sha256": "fc6761865bffa9ee9c3f0012af9366b768fdd3b692ddafa9371275429c630ff4",
+      "current_sha256": "272a6074f93bc4722844dc4968734781bfaad1b991860c1d309778d75db7c36f",
+      "content_changed": true
+    },
+    {
+      "original_path": "manojb_5k_campaign.py",
+      "current_path": "manojb_5k_campaign.py",
+      "original_sha256": "7421d7243a37a948555fc973a8b8ac3412a1d8cfff2152f31256eb70d9f55c63",
+      "current_sha256": "7421d7243a37a948555fc973a8b8ac3412a1d8cfff2152f31256eb70d9f55c63",
+      "content_changed": false
+    },
+    {
+      "original_path": "native_quality_20261025/clean_control/assets.json",
+      "current_path": "native_quality_20261025/clean_control/assets.json",
+      "original_sha256": "669b0f51cc983358f0f6c8d63f728854211715bf9b401357c87b65b817250035",
+      "current_sha256": "669b0f51cc983358f0f6c8d63f728854211715bf9b401357c87b65b817250035",
+      "content_changed": false
+    },
+    {
+      "original_path": "native_quality_20261025/clean_control/carrier/complete.json",
+      "current_path": "native_quality_20261025/clean_control/carrier/complete.json",
+      "original_sha256": "1f517f4dcbcc565bb4cb308eafbdd713aa6303565af2dfc8fa5df80bb2d8af09",
+      "current_sha256": "1f517f4dcbcc565bb4cb308eafbdd713aa6303565af2dfc8fa5df80bb2d8af09",
+      "content_changed": false
+    },
+    {
+      "original_path": "native_quality_20261025/clean_control/complete.json",
+      "current_path": "native_quality_20261025/clean_control/complete.json",
+      "original_sha256": "b1595202e88078fc04debd31c6dd344f1d846305f228765fdb3747b10b3b3b16",
+      "current_sha256": "b1595202e88078fc04debd31c6dd344f1d846305f228765fdb3747b10b3b3b16",
+      "content_changed": false
+    },
+    {
+      "original_path": "native_quality_20261025/clean_control/config.json",
+      "current_path": "native_quality_20261025/clean_control/config.json",
+      "original_sha256": "06758dcc39b2bd3f6e23cf2f793d5f8ebd1c62728aba3fcd67198ed4b4850800",
+      "current_sha256": "06758dcc39b2bd3f6e23cf2f793d5f8ebd1c62728aba3fcd67198ed4b4850800",
+      "content_changed": false
+    },
+    {
+      "original_path": "native_quality_20261025/clean_control/refine_spec.json",
+      "current_path": "native_quality_20261025/clean_control/refine_spec.json",
+      "original_sha256": "5adc0ed75463216b74fd8ac24c459e7282b4f597f3d78114b140d7fb7ab96e31",
+      "current_sha256": "5adc0ed75463216b74fd8ac24c459e7282b4f597f3d78114b140d7fb7ab96e31",
+      "content_changed": false
+    },
+    {
+      "original_path": "native_quality_20261025/clean_control/result/checkpoint_metrics.csv",
+      "current_path": "native_quality_20261025/clean_control/result/checkpoint_metrics.csv",
+      "original_sha256": "3ca666186299608e37233fbe907872035ab2e4e016f2718301ca5b599070352d",
+      "current_sha256": "3ca666186299608e37233fbe907872035ab2e4e016f2718301ca5b599070352d",
+      "content_changed": false
+    },
+    {
+      "original_path": "native_quality_20261025/clean_control/result/threshold.json",
+      "current_path": "native_quality_20261025/clean_control/result/threshold.json",
+      "original_sha256": "805254d1ca3d6bc9f4cfe966aed95dfeab60a02a0b9fd9d6394d8895cc70c187",
+      "current_sha256": "805254d1ca3d6bc9f4cfe966aed95dfeab60a02a0b9fd9d6394d8895cc70c187",
+      "content_changed": false
+    },
+    {
+      "original_path": "native_quality_20261025/clean_control/result/threshold_student.json",
+      "current_path": "native_quality_20261025/clean_control/result/threshold_student.json",
+      "original_sha256": "77727987bff46e79b384d5761597cd7bab71267acb5da8842a105038d0e4f57a",
+      "current_sha256": "77727987bff46e79b384d5761597cd7bab71267acb5da8842a105038d0e4f57a",
+      "content_changed": false
+    },
+    {
+      "original_path": "native_quality_20261025/clean_control/result/threshold_teacher.json",
+      "current_path": "native_quality_20261025/clean_control/result/threshold_teacher.json",
+      "original_sha256": "7da9b2877ab8c1237305e1665aff8d47b1817db0f60830ba94afb654362ff8d5",
+      "current_sha256": "7da9b2877ab8c1237305e1665aff8d47b1817db0f60830ba94afb654362ff8d5",
+      "content_changed": false
+    },
+    {
+      "original_path": "native_quality_20261025/clean_control/result/utility.json",
+      "current_path": "native_quality_20261025/clean_control/result/utility.json",
+      "original_sha256": "3adbb0758747dba83816471a6488399ba93db92077d8403f80b1be72e71bf2ff",
+      "current_sha256": "3adbb0758747dba83816471a6488399ba93db92077d8403f80b1be72e71bf2ff",
+      "content_changed": false
+    },
+    {
+      "original_path": "native_quality_20261025/clean_control/teacher_choice.json",
+      "current_path": "native_quality_20261025/clean_control/teacher_choice.json",
+      "original_sha256": "b7ae0bdbc3b2da2399b423131d94d44ca70a14ce1dd0145f8fdaea7ee19557fe",
+      "current_sha256": "b7ae0bdbc3b2da2399b423131d94d44ca70a14ce1dd0145f8fdaea7ee19557fe",
+      "content_changed": false
+    },
+    {
+      "original_path": "native_quality_20261025/code_manifest.json",
+      "current_path": "native_quality_20261025/code_manifest.json",
+      "original_sha256": "6b87c6d2d5f46d3a433ed9d5ab3138b756fa2c4892ba55b60d202120857873c9",
+      "current_sha256": "6b87c6d2d5f46d3a433ed9d5ab3138b756fa2c4892ba55b60d202120857873c9",
+      "content_changed": false
+    },
+    {
+      "original_path": "native_quality_20261025/comparison.json",
+      "current_path": "native_quality_20261025/comparison.json",
+      "original_sha256": "391237cb962c085513c9d2810974f559c12641c7b76691311a786c50d827d6c3",
+      "current_sha256": "391237cb962c085513c9d2810974f559c12641c7b76691311a786c50d827d6c3",
+      "content_changed": false
+    },
+    {
+      "original_path": "native_quality_20261025/continuation/assets.json",
+      "current_path": "native_quality_20261025/continuation/assets.json",
+      "original_sha256": "669b0f51cc983358f0f6c8d63f728854211715bf9b401357c87b65b817250035",
+      "current_sha256": "669b0f51cc983358f0f6c8d63f728854211715bf9b401357c87b65b817250035",
+      "content_changed": false
+    },
+    {
+      "original_path": "native_quality_20261025/continuation/carrier/complete.json",
+      "current_path": "native_quality_20261025/continuation/carrier/complete.json",
+      "original_sha256": "1f517f4dcbcc565bb4cb308eafbdd713aa6303565af2dfc8fa5df80bb2d8af09",
+      "current_sha256": "1f517f4dcbcc565bb4cb308eafbdd713aa6303565af2dfc8fa5df80bb2d8af09",
+      "content_changed": false
+    },
+    {
+      "original_path": "native_quality_20261025/continuation/complete.json",
+      "current_path": "native_quality_20261025/continuation/complete.json",
+      "original_sha256": "b1595202e88078fc04debd31c6dd344f1d846305f228765fdb3747b10b3b3b16",
+      "current_sha256": "b1595202e88078fc04debd31c6dd344f1d846305f228765fdb3747b10b3b3b16",
+      "content_changed": false
+    },
+    {
+      "original_path": "native_quality_20261025/continuation/config.json",
+      "current_path": "native_quality_20261025/continuation/config.json",
+      "original_sha256": "5d0ff8ec02287d463d6ad962e7888fcf5b4dcef12003b00a48f8d85c277e3e18",
+      "current_sha256": "5d0ff8ec02287d463d6ad962e7888fcf5b4dcef12003b00a48f8d85c277e3e18",
+      "content_changed": false
+    },
+    {
+      "original_path": "native_quality_20261025/continuation/refine_spec.json",
+      "current_path": "native_quality_20261025/continuation/refine_spec.json",
+      "original_sha256": "5adc0ed75463216b74fd8ac24c459e7282b4f597f3d78114b140d7fb7ab96e31",
+      "current_sha256": "5adc0ed75463216b74fd8ac24c459e7282b4f597f3d78114b140d7fb7ab96e31",
+      "content_changed": false
+    },
+    {
+      "original_path": "native_quality_20261025/continuation/result/checkpoint_metrics.csv",
+      "current_path": "native_quality_20261025/continuation/result/checkpoint_metrics.csv",
+      "original_sha256": "33d750a51d959229a203e53dfa34a0a4df4c57b24773d7e9730bc3958d412770",
+      "current_sha256": "33d750a51d959229a203e53dfa34a0a4df4c57b24773d7e9730bc3958d412770",
+      "content_changed": false
+    },
+    {
+      "original_path": "native_quality_20261025/continuation/result/threshold.json",
+      "current_path": "native_quality_20261025/continuation/result/threshold.json",
+      "original_sha256": "805254d1ca3d6bc9f4cfe966aed95dfeab60a02a0b9fd9d6394d8895cc70c187",
+      "current_sha256": "805254d1ca3d6bc9f4cfe966aed95dfeab60a02a0b9fd9d6394d8895cc70c187",
+      "content_changed": false
+    },
+    {
+      "original_path": "native_quality_20261025/continuation/result/threshold_student.json",
+      "current_path": "native_quality_20261025/continuation/result/threshold_student.json",
+      "original_sha256": "77727987bff46e79b384d5761597cd7bab71267acb5da8842a105038d0e4f57a",
+      "current_sha256": "77727987bff46e79b384d5761597cd7bab71267acb5da8842a105038d0e4f57a",
+      "content_changed": false
+    },
+    {
+      "original_path": "native_quality_20261025/continuation/result/threshold_teacher.json",
+      "current_path": "native_quality_20261025/continuation/result/threshold_teacher.json",
+      "original_sha256": "7da9b2877ab8c1237305e1665aff8d47b1817db0f60830ba94afb654362ff8d5",
+      "current_sha256": "7da9b2877ab8c1237305e1665aff8d47b1817db0f60830ba94afb654362ff8d5",
+      "content_changed": false
+    },
+    {
+      "original_path": "native_quality_20261025/continuation/result/utility.json",
+      "current_path": "native_quality_20261025/continuation/result/utility.json",
+      "original_sha256": "6f1d313fc5bd0aa7a9cf003d354a7bab572ec468a6da167bc8434ae3a5da63b1",
+      "current_sha256": "6f1d313fc5bd0aa7a9cf003d354a7bab572ec468a6da167bc8434ae3a5da63b1",
+      "content_changed": false
+    },
+    {
+      "original_path": "native_quality_20261025/continuation/teacher_choice.json",
+      "current_path": "native_quality_20261025/continuation/teacher_choice.json",
+      "original_sha256": "6e80d72a85a5648ccb548dae4a679dd4827d4f479ac9362874c6711643961aae",
+      "current_sha256": "6e80d72a85a5648ccb548dae4a679dd4827d4f479ac9362874c6711643961aae",
+      "content_changed": false
+    },
+    {
+      "original_path": "native_quality_20261025/native_full/assets.json",
+      "current_path": "native_quality_20261025/native_full/assets.json",
+      "original_sha256": "669b0f51cc983358f0f6c8d63f728854211715bf9b401357c87b65b817250035",
+      "current_sha256": "669b0f51cc983358f0f6c8d63f728854211715bf9b401357c87b65b817250035",
+      "content_changed": false
+    },
+    {
+      "original_path": "native_quality_20261025/native_full/carrier/complete.json",
+      "current_path": "native_quality_20261025/native_full/carrier/complete.json",
+      "original_sha256": "1f517f4dcbcc565bb4cb308eafbdd713aa6303565af2dfc8fa5df80bb2d8af09",
+      "current_sha256": "1f517f4dcbcc565bb4cb308eafbdd713aa6303565af2dfc8fa5df80bb2d8af09",
+      "content_changed": false
+    },
+    {
+      "original_path": "native_quality_20261025/native_full/complete.json",
+      "current_path": "native_quality_20261025/native_full/complete.json",
+      "original_sha256": "b1595202e88078fc04debd31c6dd344f1d846305f228765fdb3747b10b3b3b16",
+      "current_sha256": "b1595202e88078fc04debd31c6dd344f1d846305f228765fdb3747b10b3b3b16",
+      "content_changed": false
+    },
+    {
+      "original_path": "native_quality_20261025/native_full/config.json",
+      "current_path": "native_quality_20261025/native_full/config.json",
+      "original_sha256": "5d0ff8ec02287d463d6ad962e7888fcf5b4dcef12003b00a48f8d85c277e3e18",
+      "current_sha256": "5d0ff8ec02287d463d6ad962e7888fcf5b4dcef12003b00a48f8d85c277e3e18",
+      "content_changed": false
+    },
+    {
+      "original_path": "native_quality_20261025/native_full/refine_spec.json",
+      "current_path": "native_quality_20261025/native_full/refine_spec.json",
+      "original_sha256": "53f518495dd05fb5549021e29298e141b7300843a5dcae3bc859bd2929373dd4",
+      "current_sha256": "53f518495dd05fb5549021e29298e141b7300843a5dcae3bc859bd2929373dd4",
+      "content_changed": false
+    },
+    {
+      "original_path": "native_quality_20261025/native_full/result/checkpoint_metrics.csv",
+      "current_path": "native_quality_20261025/native_full/result/checkpoint_metrics.csv",
+      "original_sha256": "7efc46521d41be02a97dd282c623e7caad73c29ca1f489603d1f41d8f247ae50",
+      "current_sha256": "7efc46521d41be02a97dd282c623e7caad73c29ca1f489603d1f41d8f247ae50",
+      "content_changed": false
+    },
+    {
+      "original_path": "native_quality_20261025/native_full/result/threshold.json",
+      "current_path": "native_quality_20261025/native_full/result/threshold.json",
+      "original_sha256": "805254d1ca3d6bc9f4cfe966aed95dfeab60a02a0b9fd9d6394d8895cc70c187",
+      "current_sha256": "805254d1ca3d6bc9f4cfe966aed95dfeab60a02a0b9fd9d6394d8895cc70c187",
+      "content_changed": false
+    },
+    {
+      "original_path": "native_quality_20261025/native_full/result/threshold_student.json",
+      "current_path": "native_quality_20261025/native_full/result/threshold_student.json",
+      "original_sha256": "77727987bff46e79b384d5761597cd7bab71267acb5da8842a105038d0e4f57a",
+      "current_sha256": "77727987bff46e79b384d5761597cd7bab71267acb5da8842a105038d0e4f57a",
+      "content_changed": false
+    },
+    {
+      "original_path": "native_quality_20261025/native_full/result/threshold_teacher.json",
+      "current_path": "native_quality_20261025/native_full/result/threshold_teacher.json",
+      "original_sha256": "7da9b2877ab8c1237305e1665aff8d47b1817db0f60830ba94afb654362ff8d5",
+      "current_sha256": "7da9b2877ab8c1237305e1665aff8d47b1817db0f60830ba94afb654362ff8d5",
+      "content_changed": false
+    },
+    {
+      "original_path": "native_quality_20261025/native_full/result/utility.json",
+      "current_path": "native_quality_20261025/native_full/result/utility.json",
+      "original_sha256": "c70354c259655d295cfcd90c2ac685778fa507328c3c6f4cd52be1ff511a2849",
+      "current_sha256": "c70354c259655d295cfcd90c2ac685778fa507328c3c6f4cd52be1ff511a2849",
+      "content_changed": false
+    },
+    {
+      "original_path": "native_quality_20261025/native_full/teacher_choice.json",
+      "current_path": "native_quality_20261025/native_full/teacher_choice.json",
+      "original_sha256": "49059787c14e7d6fd789c7856192e0803de52be3a9b1d2f722bcce64538fb7b6",
+      "current_sha256": "49059787c14e7d6fd789c7856192e0803de52be3a9b1d2f722bcce64538fb7b6",
+      "content_changed": false
+    },
+    {
+      "original_path": "native_quality_20261025/plan.json",
+      "current_path": "native_quality_20261025/plan.json",
+      "original_sha256": "f5fd3d02be555cb811100c672358fb8580919a8b1ca6ef433e63259a7a87157b",
+      "current_sha256": "f5fd3d02be555cb811100c672358fb8580919a8b1ca6ef433e63259a7a87157b",
+      "content_changed": false
+    },
+    {
+      "original_path": "native_quality_20261025/research.md",
+      "current_path": "native_quality_20261025/research.md",
+      "original_sha256": "f1495831d2a1490e4883218f68bbe0a00ea6712259adbedbae9d4164cef85119",
+      "current_sha256": "f1495831d2a1490e4883218f68bbe0a00ea6712259adbedbae9d4164cef85119",
+      "content_changed": false
+    },
+    {
+      "original_path": "native_quality_20261025/revisions/fp16_before_20261025_fix/code_manifest.json",
+      "current_path": "native_quality_20261025/revisions/fp16_before_20261025_fix/code_manifest.json",
+      "original_sha256": "22bd34f943ec3aabd27df2f51231e266aff1121e76f0100670a41b633c80ed78",
+      "current_sha256": "22bd34f943ec3aabd27df2f51231e266aff1121e76f0100670a41b633c80ed78",
+      "content_changed": false
+    },
+    {
+      "original_path": "native_quality_20261025/revisions/fp16_before_20261025_fix/status.json",
+      "current_path": "native_quality_20261025/revisions/fp16_before_20261025_fix/status.json",
+      "original_sha256": "99bf89c8b9d048b2a795d3b2ded21c0099393e9b8834874523dcefb4cdf3b62c",
+      "current_sha256": "99bf89c8b9d048b2a795d3b2ded21c0099393e9b8834874523dcefb4cdf3b62c",
+      "content_changed": false
+    },
+    {
+      "original_path": "native_quality_20261025/revisions/fp16_before_20261025_fix/unit_tests.json",
+      "current_path": "native_quality_20261025/revisions/fp16_before_20261025_fix/unit_tests.json",
+      "original_sha256": "529d03c2b90c3c7d0dc21a2aa171756f1d10601fad4abdd952652d9f2b74ff2e",
+      "current_sha256": "529d03c2b90c3c7d0dc21a2aa171756f1d10601fad4abdd952652d9f2b74ff2e",
+      "content_changed": false
+    },
+    {
+      "original_path": "native_quality_20261025/specs.json",
+      "current_path": "native_quality_20261025/specs.json",
+      "original_sha256": "e8f968a0b69a28996504b84d76784dbbcd5af992f9d272c8a4dad4f3b9721316",
+      "current_sha256": "e8f968a0b69a28996504b84d76784dbbcd5af992f9d272c8a4dad4f3b9721316",
+      "content_changed": false
+    },
+    {
+      "original_path": "native_quality_20261025/status.json",
+      "current_path": "native_quality_20261025/status.json",
+      "original_sha256": "daa11be574b2ea1657aab1fd3ba81348341c369a07ddc6b818fefccb19425dcd",
+      "current_sha256": "daa11be574b2ea1657aab1fd3ba81348341c369a07ddc6b818fefccb19425dcd",
+      "content_changed": false
+    },
+    {
+      "original_path": "native_quality_20261025/unit_tests.json",
+      "current_path": "native_quality_20261025/unit_tests.json",
+      "original_sha256": "d65fc5a0d0480e3aad667785c0bfe6abf49bf2cea18a4385417e33510ebb386a",
+      "current_sha256": "d65fc5a0d0480e3aad667785c0bfe6abf49bf2cea18a4385417e33510ebb386a",
+      "content_changed": false
+    },
+    {
+      "original_path": "native_quality_audit.py",
+      "current_path": "native_quality_audit.py",
+      "original_sha256": "58d1f7dc3c27761f21b23a29605a7717a0892db58e42fbc5557751749255d907",
+      "current_sha256": "58d1f7dc3c27761f21b23a29605a7717a0892db58e42fbc5557751749255d907",
+      "content_changed": false
+    },
+    {
+      "original_path": "native_quality_campaign.py",
+      "current_path": "native_quality_campaign.py",
+      "original_sha256": "5eb77c5622d08310118f9ec726c9f5769d8073d511891eb8fa611591798ee8e8",
+      "current_sha256": "5eb77c5622d08310118f9ec726c9f5769d8073d511891eb8fa611591798ee8e8",
+      "content_changed": false
+    },
+    {
+      "original_path": "native_quality_refine.py",
+      "current_path": "native_quality_refine.py",
+      "original_sha256": "2e570b415b49f7eb4b4891122afd547b309a1d44961e5bccaa588accf0ed3392",
+      "current_sha256": "2e570b415b49f7eb4b4891122afd547b309a1d44961e5bccaa588accf0ed3392",
+      "content_changed": false
+    },
+    {
+      "original_path": "native_quality_tests.py",
+      "current_path": "native_quality_tests.py",
+      "original_sha256": "c521d5d33030ddd602b39ca3bbe107bc2e1106d76c57859423e198dd15dc4506",
+      "current_sha256": "c521d5d33030ddd602b39ca3bbe107bc2e1106d76c57859423e198dd15dc4506",
+      "content_changed": false
+    },
+    {
+      "original_path": "native_semantic_radioactive_fingerprint_codex_spec.md",
+      "current_path": "native_semantic_radioactive_fingerprint_codex_spec.md",
+      "original_sha256": "3554cab529b5e725242cd2253264cf30385ccadb513ea260d3769b97966a8ca3",
+      "current_sha256": "3554cab529b5e725242cd2253264cf30385ccadb513ea260d3769b97966a8ca3",
+      "content_changed": false
+    },
+    {
+      "original_path": "pareto_quality_20261025/balanced_native/assets.json",
+      "current_path": "pareto_quality_20261025/balanced_native/assets.json",
+      "original_sha256": "669b0f51cc983358f0f6c8d63f728854211715bf9b401357c87b65b817250035",
+      "current_sha256": "669b0f51cc983358f0f6c8d63f728854211715bf9b401357c87b65b817250035",
+      "content_changed": false
+    },
+    {
+      "original_path": "pareto_quality_20261025/balanced_native/carrier/complete.json",
+      "current_path": "pareto_quality_20261025/balanced_native/carrier/complete.json",
+      "original_sha256": "1f517f4dcbcc565bb4cb308eafbdd713aa6303565af2dfc8fa5df80bb2d8af09",
+      "current_sha256": "1f517f4dcbcc565bb4cb308eafbdd713aa6303565af2dfc8fa5df80bb2d8af09",
+      "content_changed": false
+    },
+    {
+      "original_path": "pareto_quality_20261025/balanced_native/complete.json",
+      "current_path": "pareto_quality_20261025/balanced_native/complete.json",
+      "original_sha256": "b1595202e88078fc04debd31c6dd344f1d846305f228765fdb3747b10b3b3b16",
+      "current_sha256": "b1595202e88078fc04debd31c6dd344f1d846305f228765fdb3747b10b3b3b16",
+      "content_changed": false
+    },
+    {
+      "original_path": "pareto_quality_20261025/balanced_native/config.json",
+      "current_path": "pareto_quality_20261025/balanced_native/config.json",
+      "original_sha256": "5d0ff8ec02287d463d6ad962e7888fcf5b4dcef12003b00a48f8d85c277e3e18",
+      "current_sha256": "5d0ff8ec02287d463d6ad962e7888fcf5b4dcef12003b00a48f8d85c277e3e18",
+      "content_changed": false
+    },
+    {
+      "original_path": "pareto_quality_20261025/balanced_native/refine_spec.json",
+      "current_path": "pareto_quality_20261025/balanced_native/refine_spec.json",
+      "original_sha256": "76714e08afdb2fef26b0a13cc0a32cb2e621dd6212f06d90a18b47d7c9245a3a",
+      "current_sha256": "76714e08afdb2fef26b0a13cc0a32cb2e621dd6212f06d90a18b47d7c9245a3a",
+      "content_changed": false
+    },
+    {
+      "original_path": "pareto_quality_20261025/balanced_native/result/checkpoint_metrics.csv",
+      "current_path": "pareto_quality_20261025/balanced_native/result/checkpoint_metrics.csv",
+      "original_sha256": "6ba219fff90e4377377420d92ba0aa529017760e75e2d84ccf1395df6dbaff75",
+      "current_sha256": "6ba219fff90e4377377420d92ba0aa529017760e75e2d84ccf1395df6dbaff75",
+      "content_changed": false
+    },
+    {
+      "original_path": "pareto_quality_20261025/balanced_native/result/threshold.json",
+      "current_path": "pareto_quality_20261025/balanced_native/result/threshold.json",
+      "original_sha256": "805254d1ca3d6bc9f4cfe966aed95dfeab60a02a0b9fd9d6394d8895cc70c187",
+      "current_sha256": "805254d1ca3d6bc9f4cfe966aed95dfeab60a02a0b9fd9d6394d8895cc70c187",
+      "content_changed": false
+    },
+    {
+      "original_path": "pareto_quality_20261025/balanced_native/result/threshold_student.json",
+      "current_path": "pareto_quality_20261025/balanced_native/result/threshold_student.json",
+      "original_sha256": "77727987bff46e79b384d5761597cd7bab71267acb5da8842a105038d0e4f57a",
+      "current_sha256": "77727987bff46e79b384d5761597cd7bab71267acb5da8842a105038d0e4f57a",
+      "content_changed": false
+    },
+    {
+      "original_path": "pareto_quality_20261025/balanced_native/result/threshold_teacher.json",
+      "current_path": "pareto_quality_20261025/balanced_native/result/threshold_teacher.json",
+      "original_sha256": "7da9b2877ab8c1237305e1665aff8d47b1817db0f60830ba94afb654362ff8d5",
+      "current_sha256": "7da9b2877ab8c1237305e1665aff8d47b1817db0f60830ba94afb654362ff8d5",
+      "content_changed": false
+    },
+    {
+      "original_path": "pareto_quality_20261025/balanced_native/result/utility.json",
+      "current_path": "pareto_quality_20261025/balanced_native/result/utility.json",
+      "original_sha256": "fc110d4f42ca2bbedf59a75b1857b68e366cddf6a11c45c8183179656cb6151c",
+      "current_sha256": "fc110d4f42ca2bbedf59a75b1857b68e366cddf6a11c45c8183179656cb6151c",
+      "content_changed": false
+    },
+    {
+      "original_path": "pareto_quality_20261025/balanced_native/teacher_choice.json",
+      "current_path": "pareto_quality_20261025/balanced_native/teacher_choice.json",
+      "original_sha256": "de42459479f6272eac2caf53b71de59b54baf5a814ef3151de55d9247866942e",
+      "current_sha256": "de42459479f6272eac2caf53b71de59b54baf5a814ef3151de55d9247866942e",
+      "content_changed": false
+    },
+    {
+      "original_path": "pareto_quality_20261025/code_manifest.json",
+      "current_path": "pareto_quality_20261025/code_manifest.json",
+      "original_sha256": "77841d3ef2ae4fd7520eec8a359ccda37d20351d7de655238bef7d679512ce5d",
+      "current_sha256": "77841d3ef2ae4fd7520eec8a359ccda37d20351d7de655238bef7d679512ce5d",
+      "content_changed": false
+    },
+    {
+      "original_path": "pareto_quality_20261025/comparison.json",
+      "current_path": "pareto_quality_20261025/comparison.json",
+      "original_sha256": "dddb197a037dd171d47d4cd1de1e536024bda0efe2c9f079d8e2f20d3f809999",
+      "current_sha256": "dddb197a037dd171d47d4cd1de1e536024bda0efe2c9f079d8e2f20d3f809999",
+      "content_changed": false
+    },
+    {
+      "original_path": "pareto_quality_20261025/plan.json",
+      "current_path": "pareto_quality_20261025/plan.json",
+      "original_sha256": "ad4c8528f3efdb3855a3f2bb11b1511cac975c47e691162ab271521f917a4301",
+      "current_sha256": "ad4c8528f3efdb3855a3f2bb11b1511cac975c47e691162ab271521f917a4301",
+      "content_changed": false
+    },
+    {
+      "original_path": "pareto_quality_20261025/projected_native/assets.json",
+      "current_path": "pareto_quality_20261025/projected_native/assets.json",
+      "original_sha256": "669b0f51cc983358f0f6c8d63f728854211715bf9b401357c87b65b817250035",
+      "current_sha256": "669b0f51cc983358f0f6c8d63f728854211715bf9b401357c87b65b817250035",
+      "content_changed": false
+    },
+    {
+      "original_path": "pareto_quality_20261025/projected_native/carrier/complete.json",
+      "current_path": "pareto_quality_20261025/projected_native/carrier/complete.json",
+      "original_sha256": "1f517f4dcbcc565bb4cb308eafbdd713aa6303565af2dfc8fa5df80bb2d8af09",
+      "current_sha256": "1f517f4dcbcc565bb4cb308eafbdd713aa6303565af2dfc8fa5df80bb2d8af09",
+      "content_changed": false
+    },
+    {
+      "original_path": "pareto_quality_20261025/projected_native/complete.json",
+      "current_path": "pareto_quality_20261025/projected_native/complete.json",
+      "original_sha256": "b1595202e88078fc04debd31c6dd344f1d846305f228765fdb3747b10b3b3b16",
+      "current_sha256": "b1595202e88078fc04debd31c6dd344f1d846305f228765fdb3747b10b3b3b16",
+      "content_changed": false
+    },
+    {
+      "original_path": "pareto_quality_20261025/projected_native/config.json",
+      "current_path": "pareto_quality_20261025/projected_native/config.json",
+      "original_sha256": "5d0ff8ec02287d463d6ad962e7888fcf5b4dcef12003b00a48f8d85c277e3e18",
+      "current_sha256": "5d0ff8ec02287d463d6ad962e7888fcf5b4dcef12003b00a48f8d85c277e3e18",
+      "content_changed": false
+    },
+    {
+      "original_path": "pareto_quality_20261025/projected_native/refine_spec.json",
+      "current_path": "pareto_quality_20261025/projected_native/refine_spec.json",
+      "original_sha256": "9877fd4b687903cd479158e323e60c08e29dcdcc05fbc2e4dfb75e78aecff260",
+      "current_sha256": "9877fd4b687903cd479158e323e60c08e29dcdcc05fbc2e4dfb75e78aecff260",
+      "content_changed": false
+    },
+    {
+      "original_path": "pareto_quality_20261025/projected_native/result/checkpoint_metrics.csv",
+      "current_path": "pareto_quality_20261025/projected_native/result/checkpoint_metrics.csv",
+      "original_sha256": "9abc7a163784816b6149119e3ead03ab2fb4785a7b06775f8e22c972e93159ab",
+      "current_sha256": "9abc7a163784816b6149119e3ead03ab2fb4785a7b06775f8e22c972e93159ab",
+      "content_changed": false
+    },
+    {
+      "original_path": "pareto_quality_20261025/projected_native/result/threshold.json",
+      "current_path": "pareto_quality_20261025/projected_native/result/threshold.json",
+      "original_sha256": "805254d1ca3d6bc9f4cfe966aed95dfeab60a02a0b9fd9d6394d8895cc70c187",
+      "current_sha256": "805254d1ca3d6bc9f4cfe966aed95dfeab60a02a0b9fd9d6394d8895cc70c187",
+      "content_changed": false
+    },
+    {
+      "original_path": "pareto_quality_20261025/projected_native/result/threshold_student.json",
+      "current_path": "pareto_quality_20261025/projected_native/result/threshold_student.json",
+      "original_sha256": "77727987bff46e79b384d5761597cd7bab71267acb5da8842a105038d0e4f57a",
+      "current_sha256": "77727987bff46e79b384d5761597cd7bab71267acb5da8842a105038d0e4f57a",
+      "content_changed": false
+    },
+    {
+      "original_path": "pareto_quality_20261025/projected_native/result/threshold_teacher.json",
+      "current_path": "pareto_quality_20261025/projected_native/result/threshold_teacher.json",
+      "original_sha256": "7da9b2877ab8c1237305e1665aff8d47b1817db0f60830ba94afb654362ff8d5",
+      "current_sha256": "7da9b2877ab8c1237305e1665aff8d47b1817db0f60830ba94afb654362ff8d5",
+      "content_changed": false
+    },
+    {
+      "original_path": "pareto_quality_20261025/projected_native/result/utility.json",
+      "current_path": "pareto_quality_20261025/projected_native/result/utility.json",
+      "original_sha256": "fb2ba9af973a42f022414cfbe53347e2b7aa572317220c4ba5f4167d7113938f",
+      "current_sha256": "fb2ba9af973a42f022414cfbe53347e2b7aa572317220c4ba5f4167d7113938f",
+      "content_changed": false
+    },
+    {
+      "original_path": "pareto_quality_20261025/projected_native/teacher_choice.json",
+      "current_path": "pareto_quality_20261025/projected_native/teacher_choice.json",
+      "original_sha256": "cae379cfc6e5bc4a895dfa325b8ceda447ff561483b025eb73577cc4d0fc3c3c",
+      "current_sha256": "cae379cfc6e5bc4a895dfa325b8ceda447ff561483b025eb73577cc4d0fc3c3c",
+      "content_changed": false
+    },
+    {
+      "original_path": "pareto_quality_20261025/research.md",
+      "current_path": "pareto_quality_20261025/research.md",
+      "original_sha256": "ef72f192921c885b314d1d5dfa73ffce25dbfb8aedb784d8dd948ead6d48dfd4",
+      "current_sha256": "ef72f192921c885b314d1d5dfa73ffce25dbfb8aedb784d8dd948ead6d48dfd4",
+      "content_changed": false
+    },
+    {
+      "original_path": "pareto_quality_20261025/specs.json",
+      "current_path": "pareto_quality_20261025/specs.json",
+      "original_sha256": "1744d332b1cb3b43a8c356486272fe451d4e2a8c9a35006f2839baf8b27362af",
+      "current_sha256": "1744d332b1cb3b43a8c356486272fe451d4e2a8c9a35006f2839baf8b27362af",
+      "content_changed": false
+    },
+    {
+      "original_path": "pareto_quality_20261025/status.json",
+      "current_path": "pareto_quality_20261025/status.json",
+      "original_sha256": "35a1f2b706e884714e7d04c2a76492131f684c7252bc418cba943d4964bdaeb1",
+      "current_sha256": "35a1f2b706e884714e7d04c2a76492131f684c7252bc418cba943d4964bdaeb1",
+      "content_changed": false
+    },
+    {
+      "original_path": "pareto_quality_20261025/unit_tests.json",
+      "current_path": "pareto_quality_20261025/unit_tests.json",
+      "original_sha256": "9674ab370592df0301c2f83ab27de2dc9952f375e6f1d06a4b9eb12fca7ac2fa",
+      "current_sha256": "9674ab370592df0301c2f83ab27de2dc9952f375e6f1d06a4b9eb12fca7ac2fa",
+      "content_changed": false
+    },
+    {
+      "original_path": "pareto_quality_campaign.py",
+      "current_path": "pareto_quality_campaign.py",
+      "original_sha256": "839a9c808b0bc1f0d4c138c27c2c03d805ae16e1883ab1b2ec1dbbb13f06f956",
+      "current_sha256": "839a9c808b0bc1f0d4c138c27c2c03d805ae16e1883ab1b2ec1dbbb13f06f956",
+      "content_changed": false
+    },
+    {
+      "original_path": "pareto_quality_refine.py",
+      "current_path": "pareto_quality_refine.py",
+      "original_sha256": "b67524d93196dca50f2e87be6d273bc730333622b7bdf0be17941e8d81c0fcd3",
+      "current_sha256": "b67524d93196dca50f2e87be6d273bc730333622b7bdf0be17941e8d81c0fcd3",
+      "content_changed": false
+    },
+    {
+      "original_path": "pareto_quality_tests.py",
+      "current_path": "pareto_quality_tests.py",
+      "original_sha256": "12303b433ee3b73f87885933bf56bc0d0ec1c2b49498b21d3bb808a711d4dc8e",
+      "current_sha256": "12303b433ee3b73f87885933bf56bc0d0ec1c2b49498b21d3bb808a711d4dc8e",
+      "content_changed": false
+    },
+    {
+      "original_path": "pareto_step.py",
+      "current_path": "pareto_step.py",
+      "original_sha256": "acab6f3fa7728750369b36cc3891d92b5e3576c3ef0af51c683d9d3a5c405d51",
+      "current_sha256": "acab6f3fa7728750369b36cc3891d92b5e3576c3ef0af51c683d9d3a5c405d51",
+      "content_changed": false
+    },
+    {
+      "original_path": "projected_student10000_20261025/code_manifest.json",
+      "current_path": "projected_student10000_20261025/code_manifest.json",
+      "original_sha256": "fba009f07cd96700299fd4444e611bd0c3c6c68557e064501fff3675cdb68b99",
+      "current_sha256": "fba009f07cd96700299fd4444e611bd0c3c6c68557e064501fff3675cdb68b99",
+      "content_changed": false
+    },
+    {
+      "original_path": "projected_student10000_20261025/comparison.json",
+      "current_path": "projected_student10000_20261025/comparison.json",
+      "original_sha256": "f7d16518bf02fa392101d2feddf58ba9b927214359cc3a86b79e542fd70dfa35",
+      "current_sha256": "f7d16518bf02fa392101d2feddf58ba9b927214359cc3a86b79e542fd70dfa35",
+      "content_changed": false
+    },
+    {
+      "original_path": "projected_student10000_20261025/launch_audit.json",
+      "current_path": "projected_student10000_20261025/launch_audit.json",
+      "original_sha256": "5f9ea01c1a13dec9810a9c9df8f2ddd33b2b229fc072c62a5d21d1216ec5a821",
+      "current_sha256": "5f9ea01c1a13dec9810a9c9df8f2ddd33b2b229fc072c62a5d21d1216ec5a821",
+      "content_changed": false
+    },
+    {
+      "original_path": "projected_student10000_20261025/plan.json",
+      "current_path": "projected_student10000_20261025/plan.json",
+      "original_sha256": "64f15e3d958ce50587173896cdb16561637a3ab67b9b5cfe77784ef1c81a9804",
+      "current_sha256": "64f15e3d958ce50587173896cdb16561637a3ab67b9b5cfe77784ef1c81a9804",
+      "content_changed": false
+    },
+    {
+      "original_path": "projected_student10000_20261025/preflight.json",
+      "current_path": "projected_student10000_20261025/preflight.json",
+      "original_sha256": "1126b066ab2c8ead470c0363dc5c7f00e66bbf76a2f5b0876cdb58484f64a4c1",
+      "current_sha256": "1126b066ab2c8ead470c0363dc5c7f00e66bbf76a2f5b0876cdb58484f64a4c1",
+      "content_changed": false
+    },
+    {
+      "original_path": "projected_student10000_20261025/status.json",
+      "current_path": "projected_student10000_20261025/status.json",
+      "original_sha256": "cc28559944376a69fee8409032aab50307af3c134f478a87028862a8dad789b7",
+      "current_sha256": "cc28559944376a69fee8409032aab50307af3c134f478a87028862a8dad789b7",
+      "content_changed": false
+    },
+    {
+      "original_path": "projected_student10000_20261025/student10000/assets.json",
+      "current_path": "projected_student10000_20261025/student10000/assets.json",
+      "original_sha256": "669b0f51cc983358f0f6c8d63f728854211715bf9b401357c87b65b817250035",
+      "current_sha256": "669b0f51cc983358f0f6c8d63f728854211715bf9b401357c87b65b817250035",
+      "content_changed": false
+    },
+    {
+      "original_path": "projected_student10000_20261025/student10000/carrier/complete.json",
+      "current_path": "projected_student10000_20261025/student10000/carrier/complete.json",
+      "original_sha256": "1f517f4dcbcc565bb4cb308eafbdd713aa6303565af2dfc8fa5df80bb2d8af09",
+      "current_sha256": "1f517f4dcbcc565bb4cb308eafbdd713aa6303565af2dfc8fa5df80bb2d8af09",
+      "content_changed": false
+    },
+    {
+      "original_path": "projected_student10000_20261025/student10000/complete.json",
+      "current_path": "projected_student10000_20261025/student10000/complete.json",
+      "original_sha256": "b1595202e88078fc04debd31c6dd344f1d846305f228765fdb3747b10b3b3b16",
+      "current_sha256": "b1595202e88078fc04debd31c6dd344f1d846305f228765fdb3747b10b3b3b16",
+      "content_changed": false
+    },
+    {
+      "original_path": "projected_student10000_20261025/student10000/config.json",
+      "current_path": "projected_student10000_20261025/student10000/config.json",
+      "original_sha256": "5db41ac8b35b239f18dbc2fcc0c5e9e9cbb3d6a05f3fcf77c77323608cc2f903",
+      "current_sha256": "5db41ac8b35b239f18dbc2fcc0c5e9e9cbb3d6a05f3fcf77c77323608cc2f903",
+      "content_changed": false
+    },
+    {
+      "original_path": "projected_student10000_20261025/student10000/result/checkpoint_metrics.csv",
+      "current_path": "projected_student10000_20261025/student10000/result/checkpoint_metrics.csv",
+      "original_sha256": "23f0da12254f7ab20e651691c3e19e74d89fd02ecf9b680d441276db9faf6ce0",
+      "current_sha256": "23f0da12254f7ab20e651691c3e19e74d89fd02ecf9b680d441276db9faf6ce0",
+      "content_changed": false
+    },
+    {
+      "original_path": "projected_student10000_20261025/student10000/result/threshold.json",
+      "current_path": "projected_student10000_20261025/student10000/result/threshold.json",
+      "original_sha256": "805254d1ca3d6bc9f4cfe966aed95dfeab60a02a0b9fd9d6394d8895cc70c187",
+      "current_sha256": "805254d1ca3d6bc9f4cfe966aed95dfeab60a02a0b9fd9d6394d8895cc70c187",
+      "content_changed": false
+    },
+    {
+      "original_path": "projected_student10000_20261025/student10000/result/threshold_student.json",
+      "current_path": "projected_student10000_20261025/student10000/result/threshold_student.json",
+      "original_sha256": "77727987bff46e79b384d5761597cd7bab71267acb5da8842a105038d0e4f57a",
+      "current_sha256": "77727987bff46e79b384d5761597cd7bab71267acb5da8842a105038d0e4f57a",
+      "content_changed": false
+    },
+    {
+      "original_path": "projected_student10000_20261025/student10000/result/threshold_teacher.json",
+      "current_path": "projected_student10000_20261025/student10000/result/threshold_teacher.json",
+      "original_sha256": "7da9b2877ab8c1237305e1665aff8d47b1817db0f60830ba94afb654362ff8d5",
+      "current_sha256": "7da9b2877ab8c1237305e1665aff8d47b1817db0f60830ba94afb654362ff8d5",
+      "content_changed": false
+    },
+    {
+      "original_path": "projected_student10000_20261025/student10000/result/utility.json",
+      "current_path": "projected_student10000_20261025/student10000/result/utility.json",
+      "original_sha256": "ce55cbef3f539de6159ca00cebe94b5fcd68c11fa97a6c8be85a3233d1a06596",
+      "current_sha256": "ce55cbef3f539de6159ca00cebe94b5fcd68c11fa97a6c8be85a3233d1a06596",
+      "content_changed": false
+    },
+    {
+      "original_path": "projected_student10000_20261025/student10000/teacher_choice.json",
+      "current_path": "projected_student10000_20261025/student10000/teacher_choice.json",
+      "original_sha256": "e1ca1f646aa29927ad2c223c4485a3ce2045cfc11d610629a6d85adf454e8b06",
+      "current_sha256": "e1ca1f646aa29927ad2c223c4485a3ce2045cfc11d610629a6d85adf454e8b06",
+      "content_changed": false
+    },
+    {
+      "original_path": "research_queue.py",
+      "current_path": "research_queue.py",
+      "original_sha256": "603cc4cb7bbde2bf4e235d573fde486a82c511238dda193dbeec134bdb47f482",
+      "current_sha256": "fc8faf965b14af03359959f76fa64c6cec84d538c6b5a1f8dde6a6885fcedd97",
+      "content_changed": true
+    },
+    {
+      "original_path": "run_semantic_fp.sh",
+      "current_path": "run_semantic_fp.sh",
+      "original_sha256": "c74d7193e4dd7c5b79b6477182efc3e0765262fa66db499ed73d81e5304ba468",
+      "current_sha256": "c74d7193e4dd7c5b79b6477182efc3e0765262fa66db499ed73d81e5304ba468",
+      "content_changed": false
+    },
+    {
+      "original_path": "student10000_campaign.py",
+      "current_path": "student10000_campaign.py",
+      "original_sha256": "5252dd8e2b61c57e9a1a68bc2e8c7e6655f02badc1aa7d69c0e3b25ca6735f86",
+      "current_sha256": "5252dd8e2b61c57e9a1a68bc2e8c7e6655f02badc1aa7d69c0e3b25ca6735f86",
+      "content_changed": false
+    },
+    {
+      "original_path": "student10000_replay_driver.py",
+      "current_path": "student10000_replay_driver.py",
+      "original_sha256": "b238090ba474bf3485b4bbe8d3a485e70dde4ae8d60e9ee6643f193a54d1e355",
+      "current_sha256": "90bd1e916ace2f95f6c4fae1397626462974a7c8e8a1aea7724e6e26ea170fae",
+      "content_changed": true
+    },
+    {
+      "original_path": "transfer_campaign.py",
+      "current_path": "transfer_campaign.py",
+      "original_sha256": "9f1fa834d6886368796100f1fbce362e6446fc0b08b63f35fbf28758d37198b8",
+      "current_sha256": "9f1fa834d6886368796100f1fbce362e6446fc0b08b63f35fbf28758d37198b8",
+      "content_changed": false
+    },
+    {
+      "original_path": "transfer_proxy.py",
+      "current_path": "transfer_proxy.py",
+      "original_sha256": "45e9a8509dcaa9da1756cc5f0277bdc4688be5214a6ded2db582b61416a48362",
+      "current_sha256": "45e9a8509dcaa9da1756cc5f0277bdc4688be5214a6ded2db582b61416a48362",
+      "content_changed": false
+    },
+    {
+      "original_path": "transfer_refine.py",
+      "current_path": "transfer_refine.py",
+      "original_sha256": "7fb9021665bc730dca8f053aa9e819b6716df2098e668ebe0e51e7507e20ec96",
+      "current_sha256": "7a1779d74753abc72d0050a9a123414d97e489fd9f84af9a4c75329d59bfe680",
+      "content_changed": true
+    }
+  ],
+  "restored_vendor_resources": [
+    {
+      "path": "src/vendor/bitmark/Infinity/LICENSE",
+      "sha256": "a318f4da9d043e05f535b65774febde7572908c97562cc14e49a2f3687f5a453"
+    },
+    {
+      "path": "src/vendor/bitmark/Infinity/finetune_jsonl_example/1.000_0001000.jsonl",
+      "sha256": "b9ef0091702cc5a31f61d21eeda16617040087af3f777c0b0cf99052555a2506"
+    },
+    {
+      "path": "src/vendor/bitmark/LICENSE",
+      "sha256": "9e4b574ed3de427b13172804595f85888c256bbc5f1a9edfe11f584d569b12d9"
+    },
+    {
+      "path": "src/vendor/diffusers/LICENSE",
+      "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+    }
+  ],
+  "verification": {
+    "plan_only_passed": true,
+    "vendor_checks_passed": true,
+    "results_root": "/home/dsnlp-2/Downloads/Malicious_quantization/project_native",
+    "gpu_training_executed": false
+  }
+}

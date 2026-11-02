@@ -1,0 +1,12 @@
+{
+  "family": "teacher",
+  "source": "teacher_clean_calibration",
+  "threshold": 0.8509314060211183,
+  "n": 5000,
+  "target_fpr": 0.01,
+  "empirical_fpr": 0.01,
+  "comparison": ">= threshold",
+  "score_sha256": "381ef494818b7c920a9a9ca74370796e42ae7ef6dcdf499724d7f2ba34659039",
+  "carrier_sha256": "1f517f4dcbcc565bb4cb308eafbdd713aa6303565af2dfc8fa5df80bb2d8af09",
+  "test_used": false
+}

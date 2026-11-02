@@ -1,0 +1,22 @@
+{
+  "order": [
+    "clean_control",
+    "native_full",
+    "continuation"
+  ],
+  "source_run": "/root/logs/threshold_quality_20261022/kappa1_manojb_5k/source",
+  "student_threshold_sha256": "77727987bff46e79b384d5761597cd7bab71267acb5da8842a105038d0e4f57a",
+  "calibration_target_sha256": "97977453cc2d10f8fbb9b788235107d95d793e39e4e6d0801f79bd55f0778a54",
+  "prior_campaign_status_sha256": "c9f0b1f6a7ad9d632ab60301f05c8ddf7f2f1a27df54942ad06307e07b6f4b33",
+  "original_teacher_objective_preserved": true,
+  "final_student_objective_unchanged": true,
+  "sampler": "original PNDMScheduler, 50 requested steps, CFG7.5, same generation seeds",
+  "selection": "teacher fixed last step; student minimum validation MSE; never test",
+  "gates": "numerical/integrity/storage only; no scientific outcome early stopping",
+  "clean_control": "same wm-labelled branch trained on linked clean images; report labels condition explicitly",
+  "new_native_every": 5,
+  "native_full_gradient": true,
+  "controls": "clean student, same-budget original continuation, prior quality/gradient refinements",
+  "storage": "share existing clean/unadapted images; only derived model exports removed by existing verified helper",
+  "evaluation": "all 1000 images, fixed detector; FID/KID/CLIP/LPIPS plus pixel diagnostics and blind human-review panel"
+}

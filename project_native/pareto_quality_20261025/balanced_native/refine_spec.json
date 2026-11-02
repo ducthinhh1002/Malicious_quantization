@@ -1,0 +1,22 @@
+{
+  "teacher_steps": 600,
+  "checkpoint_every": 200,
+  "teacher_lr": 1e-05,
+  "quality_weight": 0.05,
+  "transfer_weight": 0.1,
+  "aux_gradient_fraction": 0.25,
+  "transfer_every": 10,
+  "proxy_rank": 8,
+  "inner_steps": 2,
+  "query_steps": 8,
+  "transfer": false,
+  "native_every": 2,
+  "backward_calls": 10,
+  "quality_fraction": 1.0,
+  "score_fraction": 0.25,
+  "max_gradient_gain": 100.0,
+  "pixel_weight": 0.1,
+  "score_reference": "max(source k1 paired native RGB score, fixed tau + sigma)",
+  "quality_stopping_gates": false,
+  "project_step": false
+}
