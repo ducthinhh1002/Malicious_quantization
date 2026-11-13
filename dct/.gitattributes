@@ -1,0 +1,2 @@
+# Preserve upstream source hashes, including its original CRLF files.
+benchmark/** -text

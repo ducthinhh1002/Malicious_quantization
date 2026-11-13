@@ -234,5 +234,9 @@
   "benchmark/shared/student_training/reference/pipeline/student/schedule.py": {
     "sha256": "3d34495c17f4a65f1378c8b0aefe8ca0b550af3117946f0b74d41b5197de63f9",
     "bytes": 262
+  },
+  ".gitattributes": {
+    "sha256": "97bec2adb0129728ceb5c4db78b263a1956c2ca285cf9bc188e8f7646ce8cb96",
+    "bytes": 89
   }
 }
