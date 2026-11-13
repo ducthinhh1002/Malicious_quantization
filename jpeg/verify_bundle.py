@@ -10,6 +10,11 @@ for name,digest in json.loads((vendor/'provenance.json').read_text())['files'].i
 for name,digest in json.loads((ROOT/'inputs/original/carrier/complete.json').read_text()).items():
     assert hashlib.sha256((ROOT/'inputs/original/carrier'/name).read_bytes()).hexdigest()==digest,name
 for folder in [ROOT,ROOT.parent/'resize']:
+    manifest=json.loads((folder/'BUNDLE_MANIFEST.json').read_text())
+    for name,proof in manifest.items():
+        candidate=folder/name
+        assert candidate.is_file(),f'Missing bundled file {candidate}'
+        assert hashlib.sha256(candidate.read_bytes()).hexdigest()==proof['sha256'],str(candidate)
     for p in folder.rglob('*.py'):
         if any(x in p.parts for x in ['.venv','cache','source','run','model','deps','__pycache__']):continue
         ast.parse(p.read_text(encoding='utf-8-sig'),filename=str(p))

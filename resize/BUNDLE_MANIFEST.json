@@ -4,8 +4,8 @@
     "bytes": 778
   },
   ".gitignore": {
-    "sha256": "d5167acb55e5da0acc557170127e89e3f08e2dee642aa31c0f05d77764069bf3",
-    "bytes": 190
+    "sha256": "4b16a4bffc951e24c9dbd789d13889444c08884e58d08f4772fbba30ac7d4e52",
+    "bytes": 207
   },
   "prepare_model.py": {
     "sha256": "c0100b9c65ce6e81cb231ea992ccb4e1b55ad69e167b84cb212464a05129459a",
