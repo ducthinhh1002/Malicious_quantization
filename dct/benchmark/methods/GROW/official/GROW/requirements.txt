@@ -1,0 +1,9 @@
+torch>=2.0
+torchvision>=0.15
+diffusers>=0.21
+transformers>=4.30
+accelerate>=0.20
+numpy>=1.23
+Pillow>=9.0
+tqdm>=4.65
+PyYAML>=6.0

@@ -1,0 +1,8 @@
+/.venv/
+/.cache/
+/run/
+/logs/
+/run.lock
+/.setup.lock
+/assets.json
+/protocol.json

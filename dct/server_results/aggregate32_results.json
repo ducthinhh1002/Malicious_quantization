@@ -1,0 +1,34 @@
+{
+  "group_size": 32,
+  "n_groups": 5000,
+  "unique_images": 1000,
+  "seed": 20261111,
+  "replacement_within_group": false,
+  "aggregation": "mean DCT coefficients across images, then per-bit repetition majority vote; ties use first copy",
+  "results": {
+    "teacher": {
+      "original": {
+        "BA": 1.0,
+        "accept_ge24": 1.0,
+        "exact32": 1.0
+      },
+      "jpeg25": {
+        "BA": 1.0,
+        "accept_ge24": 1.0,
+        "exact32": 1.0
+      }
+    },
+    "student": {
+      "original": {
+        "BA": 0.91128125,
+        "accept_ge24": 1.0,
+        "exact32": 0.0
+      },
+      "jpeg25": {
+        "BA": 0.89246875,
+        "accept_ge24": 1.0,
+        "exact32": 0.0
+      }
+    }
+  }
+}

@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "grow-watermark"
+version = "0.1.0"
+description = "GROW: Watermark Generation with Progressive Guidance for Diffusion Models (CVPR)."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { file = "LICENSE" }
+authors = [
+  { name = "Pengcheng Luo" },
+  { name = "Zexi Jia" },
+  { name = "Yijia Zhong" },
+  { name = "Jinchao Zhang" },
+  { name = "Jie Zhou" }
+]
+keywords = ["watermarking", "diffusion models", "stable diffusion", "copyright", "dct"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+  "Topic :: Scientific/Engineering :: Image Processing",
+]
+dependencies = [
+  "torch>=2.0",
+  "torchvision>=0.15",
+  "diffusers>=0.21",
+  "transformers>=4.30",
+  "accelerate>=0.20",
+  "numpy>=1.23",
+  "Pillow>=9.0",
+  "tqdm>=4.65",
+  "PyYAML>=6.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/<your-handle>/GROW"
+Paper    = "https://arxiv.org/abs/xxxx.xxxxx"
+Issues   = "https://github.com/<your-handle>/GROW/issues"
+
+[tool.setuptools.packages.find]
+include = ["grow*"]
+exclude = ["scripts*", "configs*", "docs*", "assets*", "outputs*"]
