@@ -39,3 +39,13 @@ __pycache__/
 # Downloaded images stay available locally; Git contains code and manifests.
 /new_prompt_sd14/**/images/
 /new_prompt_sd14/**/technical_smoke/
+
+# Local historical experiments and benchmark workspaces
+/structure_student12500/
+/structure_teacher_robustness/
+/output_analysis/
+/baseline_additional/
+/structure_channel_refine/
+/structure_student_rank4/
+/structure8_teacher_fixed_manipulation/
+/structure8_teacher_matched_manipulation/

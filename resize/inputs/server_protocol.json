@@ -1,0 +1,16 @@
+{
+  "model_revision": "960ab33191f61342a4c60ae74d8dc356a39fafcb",
+  "official_commit": "1daa72fa409002d40931bd7b36a9280362469ead",
+  "teacher_sha256": "f389b224214be6e683e21f46e4dd937e45313c9d75a6161b3968e6238a89eb07",
+  "steps": 12500,
+  "rank": 32,
+  "batch": 4,
+  "lr": 0.0001,
+  "warmup": 100,
+  "cfg_dropout": 0.1,
+  "selection": "fixed final12500",
+  "generation_cfg": 5,
+  "generation_temperature": 1,
+  "image_size": 384,
+  "reader_size": 512
+}

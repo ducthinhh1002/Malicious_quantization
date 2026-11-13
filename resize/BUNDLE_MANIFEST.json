@@ -1,0 +1,234 @@
+{
+  "run.sh": {
+    "sha256": "d7b9ece93ed3801c699845eee0fa72c141f3d178dc601eadfab700761577dfbe",
+    "bytes": 778
+  },
+  ".gitignore": {
+    "sha256": "d5167acb55e5da0acc557170127e89e3f08e2dee642aa31c0f05d77764069bf3",
+    "bytes": 190
+  },
+  "prepare_model.py": {
+    "sha256": "810d3bec9b1211651e531d8f39a0b5de1e34237de40292f0ae8a089d4edc195d",
+    "bytes": 1480
+  },
+  "job.py": {
+    "sha256": "afc8ab2b1a04342579dfe9857136ee86a8d80fba6c4ec078acfb6659cc081db4",
+    "bytes": 14605
+  },
+  "SERVER_EXPERIMENT.md": {
+    "sha256": "36bcbb923a509bac8257282343b186f7291b638d82def36b4a1eff2b16fce9e2",
+    "bytes": 3327
+  },
+  "README.md": {
+    "sha256": "05bd9e3081f7ff4a70411f259ca9ee29fbc5b368518092dd90d9b3de2344d56c",
+    "bytes": 4628
+  },
+  "SOURCE_SNAPSHOT.json": {
+    "sha256": "e6a007d8472faa25c2d247eac5e33d7828253a2b3b0637d4764b816edbbf050b",
+    "bytes": 5535
+  },
+  "smoke_ar.py": {
+    "sha256": "480a205e0698ab0d8196c4c380f9d7765d4014e8b4d180a133fad1ffec16ef28",
+    "bytes": 2679
+  },
+  "inputs/server_protocol.json": {
+    "sha256": "249d13d5b99401137c3dfa3e4d5c748c9447fe0abf8558145fad83f7a5e82e22",
+    "bytes": 452
+  },
+  "inputs/prompts.json": {
+    "sha256": "5cf63b020893205a1865fa9f238bc81d63d1cd50bdb3d0a0958b007f4cdd84c2",
+    "bytes": 953801
+  },
+  "Janus/requirements.txt": {
+    "sha256": "5858531c421c62bf5fc18a8072f434cfab23cf7aefbeb5bc21a7f21498e8c582",
+    "bytes": 278
+  },
+  "Janus/janus_pro_tech_report.pdf": {
+    "sha256": "5aebe38af5e16ee20eff453e43ea5d810eba667281a6d12e2078f704fe260b46",
+    "bytes": 2846268
+  },
+  "Janus/LICENSE-CODE": {
+    "sha256": "6e4c38e1172f42fdbff13edf9a7a017679fb82b0fde415a3e8b3c31c6ed4a4e4",
+    "bytes": 1065
+  },
+  "Janus/.gitignore": {
+    "sha256": "5d5adbe595aade089b8adbf3f1a3b7661593ac2358f359b9e0b40e72c5bc0733",
+    "bytes": 7301
+  },
+  "Janus/.gitattributes": {
+    "sha256": "61832e226a9c1ca1b29612e6243a9fbad21cd0dfbd211d49c42de40af532973c",
+    "bytes": 115
+  },
+  "Janus/pyproject.toml": {
+    "sha256": "a235c3adbc8376b440968d7d95a0f5e45b072edaa9dc62944f70a104a9cebff2",
+    "bytes": 1111
+  },
+  "Janus/interactivechat.py": {
+    "sha256": "5cfdfd2c4cdba5024241ae364e823eb0ead2df4c7ac320aa4b2a20ed3a7b3baa",
+    "bytes": 5188
+  },
+  "Janus/README.md": {
+    "sha256": "d8588ba1c70ae39ff514a29c2f9a08a053b54e1a4d59d776c1422858fbd8597d",
+    "bytes": 26781
+  },
+  "Janus/inference.py": {
+    "sha256": "360d0404d5a3482d41b0045bc6870869bb96c41308aebc404343f06bd35f4a01",
+    "bytes": 2642
+  },
+  "Janus/LICENSE-MODEL": {
+    "sha256": "09b2b4b4614509ff8baccd3c220e9d9b99e55152925b501f0d5f8b5e36eea982",
+    "bytes": 13718
+  },
+  "Janus/Makefile": {
+    "sha256": "3a51e7d37c3651ab5e3e7cddc4f0460d8f671123497c11cc2c9c806fdb9de16f",
+    "bytes": 3069
+  },
+  "Janus/generation_inference.py": {
+    "sha256": "6591a0145d7779c28dbda41d7aad76d1be866f091b6465659824c5aa8091f303",
+    "bytes": 4515
+  },
+  "Janus/janus/__init__.py": {
+    "sha256": "3790984df4c51224d3ee6acdaeb1934b2bc339590654ede913f7d69bcba0700c",
+    "bytes": 1458
+  },
+  "Janus/images/teaser_januspro.png": {
+    "sha256": "444bba7125e8bfdd0f363ebb971ff5f68115cb0131093e5213c7420aa526f0ac",
+    "bytes": 97999
+  },
+  "Janus/images/ve.png": {
+    "sha256": "b1271da0cb230f678dde2bdbd3d410e7ff149b2798280b944f0db0c7c345c233",
+    "bytes": 275391
+  },
+  "Janus/images/badge.svg": {
+    "sha256": "5edf5f4cb88edadf3df7ebc167022b1ef281c99a7f2f3214db91162e4644e258",
+    "bytes": 6179
+  },
+  "Janus/images/logo.png": {
+    "sha256": "42b06f9dd7d81c0790510da5fb4c1d909c0c32cd786ff0f00ea788809d1a71e3",
+    "bytes": 8661
+  },
+  "Janus/images/teaser_janusflow.png": {
+    "sha256": "5f96509edf84d636703f6094b56c1137913beaffd0c2fc12ba56367212462745",
+    "bytes": 3605576
+  },
+  "Janus/images/doge.png": {
+    "sha256": "b1271da0cb230f678dde2bdbd3d410e7ff149b2798280b944f0db0c7c345c233",
+    "bytes": 275391
+  },
+  "Janus/images/pie_chart.png": {
+    "sha256": "f7f7ef3287825e7af9870df2e19863dc931ac0c2b7e2581e30bdf7044a550a07",
+    "bytes": 58075
+  },
+  "Janus/images/teaser.png": {
+    "sha256": "7f70c0c29d7a41ec8e5cdc014defc697f5e4f01a8874dd50ead466caa5fd05f6",
+    "bytes": 574088
+  },
+  "Janus/images/equation.png": {
+    "sha256": "1e664693eb445fdd87c857dbbed9d9fb3770af7f27ca811b6a29036e7f61db03",
+    "bytes": 31548
+  },
+  "Janus/images/logo.svg": {
+    "sha256": "ac13bdc805820c46bf0faf053aa5d31f72b051794abfe1dd72a682f09de2966b",
+    "bytes": 10656
+  },
+  "Janus/demo/app_janusflow.py": {
+    "sha256": "f588336b71075dacd19033a7da18d5ea2e7a014432c840871265d78d8b72fc88",
+    "bytes": 10861
+  },
+  "Janus/demo/app_januspro.py": {
+    "sha256": "b5555993161f05901009659282199b3e688cf56e4366be11af2c0b497afb61e1",
+    "bytes": 10706
+  },
+  "Janus/demo/fastapi_client.py": {
+    "sha256": "8a325af8ed7a7c95bde4ae42e54e18730413605c899979cac122b03d124699eb",
+    "bytes": 2589
+  },
+  "Janus/demo/fastapi_app.py": {
+    "sha256": "414c1fac63d8525d1799e1252d73242f1841f57ffba808f88ec0754c77351c2c",
+    "bytes": 6571
+  },
+  "Janus/demo/Janus_colab_demo.ipynb": {
+    "sha256": "3314095b95fe7e12cd93856141bb72f230ac412c6bc436541cc691706f2aa5f4",
+    "bytes": 110515
+  },
+  "Janus/demo/app.py": {
+    "sha256": "b8c566df1cc236581c935795b5e5ac4ab313fe7d000a409724e784bc4701c0d1",
+    "bytes": 9870
+  },
+  "Janus/janus/models/projector.py": {
+    "sha256": "0573f1e238f88c80dd658649fe6a374a6ce06930150bb07140cb94d701337480",
+    "bytes": 3625
+  },
+  "Janus/janus/models/clip_encoder.py": {
+    "sha256": "cb0c56afa47b3b810d9d5694e8240cb1e0ddb11b697c1740161a632ec5febee3",
+    "bytes": 4447
+  },
+  "Janus/janus/models/modeling_vlm.py": {
+    "sha256": "3a676a7e373bb30f35f15f681ff1b03246f562fa33e31bd709340202bae4341f",
+    "bytes": 8927
+  },
+  "Janus/janus/models/__init__.py": {
+    "sha256": "81526804aa517e7cbac3f4294eb4e1fe20aa52d54964bb9cb737cf42af9d283c",
+    "bytes": 1328
+  },
+  "Janus/janus/models/vq_model.py": {
+    "sha256": "a1328dfcad344170342528cfc3aeba7ade7f990ef4b7f0025d658b6e09f9f8ad",
+    "bytes": 17663
+  },
+  "Janus/janus/models/image_processing_vlm.py": {
+    "sha256": "364deb2b4782c25fa1a1878eaefd62886ed9bf72a5645176000cd55cddb0453d",
+    "bytes": 6796
+  },
+  "Janus/janus/models/siglip_vit.py": {
+    "sha256": "4195dcbb4b57faaed56584aba8523e4d555b9d25d80856ebccfa023d4f39b2fe",
+    "bytes": 24088
+  },
+  "Janus/janus/models/processing_vlm.py": {
+    "sha256": "e506b5bec2dd4f28d77f4430374cd307bf5e1892a464c291dcb3d62eda4de17e",
+    "bytes": 14053
+  },
+  "Janus/janus/janusflow/__init__.py": {
+    "sha256": "3790984df4c51224d3ee6acdaeb1934b2bc339590654ede913f7d69bcba0700c",
+    "bytes": 1458
+  },
+  "Janus/janus/utils/__init__.py": {
+    "sha256": "bbc0bef9e809313fc30e6d091b77eb5c649034dbfa71f200ba63e1821ce4c619",
+    "bytes": 1091
+  },
+  "Janus/janus/utils/conversation.py": {
+    "sha256": "e1e201df4b480b34b4c6f442b91321dd27b6fcf22c5c91e44e5624283a9b539b",
+    "bytes": 12310
+  },
+  "Janus/janus/utils/io.py": {
+    "sha256": "28d583b56f3ac84d76a0ebbac02850eb3d58e6ff4c6a19e483891ea0c7c627c1",
+    "bytes": 3169
+  },
+  "Janus/janus/janusflow/models/clip_encoder.py": {
+    "sha256": "1fdf2c5579a58b5cdaad9bfff96f45d936c18d7aa0ff4ee404f56bf06b2be0c3",
+    "bytes": 4457
+  },
+  "Janus/janus/janusflow/models/modeling_vlm.py": {
+    "sha256": "8a02ca537e7a1a10377a9331e947b9c54f8dfc5ce41d644319e3dd0e8428e067",
+    "bytes": 8206
+  },
+  "Janus/janus/janusflow/models/uvit.py": {
+    "sha256": "05dce4c0ba52aacf3d9facfe344cbf87cbc27208b22adddddd86f3ba7a1c8112",
+    "bytes": 22516
+  },
+  "Janus/janus/janusflow/models/__init__.py": {
+    "sha256": "81526804aa517e7cbac3f4294eb4e1fe20aa52d54964bb9cb737cf42af9d283c",
+    "bytes": 1328
+  },
+  "Janus/janus/janusflow/models/image_processing_vlm.py": {
+    "sha256": "364deb2b4782c25fa1a1878eaefd62886ed9bf72a5645176000cd55cddb0453d",
+    "bytes": 6796
+  },
+  "Janus/janus/janusflow/models/siglip_vit.py": {
+    "sha256": "6966b2c72d1906429dc58fc2cf6548613904ec571e4a4a83f212a46b5fe9e932",
+    "bytes": 24335
+  },
+  "Janus/janus/janusflow/models/processing_vlm.py": {
+    "sha256": "c33297c38f61f5a1dd47b046e85aef793c6a63699901b7ed29f5c6b846daf317",
+    "bytes": 15731
+  }
+}
